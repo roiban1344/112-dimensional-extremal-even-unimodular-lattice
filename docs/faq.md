@@ -8,13 +8,17 @@ Notation: $\langle x, y \rangle$ is the inner product, and the *norm* of $x$ is 
 
 $L$ is an ordinary lattice in real Euclidean space; no complex numbers are needed to define it. "Multiplication by $\sqrt{-5}$" is just a name for a particular linear map $\tau : L \to L$ (here an explicit $56 \times 56$ integer matrix, [`data/tau.txt`](../data/tau.txt)) with
 
-$$\tau^2 = -5 \cdot \mathrm{id}, \qquad \langle x\tau, y\tau \rangle = 5\,\langle x, y \rangle .$$
+```math
+\tau^2 = -5 \cdot \mathrm{id}, \qquad \langle x\tau, y\tau \rangle = 5\,\langle x, y \rangle .
+```
 
 The smallest example of the same phenomenon is the square lattice $\mathbb{Z}^2$ with the rotation by $90^\circ$, $J : (a, b) \mapsto (-b, a)$. It satisfies $J^2 = -\mathrm{id}$ and preserves lengths, and if we *call* $J$ "multiplication by $i$", then $\mathbb{Z}^2$ becomes the Gaussian integers $\mathbb{Z}[i]$, with $(a, b) \leftrightarrow a + bi$. The lattice has not changed; we have only chosen one of its symmetries and given it a name.
 
-In the same way, once $\tau$ is chosen, $L$ becomes a module over the ring $\mathbb{Z}[\sqrt{-5}]$ by $(a + b\sqrt{-5}) \cdot x = ax + b\,x\tau$, of rank $56/2 = 28$, and the real inner product is the trace of a Hermitian form $h$ with values in $\mathbb{Q}(\sqrt{-5})$:
+In the same way, once $\tau$ is chosen, $L$ becomes a module over the ring $\mathbb{Z}[\sqrt{-5}]$ by $(a + b\sqrt{-5}) \cdot x = ax + bx\tau$, of rank $56/2 = 28$, and the real inner product is the trace of a Hermitian form $h$ with values in $\mathbb{Q}(\sqrt{-5})$:
 
-$$\langle x, y \rangle = h(x, y) + \overline{h(x, y)} .$$
+```math
+\langle x, y \rangle = h(x, y) + \overline{h(x, y)} .
+```
 
 A lattice together with such a structure is called a *Hermitian lattice*. Such a $\tau$ is extra structure: most lattices have none, and a lattice may have several inequivalent ones. Here there are two; they give different lattices $R$, one with minimum 8 and one which is the candidate.
 

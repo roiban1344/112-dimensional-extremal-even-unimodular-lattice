@@ -8,13 +8,17 @@ English: [faq.md](faq.md)
 
 $L$ は実ユークリッド空間のふつうの格子で、定義に複素数は要りません。「$\sqrt{-5}$ 倍」とは、ある特定の線形写像 $\tau : L \to L$（ここでは具体的な $56 \times 56$ の整数行列、[`data/tau.txt`](../data/tau.txt)）に付けた名前です。$\tau$ は次をみたします。
 
-$$\tau^2 = -5 \cdot \mathrm{id}, \qquad \langle x\tau, y\tau \rangle = 5\,\langle x, y \rangle .$$
+```math
+\tau^2 = -5 \cdot \mathrm{id}, \qquad \langle x\tau, y\tau \rangle = 5\,\langle x, y \rangle .
+```
 
 同じ現象のいちばん小さい例は、正方格子 $\mathbb{Z}^2$ と $90^\circ$ の回転 $J : (a, b) \mapsto (-b, a)$ です。$J^2 = -\mathrm{id}$ で、長さを保ちます。この $J$ を「$i$ 倍」と**呼ぶことにする**と、$\mathbb{Z}^2$ はガウス整数 $\mathbb{Z}[i]$ になります（$(a, b) \leftrightarrow a + bi$）。格子は何も変わっていません。対称性の1つを選んで、名前を付けただけです。
 
-同じように、$\tau$ を1つ選ぶと、$(a + b\sqrt{-5}) \cdot x = ax + b\,x\tau$ によって $L$ は環 $\mathbb{Z}[\sqrt{-5}]$ 上の加群（階数 $56/2 = 28$）になり、実の内積は $\mathbb{Q}(\sqrt{-5})$ に値をとるエルミート形式 $h$ のトレースになります。
+同じように、$\tau$ を1つ選ぶと、$(a + b\sqrt{-5}) \cdot x = ax + bx\tau$ によって $L$ は環 $\mathbb{Z}[\sqrt{-5}]$ 上の加群（階数 $56/2 = 28$）になり、実の内積は $\mathbb{Q}(\sqrt{-5})$ に値をとるエルミート形式 $h$ のトレースになります。
 
-$$\langle x, y \rangle = h(x, y) + \overline{h(x, y)} .$$
+```math
+\langle x, y \rangle = h(x, y) + \overline{h(x, y)} .
+```
 
 このような構造を込めた格子を**エルミート格子**と呼びます。$\tau$ は追加の構造です。ほとんどの格子には1つも無く、1つの格子に本質的に異なるものが複数あることもあります。ここでは2種類あり、それぞれ別の格子 $R$ を与えます。一方は最小ノルム8、もう一方がこの候補です。
 

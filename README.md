@@ -13,15 +13,21 @@
 Let $L$ be the 56-dimensional extremal even unimodular lattice with an action of $\mathrm{SL}_2(29)$ given in [`data/`](data/) (one of the lattices of Nebe [[Neb98]](#Neb98); see [§5](#5-what-could-be-wrong) for what we have and have not identified).
 $L$ has an endomorphism $\tau$ commuting with $\mathrm{SL}_2(29)$ such that
 
-$$\tau^2 = -5, \qquad \langle x\tau,\, y\tau \rangle = 5\,\langle x, y \rangle \quad \text{for all } x, y \in L .$$
+```math
+\tau^2 = -5, \qquad \langle x\tau,\, y\tau \rangle = 5\,\langle x, y \rangle \quad \text{for all } x, y \in L .
+```
 
 Define
 
-$$R = \left\lbrace \tfrac{1}{\sqrt 2}\,(x,\; x\tau + 2y) \;:\; x, y \in L \right\rbrace \subset (L \oplus L) \otimes \mathbb{Q} .$$
+```math
+R = \left\lbrace \tfrac{1}{\sqrt 2}\,(x,\; x\tau + 2y) \;:\; x, y \in L \right\rbrace \subset (L \oplus L) \otimes \mathbb{Q} .
+```
 
 Equivalently, $R = H \otimes_{\mathbb{Z}[\sqrt{-5}]} L$, where $H$ is the unimodular Hermitian lattice of rank 2 with Gram matrix
 
-$$H = \begin{pmatrix} 3 & \sqrt{-5} \\ -\sqrt{-5} & 2 \end{pmatrix}, \qquad \det H = 6 - 5 = 1 .$$
+```math
+H = \begin{pmatrix} 3 & \sqrt{-5} \\ -\sqrt{-5} & 2 \end{pmatrix}, \qquad \det H = 6 - 5 = 1 .
+```
 
 **Verified exactly** ([`verify/01_basic.py`](verify/01_basic.py), integer arithmetic, seconds): $R$ is an even unimodular lattice of dimension 112, and $\mathrm{SL}_2(29)$ acts on it.
 
@@ -31,7 +37,7 @@ Here "$\sqrt{-5}$" acts on the real lattice $L$ as the linear map $\tau$; see th
 
 **Nothing in the construction itself is new.** The lattice $L$ is from 1998 [[Neb98]](#Neb98). Gluing two or three copies of a lattice along $L/2L$, and the equivalent language of Hermitian tensor products, are standard tools: Quebbemann's construction [[Que84]](#Que84), the Turyn-type construction behind $\Gamma_{72}$ [[Neb12]](#Neb12), and Hermitian tensor products [[CN13]](#CN13), [[Sak26]](#Sak26). What is new, if it is correct, is only the observation that for one of the two possible $\tau$ the minimum is 10, together with the computation supporting it.
 
-There are two classes of such $\tau$ up to conjugation by units. The other class gives a lattice with minimum 8 (exactly 292,320 vectors of norm 8); it serves as a negative control for every test below.
+There are two classes of such $\tau$ up to conjugation by units. The other class gives a lattice with minimum 8 (exactly $`292\,320`$ vectors of norm 8); it serves as a negative control for every test below.
 
 ## 2. Background
 
@@ -40,11 +46,15 @@ Throughout, $\langle x, y \rangle$ is the inner product, and $\langle x, x \rang
 An *even unimodular lattice* is a lattice $\Lambda \subset \mathbb{R}^n$ with $\langle x, x \rangle \in 2\mathbb{Z}$ for all $x \in \Lambda$ and determinant 1. Such lattices exist only for $n \equiv 0 \pmod 8$.
 Its *theta series*
 
-$$\theta_\Lambda(q) = \sum_{x \in \Lambda} q^{\langle x,x \rangle/2}$$
+```math
+\theta_\Lambda(q) = \sum_{x \in \Lambda} q^{\langle x,x \rangle/2}
+```
 
 is a modular form of weight $n/2$ for $\mathrm{SL}_2(\mathbb{Z})$, and this forces [[MOS75]](#MOS75)
 
-$$\min(\Lambda) \le 2\left\lfloor \frac{n}{24} \right\rfloor + 2 .$$
+```math
+\min(\Lambda) \le 2\left\lfloor \frac{n}{24} \right\rfloor + 2 .
+```
 
 Lattices attaining the bound are called *extremal*. Extremal lattices cannot exist for $n > 163264$ [[JR11]](#JR11). No extremal even unimodular lattice of dimension $\ge 96$ is known.
 
@@ -52,10 +62,20 @@ Lattices attaining the bound are called *extremal*. Extremal lattices cannot exi
 
 Write
 
-$$\begin{aligned}
+```math
+\begin{aligned}
 A &= \theta_{E_8} = E_4 = 1 + 240q + 2160q^2 + 6720q^3 + \cdots, \\
-B &= \theta_{\mathrm{Leech}} = E_4^3 - 720\Delta = 1 + 196560q^2 + 16773120q^3 + 398034000q^4 + \cdots .
-\end{aligned}$$
+B &= \theta_{\Lambda_{24}} = E_4^3 - 720\Delta = 1 + 196560q^2 + 16773120q^3 + 398034000q^4 + \cdots .
+\end{aligned}
+```
+
+Here $E_8$ is the $E_8$ root lattice (the unique even unimodular lattice of dimension 8) and $\Lambda_{24}$ is the Leech lattice (the unique even unimodular lattice of dimension 24 without vectors of norm 2). On the side of modular forms, $E_4$ is the Eisenstein series of weight 4 and $\Delta$ is the cusp form of weight 12:
+
+```math
+E_4 = 1 + 240\sum_{n \ge 1} \sigma_3(n)\, q^n, \qquad \Delta = q \prod_{n \ge 1} (1 - q^n)^{24} = q - 24q^2 + 252q^3 - \cdots ,
+```
+
+where $\sigma_3(n)$ is the sum of the cubes of the divisors of $n$.
 
 Every modular form of weight $4k$ is a polynomial in $A$ and $B$ (a combination of the monomials $A^{k-3j}B^{j}$), and the extremal theta series of dimension $n = 8k$ is the unique one of the form $1 + O(q^{\lfloor n/24 \rfloor + 1})$.
 The exponent of $q$ is half the norm. The table is produced by [`verify/theta_series.py`](verify/theta_series.py) in exact rational arithmetic.
@@ -78,7 +98,7 @@ The exponent of $q$ is half the norm. The table is produced by [`verify/theta_se
 | **112** | **10** | $\tfrac{1}{37324800}\left(7883087A^{14} - 18165308A^{11}B - 38110758A^{8}B^{2} + 74301892A^{5}B^{3} + 11415887A^{2}B^{4}\right)$ | $1 + 10888335360q^{5} + 247006775232000q^{6} + 1187911731935232000q^{7} + \cdots$ |
 | 120 | 12 | $\tfrac{1}{124416000}\left(16107182A^{15} + 4100915A^{12}B - 221155480A^{9}B^{2} + 241917130A^{6}B^{3} + 82692610A^{3}B^{4} + 753643B^{5}\right)$ | $1 + 45792819072000q^{6} + 406954241261568000q^{7} + 1074181924443974346000q^{8} + \cdots$ |
 
-So if the claim is right, $R$ has no vectors of norm 2, 4, 6, 8, exactly 10,888,335,360 vectors of norm 10 and 247,006,775,232,000 of norm 12.
+So if the claim is right, $R$ has no vectors of norm 2, 4, 6, 8, exactly $`10\,888\,335\,360`$ vectors of norm 10 and $`247\,006\,775\,232\,000`$ of norm 12.
 (We have **not** counted the vectors of norm 10; see [§5](#5-what-could-be-wrong).)
 
 ### 2.2 Previously known extremal even unimodular lattices
@@ -115,7 +135,9 @@ $L$, $g_1$, $g_2$ and $\tau$ were derived from the entry $L_{56,2}(M)$ of the *C
 
 Convention: row vectors; a matrix $M$ acts by $x \mapsto xM$; isometries satisfy $M G M^{\mathsf T} = G$. In the basis $(x, x\tau)$, $(0, 2y)$ (before dividing by $\sqrt 2$), the Gram matrix of $R$ is
 
-$$\begin{pmatrix} 3G & \tau G \\ (\tau G)^{\mathsf T} & 2G \end{pmatrix} .$$
+```math
+\begin{pmatrix} 3G & \tau G \\ (\tau G)^{\mathsf T} & 2G \end{pmatrix} .
+```
 
 ## 4. The argument in ten steps
 
@@ -123,24 +145,26 @@ This section explains, step by step, why we believe that $\min(R) = 10$.
 
 A vector of $R$ is $z = \tfrac{1}{\sqrt 2}(x, v)$ with $x \in L$ and $v \equiv x\tau \pmod{2L}$, and
 
-$$\langle z, z \rangle = \tfrac12\bigl[\langle x, x \rangle + \langle v, v \rangle\bigr] .$$
+```math
+\langle z, z \rangle = \tfrac12\bigl[\langle x, x \rangle + \langle v, v \rangle\bigr] .
+```
 
 We say that there is a *collision of type $(a, b)$* if some $x$ of norm $a$ has a vector $v$ of norm $b$ in the class $x\tau + 2L$.
 
 | # | step | how it was checked | by whom |
 |---|---|---|---|
 | 1 | $R$ is even unimodular of dimension 112 | exact integer arithmetic ([`verify/01_basic.py`](verify/01_basic.py)) | both sessions |
-| 2 | $\min(L) = 6$, so $L$ is extremal: 15,590,400 vectors of norm 6 and 36,957,286,800 of norm 8 ([§2.1](#21-extremal-theta-series)) | exhaustive enumeration of vectors of norm $\le 4$: fpylll (two bases) and PARI `qfminim` (a third basis). Both use floating point internally | both sessions, different software |
+| 2 | $\min(L) = 6$, so $L$ is extremal: $`15\,590\,400`$ vectors of norm 6 and $`36\,957\,286\,800`$ of norm 8 ([§2.1](#21-extremal-theta-series)) | exhaustive enumeration of vectors of norm $\le 4$: fpylll (two bases) and PARI `qfminim` (a third basis). Both use floating point internally | both sessions, different software |
 | 3 | if $x = 0$ or $v = 0$ then $\langle z, z \rangle \ge 12$; since $R$ is even, $\langle x, x \rangle + \langle v, v \rangle \equiv 0 \pmod 4$. Hence a vector of norm $< 10$ comes from a collision of type $(6,6)$, $(6,10)$, $(10,6)$ or $(8,8)$ | by hand | re-derived by both |
 | 4 | $\tau$ commutes with $\mathrm{SL}_2(29)$, so it suffices to test one $x$ from each $\mathrm{SL}_2(29)$-orbit | exact | both |
-| 5 | the 15,590,400 minimal vectors of $L$ form 656 $\mathrm{SL}_2(29)$-orbits, and our list of representatives is complete | orbit sizes sum to 15,590,400; orbits pairwise disjoint; spherical design identities of degree 2, 4, 6 hold exactly on the list | both, different methods |
+| 5 | the $`15\,590\,400`$ minimal vectors of $L$ form 656 $\mathrm{SL}_2(29)$-orbits, and our list of representatives is complete | orbit sizes sum to $`15\,590\,400`$; orbits pairwise disjoint; spherical design identities of degree 2, 4, 6 hold exactly on the list | both, different methods |
 | 6 | no collision of type $(6,6)$ | exact (canonical forms of classes mod $2L$) | both, separate code |
 | 7 | no collision of type $(6,10)$ or $(10,6)$ | an explicit integer certificate: for each of the 656 classes a vector $w_0$ of norm 14 or 18 in the class with $\lvert \langle w_0, u \rangle \rvert \le 6$ for all minimal vectors $u$ (this excludes vectors of norm $\le 10$ in the class). Since $\tau^2 \equiv 1 \pmod 2$, one direction suffices | produced by one session, re-verified by the other with separate code |
-| 8 | the 36,957,286,800 vectors of norm 8 form 1,517,130 $\mathrm{SL}_2(29)$-orbits, and our list is complete | orbit sizes sum to 36,957,286,800; design identities of degree 2, 4, 6 hold exactly | both, different methods |
-| 9 | no collision of type $(8,8)$ | exhaustive over all 1,527,984 (representative, unit) pairs; 0 collisions. The same test finds 10 colliding pairs (6 orbits, 292,320 vectors of norm 8) for the other $\tau$ | both, separate code, same idea (canonical forms). A third run that uses neither canonical forms nor the group (closest-vector computations) is **in progress** |
+| 8 | the $`36\,957\,286\,800`$ vectors of norm 8 form $`1\,517\,130`$ $\mathrm{SL}_2(29)$-orbits, and our list is complete | orbit sizes sum to $`36\,957\,286\,800`$; design identities of degree 2, 4, 6 hold exactly | both, different methods |
+| 9 | no collision of type $(8,8)$ | exhaustive over all $`1\,527\,984`$ (representative, unit) pairs; 0 collisions. The same test finds 10 colliding pairs (6 orbits, $`292\,320`$ vectors of norm 8) for the other $\tau$ | both, separate code, same idea (canonical forms). A third run that uses neither canonical forms nor the group (closest-vector computations) is **in progress** |
 | 10 | hence no vector of norm $< 10$; vectors of norm 10 exist (found explicitly), so $\min(R) = 10$ | | |
 
-In steps 8 and 9, a *unit* is an isometry of $L$ that commutes with $\mathrm{SL}_2(29)$; there are 12 of them (6 up to sign). The orbit representatives were computed for the larger group generated by $\mathrm{SL}_2(29)$ and the units (254,664 orbits); since the units do not commute with $\tau$, every pair (representative, unit) has to be tested, which gives $254664 \times 6 = 1527984$ pairs.
+In steps 8 and 9, a *unit* is an isometry of $L$ that commutes with $\mathrm{SL}_2(29)$; there are 12 of them (6 up to sign). The orbit representatives were computed for the larger group generated by $\mathrm{SL}_2(29)$ and the units ($`254\,664`$ orbits); since the units do not commute with $\tau$, every pair (representative, unit) has to be tested, which gives $254664 \times 6 = 1527984$ pairs.
 
 The certificate in step 7 works as follows. If $w \ne \pm w_0$ lies in the same class as $w_0$, then $y_\pm = \tfrac12(w_0 \pm w) \in L \setminus \lbrace 0 \rbrace$, so $\langle w_0, w_0 \rangle + \langle w, w \rangle \pm 2\langle w_0, w \rangle \ge 24$. For $\langle w_0, w_0 \rangle \in \lbrace 14, 18 \rbrace$ and $\langle w, w \rangle \le 10$ this forces one of $y_\pm$ to be a minimal vector with $\langle w_0, y_\pm \rangle \ge 7$.
 
@@ -155,7 +179,7 @@ We list what we consider the weakest points, most serious first.
 3. **Step 2.** Both enumerations use floating-point pruning. There is no proof of $\min(L) = 6$ in exact arithmetic here (it should follow from the literature once $L$ is identified; see 5).
 4. **No direct check on $R$.** Lattice reduction on the 112-dimensional lattice itself (BKZ up to block size 60) and fixed sublattices of group elements were tried, but they also fail to detect the norm-8 vectors of the *bad* $\tau$, so they are not evidence. Computing the minimum of a 112-dimensional lattice directly is out of reach for us.
 5. **Identification and literature.** $L$ was produced inside Nebe's lattice $L_{56,2}(M)$ [[NS]](#NS); we have not confirmed which catalogued lattice it is isometric to. The construction is simple, and it is entirely possible that it has been examined before. We found nothing in a brief search.
-6. **Not done:** counting the 10,888,335,360 vectors of norm 10 (a strong independent test); determining the full automorphism group; deciding whether the two lattices with minimum 8 obtained from the two base lattices are isometric.
+6. **Not done:** counting the $`10\,888\,335\,360`$ vectors of norm 10 (a strong independent test); determining the full automorphism group; deciding whether the two lattices with minimum 8 obtained from the two base lattices are isometric.
 
 ## 6. How we got here (short version)
 
@@ -175,7 +199,7 @@ This came out of a hobby project aiming to understand, and possibly extend, the 
   | 5 | 120: $9.7 \times 10^8$ | 128: $6.6 \times 10^7$ | 136: $3.5 \times 10^6$ |
 
   With $n = 2k$, the mean number of vectors of norm $2m$ is $\frac{2k}{\lvert B_k \rvert}\sigma_{k-1}(m)$ (Siegel), and $S(n)$ is the sum over $1 \le m \le \lfloor n/24 \rfloor$. Within a period of 24 the requirement becomes weaker by a factor of about 15–20 for every 8 dimensions, and jumps up when the bound increases. This matches part of the history: dimension 80 (1998) was reached before dimension 72 (2010), and dimension 64 (1984) before dimension 56 (1989). It is a rough guide only (dimension 88 came last in its period).
-- All $\mathrm{SL}_2(29)$-equivariant gluings of two copies of Nebe's 56-dimensional lattices modulo 2 were enumerated (5 classes). Two die immediately; of the remaining three, two have exactly 292,320 vectors of norm 8, and one is the candidate.
+- All $\mathrm{SL}_2(29)$-equivariant gluings of two copies of Nebe's 56-dimensional lattices modulo 2 were enumerated (5 classes). Two die immediately; of the remaining three, two have exactly $`292\,320`$ vectors of norm 8, and one is the candidate.
 
 ## 7. Reproducing
 
