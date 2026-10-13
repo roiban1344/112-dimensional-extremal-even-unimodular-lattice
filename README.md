@@ -20,10 +20,10 @@ $L$ has an endomorphism $\tau$ commuting with $\mathrm{SL}_2(29)$ such that
 Define
 
 ```math
-R = \left\lbrace \tfrac{1}{\sqrt 2}\,(x,\; x\tau + 2y) \;:\; x, y \in L \right\rbrace \subset (L \oplus L) \otimes \mathbb{Q} .
+R = \left\lbrace \tfrac{1}{\sqrt 2}\,(x,\; x\tau + 2y) \;:\; x, y \in L \right\rbrace \subset (L \oplus L) \otimes ℚ .
 ```
 
-Equivalently, $R = H \otimes_{\mathbb{Z}[\sqrt{-5}]} L$, where $H$ is the unimodular Hermitian lattice of rank 2 with Gram matrix
+Equivalently, $R = H \otimes_{ℤ[\sqrt{-5}]} L$, where $H$ is the unimodular Hermitian lattice of rank 2 with Gram matrix
 
 ```math
 H = \begin{pmatrix} 3 & \sqrt{-5} \\ -\sqrt{-5} & 2 \end{pmatrix}, \qquad \det H = 6 - 5 = 1 .
@@ -43,14 +43,14 @@ There are two classes of such $\tau$ up to conjugation by units. The other class
 
 Throughout, $\langle x, y \rangle$ is the inner product, and $\langle x, x \rangle$ (the squared length) is called the *norm* of $x$. Round brackets $(x, v)$ denote a pair of vectors.
 
-An *even unimodular lattice* is a lattice $\Lambda \subset \mathbb{R}^n$ with $\langle x, x \rangle \in 2\mathbb{Z}$ for all $x \in \Lambda$ and determinant 1. Such lattices exist only for $n \equiv 0 \pmod 8$.
+An *even unimodular lattice* is a lattice $\Lambda \subset ℝ^n$ with $\langle x, x \rangle \in 2ℤ$ for all $x \in \Lambda$ and determinant 1. Such lattices exist only for $n \equiv 0 \pmod 8$.
 Its *theta series*
 
 ```math
 \theta_\Lambda(q) = \sum_{x \in \Lambda} q^{\langle x,x \rangle/2}
 ```
 
-is a modular form of weight $n/2$ for $\mathrm{SL}_2(\mathbb{Z})$, and this forces [[MOS75]](#MOS75)
+is a modular form of weight $n/2$ for $\mathrm{SL}_2(ℤ)$, and this forces [[MOS75]](#MOS75)
 
 ```math
 \min(\Lambda) \le 2\left\lfloor \frac{n}{24} \right\rfloor + 2 .
@@ -133,10 +133,10 @@ This table follows the survey in [[Sak26, §1]](#Sak26) and the *Catalogue of La
 
 $L$, $g_1$, $g_2$ and $\tau$ were derived from the entry $L_{56,2}(M)$ of the *Catalogue of Lattices* [[NS]](#NS) (Gram matrix and generators of a subgroup of the automorphism group).
 
-Convention: row vectors; a matrix $M$ acts by $x \mapsto xM$; isometries satisfy $M G M^{\mathsf T} = G$. In the basis $(x, x\tau)$, $(0, 2y)$ (before dividing by $\sqrt 2$), the Gram matrix of $R$ is
+Convention: row vectors; a matrix $M$ acts by $x \mapsto xM$; isometries satisfy $M G M^{\mathrm{T}} = G$. In the basis $(x, x\tau)$, $(0, 2y)$ (before dividing by $\sqrt 2$), the Gram matrix of $R$ is
 
 ```math
-\begin{pmatrix} 3G & \tau G \\ (\tau G)^{\mathsf T} & 2G \end{pmatrix} .
+\begin{pmatrix} 3G & \tau G \\ (\tau G)^{\mathrm{T}} & 2G \end{pmatrix} .
 ```
 
 ## 4. The argument in ten steps

@@ -20,10 +20,10 @@ $L$ には、$\mathrm{SL}_2(29)$ と可換な自己準同型 $\tau$ で
 となるものがあります。これを使って
 
 ```math
-R = \left\lbrace \tfrac{1}{\sqrt 2}\,(x,\; x\tau + 2y) \;:\; x, y \in L \right\rbrace \subset (L \oplus L) \otimes \mathbb{Q}
+R = \left\lbrace \tfrac{1}{\sqrt 2}\,(x,\; x\tau + 2y) \;:\; x, y \in L \right\rbrace \subset (L \oplus L) \otimes ℚ
 ```
 
-と定めます。言い換えると $R = H \otimes_{\mathbb{Z}[\sqrt{-5}]} L$ で、$H$ は次の Gram 行列をもつ階数2のユニモジュラーなエルミート格子です。
+と定めます。言い換えると $R = H \otimes_{ℤ[\sqrt{-5}]} L$ で、$H$ は次の Gram 行列をもつ階数2のユニモジュラーなエルミート格子です。
 
 ```math
 H = \begin{pmatrix} 3 & \sqrt{-5} \\ -\sqrt{-5} & 2 \end{pmatrix}, \qquad \det H = 6 - 5 = 1 .
@@ -43,14 +43,14 @@ H = \begin{pmatrix} 3 & \sqrt{-5} \\ -\sqrt{-5} & 2 \end{pmatrix}, \qquad \det H
 
 以下、$\langle x, y \rangle$ は内積、$\langle x, x \rangle$（長さの2乗）を $x$ の**ノルム**と呼びます。丸括弧 $(x, v)$ は2つのベクトルの組です。
 
-**偶ユニモジュラー格子**とは、格子 $\Lambda \subset \mathbb{R}^n$ で、すべての $x \in \Lambda$ について $\langle x, x \rangle \in 2\mathbb{Z}$、行列式が1のものです。$n \equiv 0 \pmod 8$ のときだけ存在します。
+**偶ユニモジュラー格子**とは、格子 $\Lambda \subset ℝ^n$ で、すべての $x \in \Lambda$ について $\langle x, x \rangle \in 2ℤ$、行列式が1のものです。$n \equiv 0 \pmod 8$ のときだけ存在します。
 **テータ級数**
 
 ```math
 \theta_\Lambda(q) = \sum_{x \in \Lambda} q^{\langle x,x \rangle/2}
 ```
 
-は $\mathrm{SL}_2(\mathbb{Z})$ の重さ $n/2$ の保型形式になり、そこから次の上界が出ます [[MOS75]](#MOS75)。
+は $\mathrm{SL}_2(ℤ)$ の重さ $n/2$ の保型形式になり、そこから次の上界が出ます [[MOS75]](#MOS75)。
 
 ```math
 \min(\Lambda) \le 2\left\lfloor \frac{n}{24} \right\rfloor + 2 .
@@ -133,10 +133,10 @@ $q$ の指数はノルムの半分です。表は [`verify/theta_series.py`](ver
 
 $L$, $g_1$, $g_2$, $\tau$ は、*Catalogue of Lattices* [[NS]](#NS) の項目 $L_{56,2}(M)$（Gram 行列と、自己同型群の部分群の生成元）から作りました。
 
-約束: 行ベクトル。行列 $M$ は $x \mapsto xM$ で作用し、等長写像は $M G M^{\mathsf T} = G$ をみたします。基底 $(x, x\tau)$, $(0, 2y)$（$\sqrt 2$ で割る前）に関する $R$ の Gram 行列は次のとおりです。
+約束: 行ベクトル。行列 $M$ は $x \mapsto xM$ で作用し、等長写像は $M G M^{\mathrm{T}} = G$ をみたします。基底 $(x, x\tau)$, $(0, 2y)$（$\sqrt 2$ で割る前）に関する $R$ の Gram 行列は次のとおりです。
 
 ```math
-\begin{pmatrix} 3G & \tau G \\ (\tau G)^{\mathsf T} & 2G \end{pmatrix} .
+\begin{pmatrix} 3G & \tau G \\ (\tau G)^{\mathrm{T}} & 2G \end{pmatrix} .
 ```
 
 ## 4. 論証の10ステップ

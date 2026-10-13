@@ -12,9 +12,9 @@ $L$ is an ordinary lattice in real Euclidean space; no complex numbers are neede
 \tau^2 = -5 \cdot \mathrm{id}, \qquad \langle x\tau, y\tau \rangle = 5\,\langle x, y \rangle .
 ```
 
-The smallest example of the same phenomenon is the square lattice $\mathbb{Z}^2$ with the rotation by $90^\circ$, $J : (a, b) \mapsto (-b, a)$. It satisfies $J^2 = -\mathrm{id}$ and preserves lengths, and if we *call* $J$ "multiplication by $i$", then $\mathbb{Z}^2$ becomes the Gaussian integers $\mathbb{Z}[i]$, with $(a, b) \leftrightarrow a + bi$. The lattice has not changed; we have only chosen one of its symmetries and given it a name.
+The smallest example of the same phenomenon is the square lattice $ℤ^2$ with the rotation by $90^\circ$, $J : (a, b) \mapsto (-b, a)$. It satisfies $J^2 = -\mathrm{id}$ and preserves lengths, and if we *call* $J$ "multiplication by $i$", then $ℤ^2$ becomes the Gaussian integers $ℤ[i]$, with $(a, b) \leftrightarrow a + bi$. The lattice has not changed; we have only chosen one of its symmetries and given it a name.
 
-In the same way, once $\tau$ is chosen, $L$ becomes a module over the ring $\mathbb{Z}[\sqrt{-5}]$ by $(a + b\sqrt{-5}) \cdot x = ax + bx\tau$, of rank $56/2 = 28$, and the real inner product is the trace of a Hermitian form $h$ with values in $\mathbb{Q}(\sqrt{-5})$:
+In the same way, once $\tau$ is chosen, $L$ becomes a module over the ring $ℤ[\sqrt{-5}]$ by $(a + b\sqrt{-5}) \cdot x = ax + bx\tau$, of rank $56/2 = 28$, and the real inner product is the trace of a Hermitian form $h$ with values in $ℚ(\sqrt{-5})$:
 
 ```math
 \langle x, y \rangle = h(x, y) + \overline{h(x, y)} .
@@ -24,7 +24,7 @@ A lattice together with such a structure is called a *Hermitian lattice*. Such a
 
 ## Where does the 56-dimensional representation of $\mathrm{SL}_2(29)$ come from?
 
-(From memory and consistency checks, not from a reference we have verified.) $\mathrm{SL}_2(29)$ has two faithful irreducible complex characters of degree $14 = (29-1)/2$; their values involve $\sqrt{29}$ and they are of quaternionic type. To realise them over $\mathbb{Q}$ one needs a factor 2 for the two Galois conjugates and another factor 2 for the quaternionic type: $14 \cdot 2 \cdot 2 = 56$. The matrices commuting with the group then form a quaternion algebra over $\mathbb{Q}(\sqrt{29})$, of dimension 8 over $\mathbb{Q}$, and $\tau$ is an element of it.
+(From memory and consistency checks, not from a reference we have verified.) $\mathrm{SL}_2(29)$ has two faithful irreducible complex characters of degree $14 = (29-1)/2$; their values involve $\sqrt{29}$ and they are of quaternionic type. To realise them over $ℚ$ one needs a factor 2 for the two Galois conjugates and another factor 2 for the quaternionic type: $14 \cdot 2 \cdot 2 = 56$. The matrices commuting with the group then form a quaternion algebra over $ℚ(\sqrt{29})$, of dimension 8 over $ℚ$, and $\tau$ is an element of it.
 Consistent with this, in our data the commuting algebra has dimension 8, and the generators of orders 5 and 7 have traces $-4$ and $0$ (four times the character values $-1$ and $0$).
 
 ## Why "candidate"?
