@@ -1,0 +1,9 @@
+# Computing environment (conda-forge).  The results in this repository were obtained with SageMath 10.9 / Python 3.12.
+#   micromamba create -n rank112 -f environment.yml && micromamba run -n rank112 python verify/01_basic.py
+name: rank112
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - sage=10.*        # SageMath (bundles PARI/GP, GAP, fplll/fpylll)
+  - numpy
