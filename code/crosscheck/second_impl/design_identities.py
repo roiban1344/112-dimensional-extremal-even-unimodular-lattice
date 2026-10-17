@@ -1,4 +1,4 @@
-r"""元の計算（公開版では produce/p3 と verify/v4）の「ノルム 8 の軌道代表の一覧は漏れなく重複なし」を、別の原理で点検する（init）。
+r"""元の計算（公開版では produce/p3 と verify/v4）の「ノルム 8 の軌道代表の一覧は漏れなく重複なし」を、別の原理で点検する。
 
 元の計算の完全性の根拠は「軌道の大きさの合計 = 36,957,286,800（テータ級数の係数）」。これは、同じ軌道を 2 回数えて別の軌道を 1 つ落としても、
 大きさが同じなら成り立ってしまう。そこで球面デザインの恒等式を使う: 56 次元の極値格子の各殻は 7-デザイン [既知: Venkov] なので、任意の $a$ について
@@ -9,12 +9,12 @@ $$\sum_{N(x)=8}(x,a)^{2}=N_8\frac{8\,(a,a)}{56},\quad \sum(x,a)^4=N_8\frac{3\cdo
 
 実行（リポジトリの根から）: python3 code/crosscheck/second_impl/design_identities.py [a の本数]
 
-公開用の注記（2026-10-17）: セッション init が書いたもの。公開リポジトリ向けに変えたのは入力（作業場の中間ファイルの代わりに data/ の 4 ファイルと
+公開用の注記: 公開リポジトリ向けに変えたのは入力（data/ の 4 ファイルと
 certificates/ の検証用データを読む。中心化群の元は Sage で求め直さず certificates/centralizer.npz から読む）だけで、検査そのものは変えていない。
-Release note (2026-10-17): written by the session init. For the public repository only the inputs were changed (the four
-files of data/ and the certificate files of certificates/ instead of the working directory's intermediate files; the
-centralizer elements are read from certificates/centralizer.npz instead of being recomputed with Sage). The checks are
-unchanged. Shares no code with code/r112 or code/verify. Needs only numpy.
+Release note: for the public repository only the inputs were changed (the four files of data/ and the
+certificate files of certificates/ are read; the centralizer elements are read from
+certificates/centralizer.npz instead of being recomputed with Sage). The checks are unchanged.
+Shares no code with code/r112 or code/verify. Needs only numpy.
 """
 import sys, time
 from pathlib import Path

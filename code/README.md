@@ -29,7 +29,7 @@ is re-checked by `verify/`.
 | `r112/` | small shared library (numpy only): reading the data, exactness guards, the group, canonical forms modulo 2, minimal vectors |
 | `verify/` | the checks of F0–F5 (v0–v7) and a consistency test (v8) |
 | `produce/` | how the certificates were found (p1–p6); not needed to check the proof |
-| `crosscheck/` | second implementations of the checks, written by other AI sessions without reading `verify/`, `produce/` or `r112/`. They check the same data by different code, so an error in the main implementation would show up as a disagreement: `all_data/` (every certificate and F1, by a different method) and `second_impl/` (canonical forms, design identities, the odd classes) |
+| `crosscheck/` | second implementations of the checks, written separately with Claude without reading `verify/`, `produce/` or `r112/`. They check the same data by different code, so an error in the main implementation would show up as a disagreement: `all_data/` (every certificate and F1, by a different method) and `second_impl/` (canonical forms, design identities, the odd classes) |
 | `supplementary/` | computations behind statements of the paper that are not used in the proof of Theorem A (the classification of gluings, the automorphism group, …) |
 
 ## Quick start
@@ -116,7 +116,7 @@ the set of canonical forms (the same orbits).
 | [C17] | supplementary/frames.py |
 | [C18] | supplementary/fixed_sublattices.py |
 | [C19] | supplementary/anatomy_b.py |
-| [C20, C21] | (route T; to be added from the session that owns it / 担当セッションの完了後に追加) |
+| [C20, C21] | (not yet included / 未収録) |
 | [C22] | lean/ (EEUL/R112/Chain.lean) |
 | [C23] | supplementary/nebe/identify_nebe.py (with nebe/lattices.py, nebe/cycloquat.py) |
 | [C24] | supplementary/automorphisms/aut_normalizer.py |

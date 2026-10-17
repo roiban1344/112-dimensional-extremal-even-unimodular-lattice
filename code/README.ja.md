@@ -24,7 +24,7 @@
 | `r112/` | 共有の小さなライブラリ（numpy のみ）: データの読み込み、厳密さの確認、群、2 を法とした標準形、最小ベクトル |
 | `verify/` | F0〜F5 の検算（v0〜v7）と整合性の検査（v8） |
 | `produce/` | 検証用データの生成（p1〜p6）。証明の検算には不要 |
-| `crosscheck/` | 検算の第 2 の実装。別の AI のセッションが、`verify/`・`produce/`・`r112/` のコードを読まずに書いた。同じデータを別のコードで確かめるので、主な実装に誤りがあれば結果の食い違いとして現れる: `all_data/`（すべての検証用データと F1 を別の方法で）、`second_impl/`（標準形、デザインの恒等式、奇の類） |
+| `crosscheck/` | 検算の第 2 の実装。`verify/`・`produce/`・`r112/` のコードを読まずに、Claude を用いて別に書いた。同じデータを別のコードで確かめるので、主な実装に誤りがあれば結果の食い違いとして現れる: `all_data/`（すべての検証用データと F1 を別の方法で）、`second_impl/`（標準形、デザインの恒等式、奇の類） |
 | `supplementary/` | 論文の主張のうち、定理 A の証明には使わないものの計算（貼り方の分類、自己同型群など） |
 
 ## すぐに試す
@@ -105,7 +105,7 @@ F5b は無関係な 2 つの議論（v6 と v7）で確かめます。証明に�
 | [C17] | supplementary/frames.py |
 | [C18] | supplementary/fixed_sublattices.py |
 | [C19] | supplementary/anatomy_b.py |
-| [C20, C21] | (route T; to be added from the session that owns it / 担当セッションの完了後に追加) |
+| [C20, C21] | (not yet included / 未収録) |
 | [C22] | lean/ (EEUL/R112/Chain.lean) |
 | [C23] | supplementary/nebe/identify_nebe.py (with nebe/lattices.py, nebe/cycloquat.py) |
 | [C24] | supplementary/automorphisms/aut_normalizer.py |

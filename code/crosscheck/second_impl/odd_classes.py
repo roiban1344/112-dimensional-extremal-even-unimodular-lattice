@@ -1,21 +1,21 @@
-r"""元の計算の「(6,6)・(6,10)・(10,6) 型の衝突なし」を保証する代表元（公開版では certificates/odd_bounding.npz）を、init のコードで検算する。
+r"""元の計算の「(6,6)・(6,10)・(10,6) 型の衝突なし」を保証する代表元（公開版では certificates/odd_bounding.npz）を、別のコードで検算する。
 
 データ: 最小ベクトルの軌道代表 $r$（656 個）と向き（$f$, $f^{-1}$）ごとに、ベクトル $w_0$。主張は
   (i) $w_0\equiv rM \pmod{2L}$（$M=X$ または $X^{-1}$ mod 2）、(ii) $N(w_0)\in\{14,18\}$、(iii) すべての最小ベクトル $u$ について $|(w_0,u)|\le6$。
-これが言えれば類 $rM+2L$ にノルム $\le10$ の元は無い（init も独立に導いた）: 類の別の元 $w$（$N(w)\le10$）があれば $y_\pm=(w_0\pm w)/2\in L\setminus\{0\}$ で
+これが言えれば類 $rM+2L$ にノルム $\le10$ の元は無い（この論証もここで独立に導いた）: 類の別の元 $w$（$N(w)\le10$）があれば $y_\pm=(w_0\pm w)/2\in L\setminus\{0\}$ で
 $N(y_\pm)=\tfrac14(N(w_0)+N(w)\pm2(w_0,w))\ge6$。$N(w_0)=14$: $N(w)=6$ は両立せず、$N(w)=10$ なら $(w_0,w)=0$ で $y_\pm$ は最小ベクトル、$(w_0,y_\pm)=7$。
 $N(w_0)=18$: $N(w)=6$ なら $(w_0,w)=0$, $(w_0,y_\pm)=9$。$N(w)=10$ なら $(w_0,w)=\pm2$ で一方の $y$ が最小ベクトル、$(w_0,y)=8$。どれも (iii) に反する。
 （ノルム 8 の $w$ は、類が「奇」（ノルム ≡ 2 mod 4）なので存在しない。）
 
-最小ベクトル全部（15,590,400 本）は、656 個の代表と SL$_2$(29) の生成元から init が自分で展開する。整数演算（float64 の行列積は絶対値 2^53 未満で厳密、その範囲であることも確かめる）。
+最小ベクトル全部（15,590,400 本）は、656 個の代表と SL$_2$(29) の生成元からこのプログラムが自分で展開する。整数演算（float64 の行列積は絶対値 2^53 未満で厳密、その範囲であることも確かめる）。
 実行（リポジトリの根から）: python3 code/crosscheck/second_impl/odd_classes.py
 
-公開用の注記（2026-10-17）: セッション init が書いたもの。公開リポジトリ向けに変えたのは入力（作業場の中間ファイルの代わりに data/ の 4 ファイルと
+公開用の注記: 公開リポジトリ向けに変えたのは入力（data/ の 4 ファイルと
 certificates/ の検証用データを読む。中心化群の元は Sage で求め直さず certificates/centralizer.npz から読む）だけで、検査そのものは変えていない。
-Release note (2026-10-17): written by the session init. For the public repository only the inputs were changed (the four
-files of data/ and the certificate files of certificates/ instead of the working directory's intermediate files; the
-centralizer elements are read from certificates/centralizer.npz instead of being recomputed with Sage). The checks are
-unchanged. Shares no code with code/r112 or code/verify. Needs only numpy.
+Release note: for the public repository only the inputs were changed (the four files of data/ and the
+certificate files of certificates/ are read; the centralizer elements are read from
+certificates/centralizer.npz instead of being recomputed with Sage). The checks are unchanged.
+Shares no code with code/r112 or code/verify. Needs only numpy.
 """
 import sys, time
 from pathlib import Path

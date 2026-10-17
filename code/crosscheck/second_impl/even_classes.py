@@ -1,4 +1,4 @@
-r"""(8,8) 型の衝突の全数検査を、init の別実装でやり直す（考え方は元の計算（公開版では verify/v6）と同じ、コードは共有しない）。
+r"""(8,8) 型の衝突の全数検査を、別実装でやり直す（考え方は元の計算（公開版では verify/v6）と同じ、コードは共有しない）。
 
 主張: $x$ をノルム 8 の全ベクトルにわたらせたとき、類 $xX+2L$ がノルム 8 のベクトルを含むことは無い。
 考え方: $L/2L$ の類を 56 ビットの整数で表す。SL$_2$(29) は $L/2L$ に作用し、$X$ と mod 2 で可換（ここで直接確かめる）。
@@ -16,12 +16,12 @@ r"""(8,8) 型の衝突の全数検査を、init の別実装でやり直す（�
 実行（リポジトリの根から）: python3 code/crosscheck/second_impl/even_classes.py [C] [B]
   C = 本論文の tau（data/tau.txt）、B = 陰性対照の貼り方 B（certificates/negative_control_B.npz）
 
-公開用の注記（2026-10-17）: セッション init が書いたもの。公開リポジトリ向けに変えたのは入力（作業場の中間ファイルの代わりに data/ の 4 ファイルと
+公開用の注記: 公開リポジトリ向けに変えたのは入力（data/ の 4 ファイルと
 certificates/ の検証用データを読む。中心化群の元は Sage で求め直さず certificates/centralizer.npz から読む）だけで、検査そのものは変えていない。
-Release note (2026-10-17): written by the session init. For the public repository only the inputs were changed (the four
-files of data/ and the certificate files of certificates/ instead of the working directory's intermediate files; the
-centralizer elements are read from certificates/centralizer.npz instead of being recomputed with Sage). The checks are
-unchanged. Shares no code with code/r112 or code/verify. Needs only numpy.
+Release note: for the public repository only the inputs were changed (the four files of data/ and the
+certificate files of certificates/ are read; the centralizer elements are read from
+certificates/centralizer.npz instead of being recomputed with Sage). The checks are unchanged.
+Shares no code with code/r112 or code/verify. Needs only numpy.
 """
 import sys, time
 from pathlib import Path

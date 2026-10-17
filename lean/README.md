@@ -12,6 +12,6 @@ lake exe cache get
 lake build
 ```
 
-The first command fetches the Mathlib cache; subsequent builds use the local dependencies. This package includes the proof chain for this paper, rather than the other formalisation projects in the research workspace.
+The first command fetches the Mathlib cache; subsequent builds use the local dependencies. This package contains the argument of the paper (the part that takes the computational facts as hypotheses).
 
 最初のコマンドは Mathlib のキャッシュを取得します。このパッケージには、本論文の論証（計算事実を仮定として置いた部分）を収めます。

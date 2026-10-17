@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""A2 / F1: min L = 6 for the 56-dimensional lattice L, by an enumeration whose every
+"""F1: min L = 6 for the 56-dimensional lattice L, by an enumeration whose every
 decision is made in exact integer arithmetic.
 
-Release note (2026-10-17): written by the session a2-verify; for the public repository only the
-input path (data/L56_gram.txt), the path of the C program and the output directory (out/crosscheck_all_data/) were
-changed. Requires SageMath (PARI, fpylll) for the reduction step.
-公開用の注記（2026-10-17）: セッション a2-verify が書いたもの。公開用に変えたのは入力のパス（data/L56_gram.txt）、C のプログラムのパス、
+Release note: for the public repository only the input path (data/L56_gram.txt), the path of the
+C program and the output directory (out/crosscheck_all_data/) were changed. Requires SageMath
+(PARI, fpylll) for the reduction step.
+公開用の注記: 公開用に変えたのは入力のパス（data/L56_gram.txt）、C のプログラムのパス、
 出力先（out/crosscheck_all_data/）だけ。簡約の段に SageMath（PARI, fpylll）が要る。
 
-Method (session a2-verify, Claude, 2026-10-16; independent of the earlier fplll / qfminim runs):
+Method (independent of the earlier fplll / qfminim runs):
  1. Reduce: PARI qflllgram, then fpylll BKZ (block sizes 10..40) on a rounded Cholesky basis.  The
     floating point only chooses U; any unimodular U would do, and U is checked exactly
     (G' = U G U^T is computed in integers and has det 1, so det U = +-1).

@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
-"""A2: independent verifier for the certificates of the 112-dimensional lattice R.
+"""Independent verifier for the certificates of the 112-dimensional lattice R.
 
-Release note (2026-10-17): this is the program written by the session a2-verify, adapted for the
-public repository ONLY in its input functions (section "inputs" below: the four files of data/ and
-the certificate files of certificates/ instead of the working directory's intermediate files) and
-in the output directory (out/crosscheck_all_data/). The checks themselves are unchanged. It shares no code with
+Release note: for the public repository only the input functions (section "inputs" below: the
+four files of data/ and the certificate files of certificates/) and the output directory
+(out/crosscheck_all_data/) were changed. The checks themselves are unchanged. It shares no code with
 code/r112 or code/verify.
-公開用の注記（2026-10-17）: セッション a2-verify が書いたプログラムで、公開リポジトリ向けに変えたのは入力の関数（下の「inputs」の節。
-作業場の中間ファイルの代わりに data/ の 4 ファイルと certificates/ の検証用データを読む）と出力先（out/crosscheck_all_data/）だけ。検査そのものは変えていない。
+公開用の注記: 公開リポジトリ向けに変えたのは入力の関数（下の「inputs」の節。data/ の 4 ファイルと
+certificates/ の検証用データを読む）と出力先（out/crosscheck_all_data/）だけ。検査そのものは変えていない。
 code/r112・code/verify とはコードを共有しない。
 
-Written by session a2-verify (Claude, 2026-10-16) from a specification of the certificates,
-WITHOUT reading or importing the code that produced them.  Run with `python -I`.
+Written from a specification of the certificates, WITHOUT reading or importing the code that
+produced them.  Run with `python -I`.
 
 Usage (from the repository root):
   python3 -I code/crosscheck/all_data/check_all.py <command> [options]
