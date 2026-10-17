@@ -1,4 +1,4 @@
-# Logical chain / 論理の鎖
+# Logical chain / 論証の形式化
 
 `EEUL/R112/Chain.lean` formalises the deductions from the stated lattice and certificate hypotheses to the absence of short vectors. It does not verify the numerical input or run the certificate checkers. See the paper for the scope of the formalisation.
 
@@ -14,4 +14,4 @@ lake build
 
 The first command fetches the Mathlib cache; subsequent builds use the local dependencies. This package includes the proof chain for this paper, rather than the other formalisation projects in the research workspace.
 
-最初のコマンドは Mathlib のキャッシュを取得します。このパッケージには、本論文の論理の鎖を収めます。
+最初のコマンドは Mathlib のキャッシュを取得します。このパッケージには、本論文の論証（計算事実を仮定として置いた部分）を収めます。

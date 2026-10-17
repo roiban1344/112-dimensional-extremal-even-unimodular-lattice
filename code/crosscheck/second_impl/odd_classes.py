@@ -8,7 +8,7 @@ $N(w_0)=18$: $N(w)=6$ なら $(w_0,w)=0$, $(w_0,y_\pm)=9$。$N(w)=10$ なら $(w
 （ノルム 8 の $w$ は、類が「奇」（ノルム ≡ 2 mod 4）なので存在しない。）
 
 最小ベクトル全部（15,590,400 本）は、656 個の代表と SL$_2$(29) の生成元から init が自分で展開する。整数演算（float64 の行列積は絶対値 2^53 未満で厳密、その範囲であることも確かめる）。
-実行（リポジトリの根から）: python3 code/independent/init/init_verify_610_certificate.py N56_1 1
+実行（リポジトリの根から）: python3 code/crosscheck/second_impl/odd_classes.py
 
 公開用の注記（2026-10-17）: セッション init が書いたもの。公開リポジトリ向けに変えたのは入力（作業場の中間ファイルの代わりに data/ の 4 ファイルと
 certificates/ の検証用データを読む。中心化群の元は Sage で求め直さず certificates/centralizer.npz から読む）だけで、検査そのものは変えていない。
@@ -35,7 +35,7 @@ def _npz(name, key):
 
 g_ = _ints(DATA / "L56_gram.txt")
 h_ = _ints(DATA / "sl2_29_generators.txt").reshape(2, -1)
-nm, K = sys.argv[1], int(sys.argv[2]); n = 56; t0 = time.time()
+n = 56; t0 = time.time()
 Gn = np.array(g_, dtype=np.int64).reshape(n, n); H = [np.array(h, dtype=np.int64).reshape(n, n) for h in h_]
 X = _ints(DATA / "tau.txt").reshape(n, n)
 assert ((X @ X - np.eye(n, dtype=np.int64)) % 2 == 0).all()          # tau^2 = -5 = 1 (mod 2): tau^{-1} = tau mod 2
@@ -82,4 +82,4 @@ for i in range(0, len(V), 40000):
     P = np.abs(np.rint(V[i:i + 40000].astype(np.float64) @ GW)).astype(np.int64)
     mx = np.maximum(mx, P.max(axis=0))
 print(f"(iii) 各 w0 と全最小ベクトルとの内積の絶対値の最大: 内訳 { {int(v): int((mx == v).sum()) for v in np.unique(mx)} }  [{round(time.time() - t0)} s]", flush=True)
-print(f"RESULT {nm} class {K}: 代表元は {'すべて有効' if (mx <= 6).all() else '無効なものがある'}（{len(W0)} 件、内積の最大 {int(mx.max())} ≤ 6 が必要）", flush=True)
+print(f"RESULT: 代表元は {'すべて有効' if (mx <= 6).all() else '無効なものがある'}（{len(W0)} 件、内積の最大 {int(mx.max())} ≤ 6 が必要）", flush=True)

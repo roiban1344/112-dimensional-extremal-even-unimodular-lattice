@@ -1,7 +1,7 @@
 /* A2 / F1: exact integer enumeration of {x in Z^n : sum_i y_i^2 <= T}, y = R x (R upper triangular,
  * integer, R_ii > 0), i.e. y_i = sum_{j>=i} R_ij x_j.  All arithmetic in __int128 with overflow guards;
  * no floating point decides anything (the square root is corrected to the exact integer floor).
- * Driver and the error bound relating this form to the lattice: code/independent/a2/a2_f1.py.
+ * Driver and the error bound relating this form to the lattice: code/crosscheck/all_data/min_L.py.
  *
  * input (stdin): n T maxprint, then the n*n entries of R row by row (decimal integers).
  * output: one line per found x != 0 (only the first maxprint), then a summary line

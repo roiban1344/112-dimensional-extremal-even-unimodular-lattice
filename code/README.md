@@ -7,12 +7,12 @@ as [C1]–[C27]; the last section of this file maps each row to the scripts here
 
 ## What is proved, and what has to be trusted
 
-Theorem A (R has minimum 10) follows from Lemmas 3.2 and 4.2 (proved by hand, and checked in
+Theorem A (L₁₁₂ has minimum 10) follows from Lemmas 3.2 and 4.2 (proved by hand, and checked in
 Lean, `lean/`) and the computational facts F0–F5 of §4.4. The scripts in **`verify/`** check
 F0–F5 from two kinds of input:
 
 * the four published files in `data/` (the Gram matrix of L, the generators of SL₂(29), τ, and a
-  reduced Gram matrix of R), whose SHA-256 hashes are fixed in `r112/data.py`;
+  reduced Gram matrix of L₁₁₂), whose SHA-256 hashes are fixed in `r112/data.py`;
 * the **certificate files** in `certificates/` (orbit representatives, bounding representatives,
   basis changes; see `certificates/MANIFEST.md`), whose hashes are fixed in
   `certificates/SHA256SUMS`.
@@ -29,7 +29,7 @@ is re-checked by `verify/`.
 | `r112/` | small shared library (numpy only): reading the data, exactness guards, the group, canonical forms modulo 2, minimal vectors |
 | `verify/` | the checks of F0–F5 (v0–v7) and a consistency test (v8) |
 | `produce/` | how the certificates were found (p1–p6); not needed to check the proof |
-| `independent/` | second implementations written separately by other sessions, without reading the code of `verify/` or `produce/`: `a2/` (all certificates and F1, by a different method) and `init/` (canonical forms, design identities, odd bounding representatives) |
+| `crosscheck/` | second implementations of the checks, written by other AI sessions without reading `verify/`, `produce/` or `r112/`. They check the same data by different code, so an error in the main implementation would show up as a disagreement: `all_data/` (every certificate and F1, by a different method) and `second_impl/` (canonical forms, design identities, the odd classes) |
 | `supplementary/` | computations behind statements of the paper that are not used in the proof of Theorem A (the classification of gluings, the automorphism group, …) |
 
 ## Quick start
@@ -49,7 +49,7 @@ Times were measured on the machine used for the paper (8 cores, 15 GB, shared wi
 
 | step | paper | what is checked | time | memory |
 |---|---|---|---|---|
-| `v0_inputs.py` | F0, F4, Lemma 3.2 | L even unimodular; g₁, g₂ preserve G, generate a group of order 24,360 containing −I, commute with τ; τ² = −5, τGτᵀ = 5G; (3.1) even unimodular; the distributed Gram matrix of R is the same lattice | 20 s | < 1 GB |
+| `v0_inputs.py` | F0, F4, Lemma 3.2 | L even unimodular; g₁, g₂ preserve G, generate a group of order 24,360 containing −I, commute with τ; τ² = −5, τGτᵀ = 5G; (3.1) even unimodular; the distributed Gram matrix of L₁₁₂ is the same lattice | 20 s | < 1 GB |
 | `v1_min_L.py` + `enum_interval.c` | F1, §6.1 (a), Table 9a | min L = 6 by an interval-arithmetic enumeration that cannot miss vectors; positive controls E₈, Leech, Leech ⊥ Leech ⊥ E₈ | 45 min | < 1 GB |
 | `v2_theta.py` | §2.3, §2.6, App. B | extremal theta series (\|L₆\|, \|L₈\|), Siegel means, Tables 3, 5, 8, B1, B2 | 1 s | — |
 | `v3_minimal_orbits.py` | F2, §6.2 | the 656 orbits cover the 15,590,400 minimal vectors (by expansion and by canonical forms) | 3 min | 2 GB |
@@ -71,9 +71,9 @@ The enumeration of F1 uses outward-rounded interval arithmetic (`verify/enum_int
 
 ## Requirements
 
-* `verify/`, `independent/init/`: Python ≥ 3.10 with numpy (tested with Python 3.12, numpy 2.5),
+* `verify/`, `crosscheck/second_impl/`: Python ≥ 3.10 with numpy (tested with Python 3.12, numpy 2.5),
   a C compiler with 128-bit integers (gcc or clang) for v1. No other package.
-* `produce/`, `supplementary/`, `independent/a2/`: SageMath 10 (which includes PARI/GP, GAP and
+* `produce/`, `supplementary/`, `crosscheck/all_data/`: SageMath 10 (which includes PARI/GP, GAP and
   fpylll); tested with SageMath 10.9. `environment.yml` at the repository root installs it with
   conda/micromamba.
 * `lean/`: Lean 4 and Mathlib (versions pinned in `lean/lean-toolchain` and `lean/lake-manifest.json`).
@@ -106,8 +106,8 @@ the set of canonical forms (the same orbits).
 | [C7] | supplementary/float_enumerations.py svp, qfminim |
 | [C8] | produce/p2_minimal_orbits.py, verify/v3_minimal_orbits.py, verify/v8_design_identities.py |
 | [C9] | produce/p3_norm8_orbits.py, verify/v4_norm8_orbits.py, verify/v8_design_identities.py |
-| [C10] | produce/p4_odd_descent.py, verify/v5_odd_bounding.py, independent/init/init_verify_610_certificate.py |
-| [C11] | verify/v6_canonical_lookup.py, independent/init/init_88_canonical.py |
+| [C10] | produce/p4_odd_descent.py, verify/v5_odd_bounding.py, crosscheck/second_impl/odd_classes.py |
+| [C11] | verify/v6_canonical_lookup.py, crosscheck/second_impl/even_classes.py |
 | [C12] | supplementary/float_enumerations.py cvp610, cvp88 |
 | [C13] | produce/p5_even_descent.py, verify/v7_even_bounding.py |
 | [C14] | supplementary/frame_stabilizer.py |
@@ -122,4 +122,4 @@ the set of canonical forms (the same orbits).
 | [C24] | supplementary/automorphisms/aut_normalizer.py |
 | [C25] | supplementary/automorphisms/group_facts.g, out_facts.g, aut_diagonal.py |
 | [C26] | supplementary/automorphisms/aut_structure.py, aut_character.py, endomorphisms.py |
-| [C27] | independent/a2/a2_verify.py, a2_f1.py, a2_f1_enum.c |
+| [C27] | crosscheck/all_data/check_all.py, min_L.py, min_L_enum.c |

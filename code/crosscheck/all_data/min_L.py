@@ -3,10 +3,10 @@
 decision is made in exact integer arithmetic.
 
 Release note (2026-10-17): written by the session a2-verify; for the public repository only the
-input path (data/L56_gram.txt), the path of the C program and the output directory (out/a2/) were
+input path (data/L56_gram.txt), the path of the C program and the output directory (out/crosscheck_all_data/) were
 changed. Requires SageMath (PARI, fpylll) for the reduction step.
 公開用の注記（2026-10-17）: セッション a2-verify が書いたもの。公開用に変えたのは入力のパス（data/L56_gram.txt）、C のプログラムのパス、
-出力先（out/a2/）だけ。簡約の段に SageMath（PARI, fpylll）が要る。
+出力先（out/crosscheck_all_data/）だけ。簡約の段に SageMath（PARI, fpylll）が要る。
 
 Method (session a2-verify, Claude, 2026-10-16; independent of the earlier fplll / qfminim runs):
  1. Reduce: PARI qflllgram, then fpylll BKZ (block sizes 10..40) on a rounded Cholesky basis.  The
@@ -18,7 +18,7 @@ Method (session a2-verify, Claude, 2026-10-16; independent of the earlier fplll 
         2^{2k} q(x) = Q(x) + x E x^T,   |x E x^T| <= ||E||_2 |x|^2 <= ||E||_F ||G'^{-1}||_inf q(x)
     (|x|^2 <= q(x) / lambda_min(G') and 1/lambda_min = ||G'^{-1}||_2 <= ||G'^{-1}||_inf, G'^{-1} exact).
     Hence q(x) <= r  implies  Q(x) <= T_r := r 2^{2k} + r ||E||_F ||G'^{-1}||_inf  (rounded up).
- 3. Enumerate {x : Q(x) <= T_r} exactly (C, __int128: code/independent/a2/a2_f1_enum.c).
+ 3. Enumerate {x : Q(x) <= T_r} exactly (C, __int128: code/crosscheck/all_data/min_L_enum.c).
     The enumeration ranges come from exact integer square roots, so nothing is pruned by rounding.
  4. Compute q(x) exactly for every enumerated x.
  r = 4: no x != 0 with q(x) <= 4  =>  min L >= 6 (L is even).
@@ -26,7 +26,7 @@ Method (session a2-verify, Claude, 2026-10-16; independent of the earlier fplll 
     vectors of norm 2 and 4 is known (7*240 = 1680 and 7*2160 + 21*240^2 = 1,224,720).
     (r = 6 on L, which would recount the 15,590,400 minimal vectors, needs ~5e12 nodes: not done.)
 
-usage (from the repository root): sage -python -I code/independent/a2/a2_f1.py <r> [--k 40] [--test e8x7]
+usage (from the repository root): sage -python -I code/crosscheck/all_data/min_L.py <r> [--k 40] [--test e8x7]
 """
 import sys, os, json, time, subprocess, platform, argparse
 from fractions import Fraction
@@ -34,8 +34,8 @@ import numpy as np
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 D = os.path.join(ROOT, "data")
-OUT = os.path.join(ROOT, "out", "a2")
-SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "a2_f1_enum.c")
+OUT = os.path.join(ROOT, "out", "crosscheck_all_data")
+SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "min_L_enum.c")
 N = 56
 T0 = time.time()
 

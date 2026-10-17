@@ -25,8 +25,8 @@ closest-vector problem with target -t/2. The target modulo L has coordinates 0 o
 類 t + 2L がノルム m 以下の元を含む ⟺ <y + t/2, y + t/2> ≤ m/4 となる y ∈ L がある。目標 -t/2 の最近ベクトル問題。簡約基底では目標の座標は 0 か 1/2。
 
 Requires SageMath (fpylll, PARI). Run times: svp 10-30 min per basis, qfminim about 30 min, cvp610
-minutes, cvp88 about 4 x 9 hours for all pairs (4 parts).
-SageMath（fpylll, PARI）が要る。実行時間: svp 1 基底 10〜30 分、qfminim 約 30 分、cvp610 数分、cvp88 は全組で約 4 × 9 時間（4 分割）。
+about 2.5 hours (13 s per class), cvp88 about 4 x 9 hours for all pairs (4 parts).
+SageMath（fpylll, PARI）が要る。実行時間: svp 1 基底 10〜30 分、qfminim 約 30 分、cvp610 約 2.5 時間（1 類 13 秒）、cvp88 は全組で約 4 × 9 時間（4 分割）。
 Run / 実行:  sage -python code/supplementary/float_enumerations.py <svp|qfminim|cvp610|cvp88> [--part P --nparts Q] [--tau B]
 """
 import argparse
@@ -147,10 +147,12 @@ def main():
         cm = CosetMinimum(G, bkz_basis(T0 * G * T0.transpose(), 45) * T0)
         rep.value("reduced diagonal of the basis", cm.Gr_diag)
         found = 0
-        for r in R6:
+        for j, r in enumerate(R6):
             v = cm.shortest_in_class(exact.i64_matmul(r, tn), 2.8)          # squared distances are multiples of 1/2
             if v is not None and int(v @ cm.G @ v) <= 10:
                 found += 1
+            if (j + 1) % 50 == 0:
+                rep.log(f"{j + 1} / {len(R6)} classes, found {found}")
         rep.value("classes r_j tau + 2L with an element of norm <= 10 found by CVP", found)
         rep.check("none of the 656" if a.tau == "C" else "(gluing B) count recorded", found == 0 or a.tau == "B")
     else:

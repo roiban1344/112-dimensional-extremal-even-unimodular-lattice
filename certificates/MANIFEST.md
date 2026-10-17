@@ -35,7 +35,7 @@ Supporting data (not certificates for Theorem A) / 補助のデータ（定理 A
 
 | file / ファイル | arrays / 配列 | content / 中身 | used by / 使うもの |
 |---|---|---|---|
-| `commutant.npz` | `basis` int64 (8, 56, 56) | a Z-basis of M' = End_{SL2(29)}(L) / M' の Z-基底 | independent/a2, supplementary |
+| `commutant.npz` | `basis` int64 (8, 56, 56) | a Z-basis of M' = End_{SL2(29)}(L) / M' の Z-基底 | crosscheck/all_data, supplementary |
 | `negative_control_B.npz` | `tau_class_B` int64 (56, 56) | an element of M' with τ² = −5 in the other class (gluing B) / τ² = −5 で他方の類（貼り方 B）の M' の元 | supplementary |
-| | `tau_B`, `x`, `v`, `hit_pairs` | the gluing map of gluing B as found in the search (a lift modulo 2, not of square −5), a collision (x, v), and the colliding pairs / 探索で見つけた貼り方 B の写像（2 を法とした持ち上げで、2 乗は −5 ではない）、衝突 (x, v)、衝突する組 | independent/a2 (negative controls) |
-| `outer_automorphism_R.txt` | 112 × 112 integers | an automorphism of R inducing the outer automorphism of SL₂(29) / SL₂(29) の外部自己同型を与える R の自己同型 | supplementary/automorphisms |
+| | `tau_B`, `x`, `v`, `hit_pairs` | the gluing map of gluing B as found in the search (a lift modulo 2, not of square −5), a collision (x, v), and the colliding pairs / 探索で見つけた貼り方 B の写像（2 を法とした持ち上げで、2 乗は −5 ではない）、衝突 (x, v)、衝突する組 | crosscheck/all_data (negative controls) |
+| `outer_automorphism_R.txt` | 112 × 112 integers | an automorphism of L₁₁₂ inducing the outer automorphism of SL₂(29) / SL₂(29) の外部自己同型を与える R の自己同型 | supplementary/automorphisms |

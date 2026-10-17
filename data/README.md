@@ -2,8 +2,8 @@
 
 | File | Contents / 内容 |
 |---|---|
-| `L56_gram.txt` | Gram matrix of the 56-dimensional base lattice / 56 次元の土台の Gram 行列 |
-| `sl2_29_generators.txt` | Two matrices acting on the base lattice / 土台に作用する生成元 2 個 |
+| `L56_gram.txt` | Gram matrix of the 56-dimensional base lattice / 素材となる 56 次元格子 L の Gram 行列 |
+| `sl2_29_generators.txt` | Two matrices acting on the base lattice / L に作用する生成元 2 個 |
 | `tau.txt` | Endomorphism used in the construction / 構成に使う自己準同型 |
 | `R112_gram_LLL.txt` | Reduced Gram matrix of the 112-dimensional lattice / 112 次元格子の簡約 Gram 行列 |
 

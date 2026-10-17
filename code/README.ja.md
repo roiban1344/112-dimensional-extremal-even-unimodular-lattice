@@ -7,10 +7,10 @@
 
 ## 何が示され、何を信じる必要があるか
 
-定理 A（R の最小は 10）は、手で証明した補題 3.2・4.2（`lean/` で Lean でも検査済み）と、§4.4 の計算事実 F0〜F5 から従います。
+定理 A（L₁₁₂ の最小は 10）は、手で証明した補題 3.2・4.2（`lean/` で Lean でも検査済み）と、§4.4 の計算事実 F0〜F5 から従います。
 **`verify/`** のスクリプトは、2 種類の入力から F0〜F5 を確かめます:
 
-* `data/` の公開済みの 4 ファイル（L の Gram 行列、SL₂(29) の生成元、τ、R の簡約 Gram 行列）。SHA-256 は `r112/data.py` に固定してあります。
+* `data/` の公開済みの 4 ファイル（L の Gram 行列、SL₂(29) の生成元、τ、L₁₁₂ の簡約 Gram 行列）。SHA-256 は `r112/data.py` に固定してあります。
 * `certificates/` の**検証用データ**（軌道の代表、下界代表元、基底変換。`certificates/MANIFEST.md` を参照）。SHA-256 は
   `certificates/SHA256SUMS` に固定してあります。
 
@@ -24,7 +24,7 @@
 | `r112/` | 共有の小さなライブラリ（numpy のみ）: データの読み込み、厳密さの確認、群、2 を法とした標準形、最小ベクトル |
 | `verify/` | F0〜F5 の検算（v0〜v7）と整合性の検査（v8） |
 | `produce/` | 検証用データの生成（p1〜p6）。証明の検算には不要 |
-| `independent/` | 別のセッションが、`verify/`・`produce/` のコードを読まずに書いた第 2 の実装: `a2/`（すべての検証用データと F1 を別の方法で）、`init/`（標準形、デザインの恒等式、奇の下界代表元） |
+| `crosscheck/` | 検算の第 2 の実装。別の AI のセッションが、`verify/`・`produce/`・`r112/` のコードを読まずに書いた。同じデータを別のコードで確かめるので、主な実装に誤りがあれば結果の食い違いとして現れる: `all_data/`（すべての検証用データと F1 を別の方法で）、`second_impl/`（標準形、デザインの恒等式、奇の類） |
 | `supplementary/` | 論文の主張のうち、定理 A の証明には使わないものの計算（貼り方の分類、自己同型群など） |
 
 ## すぐに試す
@@ -43,7 +43,7 @@ bash code/verify/full.sh 3    # 約 12 CPU 時間: 全部の検算（v7 は 3 �
 
 | 段 | 論文 | 確かめること | 時間 | メモリ |
 |---|---|---|---|---|
-| `v0_inputs.py` | F0, F4, 補題 3.2 | L は偶ユニモジュラー。g₁, g₂ は G を保ち、−I を含む位数 24,360 の群を生成し、τ と可換。τ² = −5、τGτᵀ = 5G。(3.1) は偶ユニモジュラー。配布した R の Gram 行列は同じ格子 | 20 秒 | 1 GB 未満 |
+| `v0_inputs.py` | F0, F4, 補題 3.2 | L は偶ユニモジュラー。g₁, g₂ は G を保ち、−I を含む位数 24,360 の群を生成し、τ と可換。τ² = −5、τGτᵀ = 5G。(3.1) は偶ユニモジュラー。配布した L₁₁₂ の Gram 行列は同じ格子 | 20 秒 | 1 GB 未満 |
 | `v1_min_L.py` + `enum_interval.c` | F1、§6.1 (a)、表 9a | 取りこぼしの無い区間演算の列挙で min L = 6。陽性対照 E₈、Leech、Leech ⊥ Leech ⊥ E₈ | 45 分 | 1 GB 未満 |
 | `v2_theta.py` | §2.3、§2.6、付録 B | 極値テータ級数（\|L₆\|, \|L₈\|）、Siegel 平均、表 3, 5, 8, B1, B2 | 1 秒 | — |
 | `v3_minimal_orbits.py` | F2、§6.2 | 656 軌道が 15,590,400 本の最小ベクトルを覆う（展開と標準形の 2 通り） | 3 分 | 2 GB |
@@ -63,8 +63,8 @@ F5b は無関係な 2 つの議論（v6 と v7）で確かめます。証明に�
 
 ## 動作環境
 
-* `verify/`、`independent/init/`: Python 3.10 以上と numpy（Python 3.12、numpy 2.5 で確認）。v1 には 128 ビット整数をもつ C コンパイラ（gcc か clang）。ほかのパッケージは要りません。
-* `produce/`、`supplementary/`、`independent/a2/`: SageMath 10（PARI/GP、GAP、fpylll を含む）。SageMath 10.9 で確認。リポジトリの根の
+* `verify/`、`crosscheck/second_impl/`: Python 3.10 以上と numpy（Python 3.12、numpy 2.5 で確認）。v1 には 128 ビット整数をもつ C コンパイラ（gcc か clang）。ほかのパッケージは要りません。
+* `produce/`、`supplementary/`、`crosscheck/all_data/`: SageMath 10（PARI/GP、GAP、fpylll を含む）。SageMath 10.9 で確認。リポジトリの根の
   `environment.yml` で conda/micromamba から入れられます。
 * `lean/`: Lean 4 と Mathlib（版は `lean/lean-toolchain` と `lean/lake-manifest.json` に固定）。
 
@@ -95,8 +95,8 @@ F5b は無関係な 2 つの議論（v6 と v7）で確かめます。証明に�
 | [C7] | supplementary/float_enumerations.py svp, qfminim |
 | [C8] | produce/p2_minimal_orbits.py, verify/v3_minimal_orbits.py, verify/v8_design_identities.py |
 | [C9] | produce/p3_norm8_orbits.py, verify/v4_norm8_orbits.py, verify/v8_design_identities.py |
-| [C10] | produce/p4_odd_descent.py, verify/v5_odd_bounding.py, independent/init/init_verify_610_certificate.py |
-| [C11] | verify/v6_canonical_lookup.py, independent/init/init_88_canonical.py |
+| [C10] | produce/p4_odd_descent.py, verify/v5_odd_bounding.py, crosscheck/second_impl/odd_classes.py |
+| [C11] | verify/v6_canonical_lookup.py, crosscheck/second_impl/even_classes.py |
 | [C12] | supplementary/float_enumerations.py cvp610, cvp88 |
 | [C13] | produce/p5_even_descent.py, verify/v7_even_bounding.py |
 | [C14] | supplementary/frame_stabilizer.py |
@@ -111,4 +111,4 @@ F5b は無関係な 2 つの議論（v6 と v7）で確かめます。証明に�
 | [C24] | supplementary/automorphisms/aut_normalizer.py |
 | [C25] | supplementary/automorphisms/group_facts.g, out_facts.g, aut_diagonal.py |
 | [C26] | supplementary/automorphisms/aut_structure.py, aut_character.py, endomorphisms.py |
-| [C27] | independent/a2/a2_verify.py, a2_f1.py, a2_f1_enum.c |
+| [C27] | crosscheck/all_data/check_all.py, min_L.py, min_L_enum.c |

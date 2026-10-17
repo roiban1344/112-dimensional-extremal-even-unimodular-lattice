@@ -7,7 +7,7 @@ $$\sum_{N(x)=8}(x,a)^{2}=N_8\frac{8\,(a,a)}{56},\quad \sum(x,a)^4=N_8\frac{3\cdo
 重複や欠落があれば、整数の等式が（偶然を除いて）崩れる。群の元は生成元から自分で列挙し、元の計算のコードは読み込まない
 （共有するのはデータ: Gram 行列、生成元、可換子の基底、代表と軌道の大きさ）。
 
-実行（リポジトリの根から）: python3 code/independent/init/init_design_check.py N56_1 [a の本数]
+実行（リポジトリの根から）: python3 code/crosscheck/second_impl/design_identities.py [a の本数]
 
 公開用の注記（2026-10-17）: セッション init が書いたもの。公開リポジトリ向けに変えたのは入力（作業場の中間ファイルの代わりに data/ の 4 ファイルと
 certificates/ の検証用データを読む。中心化群の元は Sage で求め直さず certificates/centralizer.npz から読む）だけで、検査そのものは変えていない。
@@ -35,7 +35,7 @@ def _npz(name, key):
 
 g_ = _ints(DATA / "L56_gram.txt")
 h_ = _ints(DATA / "sl2_29_generators.txt").reshape(2, -1)
-nm = sys.argv[1]; NA = int(sys.argv[2]) if len(sys.argv) > 2 else 3
+NA = int(sys.argv[1]) if len(sys.argv) > 1 else 3
 n = 56; t0 = time.time()
 Gn = np.array(g_, dtype=np.int64).reshape(n, n)
 H = [np.array(h, dtype=np.int64).reshape(n, n) for h in h_]
@@ -60,7 +60,7 @@ S = np.stack(list(seen.values()))
 ukeys = {key(u) for u in units}
 assert all(key(u @ v) in ukeys for u in units for v in units), "単数が ± を除いて群をなさない"
 assert all((u @ h == h @ u).all() for u in units for h in H)
-print(f"{nm}: |SL_2(29)/±| = {len(S)}, 単数（±の片方）{len(units)} 個  [{round(time.time() - t0)} s]", flush=True)
+print(f"|SL_2(29)/±| = {len(S)}, 単数（±の片方）{len(units)} 個  [{round(time.time() - t0)} s]", flush=True)
 assert len(S) == 12180
 ord_mod_sign = len(S) * len(units)                  # |G^*/±|（S∩単数 = {±1} を仮定。下で軌道の大きさと照合）
 

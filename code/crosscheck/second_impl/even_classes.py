@@ -5,7 +5,7 @@ r"""(8,8) 型の衝突の全数検査を、init の別実装でやり直す（�
 類の「標準形」= 群の 12,180 個の元（±を同一視）で動かした像の最小値。
   K8 = { 標準形(類(r u)) : r はノルム 8 の軌道代表 254,664 個、u は単数 6 個 }  … ノルム 8 のベクトルの類の標準形の全体
   検査: すべての (r, u) について 標準形(類(r u X)) ∈ K8 か。（逆向き: X の代わりに X^{-1} mod 2）
-代表の完全性は init_design_check.py（球面デザインの恒等式）で確認済み。
+代表の完全性は design_identities.py（球面デザインの恒等式）で確認済み。
 
 実装の点検（この中で行う）:
   - 群の元 12,180 個が mod 2 で相異なること、生成元を掛けても閉じていること。
@@ -13,7 +13,7 @@ r"""(8,8) 型の衝突の全数検査を、init の別実装でやり直す（�
   - 表引き（バイト表）による c·s が、素朴な行列積と一致すること。
   - (6,6) 型: 最小ベクトルの代表 656 個で同じ検査。貼り合わせが恒等写像なら全部衝突するはず（陽性対照）。
 
-実行（リポジトリの根から）: python3 code/independent/init/init_88_canonical.py N56_1 C [B]
+実行（リポジトリの根から）: python3 code/crosscheck/second_impl/even_classes.py [C] [B]
   C = 本論文の tau（data/tau.txt）、B = 陰性対照の貼り方 B（certificates/negative_control_B.npz）
 
 公開用の注記（2026-10-17）: セッション init が書いたもの。公開リポジトリ向けに変えたのは入力（作業場の中間ファイルの代わりに data/ の 4 ファイルと
@@ -41,7 +41,7 @@ def _npz(name, key):
 
 g_ = _ints(DATA / "L56_gram.txt")
 h_ = _ints(DATA / "sl2_29_generators.txt").reshape(2, -1)
-nm = sys.argv[1]; classes = sys.argv[2:]
+classes = sys.argv[1:] or ["C"]
 n = 56; t0 = time.time()
 Gn = np.array(g_, dtype=np.int64).reshape(n, n)
 H = [np.array(h, dtype=np.int64).reshape(n, n) for h in h_]
@@ -99,7 +99,7 @@ v = rng.integers(0, 2, size=(40, n)); idx = rng.integers(0, len(S2), size=40)
 naive = pack(np.einsum("ij,ijk->ik", v, S2[idx]) % 2)
 assert (images(pack(v))[idx, np.arange(40)] == naive).all(), "表引きが行列積と合わない"
 cv = canon(pack(v)); assert (canon(naive) == cv).all(), "標準形が群の作用で不変でない"
-print(f"{nm}: 群 12180 元（mod 2 で相異）、単数 {len(units)} 個。表引きと標準形の点検 ok  [{round(time.time() - t0)} s]", flush=True)
+print(f"群 12180 元（mod 2 で相異）、単数 {len(units)} 個。表引きと標準形の点検 ok  [{round(time.time() - t0)} s]", flush=True)
 
 R8 = _npz("norm8_reps.npz", "reps").astype(np.int64)
 R6 = _npz("min_reps.npz", "reps").astype(np.int64)
