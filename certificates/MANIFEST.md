@@ -14,6 +14,9 @@ Download them with `code/verify/fetch.sh`.
 大きな `.npz` は git に入れず、GitHub Release に添付します。`SHA256SUMS`（git に入っています）が中身を固定し、
 `code/r112/certs.py` の読み込みは使う前にハッシュを照合します。取得は `code/verify/fetch.sh` で行います。
 
+File names keep the letter R of an earlier draft for the 112-dimensional lattice (`outer_automorphism_R.txt`, `reduction_R.txt`; also `data/R112_gram_LLL.txt`); the paper calls it L₁₁₂.
+ファイル名には、112 次元格子の以前の呼び名 R が残っています（`outer_automorphism_R.txt`、`reduction_R.txt`、`data/R112_gram_LLL.txt`）。論文では L₁₁₂ と呼びます。
+
 All `.npz` files are plain NumPy archives without Python objects; they are read with
 `numpy.load(..., allow_pickle=False)`. Vectors are integer row vectors in the basis of
 `data/L56_gram.txt`.
@@ -38,4 +41,4 @@ Supporting data (not certificates for Theorem A) / 補助のデータ（定理 A
 | `commutant.npz` | `basis` int64 (8, 56, 56) | a Z-basis of M' = End_{SL2(29)}(L) / M' の Z-基底 | crosscheck/all_data, supplementary |
 | `negative_control_B.npz` | `tau_class_B` int64 (56, 56) | an element of M' with τ² = −5 in the other class (gluing B) / τ² = −5 で他方の類（貼り方 B）の M' の元 | supplementary |
 | | `tau_B`, `x`, `v`, `hit_pairs` | the gluing map of gluing B as found in the search (a lift modulo 2, not of square −5), a collision (x, v), and the colliding pairs / 探索で見つけた貼り方 B の写像（2 を法とした持ち上げで、2 乗は −5 ではない）、衝突 (x, v)、衝突する組 | crosscheck/all_data (negative controls) |
-| `outer_automorphism_R.txt` | 112 × 112 integers | an automorphism of L₁₁₂ inducing the outer automorphism of SL₂(29) / SL₂(29) の外部自己同型を与える R の自己同型 | supplementary/automorphisms |
+| `outer_automorphism_R.txt` | 112 × 112 integers | an automorphism of L₁₁₂ inducing the outer automorphism of SL₂(29) / SL₂(29) の外部自己同型を与える L₁₁₂ の自己同型 | supplementary/automorphisms |
