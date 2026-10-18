@@ -1,0 +1,32 @@
+name: data-tests
+
+# The tests on the large certificate files (pytest marker `data`): download the 130 MB of certificates
+# from the Release (fetch.sh), then v5 on the published data and on a mutated copy, and v7 --limit 64
+# with and without a foreign checkpoint (about 10 min, 3 GB). Weekly and on demand only.
+# 大きな検証用データを使う試験（pytest のマーカー `data`）: Release から 130 MB の検証用データを取得し（fetch.sh）、
+# 公開したデータと改変した写しで v5、途中経過の有無を変えて v7 --limit 64 を走らせる（約 10 分、3 GB）。週に 1 回と手動でだけ実行する。
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 4 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  data-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-verify.txt pytest
+      - name: Download the certificate files (130 MB) and check them against certificates/SHA256SUMS
+        run: bash code/verify/fetch.sh
+      - name: pytest code/tests -m data
+        run: python -m pytest code/tests -m data -p no:cacheprovider --durations=0

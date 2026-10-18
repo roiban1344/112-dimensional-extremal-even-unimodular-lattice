@@ -38,6 +38,7 @@ The proof does **not** rely on the correctness of the code that produced the ver
 | `produce/` | how the verification data were produced (p1–p6); not needed to check the proof |
 | `crosscheck/` | second implementations of the checks, written separately with Claude without reading `verify/`, `produce/` or `lib/`. They check the same data by different code, so an error in the main implementation would show up as a disagreement: `all_data/` (all verification data and F1, by a different method) and `second_impl/` (canonical forms, design identities, the odd classes) |
 | `supplementary/` | computations behind statements of the paper that are not used in the proof of Theorem A (the classification of gluings, the automorphism group, …) |
+| `tests/` | smoke tests on small examples (pytest; see [Tests](#tests)); not a substitute for `proof.sh` |
 
 ## Running verification
 
@@ -107,6 +108,37 @@ The enumeration of F1 uses outward-rounded interval arithmetic (`verify/enum_int
   `sage -python` is not available in the conda-forge build of SageMath.
 * Container: the `Dockerfile` at the repository root builds an image with these requirements for `verify/` (and `Dockerfile.sage` one with SageMath); see the root README.
 * `lean/`: Lean 4 and Mathlib (versions pinned in `lean/lean-toolchain` and `lean/lake-manifest.json`).
+
+## Tests
+
+`tests/` holds smoke tests on small examples, written with [pytest](https://pytest.org). pytest is
+needed only for these tests; the verification itself uses numpy only. From the repository root:
+
+```bash
+pip install pytest
+python -m pytest code/tests                  # everything available, about 40 s without the certificate files
+python -m pytest code/tests -m "not slow"    # a few seconds
+python -m pytest code/tests -m data          # needs certificates/*.npz (fetch.sh); about 10 min, 3 GB
+```
+
+Markers: `slow` (a whole verification script run as a subprocess, more than a few seconds) and `data`
+(needs the large certificate files; skipped when they are missing). CI runs `-m "not data"` on every
+pull request, and the `data` tests weekly and on demand (`.github/workflows/data-tests.yml`).
+
+Covered: the exactness guards of `lib/exact.py` at the edges 2²⁴, 2⁵³, 2⁶² (cancellation, INT64_MIN,
+floating-point input refused, `CheckError` not caught by `except AssertionError`) and the exact linear
+algebra; the enumerator `enum_interval.c` against brute force on random forms and against ℤⁿ, A₂, D₄,
+E₈ (also in skewed bases) and 2·E₈, and its report of untabulated vectors; group closure and canonical
+forms modulo 2 on a small group; `Report` (stale JSON removed, failures and exceptions recorded as
+`"passed": false`, refusal under `python -O`); the checkpoint logic of v7 with a stand-in for the minimal
+vectors; v0, v2 and `v1 --controls-only`; the hashes of `data/` pinned in `lib/data.py` against
+`data/SHA256SUMS`, and a copy of `data/` with one byte of `tau.txt` changed (v0 must fail); `bash -n` on the
+shell scripts. With `-m data`: v5 on the published data and on a copy with one mutated certificate (must
+fail in (c)), and `v7 --limit 64` with and without a checkpoint made for other inputs.
+
+Not covered: these tests are not a verification of the theorem and do not replace `proof.sh` or
+`full.sh`. They do not run v1 on L, v3, v4, v6, v8 or v7 beyond 64 pairs, nor `produce/`, `crosscheck/`,
+`supplementary/` or `lean/`.
 
 ## Producing the verification data
 

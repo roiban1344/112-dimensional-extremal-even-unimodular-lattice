@@ -29,6 +29,7 @@
 | `produce/` | 検証用データの生成（p1〜p6）。証明の検算には不要 |
 | `crosscheck/` | 検算の第 2 の実装。`verify/`・`produce/`・`lib/` のコードを読まずに、Claude を用いて別に書いた。同じデータを別のコードで確かめるので、主な実装に誤りがあれば結果の食い違いとして現れる: `all_data/`（すべての検証用データと F1 を別の方法で）、`second_impl/`（標準形、デザインの恒等式、奇の類） |
 | `supplementary/` | 論文の主張のうち、定理 A の証明には使わないものの計算（貼り方の分類、自己同型群など） |
+| `tests/` | 小さな例による試験（pytest。[試験](#試験)を参照）。`proof.sh` の代わりにはならない |
 
 ## 検算の実行
 
@@ -92,6 +93,32 @@ F1 の列挙は外向きに丸める区間演算を使います（`verify/enum_i
   `environment.yml` で conda/micromamba から入れられます。これらのスクリプトは、その環境の `python3` で実行します（`python3 -I code/...`）。
   conda-forge 版の SageMath では `sage -python` は使えません。
 * `lean/`: Lean 4 と Mathlib（版は `lean/lean-toolchain` と `lean/lake-manifest.json` に固定）。
+
+## 試験
+
+`tests/` には小さな例による試験（スモークテスト）があり、[pytest](https://pytest.org) で書いてあります。pytest が必要なのはこの試験だけで、
+検算そのものは numpy だけを使います。リポジトリのルートから次のように実行します。
+
+```bash
+pip install pytest
+python -m pytest code/tests                  # 実行できるものすべて。検証用データが無ければ約 40 秒
+python -m pytest code/tests -m "not slow"    # 数秒
+python -m pytest code/tests -m data          # certificates/*.npz（fetch.sh）が必要。約 10 分、3 GB
+```
+
+マーカーは `slow`（検算スクリプト全体を子プロセスで走らせるもの。数秒より長い）と `data`（大きな検証用データが必要。無ければ飛ばす）です。
+CI は pull request ごとに `-m "not data"` を実行し、`data` の試験は週に 1 回と手動で実行します（`.github/workflows/data-tests.yml`）。
+
+対象: `lib/exact.py` の厳密さの保証の境界 2²⁴、2⁵³、2⁶²（打ち消し合い、INT64_MIN、浮動小数点の入力の拒否、`CheckError` が
+`except AssertionError` に捕まらないこと）と厳密な線形代数。列挙器 `enum_interval.c` を、無作為な二次形式での総当たり、および ℤⁿ、A₂、D₄、
+E₈（歪めた基底でも）、2·E₈ と比べること、表に収まらないベクトルの報告。小さな群での群の閉包と 2 を法とする標準形。`Report`（古い JSON を消すこと、
+失敗と例外を `"passed": false` として記録すること、`python -O` の下での拒否）。最小ベクトルの代役を使った v7 の途中経過の扱い。v0、v2、
+`v1 --controls-only`。`lib/data.py` に固定した `data/` のハッシュと `data/SHA256SUMS` の一致、および `tau.txt` を 1 バイト変えた `data/` の写し
+（v0 は失敗しなければならない）。シェルスクリプトへの `bash -n`。`-m data` では、公開したデータと certificate を 1 つ改変した写しでの v5
+（後者は (c) で失敗しなければならない）、別の入力のための途中経過の有無を変えた `v7 --limit 64`。
+
+対象外: これらの試験は定理の検算ではなく、`proof.sh` や `full.sh` の代わりにはなりません。L についての v1、v3、v4、v6、v8、64 組を超える v7、
+`produce/`、`crosscheck/`、`supplementary/`、`lean/` は走らせません。
 
 ## 検証用データの生成
 
