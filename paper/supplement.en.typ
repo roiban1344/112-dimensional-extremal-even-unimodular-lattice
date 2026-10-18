@@ -168,7 +168,7 @@ Elements of order 3, 5, 7 of $"SL"_2\(29\)$ have fixed sublattices of $L_112$ of
 
 == S3.6. Controls and closest-vector searches
 
-Every exhaustive test above was also run on the negative controls with known answers (Table 6). In particular, the tests detect #emph[rare] collisions: 10 out of $1 thin 527 thin 984$ pairs for B. The CVP test was cross-checked against the canonical-form test on all colliding pairs and on a sample of 150 pairs.
+Every exhaustive test above was also run on the positive controls with known answers (Table 6). In particular, the tests detect #emph[rare] collisions: 10 out of $1 thin 527 thin 984$ pairs for B. The CVP test was cross-checked against the canonical-form test on all colliding pairs and on a sample of 150 pairs.
 
 #strong[CVP.] The class $t + 2 L_56$ ($t = x_i u tau$) contains a vector of norm $lt.eq 8$ iff some $y in L_56$ satisfies $chevron.l y + t\/2\,y + t\/2 chevron.r lt.eq 2$, a closest-vector problem in $L_56$ with target $- t\/2$. We ran fplll's enumeration at squared radius $2.05$ for all $1 thin 527 thin 984$ pairs (four jobs of about 9 hours, without canonical forms or $K_8$): #strong[0 collisions] #calc("C12"). The same enumeration found the norm-8 partner in every one of the 46 colliding pairs of gluings A and B. The radius can be reduced to this value because a norm-8 element corresponds to squared distance exactly 2, and the next possible norm, 12, to 3.
 
@@ -184,7 +184,7 @@ Every exhaustive test above was also run on the negative controls with known ans
   [The 112-dimensional Gram matrix is not the lattice described], [two implementations rebuilt (3.1) independently; the third reproduced the LLL-reduced matrix exactly; frame test],
   [$min L_56 < 6$], [#strong[rigorous interval enumeration]; reduction to $L_(56\,2)\(M\)$; three floating-point enumerations; exact agreement of shell sizes and design identities (indirect)],
   [Assignment of minima to classes inconsistent], [frame-change test (864 frames)],
-  [The tests are blind to rare collisions], [negative controls A, B (10 in 1.5 million detected)],
+  [The tests are blind to rare collisions], [positive controls A, B (10 in 1.5 million detected)],
   [An error in a shared computational hypothesis], [the corresponding input, completeness and arithmetic checks in §§6–7; Lean checks the deduction from these hypotheses, not their computational verification (§7.1)],
 )
 

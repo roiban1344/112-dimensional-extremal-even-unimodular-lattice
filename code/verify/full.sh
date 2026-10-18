@@ -3,6 +3,8 @@
 #   v0 F0, F4 | v1 F1 (interval enumeration, 34 min) | v2 theta series | v3 F2 | v4 F3 |
 #   v5 F5a | v6 F5b by canonical forms | v7 F5b by even-class certificates (~24 CPU hours) |
 #   v8 design identities (consistency test, not needed for the proof).
+#   (proof.sh = v0-v6, about 1.2 CPU hours; full.sh adds the alternative even-coset certificate check v7 and the consistency test v8.)
+#   proof.sh = v0〜v6（約 1.2 CPU 時間）。full.sh は代替の偶の剰余類の代表元の検査 v7 と整合性の検査 v8 を加える。
 # Each step writes out/<step>.json; v7 can be interrupted and resumed.
 # 定理 A の全部の検算（約 26 CPU 時間、v7 を 3 スレッドで 9.5 時間。メモリ 4 GB 未満）。各段は out/<step>.json を書く。v7 は中断して再開できる。
 # Run from the repository root / リポジトリの根から:  bash code/verify/full.sh [threads for v7]

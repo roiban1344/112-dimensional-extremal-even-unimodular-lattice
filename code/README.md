@@ -36,31 +36,30 @@ uses is re-checked by `verify/`.
 
 ## Running verification
 
-Prepare the [requirements](#requirements), then run these commands from the repository root. Python environment setup is described in the [root README](../README.md#start-here).
+Prepare the [requirements](#requirements), then run these commands from the repository root. Python environment setup is described in the [root README](../README.md#start-here). There are three levels of checking.
 
-First check the defining matrices and group action (about 30 seconds; no additional data download). This does not establish the minimum norm.
+**(i) Inputs only.** First check the defining matrices and group action (about 20 seconds; no additional data download). This does not establish the minimum norm.
 
 ```bash
 python3 code/verify/v0_inputs.py
 ```
 
-Download the large verification data files for the remaining checks:
+**(ii) The computational part of the proof.** Download the large verification data files, then run `proof.sh`. It takes about 1.2 CPU hours (v1 is 34 minutes, v6 is 24 minutes, the others are minutes) and runs v0–v6: F1 by interval enumeration, F2 and F3 (orbit completeness), F5a by the odd-coset certificates, and F5b by canonical forms. This is the shortest complete check of the computational facts F0–F5 used in the proof of Theorem A (route A of supplement Table S7).
 
 ```bash
 bash code/verify/fetch.sh
+bash code/verify/proof.sh
 ```
 
-The abbreviated check takes about 40–50 minutes. It omits the full enumeration proving minimum norm 6 and the long even-coset certificate check. Passing it is not a complete verification of the theorem.
+The optional argument of `fetch.sh` is the Release tag (default `certificates-v1`).
 
-```bash
-bash code/verify/quick.sh
-```
-
-The full check takes about 26 CPU hours, or roughly 9.5–10 hours elapsed with three workers. It includes the abbreviated checks, so it can be selected directly.
+**(iii) Everything.** The full check takes about 26 CPU hours, or roughly 9.5–10 hours elapsed with three workers. It runs everything in `proof.sh`, and adds the alternative check of F5b by the even-coset certificates (v7, about 24 CPU hours) and the consistency test of the spherical-design identities (v8).
 
 ```bash
 bash code/verify/full.sh 3
 ```
+
+`bash code/verify/quick.sh` (about 40–50 minutes) is an abbreviated check. It runs F1 only on the positive controls and omits v7 and v8, so passing it is not a complete verification of the theorem.
 
 Each step prints `[ok]`/`[FAIL]` for every check and writes `out/<step>.json` with the results, software versions and running time.
 
