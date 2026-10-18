@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-# Quick verification (about 40–50 minutes, under 4 GB of memory): every step of the proof of
-# Theorem A except the long ones, which are replaced by their fast counterparts:
-#   F1 by the interval enumeration is run on the positive controls only (v1 --controls-only),
-#   F5b is decided by canonical forms (v6) instead of the even-class certificates (v7).
-# 短縮した検算（約 40〜50 分、メモリ 4 GB 未満）。定理 A の証明の各段のうち、長いものを速い方法に置き換えて走らせる:
-#   F1 の区間演算の列挙は陽性対照だけ（v1 --controls-only）、F5b は偶の剰余類の代表元（v7）の代わりに標準形（v6）で判定する。
+# Quick check (about 40–50 minutes, under 4 GB of memory). NOT a complete verification of Theorem A:
+# it runs v0–v6 like proof.sh, but F1 (the interval enumeration proving min L = 6) is run on the
+# positive controls only (v1 --controls-only), and v7 and v8 are omitted. Use proof.sh for the complete check.
+# 短縮した検査（約 40〜50 分、メモリ 4 GB 未満）。定理 A の全検算では**ない**: proof.sh と同じく v0〜v6 を走らせるが、
+# F1（min L = 6 を示す区間演算の列挙）は陽性対照だけ（v1 --controls-only）で、v7 と v8 は省く。全検算には proof.sh を使う。
 # Run from the repository root / リポジトリの根から:  bash code/verify/quick.sh
 set -euo pipefail
 PY=${PYTHON:-python3}
@@ -16,4 +15,4 @@ $PY "$D/v3_minimal_orbits.py"
 $PY "$D/v4_norm8_orbits.py"
 $PY "$D/v5_odd_bounding.py"
 $PY "$D/v6_canonical_lookup.py"
-echo "quick verification passed (F1 itself and v7 are in full.sh) / 短縮した検算は通過（F1 そのものと v7 は full.sh）"
+echo "quick check passed (F1 itself is in proof.sh; v7 and v8 are in full.sh) / 短縮した検査は通過（F1 そのものは proof.sh、v7 と v8 は full.sh）"
