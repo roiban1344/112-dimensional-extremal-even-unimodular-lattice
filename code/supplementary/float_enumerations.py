@@ -170,7 +170,8 @@ def main():
             i, k = divmod(p, 6)
             v = cm.shortest_in_class(exact.i64_matmul(exact.i64_matmul(X[i], U[k]), tn), 2.05)
             if v is not None:
-                assert int(v @ cm.G @ v) == 8
+                if int(v @ cm.G @ v) != 8:               # the class is odd-free and min L_112 >= 8 here / 起きないはず
+                    rep.check(f"pair {p}: the vector returned by CVP has norm 8", False)
                 st["found"].append(int(p))
             if (pos + 1) % 5000 == 0 or pos + 1 == len(idxs):
                 st["done"] = pos + 1

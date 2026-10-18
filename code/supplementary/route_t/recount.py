@@ -1,6 +1,6 @@
-r"""S20. Route T, second count of the rank-2 support modules (supplement §S4.1; Table D2 [C20], second count).
+r"""S27. Route T, second count of the rank-2 support modules (supplement §S4.1; Table D2 [C20], second count).
 Not used in the proof of Theorem A.
-S20. 経路 T、階数 2 の台加群の 2 通り目の数え上げ（補遺 §S4.1、表 D2 の [C20] の 2 通り目）。定理 A の証明には使わない。
+S27. 経路 T、階数 2 の台加群の 2 通り目の数え上げ（補遺 §S4.1、表 D2 の [C20] の 2 通り目）。定理 A の証明には使わない。
 
 A different enumeration (from a true shortest vector, with pseudo-bases) in exact rational arithmetic
 (own Fincke-Pohst enumeration; LLL only for basis changes, checked to be unimodular). It groups the
@@ -11,10 +11,14 @@ the 63 dangerous types of classify.py by the same invariant gives the same 58.
 あることを確かめる）。危険な候補をより粗い不変量（実の行列式、ノルム 6・8・10 以下の本数、H ⊗ N の最小）でまとめる。期待: 候補 468、
 危険 296、覆われないもの 0、危険な型 58。classify.py の危険な 63 型を同じ不変量でまとめ直すと同じ 58 になる。
 
-Requires SageMath (for LLL only). Run time: about 1 minute. Output: out/route_t/recount.json.
-Run classify.py first for the comparison.
-SageMath が要る（LLL だけ）。実行時間: 約 1 分。出力: out/route_t/recount.json。突き合わせのため classify.py を先に走らせる。
-Run / 実行:  python3 code/supplementary/route_t/recount.py
+The expected numbers and the agreement with classify.json are checked (Report: out/s27_route_t_recount.json;
+exit code 1 on a mismatch or if classify.json is missing). The candidates are written to out/route_t/recount.json.
+期待する数と classify.json との一致を検査する（Report: out/s27_route_t_recount.json。食い違うか classify.json が無ければ終了コード 1）。
+候補は out/route_t/recount.json に書く。
+
+Requires SageMath (for LLL only). Run time: about 1 minute. Run classify.py first for the comparison.
+SageMath が要る（LLL だけ）。実行時間: 約 1 分。突き合わせのため classify.py を先に走らせる。
+Run / 実行:  python3 -I code/supplementary/route_t/recount.py [--out DIR]   (Python with SageMath / SageMath を含む Python)
 
 Method (Japanese) / 方法:
 補遺 §S4.1 の分類を、別の列挙法と整数・有理数の厳密演算だけで数え直す。
@@ -32,12 +36,19 @@ classify.py（以下「1 通り目」）との違い:
 
 各 N について: 危険か（H ⊗ N にノルム 8 以下）、覆われるか（補遺 §S4.1 の 3 つの探索のどれか）を判定し、classify.py の classify.json の不変量と突き合わせる。
 """
-import json, time, itertools
+import argparse, json, os, sys, itertools
 from fractions import Fraction as Fr
 from math import isqrt, floor, ceil
-from pathlib import Path
 
-OUT = Path(__file__).resolve().parents[3] / "out" / "route_t"
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+from lib.report import Report  # noqa: E402
+
+if not __debug__:
+    sys.exit("run without -O: internal checks are assert statements / -O を付けずに実行すること（内部の検査は assert で書かれている）")
+
+# Expected numbers (Table D2 [C20]) / 期待する数（表 D2 の [C20]）
+EXPECTED = dict(N=468, dangerous=296, uncovered=0)
+EXPECTED_DANGEROUS_TYPES = 58
 
 # ---------- K = Q(√-5) の元は (r, s) = r + s√-5（Fraction） ----------
 
@@ -140,7 +151,8 @@ def lll_basis(G):
     from sage.all import matrix, ZZ
     M = matrix(ZZ, [[int(x) for x in r] for r in G])
     U = M.LLL_gram()
-    assert U.det() in (1, -1)
+    if U.det() not in (1, -1):                  # the enumeration relies on it / 列挙の正しさがこれに依る
+        raise RuntimeError("LLL_gram returned a non-unimodular transformation")
     Gp = U.transpose() * M * U
     return [[int(x) for x in r] for r in Gp.rows()], U
 
@@ -231,7 +243,12 @@ def analyse(Gn, Tn):
 
 
 def main():
-    OUT.mkdir(parents=True, exist_ok=True); t0 = time.time()
+    ap = argparse.ArgumentParser(description="S27: route T, second count of the rank-2 support modules")
+    ap.add_argument("--out", default=None)
+    a_ = ap.parse_args()
+    rep = Report("s27_route_t_recount", a_.out)
+    out_dir = os.path.join(rep.out_dir, "route_t")
+    os.makedirs(out_dir, exist_ok=True)
     seen_N = []; stats = dict(N=0, dangerous=0, uncovered=0)
     classes = {}
     for IA, IB in itertools.product("OP", repeat=2):
@@ -244,7 +261,10 @@ def main():
                         b += 1; continue
                     G, T = real_structure(Hn, [IA, IB])
                     if not is_int(G):
-                        break                         # 整数性は b によらず c, a で決まる部分がある → 下で b ごとに判定し直す
+                        # Integrality depends only on a and c: the entries containing b (Tr of b times a norm from the
+                        # ideal basis) are always integers, so no larger b can help.
+                        # 整数性は a と c だけで決まる（b を含む成分はいつも整数）ので、b を増やしても変わらない。
+                        break
                     G = [[int(x) for x in r] for r in G]
                     D = det_int(G)
                     if D > 6400:
@@ -261,7 +281,8 @@ def main():
                     # H ⊗ N
                     Ht = kron(H, Hn)
                     GH, _ = real_structure(Ht, [IA, IB, IA, IB])
-                    assert is_int(GH)
+                    if not is_int(GH):
+                        raise RuntimeError(f"H (x) N has a non-integral Gram matrix: {IA}, {IB}, a = {a}, c = {c}")
                     GH = [[int(x) for x in r] for r in GH]
                     mH, cnt, _ = minimum_exact(GH, 8)
                     if mH is None:
@@ -275,21 +296,24 @@ def main():
                         key = (D, tuple(theta), mH)
                         classes.setdefault(str(key), dict(real_det=D, theta=theta, min_HN=mH, min_N=mn, cov=cov,
                                                           example=dict(A=IA, B=IB, a=a, b=b - 1, c=[str(c[0]), str(c[1])])))
-                b = b
-        print(f"  ({IA},{IB}) 済: {stats} ({round(time.time() - t0)}s)", flush=True)
-    print(f"全候補: {stats}; 危険な類（実 det・ノルム ≤ 6/8/10 の本数・H⊗N の最小で同一視）: {len(classes)}", flush=True)
-    json.dump(dict(stats=stats, classes=classes), open(OUT / "recount.json", "w"), indent=1)
+        rep.log(f"  ({IA},{IB}) 済: {stats}")
+    rep.value("all candidates: N, dangerous, uncovered", stats)
+    rep.value("dangerous types (real det, numbers of vectors of norm <= 6/8/10, minimum of H⊗N)", len(classes))
+    with open(os.path.join(out_dir, "recount.json"), "w") as f:
+        json.dump(dict(stats=stats, classes=classes), f, indent=1)
+    rep.check(f"{EXPECTED['N']} candidates, {EXPECTED['dangerous']} dangerous, {EXPECTED['uncovered']} uncovered", stats == EXPECTED)
+    rep.check(f"{EXPECTED_DANGEROUS_TYPES} dangerous types", len(classes) == EXPECTED_DANGEROUS_TYPES)
     # Comparison with classify.py at the level of the coarse invariant (new in the published version).
     # classify.py との突き合わせ（粗い不変量の水準で。公開版で追加）。
-    cj = OUT / "classify.json"
-    if cj.exists():
-        rows = json.load(open(cj))
-        first = {(r["real_det"], tuple(r["theta"][:3]), r["min_HN"]) for r in rows if r["min_HN"] is not None}
-        second = {(v["real_det"], tuple(v["theta"]), v["min_HN"]) for v in classes.values()}
-        print(f"comparison with classify.json: {len(first)} dangerous types there after regrouping, {len(second)} here; "
-              f"identical: {first == second}", flush=True)
-    else:
-        print("classify.json not found: run classify.py first for the comparison", flush=True)
+    cj = os.path.join(out_dir, "classify.json")
+    rep.check("out/route_t/classify.json exists (run classify.py first)", os.path.exists(cj))
+    rows = json.load(open(cj))
+    first = {(r["real_det"], tuple(r["theta"][:3]), r["min_HN"]) for r in rows if r["min_HN"] is not None}
+    second = {(v["real_det"], tuple(v["theta"]), v["min_HN"]) for v in classes.values()}
+    rep.value("dangerous types after regrouping: classify.json, here", [len(first), len(second)])
+    rep.check(f"the same {EXPECTED_DANGEROUS_TYPES} dangerous types as classify.json after regrouping by the coarse invariant",
+              first == second and len(first) == EXPECTED_DANGEROUS_TYPES)
+    rep.finish()
     return stats, classes
 
 

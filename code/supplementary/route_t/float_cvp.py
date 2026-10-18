@@ -64,7 +64,8 @@ def main():
         w = search2_starts(X, U, t, keep, idx[pos:pos + 1])[0]
         v = cm.shortest_in_class(w, 2.05)
         if v is not None:
-            assert int(v @ cm.G @ v) <= 8
+            if int(v @ cm.G @ v) > 8:                    # never expected: the enumeration radius is 2.05 / 起きないはず
+                rep.check(f"class {int(idx[pos])}: the vector returned by CVP has norm <= 8", False)
             st["found"].append(int(idx[pos]))
         if (pos + 1) % 5000 == 0 or pos + 1 == len(idx):
             st["done"] = pos + 1

@@ -73,6 +73,7 @@ def main():
     cls = libgap.ConjugacyClasses(P)
     sizes = [int(libgap.Size(c)) for c in cls]
     rep.value("number of conjugacy classes", len(cls))
+    rep.check("(1) 206 conjugacy classes", len(cls) == 206)
     rep.check("class sizes add up to |A|", sum(sizes) == ORDER)
     epi = libgap.EpimorphismFromFreeGroup(libgap.GroupWithGenerators([libgap.Image(toP, g) for g in gens]))
 

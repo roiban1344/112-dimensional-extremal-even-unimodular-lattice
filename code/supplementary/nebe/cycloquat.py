@@ -382,7 +382,8 @@ def maximal_order_classes(X, verbose=False, max_steps=60):
             total += QQ(1) / wn
             if verbose:
                 print(f"  class {len(classes) - 1}: w = {wn} (total {total} / {mass})", flush=True)
-    assert total == mass, f"mass formula not satisfied: {total} != {mass}"
+    if total != mass:      # an explicit check, not an assert (kept under python -O) / assert ではなく明示的な検査（-O でも残る）
+        raise RuntimeError(f"mass formula not satisfied: {total} != {mass}")
     return [(M, w) for (M, w, _, _) in classes]
 
 
