@@ -57,7 +57,7 @@ bash code/verify/full.sh 3
 
 ### コンテナ
 
-`Dockerfile` から軽量なイメージ（Debian 13、Python 3、仮想環境中の NumPy、GCC、curl。SageMath と Lean は含まない）を作り、3 つの水準をすべて実行できます。`docker build -t l112 .` でイメージを作り、`docker run --rm l112` で水準 (i) を、`docker run --rm -v "$PWD/certificates:/work/certificates" -v "$PWD/out:/work/out" l112 bash -c 'bash code/verify/fetch.sh && bash code/verify/proof.sh'` で水準 (ii) を実行します（ダウンロードしたデータと結果はホストに残ります。水準 (iii) では `proof.sh` を `full.sh 3` に替えます）。開発コンテナ（`.devcontainer/`）も同じイメージを用います。VS Code では「Reopen in Container」を選ぶか、GitHub Codespaces でリポジトリを開いてください。`Dockerfile.sage` は補足計算とデータ生成のための SageMath 入りの別イメージであり、証明には不要です。
+`Dockerfile` から軽量なイメージ（Debian 13、Python 3、仮想環境中の NumPy、GCC、curl。SageMath と Lean は含まない）を作り、3 つの水準をすべて実行できます。`docker build -t l112 .` でイメージを作り、`docker run --rm l112` で水準 (i) を、`docker run --rm -v "$PWD/certificates:/work/certificates" -v "$PWD/out:/work/out" l112 bash -c 'bash code/verify/fetch.sh && bash code/verify/proof.sh'` で水準 (ii) を実行します（ダウンロードしたデータと結果はホストに残ります。水準 (iii) では `proof.sh` を `full.sh 3` に替えます。Linux で uid が 1000 でない場合は `--user "$(id -u):$(id -g)"` を付けます）。開発コンテナ（`.devcontainer/`）も同じイメージを用います。VS Code では「Reopen in Container」を選ぶか、GitHub Codespaces でリポジトリを開いてください。`Dockerfile.sage` は補足計算とデータ生成のための SageMath 入りの別イメージであり、証明には不要です。
 
 ## 版と再現性
 

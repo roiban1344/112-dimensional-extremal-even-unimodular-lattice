@@ -9,7 +9,8 @@
 #
 # (ii) The computational part of the proof (about 1.2 CPU hours). Mount the host directories
 #      certificates/ and out/ of a clone of this repository, so that the 130 MB download and the
-#      results survive the container (the host user should have uid 1000, as the user in the image):
+#      results survive the container. The user in the image has uid 1000; on Linux with another uid,
+#      add --user "$(id -u):$(id -g)" to the commands that mount host directories:
 #   mkdir -p out
 #   docker run --rm -v "$PWD/certificates:/work/certificates" -v "$PWD/out:/work/out" l112 \
 #       bash -c 'bash code/verify/fetch.sh && bash code/verify/proof.sh'
