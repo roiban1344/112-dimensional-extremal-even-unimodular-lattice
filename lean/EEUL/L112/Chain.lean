@@ -1,19 +1,39 @@
 /-
+# The argument for the 112-dimensional lattice L₁₁₂ (formalization with computed facts as hypotheses)
 # 112 次元格子 L₁₁₂ の論証（計算事実を仮定とした形式化）
+
+In the abstract setting below we prove the following items of the paper (§7.1, Table 9):
+Lemma 3.2 (the evenness part), Lemma 4.2, Corollary 4.3, Lemma 5.1 (the midpoint lemma),
+Corollaries 5.2 and 5.3, §4.2 (reduction by symmetry),
+and the derivation "F1–F5 ⟹ there is no inner-shell vector".
 
 論文（§7.1、表 9）の
 補題 3.2（偶性の部分）・補題 4.2・系 4.3・補題 5.1（中点補題）・系 5.2・系 5.3・§4.2（対称性による帰着）と、
 「F1〜F5 ⟹ 内殻ベクトルが無い」の導出を、**抽象的な設定で**証明する。
 
+Setting: `L` is an additive group, `B` is an integer-valued symmetric bilinear form on `L`, and `τ` satisfies
+`B (τ x) (τ y) = 5 B x y` and `τ (τ x) = -5x`.
+For the vector `z = (x, τx + 2y)/√2` of `L₁₁₂`, twice the norm is `N x + N (τ x + 2y)` (where `N x = B x x`).
+The main theorem `no_inner_shell` says: if `(x, τx+2y) ≠ 0` then `N x + N (τ x + 2y) ≥ 20`, i.e. the norm of `L₁₁₂` is at least 10.
+
 設定: `L` は加法群、`B` は `L` 上の整数値の対称双線形形式、`τ` は `B (τ x) (τ y) = 5 B x y`、`τ (τ x) = -5x` を満たす。
 `L₁₁₂` のベクトル `z = (x, τx + 2y)/√2` のノルムの 2 倍は `N x + N (τ x + 2y)`（`N x = B x x`）。
 主定理 `no_inner_shell` は「`(x, τx+2y) ≠ 0` なら `N x + N (τ x + 2y) ≥ 20`」、すなわち `L₁₁₂` のノルムが 10 以上。
+
+**Hypotheses (facts verified by computation; not proved in Lean)**:
+* `Setting.min6` (F1): every nonzero vector has norm at least 6. `Setting.even`: norms are even.
+* `Data.cover6`, `Data.cover8` (F2, F3): every vector of norm 6 or 8 is the image of a representative under an element of the symmetry group `S`.
+* `Data.sym` (F4): elements of `S` are isometries and commute with `τ`.
+* `Data.bound6`, `Data.bound8` (F5): each representative's coset has a certificate (a coset representative w₀ satisfying the norm and inner-product conditions of Check 5.4 of the paper), i.e. a norm condition and an inner-product condition against the minimal vectors.
+Unimodularity (`det = 1`) is an integer-matrix computation and is not treated here.
+
+Mathlib is not imported as a whole (to save memory; do not use `leanchecker`).
 
 **仮定として置くもの（計算で確かめた事実。Lean では証明していない）**:
 * `Setting.min6`（F1）: 0 でないベクトルのノルムは 6 以上。`Setting.even`: ノルムは偶数。
 * `Data.cover6`, `Data.cover8`（F2, F3）: ノルム 6・8 のベクトルは、対称性の群 `S` の元で代表の像になる。
 * `Data.sym`（F4）: `S` の元は等長で `τ` と可換。
-* `Data.bound6`, `Data.bound8`（F5）: 各代表の類に下界代表元がある（ノルムの条件と、最小ベクトルとの内積の条件）。
+* `Data.bound6`, `Data.bound8`（F5）: 各代表の類に、下界を保証する代表元がある（ノルムの条件と、最小ベクトルとの内積の条件）。
 ユニモジュラー性（`det = 1`）は整数行列の計算なので、ここでは扱わない。
 
 Mathlib 全体は読み込まない（メモリ節約。`leanchecker` は使わないこと）。
@@ -27,13 +47,16 @@ import Mathlib.Tactic.ByContra
 
 namespace EEUL.L112
 
-/-- 抽象的な設定: 整数値の対称双線形形式 `B` をもつ加法群 `L` と、`√-5` として働く自己準同型 `τ`。 -/
+/-- Abstract setting: an additive group `L` with an integer-valued symmetric bilinear form `B`, and an endomorphism `τ` acting as `√-5`.
+抽象的な設定: 整数値の対称双線形形式 `B` をもつ加法群 `L` と、`√-5` として働く自己準同型 `τ`。 -/
 structure Setting (L : Type*) [AddCommGroup L] where
   B : L →+ L →+ ℤ
   symm : ∀ x y, B x y = B y x
-  /-- 偶格子: ノルムは偶数。 -/
+  /-- Even lattice: norms are even.
+  偶格子: ノルムは偶数。 -/
   even : ∀ x, B x x % 2 = 0
-  /-- **F1**（仮定）: 0 でないベクトルのノルムは 6 以上。 -/
+  /-- **F1** (hypothesis): every nonzero vector has norm at least 6.
+  **F1**（仮定）: 0 でないベクトルのノルムは 6 以上。 -/
   min6 : ∀ x, x ≠ 0 → 6 ≤ B x x
   τ : L →+ L
   τ_sim : ∀ x y, B (τ x) (τ y) = 5 * B x y
@@ -43,7 +66,8 @@ namespace Setting
 
 variable {L : Type*} [AddCommGroup L] (S : Setting L)
 
-/-- ノルム `N x = B x x`。 -/
+/-- The norm `N x = B x x`.
+ノルム `N x = B x x`。 -/
 def N (x : L) : ℤ := S.B x x
 
 theorem B_add_left (a b c : L) : S.B (a + b) c = S.B a c + S.B b c := by
@@ -82,14 +106,16 @@ theorem B_two_right (a y : L) : S.B a (2 • y) = 2 * S.B a y := by
 
 theorem N_tau (x : L) : S.N (S.τ x) = 5 * S.N x := S.τ_sim x x
 
-/-- 0 でないベクトルの 2 倍のノルムは 24 以上。 -/
+/-- Twice a nonzero vector has norm at least 24.
+0 でないベクトルの 2 倍のノルムは 24 以上。 -/
 theorem N_two_ge (y : L) (hy : y ≠ 0) : 24 ≤ S.N (2 • y) := by
   rw [N_two]
   have := S.min6 y hy
   unfold N
   omega
 
-/-- 補題 3.2 の偶性の部分: `N x + N (τ x + 2y) = 6 N x + 4 (B (τ x) y + N y)`。とくに 4 の倍数。 -/
+/-- The evenness part of Lemma 3.2: `N x + N (τ x + 2y) = 6 N x + 4 (B (τ x) y + N y)`; in particular it is a multiple of 4.
+補題 3.2 の偶性の部分: `N x + N (τ x + 2y) = 6 N x + 4 (B (τ x) y + N y)`。とくに 4 の倍数。 -/
 theorem norm_sum (x y : L) :
     S.N x + S.N (S.τ x + 2 • y) = 6 * S.N x + 4 * (S.B (S.τ x) y + S.N y) := by
   rw [N_add, N_tau, N_two, B_two_right]
@@ -101,7 +127,8 @@ theorem norm_sum_mod4 (x y : L) : (S.N x + S.N (S.τ x + 2 • y)) % 4 = 0 := by
   unfold N at *
   omega
 
-/-- `τ x ∈ 2L` なら `x ∈ 2L`（補題 4.2 の証明の `v = 0` の場合）。 -/
+/-- If `τ x ∈ 2L` then `x ∈ 2L` (the case `v = 0` in the proof of Lemma 4.2).
+`τ x ∈ 2L` なら `x ∈ 2L`（補題 4.2 の証明の `v = 0` の場合）。 -/
 theorem two_dvd_of_tau (x y : L) (h : S.τ x + 2 • y = 0) : x = 2 • (S.τ y - 2 • x) := by
   have h1 : S.τ x = -(2 • y) := eq_neg_of_add_eq_zero_left h
   have h2 : S.τ (S.τ x) = -(2 • S.τ y) := by rw [h1, map_neg, map_nsmul]
@@ -111,7 +138,8 @@ theorem two_dvd_of_tau (x y : L) (h : S.τ x + 2 • y = 0) : x = 2 • (S.τ y 
     _ = 2 • S.τ y - 4 • x := by rw [h3]
     _ = 2 • (S.τ y - 2 • x) := by abel
 
-/-- `τ² ≡ 1 (mod 2)`: `v = τ x + 2y` なら `x = τ v + 2 (3x - τ y)`（付録 C.4）。 -/
+/-- `τ² ≡ 1 (mod 2)`: if `v = τ x + 2y` then `x = τ v + 2 (3x - τ y)` (Appendix C.4).
+`τ² ≡ 1 (mod 2)`: `v = τ x + 2y` なら `x = τ v + 2 (3x - τ y)`（付録 C.4）。 -/
 theorem tau_involution_mod2 (x y : L) :
     x = S.τ (S.τ x + 2 • y) + 2 • (3 • x - S.τ y) := by
   rw [map_add, map_nsmul, S.τ_sq]
@@ -119,7 +147,8 @@ theorem tau_involution_mod2 (x y : L) :
 
 end Setting
 
-/-! ## 主定理（補題 4.2 + 系 4.3）: 四衝突条件から内殻ベクトルが無いことが出る -/
+/-! ## Main theorem (Lemma 4.2 + Corollary 4.3): the two coset bounds of Corollary 4.3 imply there is no inner-shell vector
+## 主定理（補題 4.2 + 系 4.3）: 系 4.3 の二つの下界から内殻ベクトルが無いことが出る -/
 
 section Main
 
@@ -127,7 +156,12 @@ variable {L : Type*} [AddCommGroup L] (S : Setting L)
 
 open Setting
 
-/-- **四衝突条件 ⟹ 内殻ベクトルが無い**（系 4.3 の「⇐」）。
+/-- **The two coset bounds of Corollary 4.3 ⟹ no inner-shell vector** (the "⇐" direction of Corollary 4.3).
+Hypothesis `h6`: every element of the coset `τ r + 2L` of a minimal vector `r` has norm at least 14.
+Hypothesis `h8`: every element of the coset `τ x + 2L` of a norm-8 vector `x` has norm at least 12.
+Conclusion: if `(x, τx + 2y) ≠ 0` then `N x + N (τ x + 2y) ≥ 20` (norm of `L₁₁₂` ≥ 10).
+
+**系 4.3 の二つの下界 ⟹ 内殻ベクトルが無い**（系 4.3 の「⇐」）。
 仮定 `h6`: 最小ベクトル `r` の類 `τ r + 2L` の元はノルム 14 以上。
 仮定 `h8`: ノルム 8 の `x` の類 `τ x + 2L` の元はノルム 12 以上。
 結論: `(x, τx + 2y) ≠ 0` なら `N x + N (τ x + 2y) ≥ 20`（`L₁₁₂` のノルム ≥ 10）。 -/
@@ -184,7 +218,8 @@ theorem no_inner_shell
 
 end Main
 
-/-! ## 中点補題と下界代表元（補題 5.1、系 5.2、系 5.3） -/
+/-! ## The midpoint lemma and certificates (Lemma 5.1, Corollaries 5.2 and 5.3)
+## 中点補題と代表元（補題 5.1、系 5.2、系 5.3） -/
 
 section Bounding
 
@@ -192,10 +227,12 @@ variable {L : Type*} [AddCommGroup L] (S : Setting L)
 
 open Setting
 
-/-- 下界代表元の条件: すべての最小ベクトル `u` について `|B w0 u| ≤ 6`。 -/
+/-- The inner-product condition on a certificate: `|B w0 u| ≤ 6` for every minimal vector `u`.
+代表元の条件: すべての最小ベクトル `u` について `|B w0 u| ≤ 6`。 -/
 def SmallIP (w0 : L) : Prop := ∀ u, S.N u = 6 → -6 ≤ S.B w0 u ∧ S.B w0 u ≤ 6
 
-/-- 中点の計算: `w = w0 + 2y` について、2 つの中点 `-y` と `w0 + y` のノルム。 -/
+/-- Midpoint computation: for `w = w0 + 2y`, the norms of the two midpoints `-y` and `w0 + y`.
+中点の計算: `w = w0 + 2y` について、2 つの中点 `-y` と `w0 + y` のノルム。 -/
 theorem midpoints (w0 y : L) :
     4 * S.N y = S.N (w0 + 2 • y) - S.N w0 - 4 * S.B w0 y ∧
     4 * S.N (w0 + y) = 3 * S.N w0 + S.N (w0 + 2 • y) + 4 * S.B w0 y := by
@@ -203,7 +240,8 @@ theorem midpoints (w0 y : L) :
   · rw [N_add, N_two, B_two_right]; ring
   · rw [N_add, N_add, N_two, B_two_right]; ring
 
-/-- **系 5.2（奇の類の下界）**: ノルム 14 か 18 の下界代表元 `w0` があれば、その類の元はすべてノルム 14 以上。 -/
+/-- **Corollary 5.2 (bound for odd cosets)**: if there is a certificate `w0` of norm 14 or 18, then every element of its coset has norm at least 14.
+**系 5.2（奇の類の下界）**: ノルム 14 か 18 の代表元 `w0` があれば、その類の元はすべてノルム 14 以上。 -/
 theorem odd_bound (w0 : L) (hN : S.N w0 = 14 ∨ S.N w0 = 18) (hip : SmallIP S w0) (y : L) :
     14 ≤ S.N (w0 + 2 • y) := by
   obtain ⟨e1, e2⟩ := midpoints S w0 y
@@ -239,7 +277,8 @@ theorem odd_bound (w0 : L) (hN : S.N w0 = 14 ∨ S.N w0 = 18) (hip : SmallIP S w
       rcases hN with h | h <;> omega
     · rcases hN with h | h <;> omega
 
-/-- **系 5.3（偶の類の下界）**: ノルム 12, 16, 20 の下界代表元 `w0` があれば、その類の元はすべてノルム 12 以上。 -/
+/-- **Corollary 5.3 (bound for even cosets)**: if there is a certificate `w0` of norm 12, 16 or 20, then every element of its coset has norm at least 12.
+**系 5.3（偶の類の下界）**: ノルム 12, 16, 20 の代表元 `w0` があれば、その類の元はすべてノルム 12 以上。 -/
 theorem even_bound (w0 : L) (hN : S.N w0 = 12 ∨ S.N w0 = 16 ∨ S.N w0 = 20) (hip : SmallIP S w0) (y : L) :
     12 ≤ S.N (w0 + 2 • y) := by
   obtain ⟨e1, e2⟩ := midpoints S w0 y
@@ -276,34 +315,42 @@ theorem even_bound (w0 : L) (hN : S.N w0 = 12 ∨ S.N w0 = 16 ∨ S.N w0 = 20) (
 
 end Bounding
 
-/-! ## 対称性による帰着と、計算事実 F1〜F5 からの主定理 -/
+/-! ## Reduction by symmetry, and the main theorem from the computed facts F1–F5
+## 対称性による帰着と、計算事実 F1〜F5 からの主定理 -/
 
 section Reduction
 
 variable {L : Type*} [AddCommGroup L]
 
-/-- 計算で得たデータと、計算で確かめた事実（F2〜F5）。`Sym` は対称性の群、`reps6`・`reps8` は軌道代表。 -/
+/-- Data obtained by computation, and the facts verified by computation (F2–F5). `Sym` is the symmetry group; `reps6` and `reps8` are orbit representatives.
+計算で得たデータと、計算で確かめた事実（F2〜F5）。`Sym` は対称性の群、`reps6`・`reps8` は軌道代表。 -/
 structure Data (S : Setting L) where
   Sym : Set (L ≃+ L)
   reps6 : Set L
   reps8 : Set L
-  /-- **F4**: 対称性の元は等長で、`τ` と可換。 -/
+  /-- **F4**: elements of the symmetry group are isometries and commute with `τ`.
+  **F4**: 対称性の元は等長で、`τ` と可換。 -/
   sym_iso : ∀ g ∈ Sym, ∀ a b, S.B (g a) (g b) = S.B a b
   sym_tau : ∀ g ∈ Sym, ∀ a, S.τ (g a) = g (S.τ a)
-  /-- **F2**: ノルム 6 のベクトルは代表の像。 -/
+  /-- **F2**: every vector of norm 6 is the image of a representative.
+  **F2**: ノルム 6 のベクトルは代表の像。 -/
   cover6 : ∀ x, S.N x = 6 → ∃ g ∈ Sym, ∃ r ∈ reps6, x = g r
-  /-- **F3**: ノルム 8 のベクトルは代表の像（代表は (軌道代表) × (中心化群の元) の全体）。 -/
+  /-- **F3**: every vector of norm 8 is the image of a representative (the representatives range over all pairs of an orbit representative and an element of the centralizer).
+  **F3**: ノルム 8 のベクトルは代表の像（代表は (軌道代表) × (中心化群の元) の全体）。 -/
   cover8 : ∀ x, S.N x = 8 → ∃ g ∈ Sym, ∃ r ∈ reps8, x = g r
-  /-- **F5a**: 各代表 `r ∈ reps6` の類 `τ r + 2L` に奇の下界代表元がある。 -/
+  /-- **F5a**: the coset `τ r + 2L` of each representative `r ∈ reps6` has an odd certificate.
+  **F5a**: 各代表 `r ∈ reps6` の類 `τ r + 2L` に、下界を保証する代表元（奇）がある。 -/
   bound6 : ∀ r ∈ reps6, ∃ w0 y0, w0 = S.τ r + 2 • y0 ∧ (S.N w0 = 14 ∨ S.N w0 = 18) ∧ SmallIP S w0
-  /-- **F5b**: 各代表 `r ∈ reps8` の類 `τ r + 2L` に偶の下界代表元がある。 -/
+  /-- **F5b**: the coset `τ r + 2L` of each representative `r ∈ reps8` has an even certificate.
+  **F5b**: 各代表 `r ∈ reps8` の類 `τ r + 2L` に、下界を保証する代表元（偶）がある。 -/
   bound8 : ∀ r ∈ reps8, ∃ w0 y0, w0 = S.τ r + 2 • y0 ∧ (S.N w0 = 12 ∨ S.N w0 = 16 ∨ S.N w0 = 20) ∧ SmallIP S w0
 
 variable {S : Setting L} (D : Data S)
 
 open Setting
 
-/-- 代表の類についての下界を、群の像に移す（§4.2）。 -/
+/-- Transport the bound on the coset of a representative to its image under a group element (§4.2).
+代表の類についての下界を、群の像に移す（§4.2）。 -/
 theorem class_bound_transport (g : L ≃+ L) (hg : g ∈ D.Sym) (r : L) (c : ℤ)
     (hr : ∀ y, c ≤ S.N (S.τ r + 2 • y)) (y : L) : c ≤ S.N (S.τ (g r) + 2 • y) := by
   have : S.τ (g r) + 2 • y = g (S.τ r + 2 • g.symm y) := by
@@ -313,14 +360,17 @@ theorem class_bound_transport (g : L ≃+ L) (hg : g ∈ D.Sym) (r : L) (c : ℤ
   unfold N at this ⊢
   rwa [D.sym_iso g hg]
 
-/-- 下界代表元から、類全体の下界へ。 -/
+/-- From a certificate to a bound on the whole coset.
+代表元から、類全体の下界へ。 -/
 theorem class_bound_of_rep (r w0 y0 : L) (hw : w0 = S.τ r + 2 • y0) (c : ℤ)
     (hb : ∀ y, c ≤ S.N (w0 + 2 • y)) (y : L) : c ≤ S.N (S.τ r + 2 • y) := by
   have : S.τ r + 2 • y = w0 + 2 • (y - y0) := by rw [hw]; abel
   rw [this]; exact hb _
 
 include D in
-/-- **定理 A の論理部分**: F1（`Setting.min6`）と F2〜F5（`Data`）を仮定すれば、
+/-- **The logical part of Theorem A**: assuming F1 (`Setting.min6`) and F2–F5 (`Data`),
+if `(x, τx+2y) ≠ 0` then `N x + N (τ x + 2y) ≥ 20`; that is, `L₁₁₂` has no inner-shell vector.
+**定理 A の論理部分**: F1（`Setting.min6`）と F2〜F5（`Data`）を仮定すれば、
 `(x, τx+2y) ≠ 0` のとき `N x + N (τ x + 2y) ≥ 20`。すなわち `L₁₁₂` に内殻ベクトルは無い。 -/
 theorem theoremA (x y : L) (hz : x ≠ 0 ∨ S.τ x + 2 • y ≠ 0) :
     20 ≤ S.N x + S.N (S.τ x + 2 • y) := by
