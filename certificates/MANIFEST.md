@@ -6,7 +6,7 @@ This directory contains verification data: orbit representatives, coset represen
 
 The large `.npz` files are attached to the GitHub Release, not stored in git. `SHA256SUMS`
 (in git) fixes their content; every reader in `code/lib/certs.py` checks the hash before use.
-Download them with `bash code/verify/fetch.sh`; its optional argument is the Release tag (default `certificates-v1`). The Release is at <https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1>.
+Download them with `bash code/verify/fetch.sh`; its optional argument is the Release tag (default `certificates-v2`). The Release is at <https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v2>.
 
 File names keep the letter R of an earlier draft for the 112-dimensional lattice (`outer_automorphism_R.txt`, `reduction_R.txt`; also `data/R112_gram_LLL.txt`); the paper calls it L₁₁₂.
 
@@ -46,6 +46,6 @@ Route T (supplement §S4.1, [C21]; not used in the proof of Theorem A):
 | file | arrays | content | checked by | produced by |
 |---|---|---|---|---|
 | `route_t_search3.npz` | `w0` int16 (3936, 56) | certificates for the 3,936 classes r u_k μ + 2L of search (3), order in `code/supplementary/route_t/common.py` | route_t/check.py | route_t/certify.py |
-| `route_t_search2.npz` | `w0` int16 (763992, 56), `done` bool (763992) | certificates for the classes x_i u_k (1+τ) + 2L of search (2); rows with `done = False` are not yet computed (zero) | route_t/check.py | route_t/certify.py |
+| `route_t_search2.npz` | `w0` int16 (763992, 56), `done` bool (763992) | certificates for all 763,992 classes x_i u_k (1+τ) + 2L of search (2), order in `code/supplementary/route_t/common.py`; `done` is True on every row (kept so that a partial file can be completed with `certify.py search2 --missing`) | route_t/check.py | route_t/certify.py |
 
-`route_t_search2.npz` is incomplete in this release: the computation was still running when the files were published, and the file will be replaced when it is complete. `check.py` reports how many classes are certified and checks exactly those; the remaining classes are covered only by the floating-point search (`route_t/float_cvp.py`).
+`route_t_search2.npz` is complete from Release `certificates-v2` on (all 763,992 classes; `certificates-v1` had 610,664). The rows present in `certificates-v1` are unchanged. `check.py` checks every row.

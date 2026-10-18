@@ -6,8 +6,8 @@ authors:
 title: "An extremal even unimodular lattice in dimension 112: paper, data and verification"
 repository-code: "https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice"
 license: MIT
-version: v2026-10-18.1
-date-released: "2026-10-18"
+version: v2026-10-19.1
+date-released: "2026-10-19"
 preferred-citation:
   type: unpublished
   title: "An extremal even unimodular lattice in dimension 112"

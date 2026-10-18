@@ -531,7 +531,7 @@ Direction, choice of problem, decisions, and responsibility for publication: roi
   [#strong[\[SW10\]] D. Stehlé, M. Watkins, On the extremality of an 80-dimensional lattice, ANTS-IX, LNCS 6197 (2010) 340–356.],
   [#strong[\[Wat12\]] M. Watkins, Another 80-dimensional extremal lattice, J. Théor. Nombres Bordeaux 24 (2012).],
   [#strong[\[Soft\]] The FPLLL development team, #emph[fplll, a lattice reduction library], version 5.5.0, #link("https://github.com/fplll/fplll")[source]; The PARI Group, #emph[PARI/GP], #link("https://pari.math.u-bordeaux.fr/")[website]; The GAP Group, #emph[GAP], #link("https://www.gap-system.org/")[website]; Lean and mathlib, #link("https://github.com/leanprover/lean4")[Lean source], #link("https://github.com/leanprover-community/mathlib4")[mathlib source].],
-  [#strong[\[Repo\]] roiban1344, #emph[112-dimensional extremal even unimodular lattice] (data, the code that checks and produces the verification data, the verification data, the Lean formalization), #link("https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice")[public repository] (tag #raw("v2026-10-18.1")).],
+  [#strong[\[Repo\]] roiban1344, #emph[112-dimensional extremal even unimodular lattice] (data, the code that checks and produces the verification data, the verification data, the Lean formalization), #link("https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice")[public repository] (tag #raw("v2026-10-19.1")).],
 )
 
 = Appendix A. Glossary <appA>
