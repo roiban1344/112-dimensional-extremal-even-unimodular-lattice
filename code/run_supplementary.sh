@@ -34,10 +34,11 @@ declare -A STEP=(
   [route_t_recount]="$PY $C/supplementary/route_t/recount.py"
   [route_t_check3]="$PY $C/supplementary/route_t/check.py search3"
   [isometry_ab]="$PY $C/supplementary/isometry_ab.py check"
+  [genus_check]="$PY $C/supplementary/genus/genus.py check"
 )
 ORDER=(gluings frame_stabilizer node_estimate sample_check frames gluing_b anatomy_b fixed_sublattices float_svp float_qfminim
        float_cvp610 aut_normalizer aut_diagonal aut_structure aut_character endomorphisms group_facts nebe_lattices identify_nebe
-       nebe_tables nebe_gluings reduction_to_nebe route_t_classify route_t_recount route_t_check3 isometry_ab)
+       nebe_tables nebe_gluings reduction_to_nebe route_t_classify route_t_recount route_t_check3 isometry_ab genus_check)
 [ $# -gt 0 ] && ORDER=("$@")
 for s in "${ORDER[@]}"; do
   echo "=== $s ($(date '+%F %T'))"
