@@ -1,17 +1,5 @@
 """Shared fixtures of the smoke tests (pytest). See code/README.md, section "Tests".
 試験（pytest）の共通の fixture。code/README.ja.md の「試験」の節を参照。
-
-Markers / マーカー:
-  slow  takes more than a few seconds (a whole verification script as a subprocess)
-        数秒より長くかかる（検算スクリプト全体を子プロセスで走らせる）
-  data  needs the large certificate files certificates/*.npz (bash code/verify/fetch.sh);
-        skipped when they are missing
-        大きな検証用データ certificates/*.npz（bash code/verify/fetch.sh）が必要。無ければ飛ばす
-
-Run from the repository root / リポジトリの根から実行する:
-  python -m pytest code/tests                      everything available / 実行できるものすべて
-  python -m pytest code/tests -m "not slow"        a few seconds / 数秒
-  python -m pytest code/tests -m data              with the certificate files (about 10 min) / 検証用データを使う（約 10 分）
 """
 import json
 import os

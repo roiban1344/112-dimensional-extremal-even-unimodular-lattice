@@ -80,8 +80,13 @@ def test_negative_control_tau_changed_by_one_byte(tmp_path):
     assert last["check"].startswith("data/tau.txt has the published SHA-256") and last["ok"] is False, res
 
 
-SHELL_SCRIPTS = sorted(glob.glob(os.path.join(REPO, "**", "*.sh"), recursive=True))
-SHELL_SCRIPTS = [p for p in SHELL_SCRIPTS if os.sep + "." not in os.path.relpath(p, REPO)]
+# Limit discovery to source directories so scratch files and nested worktrees are not tested.
+# 作業用ファイルや内部の別 worktree を拾わないよう、ソースのディレクトリだけを探索する。
+SHELL_SCRIPTS = sorted(
+    p
+    for directory in ("code", "lean")
+    for p in glob.glob(os.path.join(REPO, directory, "**", "*.sh"), recursive=True)
+)
 
 
 @pytest.mark.skipif(shutil.which("bash") is None, reason="no bash")

@@ -125,16 +125,11 @@ Markers: `slow` (a whole verification script run as a subprocess, more than a fe
 (needs the large certificate files; skipped when they are missing). CI runs `-m "not data"` on every
 pull request, and the `data` tests weekly and on demand (`.github/workflows/data-tests.yml`).
 
-Covered: the exactness guards of `lib/exact.py` at the edges 2²⁴, 2⁵³, 2⁶² (cancellation, INT64_MIN,
-floating-point input refused, `CheckError` not caught by `except AssertionError`) and the exact linear
-algebra; the enumerator `enum_interval.c` against brute force on random forms and against ℤⁿ, A₂, D₄,
-E₈ (also in skewed bases) and 2·E₈, and its report of untabulated vectors; group closure and canonical
-forms modulo 2 on a small group; `Report` (stale JSON removed, failures and exceptions recorded as
-`"passed": false`, refusal under `python -O`); the checkpoint logic of v7 with a stand-in for the minimal
-vectors; v0, v2 and `v1 --controls-only`; the hashes of `data/` pinned in `lib/data.py` against
-`data/SHA256SUMS`, and a copy of `data/` with one byte of `tau.txt` changed (v0 must fail); `bash -n` on the
-shell scripts. With `-m data`: v5 on the published data and on a copy with one mutated certificate (must
-fail in (c)), and `v7 --limit 64` with and without a checkpoint made for other inputs.
+Covered: exactness guards and linear algebra; enumeration against brute force and known lattices;
+group closure and canonical forms modulo 2; reporting and checkpoint handling; v0, v2 and
+`v1 --controls-only`; published hashes and rejection of modified input; shell syntax in `code/` and
+`lean/`. The `data` tests run v5 on published and mutated certificates, and `v7 --limit 64` with and
+without a checkpoint made for other inputs. See `tests/test_*.py` for the individual cases.
 
 Not covered: these tests are not a verification of the theorem and do not replace `proof.sh` or
 `full.sh`. They do not run v1 on L, v3, v4, v6, v8 or v7 beyond 64 pairs, nor `produce/`, `crosscheck/`,
