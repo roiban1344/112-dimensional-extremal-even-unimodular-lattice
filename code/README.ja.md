@@ -2,7 +2,7 @@
 
 [English](README.md)
 
-このディレクトリには、論文で使った計算がすべて入っています。論文の表 D2 はそれを [C1]〜[C27] として並べており、
+このディレクトリには、論文で使った計算がすべて入っています。論文の表 D2 はそれを [C1]〜[C28] として並べており、
 このファイルの最後の節で、各行とここのスクリプトを対応させます。
 
 ## 何が示され、何に依拠するか
@@ -152,3 +152,4 @@ P = 0, …, Q−1 について `certify.py search2 --missing --part P --nparts Q
 | [C25] | supplementary/automorphisms/group_facts.g, out_facts.g, aut_diagonal.py |
 | [C26] | supplementary/automorphisms/aut_structure.py, aut_character.py, endomorphisms.py |
 | [C27] | crosscheck/all_data/check_all.py, min_L.py, min_L_enum.c |
+| [C28] | supplementary/isometry_ab.py (find, check) |

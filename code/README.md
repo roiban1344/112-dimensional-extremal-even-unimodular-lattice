@@ -3,7 +3,7 @@
 [日本語版](README.ja.md)
 
 This directory contains every computation used in the paper. Table D2 of the paper lists them
-as [C1]–[C27]; the last section of this file maps each row to the scripts here.
+as [C1]–[C28]; the last section of this file maps each row to the scripts here.
 
 ## What is proved, and what it relies on
 
@@ -165,3 +165,4 @@ for P = 0, …, Q−1 (only the classes without a certificate; resumable), then
 | [C25] | supplementary/automorphisms/group_facts.g, out_facts.g, aut_diagonal.py |
 | [C26] | supplementary/automorphisms/aut_structure.py, aut_character.py, endomorphisms.py |
 | [C27] | crosscheck/all_data/check_all.py, min_L.py, min_L_enum.c |
+| [C28] | supplementary/isometry_ab.py (find, check) |

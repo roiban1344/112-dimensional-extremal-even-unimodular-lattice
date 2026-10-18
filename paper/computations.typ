@@ -85,6 +85,9 @@
   (id: "C27", files: ("code/crosscheck/all_data/check_all.py", "code/crosscheck/all_data/min_L.py", "code/crosscheck/all_data/min_L_enum.c"),
    en: [Independent re-check of all certificates and of F1 by separately written code (integer arithmetic; float32 products only with proved bounds on all partial sums)],
    ja: [すべての代表元と F1 の、作成側と別に書いたコードによる検算（整数演算。float32 の積は部分和の上界を証明した場合だけ）], time: [≈ 10 h]),
+  (id: "C28", files: ("code/supplementary/isometry_ab.py",),
+   en: [Gluings A and B are isometric: an explicit basis change $T$ with $T G_B T^top = G_A$, checked in integer arithmetic ($det T = plus.minus 1$)],
+   ja: [貼り方 A と B は等長同型: $T G_B T^top = G_A$ を満たす基底変換 $T$ を明示し、整数演算で検算（$det T = plus.minus 1$）], time: [find 8 min; check 2 s]),
 )
 
 #let _calc-ids = calcs.map(c => c.id)
