@@ -454,6 +454,14 @@ Our $L_56$ is $"SL"_2\(29\)$-equivariantly isometric to $L_(56\,2)\(tilde(M)\)$ 
 
 We find 6 (up to sign) unimodular integer matrices $T$ with $T G T^(sans(T)) = G'$ intertwining the two actions, as many as predicted by the centralizer of order 12. Moreover, in the coordinates of $L_56'$, $tau$ becomes right multiplication by an element of $tilde(M)$ of reduced norm 5. Thus #strong[gluing C is built from Nebe's lattice $L_(56\,2)\(tilde(M)\)$ and an element of reduced norm 5 and reduced trace 0 of its maximal order $tilde(M)$; such elements fall into two classes modulo 2 in the sense of §3.3, and $tau$ belongs to the class giving minimum 10].
 
+#strong[The element explicitly.] The model used by #raw("cycloquat.py") is the following. Let $K_4 subset bb(Q)(zeta_29)$ be the quartic subfield, with Gaussian periods $eta_j = sum_(k=0)^6 zeta_29^(2^(4k+j))$ ($j = 0, dots, 3$; 2 is a primitive root modulo 29), and let $cal(Q) = K_4 plus.o K_4 b$ with $b^2 = -1$ and $b x = macron(x) b$, where $macron(x)$ is the complex conjugate; complex conjugation exchanges $eta_0 arrow.l.r eta_2$ and $eta_1 arrow.l.r eta_3$, and its fixed field in $K_4$ is $bb(Q)(sqrt(29))$. This is the quaternion algebra $cal(Q)$ of §2.4. The maximal order $tilde(M)$ constructed by the program is the $bb(Z)$-module with basis
+$ m_0 = (eta_0 + 41 eta_1 + 144 eta_2 + 104 eta_3 + (133 eta_0 + 88 eta_1 + 12 eta_2 + 492 eta_3) b) / 145, $
+$ m_1 = eta_1 + 2 eta_3 b, quad m_2 = eta_2 + 3 eta_3 b, quad m_3 = eta_3 + 3 eta_3 b, $
+$ m_4 = (eta_0 + eta_3) b, quad m_5 = (eta_1 + eta_3) b, quad m_6 = (eta_2 + 4 eta_3) b, quad m_7 = 5 eta_3 b. $
+In the coordinates of $L_56'$, the similitude $tau$ is right multiplication by
+$ h = x + y b, quad x = (33 (eta_0 - eta_2) + 48 (eta_1 - eta_3)) / 145, quad y = (-106 eta_0 + 4 eta_1 - 39 eta_2 - 4 eta_3) / 145, $
+that is, $h = 33 m_0 - 9 m_1 - 33 m_2 - 24 m_3 - 31 m_4 - 20 m_5 - 3 m_6 + 28 m_7 in tilde(M)$. Since $macron(x) = -x$, the reduced trace of $h$ is $0$, and its reduced norm $x macron(x) + y macron(y)$ is $5$, so that $h^2 = -5$. Replacing $T$ by another of the 6 isometries conjugates $h$ by a unit of $tilde(M)$, which does not change the isometry class of the gluing. The lattice $L_(56,2)(tilde(M))$ is the unimodular member of the family $bb(Z)[zeta_29] tilde(M) (1 - zeta_29)^i$ with the form $"Tr"(c (x macron(x') + y macron(y')))$, $c$ totally positive, of \[Neb98, §3\]. Together with (1.2), these data specify $L_112$ without the files.
+
 = 8. The automorphism group <s8>
 
 We first compute, by finite exact lattice computations, the normalizer of $"SL"_2\(29\)$ in $"Aut"\(L_112\)$; then we prove that $"SL"_2\(29\)$ is normal in $"Aut"\(L_112\)$, by a group-theoretic argument modeled on Sakamoto's determination of the automorphism groups in dimension 88 \[Sak26, App. A\] (Appendix F). Neither step uses the extremality of $L_112$, and Theorem A does not depend on this section.
