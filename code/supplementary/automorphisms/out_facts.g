@@ -52,14 +52,14 @@ res := [];
 # Simple groups occurring in rows of degree <= 112 of Hiss-Malle Table 3 (CTblLib names; extracted mechanically from the
 #   table, plus L3(3) from the corrigenda). Ru (degree 28) and J4 (degree 112, characteristic 2) are the
 #   ones with 29 | |T|; they are listed so that the output matches Appendix F.4 (e).
-#   Completeness of the list (checked 2026-10-18 against the text of both tables): the rows of degree <= 112 of
+#   Completeness of the list (checked against the text of both tables): the rows of degree <= 112 of
 #   Table 3 of [HM01] contain 77 simple groups (the central extension, e.g. "2." or "3_1.", removed), Table 3 of
 #   the corrigenda [HM02] the same 77 and L3(3), 78 in all. They are exactly the 75 names below and the 3 groups
 #   after them (S4(11), S4(13), U8(2)), with no group missing or extra. (The list of the research computation
 #   omitted Ru and J4 because it was used only for the groups with 29 not dividing |T|.)
 # Hiss–Malle 表 3 の次数 ≤ 112 の行に現れる単純群（CTblLib の名前。表を機械的に抜き出したもの + 正誤表の L3(3)）。
 #   Ru（28 次）と J4（標数 2 の 112 次）は 29 | |T| となる群であり、出力が付録 F.4 (e) と対応するように一覧に含める。
-#   一覧が漏れなく正しいこと（2026-10-18 に両方の表のテキストと照合した）: [HM01] の表 3 の次数 112 以下の行には、中心拡大（「2.」「3_1.」など）を
+#   一覧が漏れなく正しいこと（両方の表のテキストと照合した）: [HM01] の表 3 の次数 112 以下の行には、中心拡大（「2.」「3_1.」など）を
 #   外すと 77 個の単純群があり、正誤表 [HM02] の表 3 には同じ 77 個と L3(3) の計 78 個がある。これは下の 75 個の名前と、その後の
 #   3 つ（S4(11)、S4(13)、U8(2)）にちょうど一致し、過不足は無い（研究時の計算の一覧に Ru と J4 が無かったのは、29 が |T| を割らない
 #   群だけに使っていたため）。
