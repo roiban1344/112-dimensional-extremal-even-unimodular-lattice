@@ -1,6 +1,6 @@
-"""P5. Find the even bounding representatives of the 1,527,984 classes x_i u_k tau + 2L
-(paper §6.7, Table 12). Produces certificates/even_bounding.npz (checked by verify/v7_even_bounding.py).
-P5. 1,527,984 個の類 x_i u_k tau + 2L の偶の下界代表元を見つける（論文 §6.7、表 12）。certificates/even_bounding.npz を作る
+"""P5. Find the even-class certificates of the 1,527,984 classes x_i u_k tau + 2L
+(paper §6.7, Table 8). Produces certificates/even_bounding.npz (checked by verify/v7_even_bounding.py).
+P5. 1,527,984 個の類 x_i u_k tau + 2L の偶の類の certificate を見つける（論文 §6.7、表 8）。certificates/even_bounding.npz を作る
 （verify/v7_even_bounding.py が確かめる）。
 
 For pair number p = 6 i + k, run the descent (descent.py) from w = x_i u_k tau (norm 40).
@@ -33,14 +33,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 sys.path.insert(0, HERE)
 from descent import Descent  # noqa: E402
-from r112 import certs, data, exact, group  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, data, exact, group  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 NPAIRS = 1527984
 
 
 def main():
-    ap = argparse.ArgumentParser(description="P5: even bounding representatives")
+    ap = argparse.ArgumentParser(description="P5: even-class certificates")
     ap.add_argument("--part", type=int, default=0)
     ap.add_argument("--nparts", type=int, default=1)
     ap.add_argument("--limit", type=int, default=None, help="only the first N pairs of this part / この部分の先頭 N 組だけ")
@@ -97,7 +97,7 @@ def main():
         key = f"norm {nw}, max {m}"
         hist[key] = hist.get(key, 0) + 1
         if not (nw in (12, 16, 20) and m <= 6):
-            rep.log(f"pair {p}: no bounding representative found (norm {nw}, max {m})")
+            rep.log(f"pair {p}: no certificate found (norm {nw}, max {m})")
         W[pos] = w
         if (pos + 1) % 5000 == 0 or pos + 1 == len(idx):
             certs.save_npz(path, w0=W, done=np.int64(pos + 1))

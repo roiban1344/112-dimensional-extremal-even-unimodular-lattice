@@ -1,25 +1,25 @@
-"""P3. Find representatives of the G*-orbits on L_8 by the method of minimal-sum elements
-(paper §6.4, Definition 6.1, Table 7). Produces the list that verify/v4_norm8_orbits.py checks.
-P3. 最小和元の方法で L_8 の G*-軌道の代表を見つける（論文 §6.4、定義 6.1、表 7）。verify/v4_norm8_orbits.py が確かめる一覧を作る。
+"""P3. Find representatives of the S*-orbits on L_8 by the method of marked elements (sums of two minimal vectors)
+(paper §6.4, Definition 6.1, Table 3). Produces the list that verify/v4_norm8_orbits.py checks.
+P3. 印の付く元の方法で L_8 の S*-軌道の代表を見つける（論文 §6.4、定義 6.1、表 3）。verify/v4_norm8_orbits.py が確かめる一覧を作る。
 
-G* = G C, where C is the centralizer (certificates/centralizer.npz holds C/{+-1}); |G*| = 24,360 * 12 / 2
+S* = S C, where C is the centralizer (certificates/centralizer.npz holds C/{+-1}); |S*| = 24,360 * 12 / 2
 = 146,160. The 36,957,286,800 norm-8 vectors cannot be stored, so orbits are told apart by marking
-only their minimal-sum elements:
-G* = G C（C は中心化群。certificates/centralizer.npz に C/{±1}）。|G*| = 24,360 × 12 / 2 = 146,160。
-369 億本のノルム 8 のベクトルは持てないので、軌道を区別するのに、最小和元にだけ印を付ける:
+only their marked elements (sums of two minimal vectors):
+S* = S C（C は中心化群。certificates/centralizer.npz に C/{±1}）。|S*| = 24,360 × 12 / 2 = 146,160。
+369 億本のノルム 8 のベクトルは持てないので、軌道を区別するのに、印の付く元にだけ印を付ける:
 
   * Every norm-8 vector we need is x = r + s with r, s minimal and <r, s> = -2, and by symmetry r
-    can be taken among the G*-orbit representatives r_i of L_6 (150 of them).
+    can be taken among the S*-orbit representatives r_i of L_6 (150 of them).
     X_i = { r_i + s : s in L_6, <r_i, s> = -2 } (the candidates).
-    必要なノルム 8 のベクトルはすべて x = r + s（r, s は最小、<r, s> = -2）と書け、対称性により r は L_6 の G*-軌道の代表 r_i
+    必要なノルム 8 のベクトルはすべて x = r + s（r, s は最小、<r, s> = -2）と書け、対称性により r は L_6 の S*-軌道の代表 r_i
     （150 個）から取れる。X_i = { r_i + s : s ∈ L_6, <r_i, s> = -2 }（候補）。
-  * The minimal-sum elements of an orbit O are the elements of O in some X_i.
-    軌道 O の最小和元とは、O の元で、ある X_i に入るもの。
+  * The marked elements (sums of two minimal vectors) of an orbit O are the elements of O in some X_i.
+    軌道 O の印の付く元とは、O の元で、ある X_i に入るもの。
   * The candidates x in X_0, X_1, ... are visited in order; an unmarked x starts a new orbit, and
-    all minimal-sum elements of its orbit are computed and marked at once: y = +-x u g^{-1} lies in
+    all marked elements (sums of two minimal vectors) of its orbit are computed and marked at once: y = +-x u g^{-1} lies in
     X_i iff <y, r_i> = 4 iff <x u, r_i g> = +-4, so with the precomputed list W = { r_i g } a single
     matrix product finds them all.
-    候補 x ∈ X_0, X_1, … を順に見る。印の無い x は新しい軌道を始め、その軌道の最小和元をすべて一度に求めて印を付ける:
+    候補 x ∈ X_0, X_1, … を順に見る。印の無い x は新しい軌道を始め、その軌道の印の付く元をすべて一度に求めて印を付ける:
     y = ±x u g^{-1} が X_i に入る ⟺ <y, r_i> = 4 ⟺ <x u, r_i g> = ±4。前もって W = { r_i g } を並べておけば、行列積 1 回で全部見つかる。
   * Speed-up: the pairs with <x u, r_i g> = +-4 correspond to decompositions x = w + w' (w, w'
     minimal, <w, w'> = -2), and when x = r_i + s0 every such w lies in {r_i, s0} or among the
@@ -29,9 +29,9 @@ G* = G C（C は中心化群。certificates/centralizer.npz に C/{±1}）。|G*
     高速化: <x u, r_i g> = ±4 となる組は分解 x = w + w'（w, w' は最小、<w, w'> = -2）に対応し、x = r_i + s0 のとき、そのような w は
     {r_i, s0} か、r_i との内積が 3 または 2 の最小ベクトル（i ごとに前もって作る）の中にある。これで W の走査がハッシュの表引きに
     置き換わる（約 30 倍速い）。最初の 25 軌道は素朴な走査と突き合わせる。
-  * The stabilizer order of x in G* is the number of times x returns to itself as a minimal-sum
-    element of X_i (i the index that produced x); the orbit size is |G*| / that.
-    x の G* における固定群の位数は、x が X_i（i は x を作った番号）の最小和元として自分自身に戻ってくる回数。軌道の大きさ = |G*| / それ。
+  * The stabilizer order of x in S* is the number of times x returns to itself as a minimal-sum
+    element of X_i (i the index that produced x); the orbit size is |S*| / that.
+    x の S* における固定群の位数は、x が X_i（i は x を作った番号）の印の付く元として自分自身に戻ってくる回数。軌道の大きさ = |S*| / それ。
   * The search stops when the orbit sizes add up to |L_8| = 36,957,286,800 and three more X_i have
     been confirmed to contain no unmarked candidate.
     軌道の大きさの和が |L_8| = 36,957,286,800 に達し、さらに 3 つの X_i に印の無い候補が無いことを確かめたら止める。
@@ -41,8 +41,8 @@ which would show up as a missing size; the result is checked independently by V4
 既知のベクトルは 64 ビットのハッシュで持つ。衝突は軌道を飛ばす方向にしか働かず、大きさの不足として現れる。結果は V4 が独立に確かめる。
 
 Products in float32 are exact: all entries are small integers, and the bound on the partial sums is
-asserted (r112.exact / explicit asserts below).
-float32 の積は厳密: 成分はすべて小さな整数で、部分和の上界を確かめる（r112.exact と下の assert）。
+asserted (lib.exact / explicit asserts below).
+float32 の積は厳密: 成分はすべて小さな整数で、部分和の上界を確かめる（lib.exact と下の assert）。
 
 Checkpoint: out/p3/state.npz every 10 minutes and after each i; rerun the same command to resume.
 途中経過: 10 分ごとと各 i のあとに out/p3/state.npz に保存する。同じコマンドで再開する。
@@ -52,8 +52,8 @@ certificates/norm8_reps.npz by the set of canonical forms of the classes x u_k (
 choice of representatives may differ).
 出力: out/p3_norm8_reps.npz。certificates/norm8_reps.npz とは、類 x u_k の標準形の集合で比べる（並びと代表の選び方は違いうる）。
 
-Run time: about 1.5 hours. Memory: about 2.5 GB.
-実行時間: 約 1.5 時間。メモリ: 約 2.5 GB。
+Run time: about 1.2 hours. Memory: up to about 5 GB while saving checkpoints.
+実行時間: 約 1.2 時間。メモリ: チェックポイントの保存中に最大約 5 GB。
 
 Run / 実行:  python3 code/produce/p3_norm8_orbits.py [--trial N] [--data DIR] [--certificates DIR] [--out DIR]
              (--trial N stops after N orbits and reports the speed / N 軌道で止めて速さを報告する)
@@ -67,16 +67,16 @@ import time
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from r112 import certs, data, exact, group, mod2  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, data, exact, group, mod2  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 N8 = 36957286800
 
 
 def gstar_roots(R6, U, can):
-    """Representatives of the G*-orbits on L_6: merge the 656 G-orbits r_j whose classes are
+    """Representatives of the S*-orbits on L_6: merge the 656 S-orbits r_j whose classes are
     related by an element of C (union-find on canonical forms of r_j u).
-    L_6 の G*-軌道の代表: C の元で移りあう G-軌道 r_j をまとめる（r_j u の標準形による union-find）。"""
+    L_6 の S*-軌道の代表: C の元で移りあう S-軌道 r_j をまとめる（r_j u の標準形による union-find）。"""
     key = {int(c): j for j, c in enumerate(can.canon(mod2.pack(R6)))}
     parent = list(range(len(R6)))
 
@@ -141,10 +141,10 @@ class State:
 
 
 def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None):
-    """Representatives and sizes of the G*-orbits on the norm-8 vectors of the lattice with Gram matrix G
-    (G* generated by S and the centralizer elements Un), by minimal-sum elements as described above.
+    """Representatives and sizes of the S*-orbits on the norm-8 vectors of the lattice with Gram matrix G
+    (S* generated by S and the centralizer elements Un), by marked elements (sums of two minimal vectors) as described above.
     Checkpoints in `pdir`. Usable for any lattice with an action of SL_2(29) (also supplementary/nebe).
-    Gram 行列 G の格子のノルム 8 のベクトルの G*-軌道（G* は S と中心化群の元 Un が生成）の代表と大きさを、上の最小和元の方法で求める。
+    Gram 行列 G の格子のノルム 8 のベクトルの S*-軌道（S* は S と中心化群の元 Un が生成）の代表と大きさを、上の印の付く元の方法で求める。
     途中経過は `pdir` に保存する。SL_2(29) が作用する任意の格子に使える（supplementary/nebe にも）。"""
     n = len(G)
     Ginv = exact.inverse_unimodular(G)
@@ -157,8 +157,8 @@ def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None):
     can = mod2.Canonical(S)
     R = gstar_roots(R6, Un, can)
     m = len(R)
-    rep.value("|G*|", GSTAR)
-    rep.value("G*-orbits of minimal vectors (from 656 G-orbits)", m)
+    rep.value("|S*|", GSTAR)
+    rep.value("S*-orbits of minimal vectors (from 656 S-orbits)", m)
 
     # W = { r_i g }, with hashes sorted for look-up. / W = { r_i g } とその整列したハッシュ。
     S32 = S.astype(np.float32)
@@ -286,7 +286,7 @@ def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None):
             if checked < 3000:
                 # Spot check: y has norm 8 and y - r_{i'} has norm 6. / 抜き取り検査。
                 Dd = Y - R[ii]
-                assert (exact.norms(Y, G) == 8).all() and (exact.norms(Dd, G) == 6).all(), "bad minimal-sum element"
+                assert (exact.norms(Y, G) == 8).all() and (exact.norms(Dd, G) == 6).all(), "bad marked element"
                 checked += len(Y)
             hY = Y @ hv
             here = ii == i
@@ -314,14 +314,14 @@ def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None):
         rep.log(f"i = {i}: |X_i| = {len(Xi)}, new orbits {new_here}, total {len(st.reps)}, {100 * sum(st.sizes) / n8:.3f} % of L_8")
         st.save(ckpt)
     total = sum(st.sizes)
-    rep.value("G*-orbits found", len(st.reps))
+    rep.value("S*-orbits found", len(st.reps))
     rep.value("orbit sizes {size: count}", {int(k): int(v) for k, v in zip(*np.unique(st.sizes, return_counts=True))})
     rep.check("the orbit sizes add up to |L_8|", total == n8)
     return np.stack(st.reps).astype(np.int16), np.array(st.sizes, dtype=np.int64)
 
 
 def main():
-    ap = argparse.ArgumentParser(description="P3: orbits of norm-8 vectors by minimal-sum elements")
+    ap = argparse.ArgumentParser(description="P3: orbits of norm-8 vectors by marked elements (sums of two minimal vectors)")
     ap.add_argument("--trial", type=int, default=None)
     ap.add_argument("--data", default=None)
     ap.add_argument("--certificates", default=None)
@@ -339,8 +339,8 @@ def main():
         return
     certs.save_npz(os.path.join(rep.out_dir, "p3_norm8_reps.npz"), reps=reps, sizes=sizes)
 
-    # Compare with the certificate: the same set of G-orbits (canonical forms of x u_k).
-    # 配布した代表と比べる: 同じ G-軌道の集合（x u_k の標準形）。
+    # Compare with the certificate: the same set of S-orbits (canonical forms of x u_k).
+    # 配布した代表と比べる: 同じ S-軌道の集合（x u_k の標準形）。
     def forms(X):
         out = set()
         for u in Un:
@@ -350,7 +350,7 @@ def main():
         return out
     mine = forms(reps)
     old = forms(certs.load("norm8_reps.npz", "reps", a.certificates))
-    rep.check("same 1517130 G-orbits as certificates/norm8_reps.npz (equal sets of canonical forms)",
+    rep.check("same 1517130 S-orbits as certificates/norm8_reps.npz (equal sets of canonical forms)",
               mine == old and len(mine) == 1517130)
     rep.finish()
 

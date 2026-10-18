@@ -1,6 +1,6 @@
-"""S7. The structure of Aut(R) from explicit generators (paper §7.8, Theorem B; Table D2 [C26]).
+"""S7. The structure of Aut(L_112) from explicit generators (paper §8, Theorem B; Table D2 [C26]).
 Not used in the proof of Theorem A.
-S7. 明示的な生成元からの Aut(R) の構造（論文 §7.8、定理 B。表 D2 の [C26]）。定理 A の証明には使わない。
+S7. 明示的な生成元からの Aut(L_112) の構造（論文 §8、定理 B。表 D2 の [C26]）。定理 A の証明には使わない。
 
 Generators, as 112 x 112 integer matrices in the basis (3.1): the two generators of S = SL_2(29),
 the 48 elements of C_A(S) (recomputed), and the automorphism X of certificates/outer_automorphism_R.txt.
@@ -34,12 +34,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
 from common import Setup, commutant_in_end_S  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 
 def main():
     from sage.all import GF, QQ, libgap, matrix
-    ap = argparse.ArgumentParser(description="S7: structure of Aut(R)")
+    ap = argparse.ArgumentParser(description="S7: structure of Aut(L_112)")
     ap.add_argument("--data", default=None)
     ap.add_argument("--certificates", default=None)
     ap.add_argument("--out", default=None)
@@ -48,7 +48,7 @@ def main():
     st = Setup(a.data, a.certificates)
     cent = st.centralizer()
     X, _ = st.outer_automorphism()
-    rep.check("all generators are isometries of R", all(M * st.GR * M.transpose() == st.GR for M in cent + st.sR + [X]))
+    rep.check("all generators are isometries of L_112", all(M * st.GR * M.transpose() == st.GR for M in cent + st.sR + [X]))
     rep.value("(5) determinants: S, C_A(S), X", [sorted({int(M.det()) for M in st.sR}), sorted({int(M.det()) for M in cent}), int(X.det())])
 
     F3 = GF(3)

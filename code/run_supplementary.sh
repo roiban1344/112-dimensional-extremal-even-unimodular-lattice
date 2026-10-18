@@ -30,10 +30,13 @@ declare -A STEP=(
   [nebe_tables]="$PY $C/supplementary/nebe/tables.py"
   [nebe_gluings]="$PY $C/supplementary/nebe/gluings_m.py"
   [reduction_to_nebe]="$PY $C/supplementary/nebe/reduction_to_nebe.py"
+  [route_t_classify]="$PY $C/supplementary/route_t/classify.py"
+  [route_t_recount]="$PY $C/supplementary/route_t/recount.py"
+  [route_t_check3]="$PY $C/supplementary/route_t/check.py search3"
 )
 ORDER=(gluings frame_stabilizer node_estimate sample_check frames gluing_b anatomy_b fixed_sublattices float_svp float_qfminim
        float_cvp610 aut_normalizer aut_diagonal aut_structure aut_character endomorphisms group_facts nebe_lattices identify_nebe
-       nebe_tables nebe_gluings reduction_to_nebe)
+       nebe_tables nebe_gluings reduction_to_nebe route_t_classify route_t_recount route_t_check3)
 [ $# -gt 0 ] && ORDER=("$@")
 for s in "${ORDER[@]}"; do
   echo "=== $s ($(date '+%F %T'))"

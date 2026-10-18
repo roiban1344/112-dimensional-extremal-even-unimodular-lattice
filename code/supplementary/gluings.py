@@ -1,6 +1,6 @@
-"""S1. The SL_2(29)-equivariant gluings of two copies of L (paper §3.3, Proposition 3.3, Table 6
+"""S1. The SL_2(29)-equivariant gluings of two copies of L (paper §3.3, Proposition 3.3, Table 2
 rows for L; §3.3 last paragraph). Not used in the proof of Theorem A.
-S1. L の 2 枚の SL_2(29)-同変な貼り方（論文 §3.3、命題 3.3、表 6 の L の行、§3.3 の最後の段落）。定理 A の証明には使わない。
+S1. L の 2 枚の SL_2(29)-同変な貼り方（論文 §3.3、命題 3.3、表 2 の L の行、§3.3 の最後の段落）。定理 A の証明には使わない。
 
 Checks / 確かめること:
   (a) The F_2-linear maps of L/2L commuting with g1, g2 form an 8-dimensional space, equal to the
@@ -19,8 +19,8 @@ Checks / 確かめること:
       one of them.
       M' には t^2 = -5 となる元がちょうど 24 個（q(t) = tr(t t*)/56 = 5 となる有限個の中から見つかる）。12 個ずつ類 B と類 C に落ち、
       与えた tau はその 1 つ。
-The rows of Table 6 for Nebe's lattice L_{56,2}(M) are computed in supplementary/nebe_gluings.py.
-表 6 の Nebe の格子 L_{56,2}(M) の行は supplementary/nebe_gluings.py で計算する。
+The rows of Table 2 for Nebe's lattice L_{56,2}(M) are computed in supplementary/nebe_gluings.py.
+表 2 の Nebe の格子 L_{56,2}(M) の行は supplementary/nebe_gluings.py で計算する。
 
 Requires SageMath (linear algebra over F_2, PARI qfminim). Run time: about 1 minute.
 SageMath（F_2 上の線形代数、PARI の qfminim）が要る。実行時間: 約 1 分。
@@ -38,8 +38,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "produce"))
 from p1_centralizer import elements_of_norm  # noqa: E402
-from r112 import certs, data  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, data  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 
 def main():

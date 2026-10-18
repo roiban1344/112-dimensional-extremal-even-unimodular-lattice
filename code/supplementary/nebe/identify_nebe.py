@@ -1,6 +1,6 @@
 """S11. Identification of L with Nebe's lattice L_{56,2}(M~) built from the definition, without any
-external data (paper §7.7; Table D2 [C23]). Not used in the proof of Theorem A.
-S11. L と、外部データを使わず定義から作った Nebe の格子 L_{56,2}(M~) の同定（論文 §7.7。表 D2 の [C23]）。定理 A の証明には使わない。
+external data (paper §7.2; Table D2 [C23]). Not used in the proof of Theorem A.
+S11. L と、外部データを使わず定義から作った Nebe の格子 L_{56,2}(M~) の同定（論文 §7.2。表 D2 の [C23]）。定理 A の証明には使わない。
 
   1. L' = L_{56,2}(M~) and generators z', w' of SL_2(29) on it, built from the definition by
      lattices.py (run first; it writes out/nebe/Mtilde_*).
@@ -36,8 +36,8 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "produce"))
 sys.path.insert(0, os.path.join(HERE, "..", "automorphisms"))
-from r112 import data  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import data  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 
 def write_mats(path, header, mats):

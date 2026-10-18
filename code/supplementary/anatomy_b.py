@@ -1,24 +1,24 @@
-"""S16. Support modules of the norm-8 vectors of gluing B (paper §7.4, Table 14; Table D2 [C19]).
+"""S16. Support modules of the norm-8 vectors of gluing B (supplement §S4.1, Table S9; Table D2 [C19]).
 Not used in the proof of Theorem A.
-S16. 貼り方 B のノルム 8 のベクトルの台加群（論文 §7.4、表 14。表 D2 の [C19]）。定理 A の証明には使わない。
+S16. 貼り方 B のノルム 8 のベクトルの台加群（補遺 §S4.1、表 S9。表 D2 の [C19]）。定理 A の証明には使わない。
 
 Input: the 10 colliding pairs (x, v) of gluing B from supplementary/gluing_b.py (out/gluing_b_collisions.npz).
-Each gives two norm-8 vectors of R_B, z = (x, v)/sqrt2 and z' = (v, x)/sqrt2 (the swap preserves R_B because
+Each gives two norm-8 vectors of L_B, z = (x, v)/sqrt2 and z' = (v, x)/sqrt2 (the swap preserves L_B because
 tau_B^2 = 1 mod 2), 20 in all. Writing z = e_1 tensor x + e_2 tensor y with y = (v - x tau_B)/2, the
 support module is N_z = O x + O y (O = Z[sqrt -5] acting by sqrt -5 -> tau_B).
-入力: supplementary/gluing_b.py の衝突 10 組 (x, v)（out/gluing_b_collisions.npz）。各組から R_B のノルム 8 のベクトル z = (x, v)/√2 と
-z' = (v, x)/√2（tau_B^2 ≡ 1 mod 2 なので入れ替えは R_B を保つ）、合わせて 20 本。z = e_1 ⊗ x + e_2 ⊗ y（y = (v - x tau_B)/2）と書くと、
+入力: supplementary/gluing_b.py の衝突 10 組 (x, v)（out/gluing_b_collisions.npz）。各組から L_B のノルム 8 のベクトル z = (x, v)/√2 と
+z' = (v, x)/√2（tau_B^2 ≡ 1 mod 2 なので入れ替えは L_B を保つ）、合わせて 20 本。z = e_1 ⊗ x + e_2 ⊗ y（y = (v - x tau_B)/2）と書くと、
 台加群は N_z = O x + O y（O = Z[√-5] は √-5 -> tau_B で作用）。
 
 For each z: the Gram matrix of (x, y) for the trace-normalised Hermitian form
     k(a, b) = (1/2)[<a, b> + <a tau, b> / sqrt(-5)]   (so <a, a> = 2 k(a, a)),
 its determinant det_k, Coulangeon's bound 2 sqrt(det h_H det_k N) <= k_R(z, z) = 4, the index of
 N_z in its saturation (as Z-lattices), and the minimum of N_z (exact: the vector x has norm 8, and the
-enumeration that cannot miss vectors finds none of norm <= 6). Expected (Table 14): two types,
+enumeration that cannot miss vectors finds none of norm <= 6). Expected (Table S9): two types,
 det_k = 4 (12 vectors; Gram matrix 2 H^{-1}, equality in Coulangeon's bound) and det_k = 19/5 (8 vectors),
 both saturated (index 1) and with minimum 8.
 各 z について: トレースで正規化したエルミート形式 k による (x, y) の Gram 行列、その行列式 det_k、Coulangeon の評価、飽和の中での N_z の指数
-（Z-格子として）、N_z の最小（厳密: x はノルム 8、取りこぼしの無い列挙でノルム 6 以下は無い）。期待値（表 14）: 2 つの型、det_k = 4（12 本。
+（Z-格子として）、N_z の最小（厳密: x はノルム 8、取りこぼしの無い列挙でノルム 6 以下は無い）。期待値（表 S9）: 2 つの型、det_k = 4（12 本。
 Gram 行列は 2H^{-1} で Coulangeon の評価の等号）と det_k = 19/5（8 本）。どちらも飽和（指数 1）で最小 8。
 
 Requires SageMath (the field Q(sqrt -5)). Run time: about 1 minute.
@@ -33,9 +33,9 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
-from r112 import data  # noqa: E402
-from r112 import enumerate as exact_enum  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import data  # noqa: E402
+from lib import enumerate as exact_enum  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 
 def main():
@@ -83,7 +83,7 @@ def main():
             key = f"det_k {dk}, index {index}, minimum {mn}"
             table[key] = table.get(key, 0) + 1
     rep.value("(det_k N_z, index of N_z in its saturation, minimum of N_z) -> number of vectors", table)
-    rep.check("Table 14: two types, det_k = 4 and det_k = 19/5, all saturated with minimum 8",
+    rep.check("Table S9: two types, det_k = 4 and det_k = 19/5, all saturated with minimum 8",
               set(table) == {"det_k 4, index 1, minimum 8", "det_k 19/5, index 1, minimum 8"})
     rep.value("2 H^{-1} (the Gram matrix of type I up to reduction) and its determinant",
               [str(2 * H.inverse()), str((2 * H.inverse()).det())])

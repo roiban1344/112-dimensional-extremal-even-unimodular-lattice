@@ -1,6 +1,6 @@
-"""V2. Extremal theta series, Siegel means and the derived numbers (paper §1.3, §2.3, §2.6, §4.3,
-Tables 3, 5, 8, B1, B2). Exact rational arithmetic, pure Python (no numpy).
-V2. 極値テータ級数、Siegel 平均と、そこから出る数（論文 §1.3, §2.3, §2.6, §4.3、表 3, 5, 8, B1, B2）。
+"""V2. Extremal theta series, Siegel means and the derived numbers (paper §1.3, §2.3, Appendix B; supplement §S1, §S2,
+Tables B1, S1, S2, S4, S5). Exact rational arithmetic, pure Python (no numpy).
+V2. 極値テータ級数、Siegel 平均と、そこから出る数（論文 §1.3, §2.3, 付録 B。補遺 §S1, §S2、表 B1, S1, S2, S4, S5）。
 有理数の厳密な計算。純 Python（numpy も使わない）。
 
 Used in the proof of Theorem A: |L_6| = 15,590,400 and |L_8| = 36,957,286,800 (the numbers that
@@ -25,7 +25,7 @@ from fractions import Fraction
 from math import comb
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from r112.report import Report  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 
 # --- power series with integer coefficients, truncated below q^prec ---
@@ -95,8 +95,8 @@ def bernoulli(n):
 
 def siegel_mean(n, m):
     """Average number of vectors of norm 2m over the genus of even unimodular lattices of
-    dimension n = 2k, weighted by 1/|Aut|: the coefficient -(2k/B_k) sigma_{k-1}(m) of E_k (§2.6).
-    次元 n = 2k の偶ユニモジュラー格子の種にわたる、1/|Aut| で重みづけたノルム 2m のベクトルの本数の平均（§2.6）。"""
+    dimension n = 2k, weighted by 1/|Aut|: the coefficient -(2k/B_k) sigma_{k-1}(m) of E_k (supplement §S1).
+    次元 n = 2k の偶ユニモジュラー格子の種にわたる、1/|Aut| で重みづけたノルム 2m のベクトルの本数の平均（補遺 §S1）。"""
     k = n // 2
     return -Fraction(2 * k) / bernoulli(k) * sigma(k - 1, m)
 
@@ -140,31 +140,31 @@ def main():
     rep.check("n = 112: 10888335360 vectors of norm 10, 247006775232000 of norm 12",
               t112[:7] == [1, 0, 0, 0, 0, 10888335360, 247006775232000])
 
-    # --- Table 5: Siegel means versus extremal coefficients (heuristic background) ---
-    # --- 表 5: Siegel 平均と極値の係数（発見的な背景）---
+    # --- Table S1: Siegel means versus extremal coefficients (heuristic background) ---
+    # --- 表 S1: Siegel 平均と極値の係数（発見的な背景）---
     for n, ms in ((56, range(1, 6)), (112, range(1, 7))):
-        rep.value(f"Table 5, n = {n}: Siegel mean of norm 2m for m = {list(ms)}",
+        rep.value(f"Table S1, n = {n}: Siegel mean of norm 2m for m = {list(ms)}",
                   [f"{float(siegel_mean(n, m)):.6g}" for m in ms])
 
-    # --- Table B2: S(n) / 表 B2: S(n) ---
+    # --- Table S2: S(n) / 表 S2: S(n) ---
     S = {n: siegel_inner(n) for n in range(24, 137, 8)}
-    rep.value("Table B2: S(n)", {n: f"{float(v):.4g}" for n, v in S.items()})
+    rep.value("Table S2: S(n)", {n: f"{float(v):.4g}" for n, v in S.items()})
     rep.check("S(112) = 51014.2 (rounded)", round(float(S[112]), 1) == 51014.2)
 
-    # --- Table 3: lambda = S(n) / |G| (heuristic) / 表 3: λ = S(n)/|G|（発見的）---
+    # --- Table S4: lambda = S(n) / |G| (heuristic) / 表 S4: λ = S(n)/|G|（発見的）---
     rows = [("P48n", 48, 524160), ("P48p", 48, 145728), ("P48q", 48, 103776), ("P48m", 48, 1200),
             ("Gamma72", 72, 5241600), ("L80", 80, 4.5e9), ("gluings A, B", 112, 292320),
-            ("R, full Aut", 112, 1169280), ("R, SL2(29) only", 112, 24360)]
-    rep.value("Table 3: lambda", {name: f"{float(S[n]) / g:.2g}" for name, n, g in rows})
+            ("L_112, full Aut", 112, 1169280), ("L_112, SL2(29) only", 112, 24360)]
+    rep.value("Table S4: lambda", {name: f"{float(S[n]) / g:.2g}" for name, n, g in rows})
 
-    # --- Table 8 / Appendix C.6: expected numbers of collisions for a random gluing (heuristic) ---
-    # --- 表 8 / 付録 C.6: でたらめな貼り方での衝突の期待値（発見的）---
+    # --- Table S5 / supplement §S2.1: expected numbers of collisions for a random gluing (heuristic) ---
+    # --- 表 S5 / 補遺 §S2.1: 無作為な貼り方での衝突の期待値（発見的）---
     odd, even = 2 ** 55 - 2 ** 27, 2 ** 55 + 2 ** 27
     L6, L8, L10 = t56[3], t56[4], t56[5]
     e66 = Fraction(L6 * L6, odd)
     e610 = 2 * Fraction(L6 * L10, odd)
     e88 = Fraction(L8 * L8, even)
-    rep.value("Table 8: expected (6,6), (6,10)+(10,6), (8,8), total",
+    rep.value("Table S5: expected (6,6), (6,10)+(10,6), (8,8), total",
               [f"{float(e66):.3g}", f"{float(e610):.0f}", f"{float(e88):.0f}", f"{float(e66 + e610 + e88):.0f}"])
     rep.finish()
 

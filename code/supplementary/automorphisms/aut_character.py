@@ -1,9 +1,9 @@
-"""S8. Conjugacy classes of Aut(R), its character on V = R tensor Q, and the Molien series
-(spherical designs from the group alone) (paper §7.8; Table D2 [C26]). Not used in the proof of Theorem A.
-S8. Aut(R) の共役類、V = R⊗Q 上の指標、Molien 級数（群だけから得られる球面デザイン）（論文 §7.8。表 D2 の [C26]）。
+"""S8. Conjugacy classes of Aut(L_112), its character on V = L_112 tensor Q, and the Molien series
+(spherical designs from the group alone) (paper §8; Table D2 [C26]). Not used in the proof of Theorem A.
+S8. Aut(L_112) の共役類、V = L_112⊗Q 上の指標、Molien 級数（群だけから得られる球面デザイン）（論文 §8。表 D2 の [C26]）。
 定理 A の証明には使わない。
 
-A = Aut(R) is built modulo 3 from its generators (as in S7) and moved to a permutation group
+A = Aut(L_112) is built modulo 3 from its generators (as in S7) and moved to a permutation group
 (degree 12,992). Class representatives are written as words in the generators and multiplied out as
 integer matrices, which gives exact traces. Then:
 A を生成元から 3 を法として作り（S7 と同じ）、置換群（次数 12,992）に移す。共役類の代表を生成元の語として取り出し、整数行列として掛けて
@@ -15,8 +15,8 @@ A を生成元から 3 を法として作り（S7 と同じ）、置換群（次
       tr(M^j) by Newton's identity k h_k = sum_{j=1}^k p_j h_{k-j} (exact rational arithmetic);
       k ≤ 12 の Molien 係数。h_k は固有値の完全斉次対称式で、冪和 tr(M^j) から Newton の恒等式で求める（有理数の厳密な計算）。
   (3) the invariant harmonic polynomials have dimension a_k - a_{k-2}; none of degree 1, 2, 3 and 48 of
-      degree 4, so the group alone makes every shell of R a spherical 3-design (not 4).
-      不変な調和多項式の次元は a_k - a_{k-2}。次数 1, 2, 3 には無く、次数 4 に 48 次元ある。群だけからは R の各殻は球面 3-デザイン（4 ではない）。
+      degree 4, so the group alone makes every shell of L_112 a spherical 3-design (not 4).
+      不変な調和多項式の次元は a_k - a_{k-2}。次数 1, 2, 3 には無く、次数 4 に 48 次元ある。群だけからは L_112 の各殻は球面 3-デザイン（4 ではない）。
 The permutation group is written to out/aut_perm.g (GAP format) for further use.
 置換群は out/aut_perm.g（GAP の形式）に書き出す。
 
@@ -32,14 +32,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
 from common import Setup  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 ORDER = 1169280
 
 
 def main():
     from sage.all import GF, QQ, ZZ, identity_matrix, libgap, matrix
-    ap = argparse.ArgumentParser(description="S8: classes, character and Molien series of Aut(R)")
+    ap = argparse.ArgumentParser(description="S8: classes, character and Molien series of Aut(L_112)")
     ap.add_argument("--kmax", type=int, default=12)
     ap.add_argument("--data", default=None)
     ap.add_argument("--certificates", default=None)
@@ -68,7 +68,7 @@ def main():
     fromP = libgap.InverseGeneralMapping(toP)
     os.makedirs(rep.out_dir, exist_ok=True)
     with open(os.path.join(rep.out_dir, "aut_perm.g"), "w") as f:
-        f.write("# Aut(R) as a permutation group (code/supplementary/automorphisms/aut_character.py)\n")
+        f.write("# Aut(L_112) as a permutation group (code/supplementary/automorphisms/aut_character.py)\n")
         f.write("AutR := Group(" + str(libgap.GeneratorsOfGroup(P)).replace("\n", "") + ");\n")
     cls = libgap.ConjugacyClasses(P)
     sizes = [int(libgap.Size(c)) for c in cls]

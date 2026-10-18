@@ -1,6 +1,6 @@
-"""S19. Gluings of two copies of Nebe's L_{56,2}(M) (paper §3.2, §3.3, Proposition 3.3, Table 6 rows for
-L_{56,2}(M), Table 10 row "gluing A"; Table D2 [C3], [C4]). Not used in the proof of Theorem A.
-S19. Nebe の L_{56,2}(M) 2 枚の貼り方（論文 §3.2、§3.3、命題 3.3、表 6 の L_{56,2}(M) の行、表 10 の「貼り方 A」の行。表 D2 の [C3], [C4]）。
+"""S19. Gluings of two copies of Nebe's L_{56,2}(M) (paper §3.2, §3.3, Proposition 3.3, Table 2 rows for
+L_{56,2}(M), Table 6 row "gluing A"; Table D2 [C3], [C4]). Not used in the proof of Theorem A.
+S19. Nebe の L_{56,2}(M) 2 枚の貼り方（論文 §3.2、§3.3、命題 3.3、表 2 の L_{56,2}(M) の行、表 6 の「貼り方 A」の行。表 D2 の [C3], [C4]）。
 定理 A の証明には使わない。
 
 Uses out/nebe/M_* (lattices.py) and out/nebe/M_tables.npz (tables.py).
@@ -16,12 +16,12 @@ out/nebe/M_*（lattices.py）と out/nebe/M_tables.npz（tables.py）を使う�
       M' のノルム q = 3 の元 96 個はすべて 2 を法として C の元と合同（ノルム 3 の虚二次構造、たとえば Q(√-11) や Q(√-2) 上の貼り方は
       すべて強制された衝突をもつ）;
   (c) gluing A (an integral lift X of an element f of the class of size 48): L_f is even unimodular;
-      every class r_j f + 2L and r_j f^{-1} + 2L has an odd bounding representative (no vector of norm 6,
+      every class r_j f + 2L and r_j f^{-1} + 2L has an odd-class certificate (no vector of norm 6,
       and no norm-8 vector of types (6,10), (10,6)); the canonical-form test finds the colliding pairs
-      (x_i u_k, f) with norm-8 vectors in the class; their x form 6 regular G-orbits, so L_f has minimum 8
+      (x_i u_k, f) with norm-8 vectors in the class; their x form 6 regular S-orbits, so L_f has minimum 8
       and exactly 2 * 6 * 24,360 = 292,320 vectors of norm 8; an explicit vector of norm 8 is checked;
-      貼り方 A（大きさ 48 の類の元 f の整数の持ち上げ X）: L_f は偶ユニモジュラー。すべての類 r_j f + 2L、r_j f^{-1} + 2L に奇の下界代表元があり
-      （ノルム 6 のベクトルも、型 (6,10)・(10,6) のノルム 8 のベクトルも無い）、標準形の検査で衝突する組を求めると、その x は 6 個の正則な G-軌道をなす。
+      貼り方 A（大きさ 48 の類の元 f の整数の持ち上げ X）: L_f は偶ユニモジュラー。すべての類 r_j f + 2L、r_j f^{-1} + 2L に奇の類の certificate があり
+      （ノルム 6 のベクトルも、型 (6,10)・(10,6) のノルム 8 のベクトルも無い）、標準形の検査で衝突する組を求めると、その x は 6 個の正則な S-軌道をなす。
       よって L_f の最小は 8 で、ノルム 8 のベクトルはちょうど 292,320 本。ノルム 8 のベクトルを 1 本、具体的に確かめる;
   (d) the inner-product distributions of the 292,320 norm-8 vectors, to be compared with those of gluing B
       (supplementary/gluing_b.py): identical distributions do not prove that A and B are isometric.
@@ -42,8 +42,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "produce"))
-from r112 import exact, group, mod2, shells  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import exact, group, mod2, shells  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 
 def main():
@@ -58,7 +58,7 @@ def main():
     out = os.path.join(rep.out_dir, "nebe")
     n = 56
     F2 = GF(2)
-    Gs, gens_s = load("M", rep.out_dir)
+    Gs, gens_s = load("M", rep.out_dir, reduce=True)          # same basis as M_tables.npz / M_tables.npz と同じ基底
     with np.load(os.path.join(out, "M_tables.npz"), allow_pickle=False) as z:
         U, R6, X8, K8 = z["units"].astype(np.int64), z["min_reps"].astype(np.int64), z["norm8_reps"].astype(np.int64), z["K8"]
     basis = commutant_basis(gens_s, n)
@@ -157,7 +157,7 @@ def main():
     mx = mv.max_abs_inner(W)
     del mv
     nw = exact.norms(W, G)
-    rep.check("(c) odd bounding representatives for all classes r_j f + 2L (and r_j f^-1 + 2L): no norm 6, no (6,10), (10,6)",
+    rep.check("(c) odd-class certificates for all classes r_j f + 2L (and r_j f^-1 + 2L): no norm 6, no (6,10), (10,6)",
               np.isin(nw, (14, 18)).all() and (mx <= 6).all())
     can = mod2.Canonical(S)
     XU = np.concatenate([exact.i64_matmul(X8, u)[:, None, :] for u in U], axis=1).reshape(-1, n)
@@ -167,8 +167,8 @@ def main():
         hits += (i + np.flatnonzero(np.isin(f, K8))).tolist()
     xf, xs = can.canon_and_orbit_size(mod2.pack(XU[hits]))
     norbits = len(set(xf.tolist()))
-    rep.value("(c) pairs tested, colliding pairs, G-orbits of the colliding x", [len(XU), len(hits), norbits])
-    rep.check("(c) the colliding x form 6 regular G-orbits: minimum 8 and 292320 vectors of norm 8",
+    rep.value("(c) pairs tested, colliding pairs, S-orbits of the colliding x", [len(XU), len(hits), norbits])
+    rep.check("(c) the colliding x form 6 regular S-orbits: minimum 8 and 292320 vectors of norm 8",
               norbits == 6 and (2 * xs == 24360).all())
     # An explicit norm-8 vector (as in gluing_b.py). / ノルム 8 のベクトルを 1 本（gluing_b.py と同じ）。
     allf, _ = can.canon_and_orbit_size(mod2.pack(XU))

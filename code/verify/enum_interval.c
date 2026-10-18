@@ -1,8 +1,8 @@
 /*
  * Enumeration of all lattice vectors of norm <= R that cannot miss a vector
- * (Fincke-Pohst / Schnorr-Euchner in interval arithmetic; paper §6.1 (a), Table 9a).
+ * (Fincke-Pohst / Schnorr-Euchner in interval arithmetic; paper §6.1 (a), Table 5).
  * 取りこぼしの無い、ノルム R 以下の全格子ベクトルの列挙
- * （区間演算による Fincke-Pohst / Schnorr-Euchner。論文 §6.1 (a)、表 9a）。
+ * （区間演算による Fincke-Pohst / Schnorr-Euchner。論文 §6.1 (a)、表 5）。
  *
  * Input (stdin), written by v1_min_L.py:
  * 入力（標準入力。v1_min_L.py が書く）:

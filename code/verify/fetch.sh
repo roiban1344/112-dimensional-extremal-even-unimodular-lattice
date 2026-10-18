@@ -7,7 +7,7 @@
 # Run from the repository root / リポジトリの根から:  bash code/verify/fetch.sh [release tag]
 set -euo pipefail
 TAG=${1:-certificates-v1}
-BASE="https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice-candidate/releases/download/$TAG"
+BASE="https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/download/$TAG"
 cd "$(dirname "${BASH_SOURCE[0]}")/../../certificates"
 for f in $(awk '{print $2}' SHA256SUMS | sed 's/^\*//' | grep '\.npz$'); do
   [ -f "$f" ] || curl -fL -o "$f" "$BASE/$f"

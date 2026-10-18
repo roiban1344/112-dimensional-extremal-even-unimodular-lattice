@@ -1,21 +1,21 @@
-"""S14. Fixed sublattices of elements of order 3, 5, 7 of SL_2(29) in R, and BKZ on R (paper §7.3;
+"""S14. Fixed sublattices of elements of order 3, 5, 7 of SL_2(29) in L_112, and BKZ on L_112 (supplement §S3.5;
 Table D2 [C18]). These are consistency tests that are NOT evidence for extremality (they cannot tell
 gluing B from gluing C); they are not used in the proof of Theorem A.
-S14. R における SL_2(29) の位数 3, 5, 7 の元の固定部分格子と、R への BKZ（論文 §7.3。表 D2 の [C18]）。極値性の証拠に**ならない**整合性の検査
+S14. L_112 における SL_2(29) の位数 3, 5, 7 の元の固定部分格子と、L_112 への BKZ（補遺 §S3.5。表 D2 の [C18]）。極値性の証拠に**ならない**整合性の検査
 （貼り方 B と C を区別できない）。定理 A の証明には使わない。
 
-For an element h of prime order p, the fixed sublattice R^h = { z in R : z diag(h, h) = z } is computed
+For an element h of prime order p, the fixed sublattice L_112^h = { z in L_112 : z diag(h, h) = z } is computed
 exactly (kernel over Q, saturated in Z^112). Its minimum m is established exactly: a vector of norm m is
 exhibited (found by PARI, its norm checked in integers), and the enumeration that cannot miss vectors
 (verify/enum_interval.c) finds no nonzero vector of norm <= m - 2. Expected (paper): dimensions 32, 16,
 16, minima 12, 10, 14, determinants 3^32, 5^16, 7^16. The order-5 section contains vectors of norm 10, so
-min R <= 10.
-素数位数 p の元 h について、固定部分格子 R^h を厳密に求める（Q 上の核、Z^112 で飽和）。最小 m は厳密に決める: ノルム m のベクトルを示し
+min L_112 <= 10.
+素数位数 p の元 h について、固定部分格子 L_112^h を厳密に求める（Q 上の核、Z^112 で飽和）。最小 m は厳密に決める: ノルム m のベクトルを示し
 （PARI で見つけ、ノルムを整数で確かめる）、取りこぼしの無い列挙（verify/enum_interval.c）でノルム m - 2 以下の 0 でないベクトルが無いことを確かめる。
-期待値（論文）: 次元 32, 16, 16、最小 12, 10, 14、行列式 3^32, 5^16, 7^16。位数 5 の固定部分格子はノルム 10 のベクトルを含むので min R ≤ 10。
+期待値（論文）: 次元 32, 16, 16、最小 12, 10, 14、行列式 3^32, 5^16, 7^16。位数 5 の固定部分格子はノルム 10 のベクトルを含むので min L_112 ≤ 10。
 
-BKZ-30 and BKZ-40 on R itself: the shortest vector found (an upper bound only; floating point).
-R そのものへの BKZ-30 と BKZ-40: 見つかった最短（上界にすぎない。浮動小数点）。
+BKZ-30 and BKZ-40 on L_112 itself: the shortest vector found (an upper bound only; floating point).
+L_112 そのものへの BKZ-30 と BKZ-40: 見つかった最短（上界にすぎない。浮動小数点）。
 
 Requires SageMath (PARI, fpylll). Run time: about 20 minutes. Memory: about 1 GB.
 SageMath（PARI, fpylll）が要る。実行時間: 約 20 分。メモリ: 約 1 GB。
@@ -27,9 +27,9 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
-from r112 import certs, data  # noqa: E402
-from r112 import enumerate as exact_enum  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, data  # noqa: E402
+from lib import enumerate as exact_enum  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 EXPECTED = {3: (32, 12), 5: (16, 10), 7: (16, 14)}
 
@@ -52,7 +52,7 @@ def main():
     I = identity_matrix(ZZ, n)
     B = block_matrix(ZZ, [[I, X], [0 * I, 2 * I]], subdivide=False)
     GR = (B * block_matrix(ZZ, [[G, 0], [0, G]], subdivide=False) * B.transpose() / 2).change_ring(ZZ)
-    rep.check("Gram matrix of R: even, det 1", all(GR[i, i] % 2 == 0 for i in range(112)) and GR.det() == 1)
+    rep.check("Gram matrix of L_112: even, det 1", all(GR[i, i] % 2 == 0 for i in range(112)) and GR.det() == 1)
     Binv = B.change_ring(QQ).inverse()
     # Elements of order 3, 5, 7 as powers of words in g1, g2 (g1 has order 5). / g1, g2 の語の冪として位数 3, 5, 7 の元。
     elts = {5: g1}
@@ -66,7 +66,7 @@ def main():
     for p, h in sorted(elts.items()):
         assert h ** p == I and h != I
         hh = block_matrix(ZZ, [[h, 0 * h], [0 * h, h]], subdivide=False)
-        Kc = (B * hh * Binv - 1).change_ring(QQ).left_kernel().basis_matrix()       # R-coordinates fixed by h
+        Kc = (B * hh * Binv - 1).change_ring(QQ).left_kernel().basis_matrix()       # L_112-coordinates fixed by h
         Kc = (Kc * Kc.denominator()).change_ring(ZZ).saturation()
         Gs = Kc * GR * Kc.transpose()
         dim, det = Kc.nrows(), Gs.det()
@@ -89,7 +89,7 @@ def main():
         M.update_gso()
         LLL.Reduction(M)()
         BKZReduction(M)(BKZ.Param(block_size=bs, max_loops=4, strategies=BKZ.DEFAULT_STRATEGY))
-        rep.value(f"BKZ-{bs} on R: shortest norm in the reduced basis (upper bound only)", int(min(A[i, i] for i in range(112))))
+        rep.value(f"BKZ-{bs} on L_112: shortest norm in the reduced basis (upper bound only)", int(min(A[i, i] for i in range(112))))
     rep.finish()
 
 

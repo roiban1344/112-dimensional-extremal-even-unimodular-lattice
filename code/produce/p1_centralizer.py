@@ -15,12 +15,12 @@ P1. 可換環 M' = End_{SL_2(29)}(L) と中心化群 C（論文 §2.4、§4.2）
   * Output out/p1_centralizer.npz: basis of M' (8, 56, 56) and the 6 elements of C/{+-1}
     in the order of PARI's qfminim, sign-normalized as returned. It is compared with
     certificates/centralizer.npz (as a set up to sign; the order there is the one used when the
-    bounding representatives were produced).
+    certificates were produced).
     出力 out/p1_centralizer.npz: M' の基底 (8, 56, 56) と C/{±1} の 6 元。certificates/centralizer.npz と（符号を除いた集合として）比べる。
-    そちらの並びは、下界代表元を作ったときのもの。
+    そちらの並びは、certificate を作ったときのもの。
 
-Requires SageMath (PARI). Run time: about 1 minute.
-SageMath（PARI）が要る。実行時間: 約 1 分。
+Requires SageMath (PARI). Run time: about 10 minutes.
+SageMath（PARI）が要る。実行時間: 約 10 分。
 
 Run / 実行:  sage -python code/produce/p1_centralizer.py [--data DIR] [--certificates DIR] [--out DIR]
 """
@@ -31,8 +31,8 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from r112 import certs, data, group  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, data, group  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 
 def commutant_basis(gens, n):

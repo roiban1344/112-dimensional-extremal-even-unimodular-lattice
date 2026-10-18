@@ -23,10 +23,6 @@ Model (a concrete form of [Neb98, Remark 3.3]; this explicit form is not written
     H の各極大整環 M について、Z[ζ] M (1-ζ)^i のうちユニモジュラーにできるものがちょうど 1 つあり、それが L_{2(p-1),2}(M)。
 The resulting Gram matrix is checked directly to be integral, even and of determinant 1.
 得られた Gram 行列が整数・偶・行列式 1 であることを最後に直接確かめる。
-
-Adapted from the project's library (eeul/candidates/cycloquat.py) for the release: unused functions
-removed, comments made bilingual; the computations are unchanged.
-プロジェクトのライブラリ（eeul/candidates/cycloquat.py）を公開用に整えたもの。使わない関数を除き、注釈を英日併記にした。計算は変えていない。
 """
 import itertools
 import random

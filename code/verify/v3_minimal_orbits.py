@@ -1,30 +1,30 @@
-"""V3. F2: L_6 is the disjoint union of the G-orbits of the 656 vectors in certificates/min_reps.npz
-(paper §4.4 F2, §6.2, Table 7).
-V3. F2: L_6 は certificates/min_reps.npz の 656 本の G-軌道の非交和（論文 §4.4 の F2、§6.2、表 7）。
+"""V3. F2: L_6 is the disjoint union of the S-orbits of the 656 vectors in certificates/min_reps.npz
+(paper §4.3 F2, §6.2, Table 3).
+V3. F2: L_6 は certificates/min_reps.npz の 656 本の S-軌道の非交和（論文 §4.3 の F2、§6.2、表 3）。
 
 Two independent arguments are checked / 独立な 2 つの議論を確かめる:
 
-  (A) Expansion. All vectors r s (r a representative, s in G/{+-1}) are computed; up to sign they
+  (A) Expansion. All vectors r s (r a representative, s in S/{+-1}) are computed; up to sign they
       are 7,795,200 distinct vectors of norm 6, i.e. 15,590,400 vectors with both signs. By F1 and
       the theta series (V2), |L_6| = 15,590,400, so they are all of L_6. (Distinctness is shown by
       distinct 64-bit hashes, which implies distinct vectors.)
-      展開。r s（r は代表、s ∈ G/{±1}）をすべて計算する。符号を除いて相異なるノルム 6 のベクトルが 7,795,200 本、
+      展開。r s（r は代表、s ∈ S/{±1}）をすべて計算する。符号を除いて相異なるノルム 6 のベクトルが 7,795,200 本、
       符号込みで 15,590,400 本。F1 とテータ級数（V2）より |L_6| = 15,590,400 なので、これで L_6 全体。
       （相異なることは、64 ビットのハッシュが相異なることで示す。ハッシュが異なればベクトルも異なる。）
 
   (B) Canonical forms (the argument of the paper). The classes r + 2L have 656 distinct canonical
       forms, so the orbits are distinct. For a vector x of norm 6 the map x -> x + 2L is injective
-      up to sign (midpoint lemma 5.1, which uses F1), so |G-orbit of x| = 2 |orbit of x + 2L under
-      G/{+-1}|. These sizes add up to 15,590,400 = 632 x 24,360 + 24 x 8,120.
+      up to sign (midpoint lemma 5.1, which uses F1), so |S-orbit of x| = 2 |orbit of x + 2L under
+      S/{+-1}|. These sizes add up to 15,590,400 = 632 x 24,360 + 24 x 8,120.
       標準形（論文の議論）。類 r + 2L の標準形は 656 個とも相異なるので、軌道は相異なる。ノルム 6 の x について
-      x -> x + 2L は符号を除いて単射（中点補題 5.1。F1 を使う）なので、|x の G-軌道| = 2 |x + 2L の G/{±1}-軌道|。
+      x -> x + 2L は符号を除いて単射（中点補題 5.1。F1 を使う）なので、|x の S-軌道| = 2 |x + 2L の S/{±1}-軌道|。
       この大きさの和が 15,590,400 = 632 × 24,360 + 24 × 8,120。
 
-Exactness: norms in int64; r s in float32 with the exactness bound asserted (r112.shells).
-厳密さ: ノルムは int64。r s は float32 で、厳密さの上界を確かめる（r112.shells）。
+Exactness: norms in int64; r s in float32 with the exactness bound asserted (lib.shells).
+厳密さ: ノルムは int64。r s は float32 で、厳密さの上界を確かめる（lib.shells）。
 
-Run time: about 2 minutes. Memory: about 2 GB.
-実行時間: 約 2 分。メモリ: 約 2 GB。
+Run time: about 3 minutes. Memory: about 2 GB.
+実行時間: 約 3 分。メモリ: 約 2 GB。
 
 Run / 実行:  python3 code/verify/v3_minimal_orbits.py [--data DIR] [--certificates DIR] [--out DIR]
 """
@@ -35,8 +35,8 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from r112 import certs, data, exact, group, mod2, shells  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, data, exact, group, mod2, shells  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 N6 = 15590400       # |L_6| from the extremal theta series (V2) / 極値テータ級数（V2）から
 
@@ -51,7 +51,7 @@ def main():
 
     G = data.gram(a.data)
     S = group.sl2_29_mod_sign(data.generators(a.data))
-    rep.log(f"G/{{+-1}}: {len(S)} elements")
+    rep.log(f"S/{{+-1}}: {len(S)} elements")
     R6 = certs.load("min_reps.npz", "reps", a.certificates).astype(np.int64)
     rep.check("656 representatives", R6.shape == (656, 56))
     rep.check("every representative has norm 6", (exact.norms(R6, G) == 6).all())

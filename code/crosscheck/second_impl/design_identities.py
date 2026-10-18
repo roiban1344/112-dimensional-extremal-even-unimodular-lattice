@@ -3,7 +3,7 @@ r"""元の計算（公開版では produce/p3 と verify/v4）の「ノルム 8 
 元の計算の完全性の根拠は「軌道の大きさの合計 = 36,957,286,800（テータ級数の係数）」。これは、同じ軌道を 2 回数えて別の軌道を 1 つ落としても、
 大きさが同じなら成り立ってしまう。そこで球面デザインの恒等式を使う: 56 次元の極値格子の各殻は 7-デザイン [既知: Venkov] なので、任意の $a$ について
 $$\sum_{N(x)=8}(x,a)^{2}=N_8\frac{8\,(a,a)}{56},\quad \sum(x,a)^4=N_8\frac{3\cdot8^2(a,a)^2}{56\cdot58},\quad \sum(x,a)^6=N_8\frac{15\cdot8^3(a,a)^3}{56\cdot58\cdot60}.$$
-左辺を「代表 × 群の元」で計算する: $\sum_{y\in\mathrm{orb}(x)}(y,a)^k=\frac{|\mathrm{orb}|}{|G^*|}\sum_{g\in G^*}(xg,a)^k$。
+左辺を「代表 × 群の元」で計算する: $\sum_{y\in\mathrm{orb}(x)}(y,a)^k=\frac{|\mathrm{orb}|}{|S^*|}\sum_{g\in S^*}(xg,a)^k$。
 重複や欠落があれば、整数の等式が（偶然を除いて）崩れる。群の元は生成元から自分で列挙し、元の計算のコードは読み込まない
 （共有するのはデータ: Gram 行列、生成元、可換子の基底、代表と軌道の大きさ）。
 
@@ -14,7 +14,7 @@ certificates/ の検証用データを読む。中心化群の元は Sage で求
 Release note: for the public repository only the inputs were changed (the four files of data/ and the
 certificate files of certificates/ are read; the centralizer elements are read from
 certificates/centralizer.npz instead of being recomputed with Sage). The checks are unchanged.
-Shares no code with code/r112 or code/verify. Needs only numpy.
+Shares no code with code/lib or code/verify. Needs only numpy.
 """
 import sys, time
 from pathlib import Path
@@ -62,7 +62,7 @@ assert all(key(u @ v) in ukeys for u in units for v in units), "単数が ± を
 assert all((u @ h == h @ u).all() for u in units for h in H)
 print(f"|SL_2(29)/±| = {len(S)}, 単数（±の片方）{len(units)} 個  [{round(time.time() - t0)} s]", flush=True)
 assert len(S) == 12180
-ord_mod_sign = len(S) * len(units)                  # |G^*/±|（S∩単数 = {±1} を仮定。下で軌道の大きさと照合）
+ord_mod_sign = len(S) * len(units)                  # |S^*/±|（S∩単数 = {±1} を仮定。下で軌道の大きさと照合）
 
 R = _npz("norm8_reps.npz", "reps").astype(np.int64); sizes = [int(s) for s in _npz("norm8_reps.npz", "sizes")]
 N8 = 36957286800                                     # 極値テータ級数の q^4 の係数（code/verify/v2_theta.py）

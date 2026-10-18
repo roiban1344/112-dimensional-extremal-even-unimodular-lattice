@@ -1,5 +1,5 @@
-"""V0. Basic facts F0 and F4 about the input data (paper §3.1, §4.4, Lemma 3.2).
-V0. 入力データについての基本的な事実 F0 と F4（論文 §3.1、§4.4、補題 3.2）。
+"""V0. Basic facts F0 and F4 about the input data (paper §3.1, §4.3, Lemma 3.2).
+V0. 入力データについての基本的な事実 F0 と F4（論文 §3.1、§4.3、補題 3.2）。
 
 Checks / 確かめること:
   L    G is symmetric with even diagonal, det G = 1, and G is positive definite:
@@ -10,7 +10,7 @@ Checks / 確かめること:
        (tau* = -tau, Appendix C.1).
        g1, g2 は G を保つ。生成する群の位数は 24,360 で -I を含む。g1, g2 は tau と可換。tau^2 = -5I、tau G tau^T = 5G、
        tau G は反対称（tau* = -tau、付録 C.1）。
-  F0   R = {(x, x tau + 2y)/sqrt2}: with B = [[I, tau], [0, 2I]], the matrix B diag(G, G) B^T / 2
+  F0   L_112 = {(x, x tau + 2y)/sqrt2}: with B = [[I, tau], [0, 2I]], the matrix B diag(G, G) B^T / 2
        is integral and equals (3.1) = [[3G, tau G], [(tau G)^T, 2G]]; it is even, has
        determinant 1 and is positive definite (Lemma 3.2).
        B diag(G, G) B^T / 2 は整数で (3.1) に等しく、偶・行列式 1・正定値（補題 3.2）。
@@ -18,15 +18,15 @@ Checks / 確かめること:
        U (3.1) U^T = data/R112_gram_LLL.txt, so the distributed Gram matrix describes the same lattice.
        certificates/reduction_R.txt は det U = ±1 の整数行列 U で U (3.1) U^T = data/R112_gram_LLL.txt。
        配布した Gram 行列は同じ格子を表す。
-  sym  the diagonal action of g1, g2 preserves R (so SL_2(29) acts on R; not needed for Theorem A).
-       g1, g2 の対角作用は R を保つ（SL_2(29) が R に作用する。定理 A には不要）。
+  sym  the diagonal action of g1, g2 preserves L_112 (so SL_2(29) acts on L_112; not needed for Theorem A).
+       g1, g2 の対角作用は L_112 を保つ（SL_2(29) が L_112 に作用する。定理 A には不要）。
 
 Exactness: integer arithmetic only (numpy int64 with overflow guards, Python integers for
 determinants and the rational LDL decomposition).
 厳密さ: 整数演算のみ（オーバーフローを確かめた numpy の int64、行列式と有理数の LDL 分解には Python の整数）。
 
-Run time: about 1 minute. Memory: below 1 GB.
-実行時間: 約 1 分。メモリ: 1 GB 未満。
+Run time: about 20 seconds. Memory: below 1 GB.
+実行時間: 約 20 秒。メモリ: 1 GB 未満。
 
 Run / 実行:  python3 code/verify/v0_inputs.py [--data DIR] [--certificates DIR] [--out DIR]
 """
@@ -37,8 +37,8 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from r112 import certs, data, exact, group  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, data, exact, group  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 
 def is_even_symmetric(M):
@@ -96,17 +96,17 @@ def main():
     rep.check("reduction_R.txt: det U = +-1", abs(exact.det_bareiss(U)) == 1)
     rep.check("U (3.1) U^T = data/R112_gram_LLL.txt", (mm(mm(U, GR), U.T) == data.gram_R_reduced(a.data)).all())
 
-    # --- the diagonal action on R (rows of B are a basis of sqrt2 R in L + L) ---
-    # g acts on R iff M = B diag(g, g) B^{-1} is integral; then M (3.1) M^T = (3.1) says it is an isometry.
+    # --- the diagonal action on L_112 (rows of B are a basis of sqrt2 L_112 in L + L) ---
+    # g acts on L_112 iff M = B diag(g, g) B^{-1} is integral; then M (3.1) M^T = (3.1) says it is an isometry.
     # B^{-1} = [[I, -tau/2], [0, I/2]], so 2 B^{-1} = [[2I, -tau], [0, I]] is integral.
-    # g が R に作用する ⟺ M = B diag(g, g) B^{-1} が整数。さらに M (3.1) M^T = (3.1) なら等長変換。
+    # g が L_112 に作用する ⟺ M = B diag(g, g) B^{-1} が整数。さらに M (3.1) M^T = (3.1) なら等長変換。
     # B^{-1} = [[I, -tau/2], [0, I/2]] なので 2B^{-1} = [[2I, -tau], [0, I]] は整数。
     for name, g in (("g1", g1), ("g2", g2)):
         Dg = np.block([[g, Z], [Z, g]])
         Binv2 = np.block([[2 * I, -t], [Z, I]])                    # 2 B^{-1}
         M2 = mm(mm(B, Dg), Binv2)
         ok = (M2 % 2 == 0).all() and (mm(mm(M2 // 2, GR), (M2 // 2).T) == GR).all()
-        rep.check(f"diag({name}, {name}) preserves R and its Gram matrix", ok)
+        rep.check(f"diag({name}, {name}) preserves L_112 and its Gram matrix", ok)
     rep.finish()
 
 

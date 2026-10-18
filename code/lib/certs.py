@@ -1,17 +1,17 @@
 """Certificate files: the data that the verification scripts check (see certificates/MANIFEST.md).
 検証用データ: 検算スクリプトが確かめるデータ（certificates/MANIFEST.md を参照）。
 
-  min_reps.npz       reps  int16 (656, 56)       representatives of the G-orbits on L_6 (F2)
-                                                 L_6 の G-軌道の代表（F2）
+  min_reps.npz       reps  int16 (656, 56)       representatives of the S-orbits on L_6 (F2)
+                                                 L_6 の S-軌道の代表（F2）
   centralizer.npz    units int64 (6, 56, 56)     representatives of C/{+-1} (paper §4.2)
                                                  C/{±1} の代表（論文 §4.2）
-  norm8_reps.npz     reps  int16 (254664, 56)    representatives x_i of the G*-orbits on L_8 (F3)
-                                                 L_8 の G*-軌道の代表 x_i（F3）
-  odd_bounding.npz   w0    int16 (656, 56)       odd bounding representative of r_j tau + 2L, row j (F5a)
-                                                 r_j tau + 2L の奇の下界代表元（第 j 行）（F5a）
-  even_bounding.npz  w0    int16 (1527984, 56)   even bounding representative of x_i u_k tau + 2L
+  norm8_reps.npz     reps  int16 (254664, 56)    representatives x_i of the S*-orbits on L_8 (F3)
+                                                 L_8 の S*-軌道の代表 x_i（F3）
+  odd_bounding.npz   w0    int16 (656, 56)       odd-class certificate of r_j tau + 2L, row j (F5a)
+                                                 r_j tau + 2L の奇の類の certificate（第 j 行）（F5a）
+  even_bounding.npz  w0    int16 (1527984, 56)   even-class certificate of x_i u_k tau + 2L
                                                  in row 6 i + k (F5b)
-                                                 x_i u_k tau + 2L の偶の下界代表元（第 6i+k 行）（F5b）
+                                                 x_i u_k tau + 2L の偶の類の certificate（第 6i+k 行）（F5b）
   reduction_L.txt    U     (56 x 56 integers)    BKZ-40 basis change of L used by the enumeration (F1)
                                                  列挙（F1）に使う L の BKZ-40 の基底変換
   reduction_R.txt    U     (112 x 112 integers)  basis change from (3.1) to data/R112_gram_LLL.txt

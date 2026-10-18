@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Independent verifier for the certificates of the 112-dimensional lattice R.
+"""Independent verifier for the certificates of the 112-dimensional lattice L_112.
 
 Release note: for the public repository only the input functions (section "inputs" below: the
 four files of data/ and the certificate files of certificates/) and the output directory
 (out/crosscheck_all_data/) were changed. The checks themselves are unchanged. It shares no code with
-code/r112 or code/verify.
+code/lib or code/verify.
 公開用の注記: 公開リポジトリ向けに変えたのは入力の関数（下の「inputs」の節。data/ の 4 ファイルと
 certificates/ の検証用データを読む）と出力先（out/crosscheck_all_data/）だけ。検査そのものは変えていない。
-code/r112・code/verify とはコードを共有しない。
+code/lib・code/verify とはコードを共有しない。
 
 Written from a specification of the certificates, WITHOUT reading or importing the code that
 produced them.  Run with `python -I`.
@@ -23,7 +23,8 @@ commands:
   v3sample  condition 13 on 10,000 random even-class certificates (+ int64 cross-check)
   v3full    condition 13 on all even-class certificates (resumable, --part p or all)
   v4        norm-8 table: canonical forms of the 1,527,984 vectors x*u, orbit sizes (resumable)
-  neg       negative controls
+  neg       negative controls (run with --n 60 as in the reported run, about 3 minutes; the shared
+            default --n 10000 tests each certificate separately and takes more than 8 hours)
   summary   collect the results of all steps into summary.json
 
 Conventions: vectors are integer row vectors, maps act on the right, (x,y) = x G y^T.
@@ -865,7 +866,7 @@ def step_v4(args):
     repidx = np.repeat(np.arange(nrep), 6)
     owner = repidx[first][inv]
     res["16_duplicates_across_different_reps"] = int((owner != repidx).sum())
-    # per representative: sum of sizes of its distinct G-orbits == sizes[i]
+    # per representative: sum of sizes of its distinct S-orbits == sizes[i]
     per = np.zeros(nrep, dtype=np.int64)
     seen_first = np.zeros(len(flat), dtype=bool)
     seen_first[first] = True

@@ -1,18 +1,18 @@
-"""The minimal vectors of L and inner products with them (paper §5, Definition 5.4 (c)).
-L の最小ベクトルと、それとの内積（論文 §5、定義 5.4 (c)）。
+"""The minimal vectors of L and inner products with them (paper §5, Check 5.4 (c)).
+L の最小ベクトルと、それとの内積（論文 §5、検査 5.4 (c)）。
 
-The 15,590,400 minimal vectors are the G-orbits of the 656 representatives of F2.
+The 15,590,400 minimal vectors are the S-orbits of the 656 representatives of F2.
 Since -1 is in G, it suffices to keep one of each pair +-u: the set
-    V = { sign-normalized r_j s : j < 656, s in G/{+-1} }
-has 7,795,200 elements, which is asserted when it is built. For a bounding representative
+    V = { sign-normalized r_j s : j < 656, s in S/{+-1} }
+has 7,795,200 elements, which is asserted when it is built. For a certificate
 we need max_{u in L_6} |<w, u>| = max_{v in V} |<w, v>|.
-15,590,400 本の最小ベクトルは、F2 の 656 個の代表の G-軌道。-1 ∈ G なので ±u の片方だけ持てばよい。
-    V = { r_j s の符号を正規化したもの : j < 656, s ∈ G/{±1} }
-は 7,795,200 個で、作るときにこの個数を確かめる。下界代表元に必要なのは max_{u ∈ L_6} |<w, u>| = max_{v ∈ V} |<w, v>|。
+15,590,400 本の最小ベクトルは、F2 の 656 個の代表の S-軌道。-1 ∈ S なので ±u の片方だけ持てばよい。
+    V = { r_j s の符号を正規化したもの : j < 656, s ∈ S/{±1} }
+は 7,795,200 個で、作るときにこの個数を確かめる。certificate に必要なのは max_{u ∈ L_6} |<w, u>| = max_{v ∈ V} |<w, v>|。
 
 Exactness: the products V @ (G W^T) are computed in float32 in blocks; for every block
-the bound of r112.exact (all partial sums < 2^24) is asserted, so the results are exact.
-厳密さ: V @ (G W^T) はブロックごとに float32 で計算する。各ブロックで r112.exact の上界（部分和がすべて 2^24 未満）を確かめるので、結果は厳密。
+the bound of lib.exact (all partial sums < 2^24) is asserted, so the results are exact.
+厳密さ: V @ (G W^T) はブロックごとに float32 で計算する。各ブロックで lib.exact の上界（部分和がすべて 2^24 未満）を確かめるので、結果は厳密。
 """
 from concurrent.futures import ThreadPoolExecutor
 

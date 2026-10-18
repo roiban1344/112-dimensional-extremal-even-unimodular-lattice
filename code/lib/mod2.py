@@ -2,11 +2,11 @@
 2L を法とする類を 56 ビットの整数で表し、SL_2(29) による標準形を求める（論文 §6.5）。
 
 A class c = x + 2L is identified with the vector x mod 2 in F_2^56 and stored as the
-integer sum_i (x_i mod 2) 2^i. An element s of G/{+-1} acts F_2-linearly by c -> c s
+integer sum_i (x_i mod 2) 2^i. An element s of S/{+-1} acts F_2-linearly by c -> c s
 (-1 acts trivially modulo 2). If row i of s mod 2 is packed as the integer r_i(s), then
 c s = XOR of r_i(s) over the bits i set in c.
 類 c = x + 2L を F_2^56 のベクトル x mod 2 と同一視し、整数 Σ_i (x_i mod 2) 2^i として持つ。
-G/{±1} の元 s は c -> c s で F_2-線形に作用する（-1 は 2 を法として自明に作用する）。s mod 2 の第 i 行を整数 r_i(s) に詰めると、
+S/{±1} の元 s は c -> c s で F_2-線形に作用する（-1 は 2 を法として自明に作用する）。s mod 2 の第 i 行を整数 r_i(s) に詰めると、
 c s は c の立っているビット i についての r_i(s) の XOR。
 
 To make this fast, the XOR of the rows is tabulated per byte of c:

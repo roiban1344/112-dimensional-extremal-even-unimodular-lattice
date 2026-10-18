@@ -3,8 +3,8 @@ cannot miss vectors (verify/enum_interval.c: interval arithmetic, exact norms at
 正定値な整数二次形式のノルム B 以下の全ベクトル。取りこぼしの無い列挙（verify/enum_interval.c: 区間演算、葉では厳密なノルム）による。
 
 Used to check that PARI's qfminim, whose documentation does not guarantee completeness, has
-returned every short vector (paper §7.8, Table D2 [C24]; also the centralizer of SL_2(29) in Aut(L)).
-文書に完全性の保証が無い PARI の qfminim が、短いベクトルをすべて返したことを確かめるのに使う（論文 §7.8、表 D2 の [C24]。
+returned every short vector (paper §8, Table D2 [C24]; also the centralizer of SL_2(29) in Aut(L)).
+文書に完全性の保証が無い PARI の qfminim が、短いベクトルをすべて返したことを確かめるのに使う（論文 §8、表 D2 の [C24]。
 Aut(L) における SL_2(29) の中心化群にも）。
 
 The caller should pass a reasonably reduced Gram matrix (the running time depends on it, the
@@ -13,6 +13,7 @@ correctness does not). Only one of each pair +-x is returned.
 """
 import math
 import os
+import shutil
 import subprocess
 
 from . import exact
@@ -27,11 +28,22 @@ def _interval(q):
     return lo, hi
 
 
+def c_compiler():
+    """$CC if set, otherwise the first of cc, gcc, clang on the PATH (a clang-only system has no gcc).
+    $CC があればそれ、無ければ PATH にある cc, gcc, clang の最初のもの（clang しかない環境には gcc が無い）。"""
+    if os.environ.get("CC"):
+        return os.environ["CC"]
+    for cc in ("cc", "gcc", "clang"):
+        if shutil.which(cc):
+            return cc
+    raise RuntimeError("no C compiler found (set CC) / C コンパイラが見つからない（CC を指定する）")
+
+
 def compile_enumerator(build_dir):
     exe = os.path.join(build_dir, "enum_interval")
     os.makedirs(build_dir, exist_ok=True)
     if not os.path.exists(exe) or os.path.getmtime(exe) < os.path.getmtime(_SRC):
-        subprocess.run([os.environ.get("CC", "gcc"), "-O2", "-std=c11", "-fno-fast-math", "-ffp-contract=off",
+        subprocess.run([c_compiler(), "-O2", "-std=c11", "-fno-fast-math", "-ffp-contract=off",
                         "-o", exe, _SRC, "-lm"], check=True)
     return exe
 

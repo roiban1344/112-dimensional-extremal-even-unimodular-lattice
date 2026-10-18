@@ -28,7 +28,7 @@ Method (independent of the earlier fplll / qfminim runs):
 
 usage (from the repository root): sage -python -I code/crosscheck/all_data/min_L.py <r> [--k 40] [--test e8x7]
 """
-import sys, os, json, time, subprocess, platform, argparse
+import sys, os, json, time, subprocess, platform, argparse, shutil
 from fractions import Fraction
 import numpy as np
 
@@ -175,7 +175,8 @@ def main():
     # compile and run the exact enumerator
     exe = os.path.join(OUT, "cache", "F1-enum")
     os.makedirs(os.path.dirname(exe), exist_ok=True)
-    subprocess.check_call(["gcc", "-O2", "-o", exe, SRC, "-lm"])
+    cc = os.environ.get("CC") or next((c for c in ("cc", "gcc", "clang") if shutil.which(c)), "gcc")  # clang-only systems / clang しかない環境
+    subprocess.check_call([cc, "-O2", "-o", exe, SRC, "-lm"])
     inp = f"{N} {T} {args.maxprint}\n" + "\n".join(" ".join(str(v) for v in row) for row in R) + "\n"
     t0 = time.time()
     p = subprocess.run([exe], input=inp.encode(), stdout=subprocess.PIPE, check=True)  # progress goes to stderr = the log

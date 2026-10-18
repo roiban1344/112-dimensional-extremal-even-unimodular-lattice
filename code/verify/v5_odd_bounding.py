@@ -1,7 +1,7 @@
 """V5. F5a: min(r_j tau + 2L) >= 14 for the 656 representatives r_j of F2, by odd bounding
-representatives (paper §4.4 F5a, Corollary 5.2, Definition 5.4, §6.6, Table 11).
-V5. F5a: F2 の 656 個の代表 r_j について min(r_j tau + 2L) ≥ 14。奇の下界代表元による
-（論文 §4.4 の F5a、系 5.2、定義 5.4、§6.6、表 11）。
+representatives (paper §4.3 F5a, Corollary 5.2, Check 5.4, §6.6, Table 7).
+V5. F5a: F2 の 656 個の代表 r_j について min(r_j tau + 2L) ≥ 14。奇の類の certificate による
+（論文 §4.3 の F5a、系 5.2、検査 5.4、§6.6、表 7）。
 
 For each j, row j of certificates/odd_bounding.npz is a vector w0 with
 各 j について、certificates/odd_bounding.npz の第 j 行はベクトル w0 で、
@@ -17,8 +17,8 @@ because tau^2 = -5 is the identity modulo 2 (Appendix C.4).
 系 5.2 より、類はノルム 6 も 10 も含まない。つまり最小は 14 以上。これで衝突の型 (6,6) と (6,10) が片づく。
 型 (10,6) は (6,10) と同じ（tau^2 = -5 は 2 を法として恒等写像なので。付録 C.4）。
 
-Exactness: (a), (b) in int64; (c) in float32 with the exactness bound asserted (r112.shells).
-厳密さ: (a), (b) は int64。(c) は float32 で、厳密さの上界を確かめる（r112.shells）。
+Exactness: (a), (b) in int64; (c) in float32 with the exactness bound asserted (lib.shells).
+厳密さ: (a), (b) は int64。(c) は float32 で、厳密さの上界を確かめる（lib.shells）。
 
 Run time: about 2 minutes. Memory: about 2 GB.
 実行時間: 約 2 分。メモリ: 約 2 GB。
@@ -32,12 +32,12 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from r112 import certs, data, exact, group, shells  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, data, exact, group, shells  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 
 def main():
-    ap = argparse.ArgumentParser(description="V5: F5a (odd bounding representatives)")
+    ap = argparse.ArgumentParser(description="V5: F5a (odd-class certificates)")
     ap.add_argument("--data", default=None)
     ap.add_argument("--certificates", default=None)
     ap.add_argument("--out", default=None)
@@ -49,7 +49,7 @@ def main():
     S = group.sl2_29_mod_sign(data.generators(a.data))
     R6 = certs.load("min_reps.npz", "reps", a.certificates).astype(np.int64)
     W = certs.load("odd_bounding.npz", "w0", a.certificates).astype(np.int64)
-    rep.check("one bounding representative per representative r_j (656)", W.shape == R6.shape == (656, 56))
+    rep.check("one certificate per representative r_j (656)", W.shape == R6.shape == (656, 56))
 
     rep.check("tau^2 = -I modulo 2 (so the types (6,10) and (10,6) coincide)",
               ((exact.i64_matmul(t, t) + np.eye(56, dtype=np.int64)) % 2 == 0).all())
@@ -64,7 +64,7 @@ def main():
     table = {}
     for nn, mx in zip(norms.tolist(), m.tolist()):
         table[f"norm {nn}, max {mx}"] = table.get(f"norm {nn}, max {mx}", 0) + 1
-    rep.value("Table 11: (norm, max |<w0, u>|) -> count", dict(sorted(table.items())))
+    rep.value("Table 7: (norm, max |<w0, u>|) -> count", dict(sorted(table.items())))
     rep.check("(c) max |<w0, u>| <= 6 over all minimal vectors u, for all 656", (m <= 6).all())
     rep.finish()
 

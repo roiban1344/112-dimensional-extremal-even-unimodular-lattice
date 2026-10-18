@@ -1,12 +1,12 @@
-"""S2. Automorphisms of R preserving the standard frame, and the halving of the (8,8) pairs in
-route B (paper §6.9, Table 13a). Not used in the proof of Theorem A.
-S2. 標準の枠を保つ R の自己同型と、経路 B での (8,8) 型の組の半減（論文 §6.9、表 13a）。定理 A の証明には使わない。
+"""S2. Automorphisms of L_112 preserving the standard frame, and the halving of the (8,8) pairs in
+route B (supplement §S3.2, Table S7). Not used in the proof of Theorem A.
+S2. 標準の枠を保つ L_112 の自己同型と、経路 B での (8,8) 型の組の半減（補遺 §S3.2、表 S7）。定理 A の証明には使わない。
 
-For a, d in the centralizer C, the map (x, v) -> (x a, v d) preserves R = {(x, v) : v = x tau mod 2L}
+For a, d in the centralizer C, the map (x, v) -> (x a, v d) preserves L_112 = {(x, v) : v = x tau mod 2L}
 iff a tau = tau d (mod 2). Then the test of the pair (x_i, u) (does x_i u tau + 2L contain a norm-8
 vector?) is equivalent to that of (x_i, u a). So the number of pairs to test is divided by
 |S / {+-1}|, S = { a in C : a tau = tau d (mod 2) for some d in C }.
-C の元 a, d について、(x, v) -> (x a, v d) が R を保つ ⟺ a tau ≡ tau d (mod 2)。このとき組 (x_i, u) の検査は (x_i, u a) の検査と同値。
+C の元 a, d について、(x, v) -> (x a, v d) が L_112 を保つ ⟺ a tau ≡ tau d (mod 2)。このとき組 (x_i, u) の検査は (x_i, u a) の検査と同値。
 よって検査する組の数は |S/{±1}| で割れる。S = { a ∈ C : ある d ∈ C で a tau ≡ tau d (mod 2) }。
 
 Only numpy. Run time: seconds. / numpy のみ。実行時間: 数秒。
@@ -19,8 +19,8 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from r112 import certs, data, exact  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, data, exact  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 
 def main():

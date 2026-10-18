@@ -1,7 +1,7 @@
 """V6. F5b by canonical forms: no class x_i u_k tau + 2L contains a vector of norm 8
-(paper §4.4 F5b, §6.5, Proposition 6.3, Table 10). Also the type (6,6) by the same method.
+(paper §4.3 F5b, §6.5, Proposition 6.3, Table 6). Also the type (6,6) by the same method.
 V6. 標準形による F5b: 類 x_i u_k tau + 2L はどれもノルム 8 のベクトルを含まない
-（論文 §4.4 の F5b、§6.5、命題 6.3、表 10）。あわせて型 (6,6) も同じ方法で。
+（論文 §4.3 の F5b、§6.5、命題 6.3、表 6）。あわせて型 (6,6) も同じ方法で。
 
 Proposition 6.3 (assuming F3): a class c contains a vector of norm 8 iff can(c) is in
 K_8 = { can(x_i u_k + 2L) }. V4 computes K_8 and writes it to out/K8.npy; this script reads it.
@@ -19,8 +19,8 @@ x_i u_k + 2L is in K_8.
 陽性対照: tau を恒等写像に置き換えると、すべての r_j + 2L が K_6 に、すべての x_i u_k + 2L が K_8 に入る。
 
 Exactness: integer arithmetic only. / 厳密さ: 整数演算のみ。
-Run time: about 10 minutes (after V4). Memory: about 1.5 GB.
-実行時間: 約 10 分（V4 のあと）。メモリ: 約 1.5 GB。
+Run time: about 25 minutes (after V4). Memory: about 1.5 GB.
+実行時間: 約 25 分（V4 のあと）。メモリ: 約 1.5 GB。
 
 Run / 実行:  python3 code/verify/v6_canonical_lookup.py [--data DIR] [--certificates DIR] [--out DIR]
 """
@@ -31,8 +31,8 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from r112 import certs, data, exact, group, mod2  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, data, exact, group, mod2  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 
 def main():

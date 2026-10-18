@@ -1,7 +1,7 @@
 """S18. Orbit tables of Nebe's lattice L_{56,2}(M): minimal vectors and norm-8 vectors under SL_2(29) and its
-centralizer, with completeness checks (needed for gluing A, Table 6, and the reduction of §6.1 (b);
+centralizer, with completeness checks (needed for gluing A, Table 2, and the reduction of §6.1 (b);
 Table D2 [C4], [C6]). Not used in the proof of Theorem A.
-S18. Nebe の格子 L_{56,2}(M) の軌道表: SL_2(29) とその中心化群による最小ベクトルとノルム 8 のベクトル。完全性の検査つき（貼り方 A、表 6、
+S18. Nebe の格子 L_{56,2}(M) の軌道表: SL_2(29) とその中心化群による最小ベクトルとノルム 8 のベクトル。完全性の検査つき（貼り方 A、表 2、
 §6.1 (b) の帰着に使う。表 D2 の [C4], [C6]）。定理 A の証明には使わない。
 
 Steps (the same methods as for L; see produce/p1, p2, p3 and verify/v3, v4):
@@ -13,9 +13,9 @@ Steps (the same methods as for L; see produce/p1, p2, p3 and verify/v3, v4):
      min L_{56,2}(M) = 6（BKZ-40 基底での取りこぼしの無い列挙）。よってテータ級数は極値で、最小ベクトル 15,590,400 本、ノルム 8 は 36,957,286,800 本;
   3. orbits of minimal vectors by closure (p2) and their completeness by canonical forms and sizes (v3);
      最小ベクトルの軌道を閉包で（p2）、完全性を標準形と大きさの和で（v3）;
-  4. orbits of norm-8 vectors under G* = SL_2(29) C_M by minimal-sum elements (p3) and their completeness:
+  4. orbits of norm-8 vectors under S* = SL_2(29) C_M by marked elements (sums of two minimal vectors) (p3) and their completeness:
      the classes x_i u_k give distinct canonical forms whose orbit sizes add up to |L_8| (v4).
-     ノルム 8 のベクトルの G* = SL_2(29) C_M-軌道を最小和元で（p3）、完全性: 類 x_i u_k の相異なる標準形の軌道の大きさの和が |L_8|（v4）。
+     ノルム 8 のベクトルの S* = SL_2(29) C_M-軌道を印の付く元で（p3）、完全性: 類 x_i u_k の相異なる標準形の軌道の大きさの和が |L_8|（v4）。
 Output in out/nebe/: M_tables.npz (units, min_reps, norm8_reps, K8).
 出力（out/nebe/）: M_tables.npz（units, min_reps, norm8_reps, K8）。
 
@@ -33,9 +33,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "produce"))
-from r112 import certs, exact, group, mod2  # noqa: E402
-from r112 import enumerate as exact_enum  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, exact, group, mod2  # noqa: E402
+from lib import enumerate as exact_enum  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 N6, N8 = 15590400, 36957286800
 
@@ -52,7 +52,7 @@ def main():
     a = ap.parse_args()
     rep = Report("s18_nebe_tables", a.out)
     out = os.path.join(rep.out_dir, "nebe")
-    Gs, gens_s = load("M", rep.out_dir)
+    Gs, gens_s = load("M", rep.out_dir, reduce=True)          # coordinates below: in the reduced basis / 以下の座標は簡約基底で
     G = np.array(Gs.rows(), dtype=np.int64)
     gens = [np.array(g.rows(), dtype=np.int64) for g in gens_s]
 
@@ -89,8 +89,8 @@ def main():
     for i in range(0, len(Y), 1 << 15):
         forms[i:i + (1 << 15)], osz[i:i + (1 << 15)] = can.canon_and_orbit_size(mod2.pack(Y[i:i + (1 << 15)]))
     K8, first = np.unique(forms, return_index=True)
-    rep.value("4. G*-orbits found, distinct G-orbits (canonical forms)", [len(X), len(K8)])
-    rep.check("4. the distinct G-orbits have sizes adding up to |L_8|", int(2 * osz[first].sum()) == N8)
+    rep.value("4. S*-orbits found, distinct S-orbits (canonical forms)", [len(X), len(K8)])
+    rep.check("4. the distinct S-orbits have sizes adding up to |L_8|", int(2 * osz[first].sum()) == N8)
     certs.save_npz(os.path.join(out, "M_tables.npz"), units=U, min_reps=R6.astype(np.int16), norm8_reps=X.astype(np.int16), K8=K8)
     rep.finish()
 

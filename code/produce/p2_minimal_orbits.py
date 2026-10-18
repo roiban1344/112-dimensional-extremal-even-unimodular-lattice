@@ -1,6 +1,6 @@
-"""P2. Find representatives of the G-orbits on L_6 by a closure (paper §6.2). Produces the list
+"""P2. Find representatives of the S-orbits on L_6 by a closure (paper §6.2). Produces the list
 that verify/v3_minimal_orbits.py checks; how it is found does not matter for the proof.
-P2. 閉包によって L_6 の G-軌道の代表を見つける（論文 §6.2）。verify/v3_minimal_orbits.py が確かめる一覧を作る。
+P2. 閉包によって L_6 の S-軌道の代表を見つける（論文 §6.2）。verify/v3_minimal_orbits.py が確かめる一覧を作る。
 作り方は証明に関係しない。
 
 Closure step: if r, s are minimal vectors with <r, s> = 3, then r - s is again minimal
@@ -24,8 +24,8 @@ Output: out/p2_min_reps.npz (reps, int16 (656, 56)). Compared with certificates/
 the set of canonical forms (the order and the choice of representatives may differ).
 出力: out/p2_min_reps.npz。certificates/min_reps.npz とは標準形の集合で比べる（並びや代表の選び方は違いうる）。
 
-Deterministic (fixed random seed). Run time: about 5 minutes. Memory: about 1.5 GB.
-決定的（乱数の種は固定）。実行時間: 約 5 分。メモリ: 約 1.5 GB。
+Deterministic (fixed random seed). Run time: about 9 minutes. Memory: about 1.5 GB.
+決定的（乱数の種は固定）。実行時間: 約 9 分。メモリ: 約 1.5 GB。
 
 Run / 実行:  python3 code/produce/p2_minimal_orbits.py [--data DIR] [--certificates DIR] [--out DIR]
 """
@@ -37,17 +37,17 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from r112 import certs, data, exact, group, mod2  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, data, exact, group, mod2  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 N6 = 15590400
 
 
 def minimal_orbits(G, S, seeds, rep, n6=N6):
-    """Representatives of the G-orbits on the minimal vectors (norm 6) of the lattice with Gram matrix G,
+    """Representatives of the S-orbits on the minimal vectors (norm 6) of the lattice with Gram matrix G,
     by the closure described above, starting from `seeds`; stops when the orbit sizes reach n6.
     Usable for any lattice with an action of SL_2(29) (also Nebe's L_{56,2}(M) in supplementary/nebe).
-    Gram 行列 G の格子の最小ベクトル（ノルム 6）の G-軌道の代表を、上の閉包で `seeds` から求める。軌道の大きさの和が n6 に達したら止める。
+    Gram 行列 G の格子の最小ベクトル（ノルム 6）の S-軌道の代表を、上の閉包で `seeds` から求める。軌道の大きさの和が n6 に達したら止める。
     SL_2(29) が作用する任意の格子に使える（supplementary/nebe の Nebe の L_{56,2}(M) にも）。"""
     n = len(G)
     S32 = S.astype(np.float32)
@@ -56,7 +56,7 @@ def minimal_orbits(G, S, seeds, rep, n6=N6):
     hv = np.array([rng.getrandbits(62) | 1 for _ in range(n)], dtype=np.int64)   # hash weights / ハッシュの重み
 
     def orbit(x):
-        """The G-orbit of x with both signs, as distinct int64 rows. / x の G-軌道（符号込み、相異なる行）。"""
+        """The S-orbit of x with both signs, as distinct int64 rows. / x の S-軌道（符号込み、相異なる行）。"""
         assert int(np.abs(x).sum()) * smax < 2 ** 24                               # float32 exactness / float32 の厳密さ
         O = np.rint(x.astype(np.float32) @ S32).astype(np.int64)
         return np.unique(np.concatenate([O, -O]), axis=0)

@@ -1,6 +1,6 @@
-"""S3. Estimated number of enumeration nodes for listing all vectors of norm <= 8 of R itself
-(paper §6.9, "Baseline"). An estimate, not a proof; it explains why the direct check is impossible.
-S3. R そのもののノルム 8 以下の全ベクトルの列挙に要る節点数の見積もり（論文 §6.9 の「基準」）。見積もりで証明ではない。
+"""S3. Estimated number of enumeration nodes for listing all vectors of norm <= 8 of L_112 itself
+(supplement §S3.2, "Baseline"). An estimate, not a proof; it explains why the direct check is impossible.
+S3. L_112 そのもののノルム 8 以下の全ベクトルの列挙に要る節点数の見積もり（補遺 §S3.2 の「比較の基準」）。見積もりで証明ではない。
 直接の検算が不可能な理由を示す。
 
 Gaussian heuristic for Fincke-Pohst enumeration: the number of nodes at depth k is about the
@@ -21,8 +21,8 @@ import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from r112 import data  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import data  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 
 def estimate(A, r2):
@@ -45,7 +45,7 @@ def main():
     from fpylll import BKZ, LLL, IntegerMatrix
     from fpylll.algorithms.bkz2 import BKZReduction
     from sage.all import ZZ, RealField, matrix
-    ap = argparse.ArgumentParser(description="S3: node estimate for R")
+    ap = argparse.ArgumentParser(description="S3: node estimate for L_112")
     ap.add_argument("--data", default=None)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()

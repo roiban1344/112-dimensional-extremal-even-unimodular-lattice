@@ -1,14 +1,14 @@
-"""S4. Route S (sampling; NOT a proof): re-check randomly chosen bounding representatives with
+"""S4. Route S (sampling; NOT a proof): re-check randomly chosen certificates with
 plain int64 arithmetic, without the float32 products and the shared library of verify/
-(paper §6.9, Table 13a). The complete checks are verify/v5 and verify/v7.
-S4. 経路 S（抜き取り。証明では**ない**）: 無作為に選んだ下界代表元を、verify/ の float32 の積や共有ライブラリを使わず、素朴な int64 の演算で
-検算する（論文 §6.9、表 13a）。全数の検算は verify/v5 と verify/v7。
+(supplement §S3.2, Table S7). The complete checks are verify/v5 and verify/v7.
+S4. 経路 S（抜き取り。証明では**ない**）: 無作為に選んだ certificate を、verify/ の float32 の積や共有ライブラリを使わず、素朴な int64 の演算で
+検算する（補遺 §S3.2、表 S7）。全数の検算は verify/v5 と verify/v7。
 
-For each sampled bounding representative w0 (odd: of r_j tau + 2L; even: of x_i u_k tau + 2L):
+For each sampled certificate w0 (odd: of r_j tau + 2L; even: of x_i u_k tau + 2L):
   (a) w0 minus the class representative has even coordinates; (b) its norm is 14 or 18 (odd) or
-  12, 16, 20 (even); (c) max |<w0, u>| <= 6 over all minimal vectors u = r s (s in G/{+-1}).
+  12, 16, 20 (even); (c) max |<w0, u>| <= 6 over all minimal vectors u = r s (s in S/{+-1}).
 The group is rebuilt here from g1, g2 by breadth-first search.
-標本の各下界代表元 w0 について (a) 類の代表との差の座標が偶数、(b) ノルムが 14, 18（奇）または 12, 16, 20（偶）、
+標本の各 certificate w0 について (a) 類の代表との差の座標が偶数、(b) ノルムが 14, 18（奇）または 12, 16, 20（偶）、
 (c) すべての最小ベクトル u = r s との |<w0, u>| の最大が 6 以下。群はここで g1, g2 から幅優先で作り直す。
 
 Why it is not a proof: if a fraction p of the entries were wrong, k samples would detect it only
@@ -87,7 +87,7 @@ def main():
     for j in rng.choice(len(W6), size=min(a.k, len(W6)), replace=False):
         w0 = W6[j]
         bad += not (((w0 - R6[j] @ tau) % 2 == 0).all() and int(w0 @ G @ w0) in (14, 18) and max_ip(w0) <= 6)
-    print(f"odd bounding representatives: {min(a.k, len(W6))} sampled, {bad} failed", flush=True)
+    print(f"odd-class certificates: {min(a.k, len(W6))} sampled, {bad} failed", flush=True)
     bad_odd = bad
 
     X = npz("norm8_reps.npz", "reps").astype(np.int64)
@@ -101,7 +101,7 @@ def main():
         N, m = int(w0 @ G @ w0), max_ip(w0)
         hist[f"{N},{m}"] = hist.get(f"{N},{m}", 0) + 1
         bad += not (cls and N in (12, 16, 20) and m <= 6)
-    print(f"even bounding representatives: {a.k} sampled, {bad} failed; (norm, max |ip|) -> count {hist}", flush=True)
+    print(f"even-class certificates: {a.k} sampled, {bad} failed; (norm, max |ip|) -> count {hist}", flush=True)
     print("detection probability for a fraction p of wrong entries: " +
           ", ".join(f"p = {p:g}: {1 - (1 - p) ** a.k:.3f}" for p in (1e-2, 1e-3, 1e-4, 10 / 1527984)))
     assert bad == 0 and bad_odd == 0

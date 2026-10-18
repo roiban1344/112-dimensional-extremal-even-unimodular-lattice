@@ -7,8 +7,8 @@
                                  U (3.1) U^T = data/R112_gram_LLL.txt となる U
 
 How they are found does not matter for the proof: the verification only checks that U is
-an integer matrix of determinant +-1 (and, for R, the matrix identity).
-作り方は証明に関係しない。検算は U が行列式 ±1 の整数行列であること（R については行列の等式も）だけを確かめる。
+an integer matrix of determinant +-1 (and, for L_112, the matrix identity).
+作り方は証明に関係しない。検算は U が行列式 ±1 の整数行列であること（L_112 については行列の等式も）だけを確かめる。
 
 Method / 方法:
   L: the Gram matrix is turned into an integer basis by scaling a floating-point Cholesky
@@ -16,11 +16,11 @@ Method / 方法:
      are applied to it, and only the accumulated transformation is kept.
      Gram 行列の浮動小数点の Cholesky 分解を 2^40 倍して丸めた整数基底に、fpylll の LLL と BKZ（ブロック 40、最大 4 周）を掛け、
      変換行列だけを使う。
-  R: PARI's qflllgram on the Gram matrix (3.1) (this is how data/R112_gram_LLL.txt was made).
+  L_112: PARI's qflllgram on the Gram matrix (3.1) (this is how data/R112_gram_LLL.txt was made).
      (3.1) の Gram 行列に PARI の qflllgram（data/R112_gram_LLL.txt はこれで作った）。
 
-Requires SageMath (PARI, fpylll). Run time about 10 minutes (BKZ-40).
-SageMath（PARI, fpylll）が要る。実行時間は約 10 分（BKZ-40）。
+Requires SageMath (PARI, fpylll). Run time about 1 minute (BKZ-40).
+SageMath（PARI, fpylll）が要る。実行時間は約 1 分（BKZ-40）。
 
 Run / 実行:  sage -python code/produce/p6_reduction.py [--data DIR] [--out DIR]
 """
@@ -32,7 +32,7 @@ import time
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from r112 import certs, data, exact  # noqa: E402
+from lib import certs, data, exact  # noqa: E402
 
 
 def bkz_transform(G, block, loops=4):
@@ -69,8 +69,8 @@ def main():
                       f"diagonal of U G U^T / U G U^T の対角: {sorted(set(int(v) for v in np.diag(Gr)))}")
     print(f"reduction_L.txt: BKZ-{a.block}, diagonal norms {sorted(set(int(v) for v in np.diag(Gr)))}  [{time.time() - t0:.0f} s]", flush=True)
 
-    # R: qflllgram, compared with the distributed reduced Gram matrix.
-    # R: qflllgram。配布した簡約 Gram 行列と比べる。
+    # L_112: qflllgram, compared with the distributed reduced Gram matrix.
+    # L_112: qflllgram。配布した簡約 Gram 行列と比べる。
     from sage.all import ZZ, matrix, pari
     B = data.gram_R(G, t)
     V = pari(matrix(ZZ, B.tolist())).qflllgram().sage()        # columns = new basis (PARI convention) / 列が新しい基底

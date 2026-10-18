@@ -29,7 +29,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "produce"))
-from r112.report import Report  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 
 def write_mats(path, header, mats):
@@ -51,10 +51,23 @@ def read_mats(path, n, ring=None):
     return [matrix(ring, n, n, flat[k * n * n:(k + 1) * n * n]) for k in range(len(flat) // (n * n))]
 
 
-def load(name, out_dir):
-    """(Gram matrix, [z, w]) of 'M' or 'Mtilde' from out/nebe. / out/nebe から 'M' または 'Mtilde' の (Gram 行列, [z, w])。"""
+def load(name, out_dir, reduce=False):
+    """(Gram matrix, [z, w]) of 'M' or 'Mtilde' from out/nebe. With reduce=True, in the LLL-reduced basis U b
+    (PARI qflllgram, deterministic): Gram U G U^T, generators U g U^-1. The basis from the definition has entries
+    ~10^7, too large for the float and int16 steps of the orbit computations.
+    out/nebe から 'M' または 'Mtilde' の (Gram 行列, [z, w])。reduce=True なら LLL 簡約した基底 U b で（PARI の qflllgram、決定的）:
+    Gram 行列 U G U^T、生成元 U g U^-1。定義から作った基底は成分が 10^7 程度で、軌道計算の浮動小数点・int16 の段には大きすぎる。"""
     d = os.path.join(out_dir, "nebe")
-    return read_mats(os.path.join(d, f"{name}_gram.txt"), 56)[0], read_mats(os.path.join(d, f"{name}_generators.txt"), 56)
+    G = read_mats(os.path.join(d, f"{name}_gram.txt"), 56)[0]
+    gens = read_mats(os.path.join(d, f"{name}_generators.txt"), 56)
+    if reduce:
+        from sage.all import ZZ, pari
+        U = pari(G).qflllgram().sage().transpose().change_ring(ZZ)
+        assert abs(U.det()) == 1
+        Ui = U.inverse().change_ring(ZZ)
+        G, gens = U * G * U.transpose(), [U * g * Ui for g in gens]
+        assert all(g * G * g.transpose() == G for g in gens)
+    return G, gens
 
 
 def main():

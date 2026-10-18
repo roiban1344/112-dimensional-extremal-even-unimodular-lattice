@@ -1,16 +1,16 @@
-"""S12. Frame-change consistency test (paper §7.2; Table D2 [C17]). Not used in the proof of Theorem A.
-S12. 枠の取り替えによる整合性の検査（論文 §7.2。表 D2 の [C17]）。定理 A の証明には使わない。
+"""S12. Frame-change consistency test (supplement §S3.4; Table D2 [C17]). Not used in the proof of Theorem A.
+S12. 枠の取り替えによる整合性の検査（補遺 §S3.4。表 D2 の [C17]）。定理 A の証明には使わない。
 
-R = L tensor_{M'} Lambda with Lambda = {(a, b) in M'^2 : b = a tau (mod 2M')} / sqrt2 and the M'-valued
+L_112 = L tensor_{M'} Lambda with Lambda = {(a, b) in M'^2 : b = a tau (mod 2M')} / sqrt2 and the M'-valued
 Hermitian form h(lambda, lambda') = (1/2)(a a'* + b b'*). A frame of Lambda is a pair (w1, w2) with
-h(w1, w1) = h(w2, w2) = 2 and h(w1, w2) = 0. For every frame, R contains L w1 + L w2 = sqrt2 L + sqrt2 L
-(index 2^56), so R is a gluing of two copies of L along some map phi with respect to that frame:
+h(w1, w1) = h(w2, w2) = 2 and h(w1, w2) = 0. For every frame, L_112 contains L w1 + L w2 = sqrt2 L + sqrt2 L
+(index 2^56), so L_112 is a gluing of two copies of L along some map phi with respect to that frame:
     lambda -> (p, q) = (h(lambda, w1), h(lambda, w2)),  q = p phi (mod 2M').
-Since it is the same lattice R, the class of phi (under C \\ . / C and inversion, as in Proposition 3.3)
+Since it is the same lattice L_112, the class of phi (under C \\ . / C and inversion, as in Proposition 3.3)
 must be the class of tau for every frame. Done for tau (gluing C) and for tau_B (gluing B).
-R = L ⊗_{M'} Lambda、Lambda = {(a, b) ∈ M'^2 : b ≡ a tau (mod 2M')}/√2、M' に値をとるエルミート形式 h(λ, λ') = (1/2)(a a'* + b b'*)。
-Lambda の枠とは、h(w1,w1) = h(w2,w2) = 2、h(w1,w2) = 0 の組 (w1, w2)。どの枠についても R ⊃ L w1 ⊕ L w2 ≅ √2L ⊕ √2L（指数 2^56）なので、
-R はその枠に関する L 2 枚の貼り合わせで、貼り方の写像 phi は上の式で決まる。同じ格子 R なので、phi の類（命題 3.3 と同じく C の両側からの積と
+L_112 = L ⊗_{M'} Lambda、Lambda = {(a, b) ∈ M'^2 : b ≡ a tau (mod 2M')}/√2、M' に値をとるエルミート形式 h(λ, λ') = (1/2)(a a'* + b b'*)。
+Lambda の枠とは、h(w1,w1) = h(w2,w2) = 2、h(w1,w2) = 0 の組 (w1, w2)。どの枠についても L_112 ⊃ L w1 ⊕ L w2 ≅ √2L ⊕ √2L（指数 2^56）なので、
+L_112 はその枠に関する L 2 枚の貼り合わせで、貼り方の写像 phi は上の式で決まる。同じ格子 L_112 なので、phi の類（命題 3.3 と同じく C の両側からの積と
 逆元による類）はどの枠でも tau の類でなければならない。tau（貼り方 C）と tau_B（貼り方 B）について行う。
 
 The elements of norm 2 of Lambda are found as the vectors of norm <= 8 of a 16-dimensional integral
@@ -29,8 +29,8 @@ sys.path.insert(0, os.path.join(HERE, ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "produce"))
 from exact_qfminim import qfminim_checked  # noqa: E402
 from p1_centralizer import elements_of_norm  # noqa: E402
-from r112 import certs, data  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, data  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 
 def main():

@@ -4,11 +4,11 @@
 PARI's qfminim enumerates the vectors of norm <= B of a positive definite form, but its
 documentation does not state that the enumeration is guaranteed complete (it uses floating point).
 Wherever a claim depends on having found *all* such vectors (the centralizer of SL_2(29) in Aut(L)
-and in Aut(R), the identification with Nebe's lattice), this function repeats the enumeration with
+and in Aut(L_112), the identification with Nebe's lattice), this function repeats the enumeration with
 the interval-arithmetic enumerator of verify/enum_interval.c, which cannot miss vectors, and asserts
 that both give the same set (up to sign).
 PARI の qfminim は正定値形式のノルム B 以下のベクトルを列挙するが、文書には列挙が必ず完全であるとは書かれていない（浮動小数点を使う）。
-「そのようなベクトルを**すべて**見つけた」ことに依存する主張（Aut(L)・Aut(R) における SL_2(29) の中心化群、Nebe の格子との同定）では、
+「そのようなベクトルを**すべて**見つけた」ことに依存する主張（Aut(L)・Aut(L_112) における SL_2(29) の中心化群、Nebe の格子との同定）では、
 この関数が、取りこぼしの無い verify/enum_interval.c の区間演算の列挙で同じ列挙をやり直し、両者が（符号を除いて）同じ集合を与えることを確かめる。
 
 The form is first LLL-reduced with PARI's qflllgram; the basis change U is checked to be unimodular,
@@ -19,8 +19,8 @@ import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from r112 import enumerate as exact_enum  # noqa: E402
-from r112.report import DEFAULT_OUT  # noqa: E402
+from lib import enumerate as exact_enum  # noqa: E402
+from lib.report import DEFAULT_OUT  # noqa: E402
 
 
 def qfminim_checked(Q, B):

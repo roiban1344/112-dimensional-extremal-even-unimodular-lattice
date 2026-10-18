@@ -39,8 +39,8 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
-from r112 import certs, data, exact  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, data, exact  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 
 def random_unimodular(n, rng, steps=4000):

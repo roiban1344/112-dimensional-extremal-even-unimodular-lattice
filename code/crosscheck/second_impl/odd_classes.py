@@ -15,7 +15,7 @@ certificates/ の検証用データを読む。中心化群の元は Sage で求
 Release note: for the public repository only the inputs were changed (the four files of data/ and the
 certificate files of certificates/ are read; the centralizer elements are read from
 certificates/centralizer.npz instead of being recomputed with Sage). The checks are unchanged.
-Shares no code with code/r112 or code/verify. Needs only numpy.
+Shares no code with code/lib or code/verify. Needs only numpy.
 """
 import sys, time
 from pathlib import Path

@@ -1,7 +1,7 @@
 /-
 # 112 次元格子 L₁₁₂ の論証（計算事実を仮定とした形式化）
 
-論文（§7.6、表 9b）の
+論文（§7.1、表 9）の
 補題 3.2（偶性の部分）・補題 4.2・系 4.3・補題 5.1（中点補題）・系 5.2・系 5.3・§4.2（対称性による帰着）と、
 「F1〜F5 ⟹ 内殻ベクトルが無い」の導出を、**抽象的な設定で**証明する。
 
@@ -25,7 +25,7 @@ import Mathlib.Tactic.Abel
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.ByContra
 
-namespace EEUL.R112
+namespace EEUL.L112
 
 /-- 抽象的な設定: 整数値の対称双線形形式 `B` をもつ加法群 `L` と、`√-5` として働く自己準同型 `τ`。 -/
 structure Setting (L : Type*) [AddCommGroup L] where
@@ -338,4 +338,4 @@ theorem theoremA (x y : L) (hz : x ≠ 0 ∨ S.τ x + 2 • y ≠ 0) :
 
 end Reduction
 
-end EEUL.R112
+end EEUL.L112

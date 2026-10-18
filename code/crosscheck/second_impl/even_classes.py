@@ -21,7 +21,7 @@ certificates/ の検証用データを読む。中心化群の元は Sage で求
 Release note: for the public repository only the inputs were changed (the four files of data/ and the
 certificate files of certificates/ are read; the centralizer elements are read from
 certificates/centralizer.npz instead of being recomputed with Sage). The checks are unchanged.
-Shares no code with code/r112 or code/verify. Needs only numpy.
+Shares no code with code/lib or code/verify. Needs only numpy.
 """
 import sys, time
 from pathlib import Path
@@ -112,7 +112,7 @@ ctrl = sum(c in K6 for c in canon(pack(R6)).tolist())
 print(f"陽性対照（恒等写像で貼る）: (6,6) 型の衝突 {ctrl} / {len(R6)}", flush=True)
 
 for K in classes:
-    Xn = _ints(DATA / "tau.txt").reshape(n, n) if K == "C" else _npz("negative_control_B.npz", "tau_B").astype(np.int64)
+    Xn = _ints(DATA / "tau.txt").reshape(n, n) if K == "C" else _npz("negative_control_B.npz", "tau_class_B").astype(np.int64)
     # Inverse modulo 2: tau^2 = -5 = 1 (mod 2) for both gluings, checked here. / 2 を法とした逆: どちらの貼り方も tau^2 ≡ 1 (mod 2)。ここで確かめる。
     assert ((Xn @ Xn - np.eye(n, dtype=np.int64)) % 2 == 0).all()
     Xi = Xn % 2

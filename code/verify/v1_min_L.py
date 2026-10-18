@@ -1,5 +1,5 @@
-"""V1. F1: min L = 6, by an enumeration that cannot miss vectors (paper §6.1 (a), Table 9a).
-V1. F1: min L = 6。取りこぼしの無い列挙による（論文 §6.1 (a)、表 9a）。
+"""V1. F1: min L = 6, by an enumeration that cannot miss vectors (paper §6.1 (a), Table 5).
+V1. F1: min L = 6。取りこぼしの無い列挙による（論文 §6.1 (a)、表 5）。
 
 Steps / 手順:
   1. Read the basis change U (certificates/reduction_L.txt), check exactly that det U = +-1,
@@ -24,11 +24,11 @@ Positive controls (same code path): E_8 at radius 2 (240 vectors), the Leech lat
 陽性対照（同じ経路）: E_8（半径 2、240 本）、Leech 格子（半径 4、ノルム 4 が 196,560 本、ノルム 2 は無し）、
 Leech + Leech + E_8（半径 4、240 本と 395,280 本）。
 
-Run time: about 45 minutes (8.5 x 10^9 nodes) on one core; controls take seconds.
-実行時間: 1 コアで約 45 分（8.5 × 10^9 節点）。対照は数秒。
+Run time: about 35 minutes (8.5 x 10^9 nodes) on one core; controls take seconds.
+実行時間: 1 コアで約 35 分（8.5 × 10^9 節点）。対照は数秒。
 
 Run / 実行:  python3 code/verify/v1_min_L.py [--controls-only] [--data DIR] [--certificates DIR] [--out DIR]
-Requires a C compiler with 128-bit integers (gcc or clang). / 128 ビット整数をもつ C コンパイラ（gcc か clang）が要る。
+Requires a C compiler with 128-bit integers (gcc or clang; $CC, else cc, gcc, clang). / 128 ビット整数をもつ C コンパイラ（gcc か clang。$CC、無ければ cc, gcc, clang の順に探す）が要る。
 """
 import argparse
 import math
@@ -40,8 +40,9 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
-from r112 import certs, data, exact  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, data, exact  # noqa: E402
+from lib.enumerate import c_compiler  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 E8 = np.array([  # Gram matrix of E_8 (a reduced basis) / E_8 の Gram 行列（簡約基底）
     [2, 1, 1, -1, 1, 1, 1, 1], [1, 2, 1, 0, 1, 1, 0, 1], [1, 1, 2, -1, 1, 0, 1, 1], [-1, 0, -1, 2, 0, 0, -1, -1],
@@ -51,7 +52,7 @@ E8 = np.array([  # Gram matrix of E_8 (a reduced basis) / E_8 の Gram 行列（
 def compile_enumerator(build_dir):
     exe = os.path.join(build_dir, "enum_interval")
     os.makedirs(build_dir, exist_ok=True)
-    subprocess.run([os.environ.get("CC", "gcc"), "-O2", "-std=c11", "-fno-fast-math", "-ffp-contract=off",
+    subprocess.run([c_compiler(), "-O2", "-std=c11", "-fno-fast-math", "-ffp-contract=off",
                     "-o", exe, os.path.join(HERE, "enum_interval.c"), "-lm"], check=True)
     return exe
 

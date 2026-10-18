@@ -36,8 +36,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "produce"))
-from r112 import certs, data, exact  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, data, exact  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 
 def main():
@@ -55,7 +55,7 @@ def main():
     n = 56
     F2 = GF(2)
     I = identity_matrix(ZZ, n)
-    GM, (zM, wM) = load("M", rep.out_dir)
+    GM, (zM, wM) = load("M", rep.out_dir, reduce=True)          # same basis as M_tables.npz (tables.py) / M_tables.npz と同じ基底
     G = matrix(ZZ, data.gram(a.data).tolist())
     g1, g2 = [matrix(ZZ, g.tolist()) for g in data.generators(a.data)]
     basis = commutant_basis([zM, wM], n)

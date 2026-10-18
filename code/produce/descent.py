@@ -1,13 +1,13 @@
-"""The descent that finds bounding representatives (paper §6.6). Shared by p4 and p5.
-下界代表元を見つける降下（論文 §6.6）。p4 と p5 が共有する。
+"""The descent that finds certificates (paper §6.6). Shared by p4 and p5.
+certificate を見つける降下（論文 §6.6）。p4 と p5 が共有する。
 
 Start from a vector w of the class (r tau, or x u tau). While some minimal vector u has
 <w, u> >= 7, replace w by w - 2u (for the u with the largest |<w, u>|, sign adjusted). This stays
 in the class w + 2L and lowers the norm by 4(<w, u> - 6) > 0, so it terminates. If it ends with
-|<w, u>| <= 6 for all minimal u and a suitable norm, w is a bounding representative.
+|<w, u>| <= 6 for all minimal u and a suitable norm, w is a certificate.
 類の元 w（r tau か x u tau）から始める。<w, u> ≥ 7 となる最小ベクトル u がある限り、w を w - 2u に置き換える
 （|<w, u>| が最大の u を、符号を合わせて使う）。類 w + 2L の中に留まり、ノルムは 4(<w, u> - 6) > 0 だけ下がるので、必ず止まる。
-すべての最小ベクトル u について |<w, u>| ≤ 6 で、ノルムが適切なら、w は下界代表元。
+すべての最小ベクトル u について |<w, u>| ≤ 6 で、ノルムが適切なら、w は certificate。
 
 The inner products with all minimal vectors are P[s, j] = <r_j s, w> = r_j (s G w^T): first
 t = S (G w^T) (12,180 x 56), then t R^T (12,180 x 656). Both products are done in float64 after

@@ -1,7 +1,7 @@
-"""V7. F5b by even bounding representatives: min(x_i u_k tau + 2L) >= 12 for all 1,527,984 pairs
-(paper §4.4 F5b, Corollary 5.3, Definition 5.4, §6.7, Table 12).
-V7. 偶の下界代表元による F5b: 1,527,984 組すべてについて min(x_i u_k tau + 2L) ≥ 12
-（論文 §4.4 の F5b、系 5.3、定義 5.4、§6.7、表 12）。
+"""V7. F5b by even-class certificates: min(x_i u_k tau + 2L) >= 12 for all 1,527,984 pairs
+(paper §4.3 F5b, Corollary 5.3, Check 5.4, §6.7, Table 8).
+V7. 偶の類の certificate による F5b: 1,527,984 組すべてについて min(x_i u_k tau + 2L) ≥ 12
+（論文 §4.3 の F5b、系 5.3、検査 5.4、§6.7、表 8）。
 
 Row 6 i + k of certificates/even_bounding.npz is a vector w0 with
 certificates/even_bounding.npz の第 6i+k 行はベクトル w0 で、
@@ -25,8 +25,8 @@ single-threaded then).
 Exactness: (a), (b) in int64; (c) in float32 with the exactness bound asserted for every chunk.
 厳密さ: (a), (b) は int64。(c) は float32 で、チャンクごとに厳密さの上界を確かめる。
 
-Run time: about 8 CPU hours for (c) (e.g. 3 hours with --threads 3). Memory: about 3 GB.
-実行時間: (c) に約 8 CPU 時間（--threads 3 なら約 3 時間）。メモリ: 約 3 GB。
+Run time: about 24 CPU hours for (c) (7.9 hours with --threads 3). Memory: about 3 GB.
+実行時間: (c) に約 24 CPU 時間（--threads 3 で 7.9 時間）。メモリ: 約 3 GB。
 
 Run / 実行:  python3 code/verify/v7_even_bounding.py [--threads T] [--limit N] [--data DIR] [--certificates DIR] [--out DIR]
              (--limit N checks only the first N pairs, for a quick test / 先頭の N 組だけを確かめる。試験用)
@@ -47,14 +47,14 @@ import time  # noqa: E402
 import numpy as np  # noqa: E402
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from r112 import certs, data, exact, group, shells  # noqa: E402
-from r112.report import Report  # noqa: E402
+from lib import certs, data, exact, group, shells  # noqa: E402
+from lib.report import Report  # noqa: E402
 
 NPAIRS = 1527984
 
 
 def main():
-    ap = argparse.ArgumentParser(description="V7: F5b by even bounding representatives")
+    ap = argparse.ArgumentParser(description="V7: F5b by even-class certificates")
     ap.add_argument("--threads", type=int, default=1)
     ap.add_argument("--chunk", type=int, default=8192, help="pairs per checkpoint / 途中経過の保存ごとの組数")
     ap.add_argument("--limit", type=int, default=None)
@@ -71,7 +71,7 @@ def main():
     X = certs.load("norm8_reps.npz", "reps", a.certificates).astype(np.int64)
     U = certs.load("centralizer.npz", "units", a.certificates).astype(np.int64)
     W = certs.load("even_bounding.npz", "w0", a.certificates)
-    rep.check("1527984 bounding representatives, one per pair (row 6 i + k)", W.shape == (NPAIRS, 56) and 6 * len(X) == NPAIRS)
+    rep.check("1527984 certificates, one per pair (row 6 i + k)", W.shape == (NPAIRS, 56) and 6 * len(X) == NPAIRS)
     n = a.limit or NPAIRS
     mm = exact.i64_matmul
 
@@ -114,7 +114,7 @@ def main():
     table = {}
     for (nn, m), c in zip(*np.unique(np.stack([norms[:n], mx.astype(np.int64)], axis=1), axis=0, return_counts=True)):
         table[f"norm {nn}, max {m}"] = int(c)
-    rep.value("Table 12: (norm, max |<w0, u>|) -> count", table)
+    rep.value("Table 8: (norm, max |<w0, u>|) -> count", table)
     rep.value("seconds spent in (c)", round(secs))
     rep.check(f"(c) max |<w0, u>| <= 6 over all minimal vectors u, for all {n} pairs", (mx <= 6).all() and (mx >= 0).all())
     if n < NPAIRS:
