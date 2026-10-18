@@ -11,7 +11,7 @@ This repository accompanies a paper constructing a 112-dimensional even unimodul
 
 ## Result
 
-Theorem A of the paper: the lattice L₁₁₂ defined by the data in this repository is a positive-definite even unimodular lattice of dimension 112 whose minimum norm is 10. Since 10 is the largest value that the Mallows–Odlyzko–Sloane bound 2⌊n/24⌋+2 allows in dimension 112, L₁₁₂ is extremal. Theorem B determines its automorphism group, of order 1,169,280.
+Theorem A of the paper: the lattice L₁₁₂ defined by the data in this repository is a positive-definite even unimodular lattice of dimension 112 whose minimum norm is 10. Since 10 is the largest value that the Mallows–Odlyzko–Sloane bound 2⌊n/24⌋+2 allows in dimension 112, L₁₁₂ is extremal. Theorem B determines its automorphism group, of order 1,169,280. Supplement §S6 classifies all even unimodular lattices of dimension 112 on which SL₂(29) acts as on L₁₁₂: there are exactly eight up to equivariant isometry, L₁₁₂ among them, and all but one of the others contain a vector of norm at most 8.
 
 The construction glues two copies of a 56-dimensional extremal lattice of Nebe, which carries the symmetry group SL₂(29), along an endomorphism τ with τ² = −5 that commutes with the group; equivalently, L₁₁₂ is a Hermitian tensor product over ℤ[√−5]. The proof is computer-assisted. Lemmas proved by hand reduce extremality to finitely many lower bounds for cosets modulo 2L₅₆, and programs check these bounds in integer arithmetic from the distributed data (about 1.2 CPU hours). The deduction from the checked facts to the theorem is formalized in Lean 4.
 
@@ -57,7 +57,7 @@ This runs everything in `proof.sh`, and adds the alternative check of F5b by the
 
 ## Versions and reproducibility
 
-Releases are tagged by date (`v2026-10-DD`). Take the paper, the code, and the verification-data hashes from the same tag. Large verification data archives are distributed as assets of the [Release `certificates-v1`](https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1); their hashes are recorded in `certificates/SHA256SUMS`. Programs check these hashes before using the data. Generated results are written to `out/`.
+Releases are tagged by date; this release is `v2026-10-18`. Take the paper, the code, and the verification-data hashes from the same tag. Large verification data archives are distributed as assets of the [Release `certificates-v1`](https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1); their hashes are recorded in `certificates/SHA256SUMS`. Programs check these hashes before using the data. Generated results are written to `out/`.
 
 To cite this work, use GitHub's "Cite this repository", which reads [CITATION.cff](CITATION.cff).
 

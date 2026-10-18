@@ -32,6 +32,14 @@ Data for cross-checks and supplementary computations:
 | `negative_control_B.npz` | `tau_class_B` int64 (56, 56) | an element of M' with τ² = −5 in the other class (gluing B) | supplementary |
 | | `tau_B`, `x`, `v`, `hit_pairs` | the gluing map of gluing B as found in the search (a lift modulo 2, not of square −5), a collision (x, v), and the colliding pairs | crosscheck/all_data (negative controls) |
 | `outer_automorphism_R.txt` | 112 × 112 integers | an automorphism of L₁₁₂ inducing the outer automorphism of SL₂(29) | supplementary/automorphisms |
+| `gram_A.txt` | 112 × 112 integers | Gram matrix G_A of gluing A (Nebe's L_{56,2}(M) glued by a lift of a map in the class of 48), in the basis (3.1) | supplementary/isometry_ab.py ([C28]) |
+| `isometry_AB.txt` | 112 × 112 integers | basis change T with T G_B Tᵀ = G_A, det T = ±1 (G_B = (3.1) for tau_class_B), an isometry from gluing A onto gluing B | supplementary/isometry_ab.py ([C28]) |
+| `genus_classes.txt` | 8 lines of 9 integers | the 8 classes Λ_j of the genus of rank-2 unimodular Hermitian lattices over the maximal order of L_{56,2}(M): j, \|U(Λ_j)\| (PARI `qfauto`) and the numbers of short vectors of Λ_j | supplementary/genus/genus.py ([C29], [C31]) |
+| `genus_class_<j>.txt` (j = 0, …, 7) | 112 × 112 integers | Gram matrix G_X of X_j = L_{56,2}(M) ⊗ Λ_j, LLL-reduced | supplementary/genus/genus.py ([C30], [C31]) |
+| `genus_basis_<j>.txt` (j = 0, …, 7) | d, then 112 × 112 integers D | the basis D/d of X_j in the coordinates of (3.1) (L ⊕ L, form diag(G, G)/2): D diag(G, G) Dᵀ = 2d² G_X; g₁, g₂ act on X_j | supplementary/genus/genus.py ([C30], [C31]) |
+| `genus_witnesses.txt` | 3 lines of 113 integers | class j and a vector v of X_j with v G_X vᵀ = 8 (j = 3, 4, 5) | supplementary/genus/genus.py ([C30], [C31]) |
+| `genus_isometry_7_L112.txt` | 112 × 112 integers | T with T G_R Tᵀ = G_X (class 7), det T = ±1, G_R = (3.1): class 7 is L₁₁₂ | supplementary/genus/genus.py ([C31]) |
+| `genus_isometry_3_A.txt` | 112 × 112 integers | T with T G_A Tᵀ = G_X (class 3), det T = ±1: class 3 is gluing A | supplementary/genus/genus.py ([C31]) |
 
 Route T (supplement §S4.1, [C21]; not used in the proof of Theorem A):
 

@@ -68,7 +68,7 @@
    en: [Supplement §S4: three searches modulo 2. All 3 936 certificates for test (3) checked in integers. Test (2): floating-point enumeration of all 763 992 classes; integer certificates for part of them (`certificates/route_t_search2.npz`, to be replaced when complete)],
    ja: [補遺 §S4: 2 を法とする三つの探索。(3) の代表元 3,936 個は整数で全数検査済み。(2) は 763,992 類すべてを浮動小数点で列挙し、整数演算で検算する代表元は一部（`certificates/route_t_search2.npz`、完了後に差し替え）], time: [1.6 h + 3 × 13 h (CVP); (3) の代表元 25 min]),
   (id: "C22", files: ("lean/EEUL/L112/Chain.lean",),
-   en: [Lean formalisation of the deduction from F1–F5 to Theorem A, and its check (no `sorry`; standard axioms only)],
+   en: [Lean formalization of the deduction from F1–F5 to Theorem A, and its check (no `sorry`; standard axioms only)],
    ja: [F1〜F5 から定理 A を導く論理の Lean による形式化と、その検査（`sorry` なし、標準の公理のみ）], time: [min]),
   (id: "C23", files: ("code/supplementary/nebe/identify_nebe.py", "code/supplementary/nebe/lattices.py", "code/supplementary/nebe/cycloquat.py"),
    en: [Identification of $L$ with Nebe's $L_(56,2)(tilde(M))$ built from the definition; $tau$ as right multiplication by an element of reduced norm 5],
@@ -85,6 +85,18 @@
   (id: "C27", files: ("code/crosscheck/all_data/check_all.py", "code/crosscheck/all_data/min_L.py", "code/crosscheck/all_data/min_L_enum.c"),
    en: [Independent re-check of all certificates and of F1 by separately written code (integer arithmetic; float32 products only with proved bounds on all partial sums)],
    ja: [すべての代表元と F1 の、作成側と別に書いたコードによる検算（整数演算。float32 の積は部分和の上界を証明した場合だけ）], time: [≈ 10 h]),
+  (id: "C28", files: ("code/supplementary/isometry_ab.py",),
+   en: [Gluings A and B are isometric: an explicit basis change $T$ with $T G_B T^top = G_A$, checked in integer arithmetic ($det T = plus.minus 1$)],
+   ja: [貼り方 A と B は等長同型: $T G_B T^top = G_A$ を満たす基底変換 $T$ を明示し、整数演算で検算（$det T = plus.minus 1$）], time: [find 8 min; check 2 s]),
+  (id: "C29", files: ("code/supplementary/genus/genus.py",),
+   en: [The $"SL"_2(29)$-invariant even unimodular lattices of dimension 112 (`local`, `mass`, `enum`): the image of the group ring is maximal at $p = 2, 3, 5, 7, 29$ ($FF_p$-algebras of dimension 392), so every such lattice is $L_(56,2)(frak(M)) times.o_(frak(M)) Lambda$; $zeta_K (-1) = 1\/2$, $zeta_K (-3) = 157\/20$ ($K = QQ(sqrt(29))$, generalized Bernoulli numbers) and the mass $157\/640$; Kneser neighbours at the prime of norm 5 (fixed seed) reach the mass with 8 classes, $|U(Lambda)| = 1152, 12, 288, 24, 24, 20, 288, 48$ (PARI `qfauto`)],
+   ja: [112 次元の $"SL"_2(29)$ 不変な偶ユニモジュラー格子（`local`、`mass`、`enum`）: 群環の像は $p = 2, 3, 5, 7, 29$ で極大（$FF_p$-代数の次元 392）で、どれも $L_(56,2)(frak(M)) times.o_(frak(M)) Lambda$。$zeta_K (-1) = 1\/2$、$zeta_K (-3) = 157\/20$（$K = QQ(sqrt(29))$、一般化 Bernoulli 数）と質量 $157\/640$。ノルム 5 の素イデアルでの Kneser の近傍（種は固定）で質量に達し 8 類、$|U(Lambda)| = 1152, 12, 288, 24, 24, 20, 288, 48$（PARI の `qfauto`）], time: [local 20 min; mass 1 s; enum 16 min]),
+  (id: "C30", files: ("code/supplementary/genus/genus.py",),
+   en: [The 8 lattices $X_j = L_(56,2)(frak(M)) times.o_(frak(M)) Lambda_j$ (`build`; Gram matrices and bases in the coordinates of (3.1) in the verification data), their mod-2 frames (`frames`), and vectors of norm 8 in classes 3, 4, 5 from fixed sublattices (`witness`)],
+   ja: [8 つの格子 $X_j = L_(56,2)(frak(M)) times.o_(frak(M)) Lambda_j$（`build`。Gram 行列と (3.1) の座標での基底を検証用データに）、その mod 2 の枠（`frames`）、固定部分格子から取り出した類 3, 4, 5 のノルム 8 のベクトル（`witness`）], time: [build 4 min; frames 12 min; witness 2 min]),
+  (id: "C31", files: ("code/supplementary/genus/genus.py",),
+   en: [Explicit $"SL"_2(29)$-equivariant isometries class 7 → $L_112$ and class 3 → gluing A, and a recount of $|U(Lambda_j)|$ as equivariant automorphisms (`identify`); integer-arithmetic check, numpy only (`check`): each $G_X$ even with determinant 1, $g_1, g_2$ act on $X_j$, the vectors of norm 8, the isometries ($det T = plus.minus 1$), and $sum_j 1\/|U(Lambda_j)| = 157\/640$],
+   ja: [明示的な $"SL"_2(29)$ 同変な等長写像 類 7 → $L_112$、類 3 → 貼り方 A と、同変な自己同型としての $|U(Lambda_j)|$ の数え直し（`identify`）。numpy だけの整数演算の検算（`check`）: 各 $G_X$ が偶で行列式 1、$g_1, g_2$ が $X_j$ に働く、ノルム 8 のベクトル、等長写像（$det T = plus.minus 1$）、$sum_j 1\/|U(Lambda_j)| = 157\/640$], time: [identify 13 min; check 80 s]),
 )
 
 #let _calc-ids = calcs.map(c => c.id)

@@ -9,7 +9,7 @@
 )
 
 #abstract-box[
-We construct an explicit positive-definite even unimodular lattice $L_112$ of dimension 112 and minimum norm 10, attaining the extremal bound. The construction glues two copies of a 56-dimensional extremal lattice of Nebe using an endomorphism whose square is $-5$ and which commutes with $"SL"_2(29)$. Extremality is reduced to finitely many coset bounds and proved by checking orbit completeness and either canonical forms or integer conditions derived from the midpoint lemma. We also determine the full automorphism group, of order $1 thin 169 thin 280$. Defining matrices, verification data and code are supplied, and the deduction from explicit computational hypotheses is formalised in Lean.
+We construct an explicit positive-definite even unimodular lattice $L_112$ of dimension 112 and minimum norm 10, attaining the extremal bound. The construction glues two copies of a 56-dimensional extremal lattice of Nebe using an endomorphism whose square is $-5$ and which commutes with $"SL"_2(29)$. Extremality is reduced to finitely many coset bounds and proved by checking orbit completeness and either canonical forms or integer conditions derived from the midpoint lemma. We also determine the full automorphism group, of order $1 thin 169 thin 280$. Defining matrices, verification data and code are supplied, and the deduction from explicit computational hypotheses is formalized in Lean.
 ]
 
 
@@ -21,24 +21,24 @@ A positive-definite lattice of rank $n$ is a discrete subgroup $Lambda = bb(Z) b
 
 The theta series $theta_Lambda(q)=sum_(x in Lambda)q^(chevron.l x,x chevron.r/2)$ of an even unimodular lattice is a modular form of weight $n/2$. This gives the bound of Mallows–Odlyzko–Sloane \[MOS75\]:
 #tagged("1.1", $ min Lambda <= mu(n):=2 floor(n/24)+2. $)
-Here $min Lambda$ is the smallest norm of a nonzero vector. An even unimodular lattice is extremal when equality holds in (1.1). Unless another class of lattices is explicitly specified, “extremal lattice” in this paper means extremal even unimodular lattice. We retain the abbreviation $mu(n)$ for the bound in later formulas.
+Here $min Lambda$ is the smallest norm of a nonzero vector. An even unimodular lattice is extremal when equality holds in (1.1). Unless another class of lattices is explicitly specified, “extremal lattice” in this paper means extremal even unimodular lattice. We write $mu(n)$ for this bound.
 
 The bound is 6 in dimension 56 and 10 in dimension 112. Thus the construction below must exclude nonzero vectors of norms 2, 4, 6 and 8 in dimension 112. Examples in lower dimensions include $E_8$ and the Leech lattice. More recently, Sakamoto's preprint \[Sak26\] constructs two examples in dimension 88. Further background and comparison tables are collected in Appendix G; the proof of the result below does not depend on those comparisons.
 
 == 1.2 Construction and main result
 
-Let $L_56$ denote the 56-dimensional lattice specified by the Gram matrix in Appendix D. It is equivariantly isometric to Nebe's lattice $L_(56,2)(tilde(M))$ \[Neb98, Table II\]; the identification is established in §7.2. The two matrices of Appendix D are isometries of $L_56$ and generate a group $S$ isomorphic to $"SL"_2(29)$ (F4). Let $tau$ be the endomorphism specified in Appendix D. It commutes with $S$ and satisfies
+Let $L_56$ denote the 56-dimensional lattice whose Gram matrix is the file #raw("L56_gram.txt") listed in Appendix D. (The defining matrices are not printed in this paper; they are distributed as data files identified by their SHA-256 hashes. Appendix D also records a specification of $L_56$ and $tau$ in terms of Nebe's construction that does not depend on the files.) The lattice $L_56$ is $"SL"_2(29)$-equivariantly isometric to Nebe's lattice $L_(56,2)(tilde(M))$ \[Neb98, Table II\]; the identification is established in §7.2. The two matrices in the file #raw("sl2_29_generators.txt") are isometries of $L_56$ and generate a group $S$ isomorphic to $"SL"_2(29)$ (F4). Let $tau$ be the endomorphism given by the file #raw("tau.txt"). It commutes with $S$ and satisfies
 $ tau^2=-5 "id", quad chevron.l x tau,y tau chevron.r=5 chevron.l x,y chevron.r quad (x,y in L_56). $
 Matrices act on row vectors on the right. These identities and the defining matrices are checked by #calc("C2"). For this choice of $tau$, set
 #tagged("1.2", $ L_112 = L_tau := { lr((x,x tau+2 y))/sqrt(2) : x,y in L_56 } subset 1/sqrt(2) (L_56 perp L_56). $)
 
 #thm[
-#strong[Theorem A.] The lattice $L_112$ defined by the data of Appendix D and (1.2) is an even unimodular lattice of dimension 112 with minimum norm 10. In particular, it is extremal.
+#strong[Theorem A.] The lattice $L_112$ defined by the data files of Appendix D and (1.2) is an even unimodular lattice of dimension 112 with minimum norm 10. In particular, it is extremal.
 ]
 
 The diagonal action of $S$ preserves $L_112$. The proof of Theorem A is outlined in §1.3 and completed in §4.3 using the finite computations in §6. The construction and the verification are given separately, so the verification does not require repeating the search that led to $tau$.
 
-For comparison, the centralizer of $S$ in $"Aut"(L_56)$ has order 12. The 24 endomorphisms commuting with $S$ and satisfying $tau^2=-5$ form two conjugacy classes under this centralizer #calc("C2"). Conjugate choices give isometric glued lattices (Proposition 3.3); the class containing the supplied $tau$ gives lattices isometric to $L_112$. The other class gives an even unimodular lattice with minimum norm 8 and exactly $292 thin 320$ vectors of norm 8 #calc("C4"). This second lattice provides a test case in which the verification programs must detect shorter vectors. The classification of the gluings is discussed in §3.3.
+The choice of $tau$ is not unique. The centralizer $C$ of $S$ in $"Aut"(L_56)$ has order 12, and exactly 24 endomorphisms of $L_56$ commute with $S$ and satisfy $tau^2=-5$ #calc("C2"). Only the reduction of $tau$ modulo $2 L_56$ enters the glued lattice. Proposition 3.3 classifies these reductions into three classes of gluing maps; the 24 endomorphisms reduce into two of them, called B and C below, 12 into each #calc("C2"), and endomorphisms in the same class give isometric glued lattices. The supplied $tau$ lies in class C, which gives $L_112$. Class B gives an even unimodular lattice with minimum norm 8 and exactly $292 thin 320$ vectors of norm 8 #calc("C4"). This second lattice serves as a positive control: the verification programs must detect its short vectors. The classification of the gluings is completed in §3.3.
 
 Two further conclusions are treated separately from the extremality proof. The extremal theta series determines that $L_112$ has $10 thin 888 thin 335 thin 360$ vectors of norm 10 and $247 thin 006 thin 775 thin 232 thin 000$ vectors of norm 12 (Appendix B). Its full automorphism group has order $1 thin 169 thin 280$ (Theorem B, §8 and Appendix F). Theorem A does not use the determination of this full group.
 
@@ -46,7 +46,7 @@ Two further conclusions are treated separately from the extremality proof. The e
 
 We first verify that the lattice in (1.2) is even unimodular (Lemma 3.2). The main remaining task is to prove that it has no nonzero vector of norm below 10. The minimum norm of $L_56$ is 6; this is checked by two rigorous enumerations, one using interval arithmetic and one using an integer quadratic form (§6.1). Consequently, a nonzero vector $lr((x,v))/sqrt(2)$ of norm below 10 in $L_112$ would have both components in $L_56$ and would satisfy
 $ v equiv x tau med (mod 2 L_56), quad (chevron.l x,x chevron.r, chevron.l v,v chevron.r) in {(6,6),(6,10),(10,6),(8,8)}. $
-Lemma 4.2 proves that this list is exhaustive, including the exclusion of zero components. Since $tau^2 equiv 1 med (mod 2)$, interchanging the two components reduces the type $(10,6)$ to $(6,10)$ (Appendix C.4). It therefore suffices to establish the following two bounds:
+Lemma 4.2 shows that this list is exhaustive and that neither component is zero. Since $tau^2 equiv 1 med (mod 2)$, interchanging the two components reduces the type $(10,6)$ to $(6,10)$ (Appendix C.4). It therefore suffices to establish the following two bounds:
 $ min(r tau+2 L_56)>=14 quad "for all" r in L_56(6), $
 $ min(x tau+2 L_56)>=12 quad "for all" x in L_56(8), $
 where $L_56(m)$ denotes the vectors of norm $m$ in $L_56$ and the minimum of a coset is taken over all its vectors. This is Corollary 4.3.
@@ -55,7 +55,7 @@ Because the group $S$ preserves norms and commutes with $tau$, each bound need o
 
 The lower bounds are then verified as follows. For each norm-6 representative, we supply a vector in its prescribed coset whose norm and inner products with all minimal vectors of $L_56$ imply the bound 14. The implication follows from the midpoint lemma and Corollary 5.2; the supplied vector and its conditions are checked in §6.6. For the norm-8 test vectors, there are two alternatives. One uses canonical forms to test whether the prescribed coset contains a norm-8 vector (§6.5). The other checks coset representatives whose norm and inner products imply the bound 12 (Corollary 5.3 and §6.7). Either alternative, together with the common norm-6 bounds and completeness checks, proves the required absence of short vectors. The upper bound (1.1) then gives $min L_112=10$.
 
-Thus the two even-coset tests are alternative ways of completing the same proof, and their shared inputs are part of the verification. Separately written implementations check these inputs and computations. Spherical-design identities, changes of frame and tests on the second gluing provide further consistency checks. Floating-point closest-vector searches and random samples are also reported, but are not substituted for the rigorous checks in the proof. The support-module argument in Supplement §S4.1 is supplementary and shares the norm-8 exclusion with the main proof. The Lean formalisation checks the deduction from the stated computational hypotheses (§7.1).
+Thus the two even-coset tests are alternative ways of completing the same proof, and their shared inputs are part of the verification. Separately written implementations check these inputs and computations. Spherical-design identities, changes of frame and tests on the second gluing provide further consistency checks. Floating-point closest-vector searches and random samples are also reported, but are not substituted for the rigorous checks in the proof. Supplement §S4 describes a further route through support modules. It is not used in the proof; nor is it independent of the proof, since it relies on the same exclusion of type $(8,8)$ (F5b) as the main argument. The Lean formalization checks the deduction from the stated computational hypotheses (§7.1).
 
 
 == 1.4 Relation to previous constructions and the choice of dimension
@@ -64,9 +64,9 @@ The construction uses established ingredients: Nebe's 56-dimensional lattices \[
 
 The choice of dimension 112 was motivated by comparison with dimensions 96 and 104, where the extremal bound is also 10. The Siegel weighted mean of the number of nonzero vectors of norm below 10 is approximately $15 thin 732 thin 086$, $1 thin 046 thin 569$ and $51 thin 014$ in these three dimensions, respectively #calc("C1"). The smaller mean in dimension 112 suggested a useful direction for the search. These are averages over a genus, not estimates of the time needed to prove extremality. The available $"SL"_2(29)$ action on $L_56$ also supplies the symmetry used to reduce the verification to orbit representatives. Supplement §S1 gives the numerical comparisons and the search motivation.
 
-== 1.5 Organisation of the paper
+== 1.5 Organization of the paper
 
-Sections 2–6 prove Theorem A: notation, construction, reduction to four types, coset bounds and finite computations, respectively. Section 7 describes the scope of the Lean formalisation and identifies the base lattice with Nebe's lattice. Section 8 determines the full automorphism group. Appendices A–G collect terminology, theta series, auxiliary proofs, data and code, pseudocode, the group-theoretic proof and known examples.
+Sections 2–6 prove Theorem A: notation, construction, reduction to four types, coset bounds and finite computations, respectively. Section 7 describes the scope of the Lean formalization and identifies the base lattice with Nebe's lattice. Section 8 determines the full automorphism group. Appendices A–G collect terminology, theta series, auxiliary proofs, data and code, pseudocode, the group-theoretic proof and known examples.
 
 A separate supplement contains the Siegel means and search motivation (Supplement §§S1–S2), verification routes, running times and additional tests (Supplement §S3), the support-module argument (Supplement §S4), and a comparison of constructions considered in the search (Supplement §S5). Its sections and tables carry the prefix S.
 
@@ -74,7 +74,7 @@ A separate supplement contains the Siegel means and search motivation (Supplemen
 
 We fix conventions for lattices, cosets, group actions and Hermitian forms. Norm always means squared length.
 
-== 2.1 Conventions and terms to keep apart
+== 2.1 Conventions and terminology
 
 We use $L_56$ for the fixed lattice of §1; the letter $L$ in general definitions and lemmas denotes an arbitrary lattice satisfying the stated assumptions. An isometry between lattices is an additive-group isomorphism preserving the inner product; it need not preserve orientation.
 
@@ -82,7 +82,7 @@ Lattices are given by Gram matrices $G in bb(Z)^(n times n)$ with respect to a b
 
 #ptable(
   columns: 3, align: (left, left, left,),
-  caption: [Table 1. Terms that this paper keeps apart.],
+  caption: [Table 1. Terms distinguished in this paper.],
   table.header([term], [symbol], [meaning]),
   [minimum (of a lattice)], [$min Lambda$], [smallest norm of a nonzero vector of a specific lattice $Lambda$],
   [extremal bound], [$mu\(n\)$], [the upper bound $2 floor.l n\/24 floor.r + 2$ for the minimum in dimension $n$; $mu\(56\)= 6$, $mu\(112\)= 10$],
@@ -93,7 +93,7 @@ Lattices are given by Gram matrices $G in bb(Z)^(n times n)$ with respect to a b
 
 == 2.2 Cosets modulo $2 L$
 
-For an even unimodular $L$, the quotient $L\/2 L$ is an $bb(F)_2$-vector space of dimension $n$; we call its elements $c = x + 2 L$ #strong[cosets]. Since $chevron.l x + 2 y\,x + 2 y chevron.r = chevron.l x\,x chevron.r + 4 chevron.l x\,y chevron.r + 4 chevron.l y\,y chevron.r$, the function $q\(x + 2 L\)= chevron.l x\,x chevron.r\/2 med mod med 2$ is a well-defined quadratic form on $L\/2 L$. We call a coset #emph[even] or #emph[odd] according to $q$; all vectors in an even coset have norm $equiv 0 med\(mod med 4\)$, all vectors in an odd coset have norm $equiv 2 med\(mod med 4\)$. A linear map $f$ on $L\/2 L$ is #strong[parity-preserving] if $q\(c f\)= q\(c\)$ for all cosets. In dimension 56 there are $2^55 + 2^27$ even cosets (including 0) and $2^55 - 2^27$ odd cosets (number of zeros of a non-degenerate quadratic form).
+For an even unimodular $L$, the quotient $L\/2 L$ is an $bb(F)_2$-vector space of dimension $n$; we call its elements $c = x + 2 L$ #strong[cosets]. Since $chevron.l x + 2 y\,x + 2 y chevron.r = chevron.l x\,x chevron.r + 4 chevron.l x\,y chevron.r + 4 chevron.l y\,y chevron.r$, the function $q\(x + 2 L\)= chevron.l x\,x chevron.r\/2 med mod med 2$ is a well-defined quadratic form on $L\/2 L$. We call a coset #emph[even] or #emph[odd] according to $q$; all vectors in an even coset have norm $equiv 0 med\(mod med 4\)$, and all vectors in an odd coset have norm $equiv 2 med\(mod med 4\)$. A linear map $f$ on $L\/2 L$ is #strong[parity-preserving] if $q\(c f\)= q\(c\)$ for all cosets. In dimension 56 there are $2^55 + 2^27$ even cosets (including 0) and $2^55 - 2^27$ odd cosets (these are the numbers of zeros and of nonzeros of a nondegenerate quadratic form of plus type).
 
 == 2.3 Extremal theta series and shells of $L$
 
@@ -103,7 +103,7 @@ If $L$ is extremal of dimension 56, its theta series is $ theta_L = 1 + 15 thin 
 
 The group $"SL"_2\(29\)$ has a faithful irreducible representation of degree 14 whose character field is $bb(Q)\(sqrt(29)\)$ and which has Schur index 2 over $bb(Q)$; as a rational representation it has degree 56, and its endomorphism algebra is the totally definite quaternion algebra $cal(Q)$ over $bb(Q)\(sqrt(29)\)$ ramified only at the two infinite places \[Neb98\]. Nebe constructs $"SL"_2\(29\)$-invariant even unimodular lattices $L_(56\,2)\(M\)$ and $L_(56\,2)\(tilde(M)\)$ attached to the two conjugacy classes of maximal orders $M\,tilde(M)$ of $cal(Q)$, and reports minimum 6 for both, computed with PARI \[Neb98, Table II\]. For $L_56$ we re-establish the minimum rigorously in §6.1.
 
-For an $"SL"_2\(29\)$-invariant lattice $L$ we write $M' = "End"_("SL"_2\(29\))\(L\)$ for the ring of integer matrices commuting with $"SL"_2\(29\)$ and preserving $L$ ($bb(Z)$-rank 8). Its elements that are isometries of $L$ form the #strong[centralizer] $C = C_("Aut" L)\("SL"_2\(29\)\)$. The adjoint defined by the inner product agrees with the standard quaternion involution, so $u u^*=1$ is equivalent to reduced norm 1. $C$ is the finite group of elements of reduced norm 1 of $M'$; it has order 24 for the catalogue lattice $L_(56\,2)\(M\)$ and order 12 (6 up to sign) for the lattice $L_56$ used here #calc("C2").
+For an $"SL"_2\(29\)$-invariant lattice $L$ we write $M' = "End"_("SL"_2\(29\))\(L\)$ for the ring of integer matrices commuting with $"SL"_2\(29\)$ and preserving $L$ ($bb(Z)$-rank 8). Its elements that are isometries of $L$ form the #strong[centralizer] $C = C_("Aut" L)\("SL"_2\(29\)\)$. The adjoint defined by the inner product agrees with the standard quaternion involution, so $u u^*=1$ is equivalent to reduced norm 1. The centralizer $C$ is the finite group of elements of reduced norm 1 of $M'$; it has order 24 for the catalog lattice $L_(56\,2)\(M\)$ and order 12 (6 up to sign) for the lattice $L_56$ used here #calc("C2").
 
 == 2.5 Hermitian lattices and trace forms
 
@@ -111,7 +111,7 @@ Let $K = bb(Q)\(sqrt(- 5)\)$ with ring of integers $cal(O) = bb(Z)\[sqrt(- 5)\]$
 
 = 3. The construction <s3>
 
-We glue two copies of a 56-dimensional lattice along a correspondence of cosets modulo $2 L$ to obtain a 112-dimensional lattice (§3.1). Listing all gluings that keep the $"SL"_2\(29\)$-symmetry gives only five cases (§3.3, Table 2): two have inner-shell vectors forced by symmetry, two have minimum 8, and the remaining one is our $L_112$. Finally we rewrite $L_112$ as a Hermitian tensor product (§3.4).
+We glue two copies of a 56-dimensional lattice along a correspondence of cosets modulo $2 L$ to obtain a 112-dimensional lattice (§3.1). Listing all gluings that preserve the $"SL"_2\(29\)$-symmetry gives only five cases (§3.3, Table 2): two have inner-shell vectors forced by symmetry, two have minimum 8, and the remaining one is our $L_112$. Finally we rewrite $L_112$ as a Hermitian tensor product (§3.4).
 
 == 3.1 Gluing two copies modulo 2
 
@@ -119,14 +119,14 @@ We glue two copies of a 56-dimensional lattice along a correspondence of cosets 
 #strong[Definition 3.1 (gluing).] Let $L$ be even unimodular of dimension $n$ and $f$ an invertible parity-preserving linear map on $L\/2 L$. The #strong[gluing] of two copies of $L$ along $f$ is $ L_f =  {  1 / sqrt(2)\(x\,v\)med : med x\,v in L\,med v + 2 L =\(x + 2 L\)f  } \,#h(2em)  chevron.l  frac(\(x\,v\), sqrt(2))\,frac(\(x\,v\), sqrt(2))  chevron.r  = 1 / 2  (  chevron.l x\,x chevron.r + chevron.l v\,v chevron.r  )  . $
 ]
 
-Taking $L=L_56$, when $f$ is the reduction of an integer matrix $tau$ with $chevron.l x tau\,y tau chevron.r = 5 chevron.l x\,y chevron.r$, we get the lattice $L_tau$ of (1.2).
+We call $f$ the gluing map and $L_f$ the glued lattice. Taking $L=L_56$, when $f$ is the reduction of an integer matrix $tau$ with $chevron.l x tau\,y tau chevron.r = 5 chevron.l x\,y chevron.r$, we get the lattice $L_tau$ of (1.2).
 
 #thm[
 #strong[Lemma 3.2.] Let $L$ be even unimodular of dimension $n$ and $tau in "End"\(L\)$ with $chevron.l x tau\,y tau chevron.r = 5 chevron.l x\,y chevron.r$. Then $L_tau$ is an even unimodular lattice of dimension $2n$.
 ]
 
 #proofbox[
-#strong[Proof.] The map $L xor L arrow.r L\/2 L$, $\(x\,v\)mapsto v - x tau + 2 L$ is a surjective homomorphism (already on $x = 0$). Its kernel $L'_tau$ has index $2^n$ in $L xor L$, so $det L'_tau = 2^(2n) det\(L perp L\)= 2^(2n)$, and scaling by $1\/sqrt(2)$ multiplies the  $2n$-dimensional Gram determinant by $2^(-2n)$; hence $det L_tau = 1$. For evenness write $v = x tau + 2 y$: $ chevron.l x\,x chevron.r + chevron.l v\,v chevron.r = chevron.l x\,x chevron.r + 5 chevron.l x\,x chevron.r + 4 chevron.l x tau\,y chevron.r + 4 chevron.l y\,y chevron.r = 6 chevron.l x\,x chevron.r + 4  (  chevron.l x tau\,y chevron.r + chevron.l y\,y chevron.r  )  equiv 0 med\(mod med 4\)\, $ since $chevron.l x\,x chevron.r$ is even. So $1 / 2\(chevron.l x\,x chevron.r + chevron.l v\,v chevron.r\)$ is even. A lattice all of whose norms are even integers is integral by polarisation.  #qed
+#strong[Proof.] The map $L xor L arrow.r L\/2 L$, $\(x\,v\)mapsto v - x tau + 2 L$ is a surjective homomorphism (already on $x = 0$). Its kernel $L'_tau$ has index $2^n$ in $L xor L$, so $det L'_tau = 2^(2n) det\(L perp L\)= 2^(2n)$, and scaling by $1\/sqrt(2)$ multiplies the  $2n$-dimensional Gram determinant by $2^(-2n)$; hence $det L_tau = 1$. For evenness write $v = x tau + 2 y$: $ chevron.l x\,x chevron.r + chevron.l v\,v chevron.r = chevron.l x\,x chevron.r + 5 chevron.l x\,x chevron.r + 4 chevron.l x tau\,y chevron.r + 4 chevron.l y\,y chevron.r = 6 chevron.l x\,x chevron.r + 4  (  chevron.l x tau\,y chevron.r + chevron.l y\,y chevron.r  )  equiv 0 med\(mod med 4\)\, $ since $chevron.l x\,x chevron.r$ is even. So $1 / 2\(chevron.l x\,x chevron.r + chevron.l v\,v chevron.r\)$ is even. A lattice all of whose norms are even integers is integral by polarization.  #qed
 ]
 
 The basis $\(e_i\,e_i tau\)\/sqrt(2)$, $\(0\,2 e_i\)\/sqrt(2)$ $\(1 lt.eq i lt.eq 56\)$ of $L_tau$ has Gram matrix #tagged("3.1", $ mat(delim: "(", 3 G, tau G; \(tau G\)^(sans(T)), 2 G)\, $) which is the form in which $L_112$ is distributed (Appendix D).
@@ -135,11 +135,9 @@ The basis $\(e_i\,e_i tau\)\/sqrt(2)$, $\(0\,2 e_i\)\/sqrt(2)$ $\(1 lt.eq i lt.e
 
 If $f$ agrees modulo 2 with an element $u in C$, then $\(x\,x u\)\/sqrt(2) in L_f$ for all $x$, and a minimal vector $x$ of $L_56$ gives an inner-shell vector of norm $1 / 2\(6 + 6\)= 6$. We call this a #strong[forced collision]: it is caused by symmetry, not by chance. Examples of such constructions are discussed in Supplement §S5.
 
-We call $f$ the gluing map and $L_f$ the glued lattice.
-
 == 3.3 All $"SL"_2\(29\)$-equivariant gluings
 
-To keep the $"SL"_2\(29\)$-symmetry we require that $f$ commutes with $"SL"_2\(29\)$ acting on $L_56\/2 L_56$. The ring of $bb(F)_2$-linear maps on $L_56\/2 L_56$ commuting with $"SL"_2\(29\)$ has $bb(F)_2$-dimension 8 and equals the image of $M'\/2 M'$ #calc("C3"), so every commuting map is the reduction of an element of $M'$. Since 2 is inert in $bb(Q)\(sqrt(29)\)$ and $cal(Q)$ is unramified at 2, $M'\/2 M' tilde.equiv M_2\(bb(F)_4\)$.
+To preserve the $"SL"_2\(29\)$-symmetry, we require that $f$ commute with $"SL"_2\(29\)$ acting on $L_56\/2 L_56$. The ring of $bb(F)_2$-linear maps on $L_56\/2 L_56$ commuting with $"SL"_2\(29\)$ has $bb(F)_2$-dimension 8 and equals the image of $M'\/2 M'$ #calc("C3"), so every commuting map is the reduction of an element of $M'$. Since 2 is inert in $bb(Q)\(sqrt(29)\)$ and $cal(Q)$ is unramified at 2, $M'\/2 M' tilde.equiv M_2\(bb(F)_4\)$.
 
 #thm[
 #strong[Proposition 3.3.] (a) Exactly 60 elements of $M'\/2 M'$ are invertible and parity-preserving #calc("C3"). (b) $L_f tilde.equiv L_(u f u')$ for $u\,u' in C$, and $L_f tilde.equiv L_(f^(- 1))$. (c) Modulo (b), the 60 maps fall into 2 classes for $L_(56\,2)\(M\)$ and 3 classes for our $L_56$ (Table 2) #calc("C3").
@@ -158,7 +156,7 @@ For (b): $\(x\,v\)mapsto\(x u\,v u'\)$ maps $L_f$ isometrically onto $L_(u^(- 1)
   [#strong[C]], [$L_56$], [does not (18)], [#strong[10 (Theorem A)]], [#strong[none]],
 )
 
-Both surviving classes B and C on $L_56$ lift to elements $tau in M'$ with $tau^2=-5$. The 24 such elements form two conjugacy classes of 12 under $C$ #calc("C2"). Whether gluings A and B are isometric remains undetermined.
+Both surviving classes B and C on $L_56$ lift to elements $tau in M'$ with $tau^2=-5$. Of the 24 such elements, 12 reduce modulo 2 into class B and 12 into class C #calc("C2"). Gluings A and B are isometric: an $"SL"_2(29)$-equivariant isometry between them is supplied with the verification data and checked in integer arithmetic #calc("C28"). Thus the two gluings of minimum 8 in Table 2 are the same lattice. More generally, every even unimodular lattice of dimension 112 on which $"SL"_2(29)$ acts as on $L_112$ is $L_(56,2)(M) times.o_M Lambda$ for a unimodular Hermitian lattice $Lambda$ of rank 2 over the maximal order $M$, and there are exactly eight such $Lambda$ up to isometry; Table 2 contains four of the resulting lattices. Supplement §S6 states and proves this classification #calc("C29", "C30", "C31").
 
 == 3.4 The Hermitian description
 
@@ -170,14 +168,14 @@ This realizes $L_112$ in the Hermitian tensor-product framework of \[CN13, Sak26
 
 = 4. Reduction to collisions <s4>
 
-We show that an inner-shell vector of $L_112$ corresponds to a pair $\(x\,v\)$, with $x in L_56$ and $v$ in the coset $x tau + 2 L_56$, whose norms are $\(6\,6\)$, $\(6\,10\)$, $\(10\,6\)$ or $\(8\,8\)$ (§4.1). The absence of such “collisions” can be phrased with coset minima (Corollary 4.3), and the $"SL"_2\(29\)$-symmetry reduces it to finitely many cases (§4.2, Table 3). We then state the computational facts F0–F5 on which the rest of the proof rests and derive Theorem A from them (§4.3).
+We show that an inner-shell vector of $L_112$ corresponds to a pair $\(x\,v\)$, with $x in L_56$ and $v$ in the coset $x tau + 2 L_56$, whose norms are $\(6\,6\)$, $\(6\,10\)$, $\(10\,6\)$ or $\(8\,8\)$ (§4.1). The absence of such “collisions” can be expressed in terms of coset minima (Corollary 4.3), and the $"SL"_2\(29\)$-symmetry reduces it to finitely many cases (§4.2, Table 3). We then state the computational facts F0–F5 on which the rest of the proof rests and derive Theorem A from them (§4.3).
 
 == 4.1 Four types
 
 From now on $L_56$ is even unimodular of dimension 56 with $min L_56 = 6$ and $tau$ satisfies $chevron.l x tau\,y tau chevron.r = 5 chevron.l x\,y chevron.r$. The adjoint of $tau$ is $tau^(*) = 5 tau^(- 1)$; since $tau^2=-5$, $tau^(*) = - tau$ (Appendix C.1).
 
 #thm[
-#strong[Definition 4.1 (collision).] For $a\,b in { 6\,8\,10 }$, a #strong[collision of type $\(a\,b\)$] is a pair $\(x\,v\)$ with $x in L_56(a)$, $v in L_56(b)$ and $v equiv x tau med\(mod med 2 L_56\)$. Equivalently: the coset $x tau + 2 L_56$ of some $x in L_56(a)$ contains a vector of norm $b$.
+#strong[Definition 4.1 (collision).] For $a\,b in { 6\,8\,10 }$, a #strong[collision of type $\(a\,b\)$] is a pair $\(x\,v\)$ with $x in L_56(a)$, $v in L_56(b)$ and $v equiv x tau med\(mod med 2 L_56\)$. Equivalently, the coset $x tau + 2 L_56$ of some $x in L_56(a)$ contains a vector of norm $b$.
 ]
 
 #thm[
@@ -188,7 +186,7 @@ From now on $L_56$ is even unimodular of dimension 56 with $min L_56 = 6$ and $t
 #strong[Proof.] If $x = 0$ then $v in 2 L_56\\{ 0 }$, so $chevron.l v\,v chevron.r gt.eq 4 dot.op 6$ and $chevron.l z\,z chevron.r gt.eq 12$. If $v = 0$ then $x tau in 2 L_56$; applying $tau^(*)$ gives $5 x in 2 L_56$, hence $x = 5 x - 2 dot.op 2 x in 2 L_56$ and again $chevron.l z\,z chevron.r gt.eq 12$. So $x\,v eq.not 0$ and $chevron.l x\,x chevron.r\,chevron.l v\,v chevron.r gt.eq 6$. By the proof of Lemma 3.2, $chevron.l x\,x chevron.r + chevron.l v\,v chevron.r equiv 0 med\(mod med 4\)$, and $chevron.l x\,x chevron.r + chevron.l v\,v chevron.r lt.eq 16$. The only pairs of even integers $gt.eq 6$ with these properties are $\(6\,6\)$ with sum 12 and $\(6\,10\)\,\(8\,8\)\,\(10\,6\)$ with sum 16.  #qed
 ]
 
-In particular the type $\(6\,8\)$, which would be the most frequent one by a naive count, is excluded by parity. Since $tau^2 = - 5 equiv 1 med\(mod med 2\)$, the coset map $c mapsto c tau$ is an involution on $L_56\/2 L_56$, so a collision $\(x\,v\)$ of type $\(10\,6\)$ is the same as a collision $\(v\,x\)$ of type $\(6\,10\)$ (Appendix C.4).
+In particular, the type $\(6\,8\)$, which would be the most frequent one by a naive count, is excluded by parity. Since $tau^2 = - 5 equiv 1 med\(mod med 2\)$, the coset map $c mapsto c tau$ is an involution on $L_56\/2 L_56$, so a collision $\(x\,v\)$ of type $\(10\,6\)$ is the same as a collision $\(v\,x\)$ of type $\(6\,10\)$ (Appendix C.4).
 
 #thm[
 #strong[Corollary 4.3.] $L_tau$ has no inner-shell vectors if and only if  #linebreak() (i) $min\(r tau + 2 L_56\)gt.eq 14$ for every $r in L_56(6)$ (the coset is odd, so its norms are $6\,10\,14\,dots.h$; this says 6 and 10 do not occur), and  #linebreak() (ii) $min\(x tau + 2 L_56\)gt.eq 12$ for every $x in L_56(8)$ (the coset is even, so its norms are $8\,12\,dots.h$; this says 8 does not occur).
@@ -212,7 +210,7 @@ To collect representatives for $L_56(8)$ we use the larger group $S^(*) = S dot.
 
 == 4.3 Finite verification and the proof of Theorem A <s43>
 
-Fix the data of Appendix D: the Gram matrix $G$ of $L_56$, the two generators of the symmetry group $S$, and the endomorphism matrix $tau$. The labels F0–F5 below identify the statements used by the verification programs; the headings describe their mathematical content.
+Fix the data files of Appendix D: the Gram matrix $G$ of $L_56$, the two generators of the symmetry group $S$, and the endomorphism matrix $tau$. The labels F0–F5 below identify the statements used by the verification programs; the headings describe their mathematical content.
 
 #fact[
 #strong[Defining matrices (F0).] The matrix $G$ in Appendix D is positive definite, even integral and of determinant 1; (3.1) is also even and of determinant 1. #calc("C2")
@@ -227,7 +225,7 @@ Fix the data of Appendix D: the Gram matrix $G$ of $L_56$, the two generators of
 ]
 
 #fact[
-#strong[Complete norm-8 orbit list (F3).] $L_56(8)$ is the union of the $S$-orbits of the $1 thin 527 thin 984$ vectors $x_i u$; it consists of $1 thin 517 thin 130$ regular $S$-orbits. #calc("C9")
+#strong[Complete norm-8 orbit list (F3).] $L_56(8)$ is the union of the $S$-orbits of the $1 thin 527 thin 984$ vectors $x_i u$; it consists of $1 thin 517 thin 130$ regular $S$-orbits, that is, orbits with trivial stabilizer, hence of size $|S| = 24 thin 360$. #calc("C9")
 ]
 
 #fact[
@@ -235,7 +233,7 @@ Fix the data of Appendix D: the Gram matrix $G$ of $L_56$, the two generators of
 ]
 
 #fact[
-#strong[Lower bounds for the prescribed cosets (F5).] (a) $min\(r tau + 2 L_56\)gt.eq 14$ for each of the 656 representatives $r$. (b) $min\(x_i u tau + 2 L_56\)gt.eq 12$ for each of the $1 thin 527 thin 984$ pairs. #calc("C10", "C11", "C13")
+#strong[Lower bounds for the prescribed cosets (F5).] (a) $min\(r tau + 2 L_56\)gt.eq 14$ for each of the 656 representatives $r$. (b) $min\(x_i u tau + 2 L_56\)gt.eq 12$ for each of the $1 thin 527 thin 984$ pairs. Part (b) is established by two different methods (§§6.5 and 6.7); either one suffices. #calc("C10", "C11", "C13")
 ]
 
 #proofbox[
@@ -243,7 +241,7 @@ Fix the data of Appendix D: the Gram matrix $G$ of $L_56$, the two generators of
 
 The isometries in $S$ commute with $tau$ by F4. Hence the minimum norm of the coset $(x g)tau+2 L_56$ equals that of $x tau+2 L_56$ for $g in S$. By F2 and F3, the two lower bounds of Corollary 4.3 therefore need only be checked on the supplied norm-6 and norm-8 collections. F5 gives the bounds 14 and 12 on these collections. The type $(10,6)$ is covered by the interchange argument of Appendix C.4. Thus no type can occur, and $min L_112>=10$.
 
-Since $L_112$ is even unimodular of dimension 112, (1.1) gives $min L_112<=10$. This proves the theorem. The two even-coset checks establish the same part of F5 and are alternatives; they are not two assumptions that must both hold. #qed
+Since $L_112$ is even unimodular of dimension 112, (1.1) gives $min L_112<=10$. This proves the theorem. #qed
 ]
 
 #figure(
@@ -255,7 +253,7 @@ Since $L_112$ is even unimodular of dimension 112, (1.1) gives $min L_112<=10$. 
 
 = 5. Certificates for coset minima <s5>
 
-We derive lower bounds for a coset minimum from the norm of one representative and its inner products with all minimal vectors. The midpoint lemma proves that the stated conditions on a representative imply the required bound; the finite computations later check these conditions.
+We derive lower bounds for a coset minimum from the norm of one representative and its inner products with all minimal vectors. The midpoint lemma proves that the stated conditions on a representative imply the required bound; the finite computations later check these conditions. A representative $w_0$ satisfying these conditions (Check 5.4) is called a #strong[certificate] for its coset: checking it is a finite computation, and the corollaries below turn it into a proof of the bound.
 
 #thm[
 #strong[Lemma 5.1 (midpoint lemma).] Let $L$ be even unimodular with $min L = 6$. If $w\,w' in L$ lie in the same coset modulo $2 L$ and $w eq.not plus.minus w'$, then $ chevron.l w\,w chevron.r + chevron.l w'\,w' chevron.r plus.minus 2 chevron.l w\,w' chevron.r med gt.eq med 24 #h(2em) upright("for both signs.") $
@@ -265,7 +263,7 @@ We derive lower bounds for a coset minimum from the norm of one representative a
 #strong[Proof.] $w minus.plus w' in 2 L\\{ 0 }$, so the midpoint $1 / 2\(w minus.plus w'\)$ is a nonzero vector of $L$ and has norm $gt.eq 6$; multiply by 4.  #qed
 ]
 
-The two corollaries below retain the assumptions on $L$ in Lemma 5.1. Two immediate consequences: two different (up to sign) vectors of norm $6$ never lie in the same coset ($12 + 2\|t\|gt.eq 24$ and $12 - 2\|t\|gt.eq 24$ cannot both hold), and the same is true for norm 8. So each coset contains at most one pair $plus.minus w$ of norm 6, and at most one pair of norm 8 (Appendix C.3).
+The two corollaries below retain the assumptions on $L$ in Lemma 5.1. Two immediate consequences follow. Two vectors of norm $6$ that are distinct up to sign never lie in the same coset (with $t = chevron.l w\,w' chevron.r$, the inequalities $12 + 2 t gt.eq 24$ and $12 - 2 t gt.eq 24$ cannot both hold), and the same holds for norm 8. Hence each coset contains at most one pair $plus.minus w$ of norm 6, and at most one pair of norm 8 (Appendix C.3).
 
 #thm[
 #strong[Corollary 5.2 (lower bound for odd cosets).] If an odd coset $c$ contains a vector $w_0$ of norm $N in { 14\,18 }$ such that $\|chevron.l w_0\,u chevron.r\|lt.eq 6$ for every $u in L(6)$, then $min\(c\)gt.eq 14$.
@@ -290,11 +288,11 @@ The two corollaries below retain the assumptions on $L$ in Lemma 5.1. Two immedi
 (c) $|chevron.l w_0,u chevron.r|<=6$ for every $u in L(6)$, using the complete minimal-vector list.
 ]
 
-These conditions are sufficient; they need not hold for a representative of every coset without short vectors. For every coset required in §§6.6–6.7, such a representative is supplied and checked.
+These conditions are sufficient but not necessary: a coset without short vectors need not have a representative satisfying them. For every coset required in §§6.6–6.7, such a representative is supplied and checked.
 
 = 6. Algorithms and the verification <s6>
 
-For each computational fact we describe the algorithm and the checks on its output. Completeness requires both disjointness and agreement of the orbit-size sum with the theta-series coefficient. The two rigorous even-coset methods share these orbit lists and the odd-coset bounds (§1.3); separate implementations and tests on gluings A and B check their results. Floating-point searches and samples have the supplementary scope stated below. Running times are those observed on the machine used (8 cores, 15 GB of memory). Code references are given in Appendix D and pseudocode in Appendix E.
+Three implementations are referred to below: implementation 1 constructed $L_112$ and performed the main computations; implementation 2 re-implemented every step, sharing only the data files; implementation 3 started from the four data files of Appendix D alone (Supplement §S3.3). For each computational fact we describe the algorithm and the checks on its output. Completeness requires both disjointness and agreement of the orbit-size sum with the theta-series coefficient. The two rigorous even-coset methods share these orbit lists and the odd-coset bounds (§1.3); separate implementations and tests on gluings A and B check their results. Floating-point searches and samples have the supplementary scope stated below. Running times are those observed on the machine used (8 cores, 15 GB of memory). Code references are given in Appendix D and pseudocode in Appendix E.
 
 #ptable(
   columns: 4, align: (left, left, left, left,),
@@ -304,13 +302,13 @@ For each computational fact we describe the algorithm and the checks on its outp
   [F2], [closure + orbits, size sum], [disjointness, design identities (implementation 2); implementation 3], [integer],
   [F3], [marked sums of two minimal vectors, size sum], [recount from $K_8$, design identities; implementation 3], [integer],
   [F4], [matrix identities], [two implementations], [integer],
-  [F5a], [656 odd-coset certificates], [checker of the implementation 2; CVP on two bases; canonical forms], [integer],
+  [F5a], [656 odd-coset certificates], [the checker of implementation 2; CVP on two bases; canonical forms], [integer],
   [F5b], [canonical forms (two implementations)], [exhaustive CVP; implementation 3; even-coset certificates (all pairs); support-module route (Supplement §S4.1)], [integer (CVP: floating point)],
 )
 
 == 6.1 F1: the minimum of the base lattice
 
-An interval-arithmetic enumeration, which cannot miss vectors, shows that $L_56$ has no nonzero vector of norm $lt.eq 4$. As an independent second route, the question is reduced to a property of Nebe's lattice $L_(56\,2)\(M\)$ plus linear algebra over $bb(F)_2$. Both agree with the three earlier floating-point enumerations.
+An interval-arithmetic enumeration, which cannot miss vectors, shows that $L_56$ has no nonzero vector of norm $lt.eq 4$. As an independent second route, the question is reduced to a property of Nebe's lattice $L_(56\,2)\(M\)$ together with linear algebra over $bb(F)_2$. Both agree with the three earlier floating-point enumerations.
 
 #strong[(a) Interval enumeration.] #calc("C5")
 
@@ -321,7 +319,7 @@ An interval-arithmetic enumeration, which cannot miss vectors, shows that $L_56$
   [Run Fincke–Pohst/Schnorr–Euchner enumeration \[FP85, SE94\] in interval arithmetic, widening every result outward (by $2^(- 51)$ relative, against the $2^(- 53)$ error of round-to-nearest), and prune only when the #strong[lower end] of the interval of the partial norm exceeds the radius 4.],
 )
 
-The true partial norm always lies in its interval, so no vector of true norm $lt.eq 4$ can be pruned. The norms of the vectors reaching the leaves are computed in integers. The results are in Table 5: for $L_56$, 8,454,837,756 nodes were visited and the only leaf reached was the zero vector (34 minutes with the published code).
+The true partial norm always lies in its interval, so no vector of true norm $lt.eq 4$ can be pruned. The norms of the vectors reaching the leaves are computed in integers. The results are in Table 5: for $L_56$, 8 454 837 756 nodes were visited and the only leaf reached was the zero vector (34 minutes with the published code).
 
 #ptable(
   columns: 6, align: (left, center, center, right, left, left,),
@@ -333,27 +331,27 @@ The true partial norm always lies in its interval, so no vector of true norm $lt
   [#strong[$L_56$]], [56], [4], [$8 thin 454 thin 837 thin 756$], [#strong[none]], [—],
 )
 
-#strong[(a′) A second exact enumeration, by a different method.] A separately written program (written without reading the code of (a)) makes every decision in integer arithmetic instead of interval arithmetic. The approximate Cholesky factor of $G'$ (BKZ-40 basis, $U$ checked exactly as in (a)) is scaled by $2^(40)$ and rounded to an integer upper triangular matrix $R$; then $Q(x) = |R x^(sans(T))|^2$ is an integer quadratic form, the error matrix $E = 2^(80) G' - R^(sans(T)) R$ is computed exactly, and $|x E x^(sans(T))| <= norm(E)_F norm(G'^(-1))_infinity chevron.l x\,x chevron.r$ with $G'^(-1)$ an exact integer matrix. Hence $chevron.l x\,x chevron.r <= 4$ implies $Q(x) <= T := 4 dot 2^(80) + 4 norm(E)_F norm(G'^(-1))_infinity$ (a relative enlargement of $3.8 times 10^(-7)$). All $x$ with $Q(x) <= T$ are enumerated in C with 128-bit integers, the range at each level being given by exact integer square roots, so nothing is pruned by rounding. For $L_56$: $14 thin 773 thin 398 thin 896$ nodes (both signs), no nonzero vector found (96 minutes) #calc("C27"). Positive control: $E_8^7$ in a random basis gives $1 thin 680$ vectors of norm 2 and $1 thin 224 thin 720$ of norm 4, as expected.
+#strong[(a′) A second exact enumeration, by a different method.] A separately written program (developed without reference to the code of (a)) makes every decision in integer arithmetic instead of interval arithmetic. The approximate Cholesky factor of $G'$ (BKZ-40 basis, $U$ checked exactly as in (a)) is scaled by $2^(40)$ and rounded to an integer upper triangular matrix $R$; then $Q(x) = |R x^(sans(T))|^2$ is an integer quadratic form, the error matrix $E = 2^(80) G' - R^(sans(T)) R$ is computed exactly, and $|x E x^(sans(T))| <= norm(E)_F norm(G'^(-1))_infinity chevron.l x\,x chevron.r$ with $G'^(-1)$ an exact integer matrix. Hence $chevron.l x\,x chevron.r <= 4$ implies $Q(x) <= T := 4 dot 2^(80) + 4 norm(E)_F norm(G'^(-1))_infinity$ (a relative enlargement of $3.8 times 10^(-7)$). All $x$ with $Q(x) <= T$ are enumerated in C with 128-bit integers, the range at each level being given by exact integer square roots, so no vector is pruned because of rounding. For $L_56$: $14 thin 773 thin 398 thin 896$ nodes (both signs), no nonzero vector found (96 minutes) #calc("C27"). Positive control: $E_8^7$ in a random basis gives $1 thin 680$ vectors of norm 2 and $1 thin 224 thin 720$ of norm 4, as expected.
 
-#strong[(b) Reduction to Nebe's lattice.] $L_56$ is the sublattice $L_(56\,2)\(M\)X + 2 L_(56\,2)\(M\)$ of the catalogue lattice ($X$ an element whose action modulo 2 has image dimension 28 of $M\/2 M$), rescaled by $1\/sqrt(2)$; the Gram matrix of this sublattice agrees entry by entry with that of $L_56$. Hence norm-4 vectors of $L_56$ correspond bijectively to norm-8 vectors of $L_(56\,2)\(M\)$ whose class lies in an $"SL"_2\(29\)$-invariant 28-dimensional subspace $W$ of $L_(56\,2)\(M\)\/2 L_(56\,2)\(M\)$, and norm-2 vectors of $L_56$ to norm-4 vectors of $L_(56\,2)\(M\)$. Among the $1 thin 528 thin 956$ pairs (norm-8 orbit representative of $L_(56\,2)\(M\)$, centralizer element) — the $127 thin 413$ representatives have orbit sizes summing to the theta coefficient — none has its coset in $W$ #calc("C6"). Positive control: the 656 minimal vectors of $L_56$ all appear in $L_(56\,2)\(M\)$ with norm 12 and class in $W$. This proves “$min L_(56\,2)\(M\)= 6 arrow.r.double min L_56 = 6$”, reducing F1 to a property of the literature lattice \[Neb98, Table II\].
+#strong[(b) Reduction to Nebe's lattice.] $L_56$ is the sublattice $L_(56\,2)\(M\)X + 2 L_(56\,2)\(M\)$ of the catalog lattice (where $X$ is an element of $M\/2 M$ whose action modulo 2 has an image of dimension 28), rescaled by $1\/sqrt(2)$; the Gram matrix of this sublattice agrees entry by entry with that of $L_56$. Hence norm-4 vectors of $L_56$ correspond bijectively to norm-8 vectors of $L_(56\,2)\(M\)$ whose class lies in an $"SL"_2\(29\)$-invariant 28-dimensional subspace $W$ of $L_(56\,2)\(M\)\/2 L_(56\,2)\(M\)$, and norm-2 vectors of $L_56$ to norm-4 vectors of $L_(56\,2)\(M\)$. Consider the $1 thin 528 thin 956$ pairs (norm-8 orbit representative of $L_(56\,2)\(M\)$, centralizer element); the $127 thin 413$ representatives have orbit sizes summing to the theta coefficient. None of these pairs has its coset in $W$ #calc("C6"). Positive control: the 656 orbit representatives of minimal vectors of $L_56$ all appear in $L_(56\,2)\(M\)$ with norm 12 and class in $W$. This proves “$min L_(56\,2)\(M\)= 6 arrow.r.double min L_56 = 6$”, reducing F1 to a property of the literature lattice \[Neb98, Table II\].
 
-#strong[(c) Floating-point enumerations.] fplll enumeration of all vectors of norm $lt.eq 4.5$ (two bases) and PARI #raw("qfminim") for norm $lt.eq 4$ (a implementation 2, BKZ-50 basis) also found none #calc("C7").
+#strong[(c) Floating-point enumerations.] fplll enumeration of all vectors of norm $lt.eq 4.5$ (two bases) and PARI #raw("qfminim") for norm $lt.eq 4$ (implementation 2, BKZ-50 basis) also found none #calc("C7").
 
 == 6.2 F2: orbits of minimal vectors
 
 We grow the set of minimal vectors by a closure operation, split it into orbits, and stop when the orbit sizes add up to the kissing number $15 thin 590 thin 400$. Disjointness and agreement of the total sizes prove completeness.
 
-Starting from a few minimal vectors found by BKZ, we generated minimal vectors by closure: if $r\,s in L_56(6)$ and $chevron.l r\,s chevron.r = 3$ then $r - s in L_56(6)$. For each new vector we computed its $S$-orbit (by applying all $12 thin 180$ elements of $S\/{ plus.minus 1 }$) and recorded it as one orbit; the closure step is what lets us leave an orbit. We obtained 656 distinct orbits, with sizes adding up to $632 times 24 thin 360 + 24 times 8 thin 120 = 15 thin 590 thin 400 =\|L_56(6)\|$ #calc("C8"). Since distinct orbits are disjoint, #strong[completeness follows from the size sum and F1]. A separate implementation expanded all orbits, checked pairwise disjointness, and checked the identities of §6.3.
+Starting from a few minimal vectors found by BKZ, we generated minimal vectors by closure: if $r\,s in L_56(6)$ and $chevron.l r\,s chevron.r = 3$ then $r - s in L_56(6)$. For each new vector we computed its $S$-orbit (by applying all $12 thin 180$ elements of $S\/{ plus.minus 1 }$) and recorded it as one orbit; the closure step produces vectors outside the orbits already found. We obtained 656 distinct orbits, with sizes adding up to $632 times 24 thin 360 + 24 times 8 thin 120 = 15 thin 590 thin 400 =\|L_56(6)\|$ #calc("C8"). Since distinct orbits are disjoint, #strong[completeness follows from the size sum and F1]. A separate implementation expanded all orbits, checked pairwise disjointness, and checked the identities of §6.3.
 
 == 6.3 Completeness tests: orbit-size sums and design identities
 
-In addition to the size sum, we verified exact identities (equalities of integers of size about $10^18$) that follow from the shells being spherical 7-designs, computed from the lists of representatives. Duplicates or omissions would, barring coincidence, break them.
+In addition to the size sum, we verified exact identities (equalities of integers of size about $10^18$) that follow from the shells being spherical 7-designs, computed from the lists of representatives. Barring coincidence, duplicates or omissions would violate them.
 
 For every $a in bb(R)^56$ $ sum_(x in L_56(m)) chevron.l x\,a chevron.r^2 =\|L_56(m)\|frac(m chevron.l a\,a chevron.r, 56)\,quad sum_(x in L_56(m)) chevron.l x\,a chevron.r^4 =\|L_56(m)\|frac(3 m^2 chevron.l a\,a chevron.r^2, 56 dot.op 58)\,quad sum_(x in L_56(m)) chevron.l x\,a chevron.r^6 =\|L_56(m)\|frac(15 m^3 chevron.l a\,a chevron.r^3, 56 dot.op 58 dot.op 60) . $ The left sides were computed from the representative lists (representative $times$ group element $times$ element of $C$, weighted by orbit sizes) for three integer vectors $a$ and for $m = 6$ and $m = 8$; all 18 identities hold exactly #calc("C8").
 
-== 6.4 F3: orbits of norm-8 vectors — marking sums of two minimal vectors
+== 6.4 F3: orbits of norm-8 vectors via marked sums of two minimal vectors
 
-The 37 billion vectors cannot be stored, so we distinguish orbits by marking only their elements that are sums of two minimal vectors. Completeness is again proved by the size sum.
+The approximately 37 billion vectors are too many to store, so we distinguish orbits by marking only those of their elements that are sums of two minimal vectors. Completeness is again proved by the size sum.
 
 Every norm-8 vector we need can be written as $x = r + s$ with $r\,s in L_56(6)$ and $chevron.l r\,s chevron.r = - 2$, and by symmetry $r$ may be taken among the (at most 150) $S^(*)$-orbit representatives $r_i$ of minimal vectors. Let $X_i = { r_i + s : s in L_56(6)\,med chevron.l r_i\,s chevron.r = - 2 }$.
 
@@ -361,13 +359,13 @@ Every norm-8 vector we need can be written as $x = r + s$ with $r\,s in L_56(6)$
 #strong[Definition 6.1.] For an $S^(*)$-orbit $O subset L_56(8)$, the #strong[marked elements] of $O$ are the elements of $O inter union.big_i X_i$, that is, the elements of $O$ that are sums $r_i + s$ of the above shape (possibly in several ways). Completeness of the orbit list does not rely on every norm-8 vector being such a sum: it follows from the orbit-size sum (Table 3).
 ]
 
-The algorithm runs through candidates $x in X_i$; whenever $x$ is not yet marked, it starts a new orbit, computes all elements of that orbit in $union.big_i X_i$ and marks them. This needs only one matrix product per orbit: $y = plus.minus x u g^(- 1)$ lies in $X_i$ iff $chevron.l y\,r_i chevron.r = 4$, i.e. iff $chevron.l x u\,r_i g chevron.r = plus.minus 4$, so precomputing $W = { r_i g }$ finds them all at once. The decompositions of $x = r_i + s_0$ can be read off from the minimal vectors with inner product 2 or 3 with $r_i$, which reduces the work by a factor of about 30. The stabiliser order of $x$ is the number of elements of $S^(*)$ that map $x$ to itself, read off from the same matrix product (they are group elements, not decompositions); a wrong count would make the orbit sizes, and hence their sum, wrong. Only the marked elements (tens of millions) are stored.
+The algorithm runs through candidates $x in X_i$; whenever $x$ is not yet marked, it starts a new orbit, computes all elements of that orbit in $union.big_i X_i$ and marks them. This needs only one matrix product per orbit: $y = plus.minus x u g^(- 1)$ lies in $X_i$ iff $chevron.l y\,r_i chevron.r = 4$, i.e. iff $chevron.l x u\,r_i g chevron.r = plus.minus 4$, so precomputing $W = { r_i g }$ finds them all at once. The decompositions of $x = r_i + s_0$ can be read off from the minimal vectors with inner product 2 or 3 with $r_i$, which reduces the work by a factor of about 30. The stabilizer order of $x$ is the number of elements of $S^(*)$ that map $x$ to itself, read off from the same matrix product (they are group elements, not decompositions); a wrong count would make the orbit sizes, and hence their sum, wrong. Only the marked elements (tens of millions) are stored.
 
-The result is Table 3: $1 thin 517 thin 130 times 24 thin 360 = 36 thin 957 thin 286 thin 800 =\|L_56(8)\|$ #calc("C9"). This was checked in three ways: (1) the $S^(*)$-orbit sizes add up to $\|L_56(8)\|$; (2) the set $K_8$ of canonical forms (§6.5) of the cosets of all $x_i u$ has exactly $1 thin 517 thin 130$ elements, and recomputing each orbit size from $K_8$ gives the same total (which would fail if an orbit were counted twice); (3) the identities of §6.3. The first 25 orbits were cross-checked against a naive method, and $2 thin 000$ independently generated norm-8 vectors were all found in $K_8$.
+The result is Table 3: $1 thin 517 thin 130 times 24 thin 360 = 36 thin 957 thin 286 thin 800 =\|L_56(8)\|$ #calc("C9"). This was checked in three ways: (1) the $S^(*)$-orbit sizes add up to $\|L_56(8)\|$; (2) the set $K_8$ of canonical forms (§6.5) of the cosets of all $x_i u$ has exactly $1 thin 517 thin 130$ elements, and recomputing each orbit size from $K_8$ gives the same total (which would fail if an orbit were counted twice); (3) the identities of §6.3. The first 25 orbits were cross-checked against a naive method, and the canonical forms of the cosets of $2 thin 000$ independently generated norm-8 vectors were all found in $K_8$.
 
 == 6.5 F5b: canonical forms on $L_56\/2 L_56$
 
-A coset is stored as a 56-bit integer and its $"SL"_2\(29\)$-orbit is named by the smallest element (canonical form). Since “a class contains a norm-8 vector ⟺ its canonical form is in the table $K_8$”, each test is one table look-up. Integer arithmetic only, no rounding.
+A coset is stored as a 56-bit integer and its $"SL"_2\(29\)$-orbit is named by the smallest element (canonical form). Since a class contains a norm-8 vector if and only if its canonical form lies in the table $K_8$, each test is a single table look-up. Only integer arithmetic is used, so no rounding occurs.
 
 Identify $L_56\/2 L_56$ with $bb(F)_2^56$ via coordinates modulo 2. Each $g in S\/{ plus.minus 1 }$ acts by an $bb(F)_2$-linear map, implemented with byte-wise lookup tables and XOR.
 
@@ -383,7 +381,7 @@ Identify $L_56\/2 L_56$ with $bb(F)_2^56$ via coordinates modulo 2. Each $g in S
 #strong[Proof.] If $w in c$ has norm 8, by F3 $w = x_i u g$ for some $i\,u$ and $g in S$, so $c =\(x_i u + 2 L_56\)g$ and $"can"\(c\)= "can"\(x_i u + 2 L_56\)in K_8$. Conversely, $"can"\(c\)= "can"\(x_i u + 2 L_56\)$ means $c =\(x_i u + 2 L_56\)g$ for some $g$, and $x_i u g in c$ has norm 8.  #qed
 ]
 
-Test for type $\(8\,8\)$: for each pair, compute the coset of $x_i u tau$, its canonical form ($12 thin 180$ table look-ups, about 0.3 ms), and look it up in $K_8$. The results are in Table 6. This test was implemented twice, by two implementations with separately written code (group enumeration, tables, canonical forms, look-up), with self-tests (table look-up equals matrix product; canonical form is $S$-invariant; the $12 thin 180$ group elements are distinct modulo 2). The type $\(6\,6\)$ was tested on the 656 minimal-vector cosets using $K_6={"can"(r_i+2L_56)}$.
+Test for type $\(8\,8\)$: for each pair, compute the coset of $x_i u tau$, its canonical form ($12 thin 180$ table look-ups, about 0.3 ms), and look it up in $K_8$. The results are in Table 6. The test was implemented twice with separately written code (group enumeration, tables, canonical forms, look-up), with self-tests (table look-up equals matrix product; canonical form is $S$-invariant; the $12 thin 180$ group elements are distinct modulo 2). The type $\(6\,6\)$ was tested on the 656 minimal-vector cosets using $K_6={"can"(r_i+2L_56)}$.
 
 #ptable(
   columns: 5, align: (left, right, right, right, right,),
@@ -399,7 +397,7 @@ Test for type $\(8\,8\)$: for each pair, compute the coset of $x_i u tau$, its c
 
 All 656 odd cosets have a certificate of norm 14 or 18. The search is heuristic; its output is checked by Check 5.4.
 
-For each representative $r$ we start from $w = r tau$ (norm 30) and, while some minimal vector $u$ has $chevron.l w\,u chevron.r gt.eq 7$, replace $w$ by $w - 2 u$ (the #strong[descent]). This lowers the norm by $4\(chevron.l w\,u chevron.r - 6\)> 0$ and stays in the class. Positive control: starting from (norm-10 vector) + ($2 L_56$-element) the descent always ends at norm 10 (60/60) and never outputs a false certificate.
+For each representative $r$ we start from $w = r tau$ (norm 30) and, while some minimal vector $u$ has $chevron.l w\,u chevron.r gt.eq 7$, replace $w$ by $w - 2 u$ (the #strong[descent]). This lowers the norm by $4\(chevron.l w\,u chevron.r - 6\)> 0$ and stays in the class. Positive control: starting from the sum of a norm-10 vector and an element of $2 L_56$, the descent ended at norm 10 in all 60 trials and never produced a false certificate.
 
 #ptable(
   columns: 3, align: (left, right, left,),
@@ -413,11 +411,11 @@ The certificates were produced by one implementation and re-checked by a separat
 
 == 6.7 F5b: bounds from even-coset representatives
 
-#strong[Even-class certificates.] For every pair we computed an even-coset certificate (Corollary 5.3) by the descent of §6.6, starting from $w = x_i u tau$ (norm 40). Inner products are computed in float64; they are exact because every partial sum of a product $A B$ of integer matrices is bounded by $sum_k |a_k| |b_k| <= (max_"row" sum_k |a_k|) dot max |B|$, which is checked to be below $2^52$ at run time for both products used. #strong[every one of the $1 thin 527 thin 984$ pairs has a certificate] (Table 8) #calc("C13"). Thus F5b also holds by an argument that uses only the midpoint lemma, integer inner products and the list F2, independently of canonical forms. All certificates were re-checked by a separately written program, using integer arithmetic and float32 products only where all partial sums are proved to be below $2^24$ #calc("C27").
+#strong[Even-coset certificates.] For every pair we computed an even-coset certificate (Corollary 5.3) by the descent of §6.6, starting from $w = x_i u tau$ (norm 40). Inner products are computed in float64; they are exact because every partial sum of a product $A B$ of integer matrices is bounded by $sum_k |a_k| |b_k| <= (max_"row" sum_k |a_k|) dot max |B|$, which is checked to be below $2^52$ at run time for both products used. The result: #strong[every one of the $1 thin 527 thin 984$ pairs has a certificate] (Table 8) #calc("C13"). Thus F5b also holds by an argument that uses only the midpoint lemma, integer inner products and the list F2, independently of canonical forms. All certificates were re-checked by a separately written program, using integer arithmetic and float32 products only where all partial sums are proved to be below $2^24$ #calc("C27").
 
 #ptable(
   columns: 4, align: (left, left, right, right,),
-  caption: [Table 8. Even-class certificates for all $1 thin 527 thin 984$ pairs.],
+  caption: [Table 8. Even-coset certificates for all $1 thin 527 thin 984$ pairs.],
   table.header([$chevron.l w_0, w_0 chevron.r$], [max $|chevron.l w_0, u chevron.r|$], [number], [share]),
   [12], [5], [$41 thin 437$], [2.71 %],
   [12], [6], [$692$], [0.05 %],
@@ -425,13 +423,13 @@ The certificates were produced by one implementation and re-checked by a separat
   [20], [6], [$20 thin 331$], [1.33 %],
 )
 
-= 7. Identification and formalisation <s7>
+= 7. Identification and formalization <s7>
 
-== 7.1 Formalisation of the deduction (Lean)
+== 7.1 Formalization of the deduction (Lean)
 
-With the computational facts as #strong[hypotheses], the conclusion “$L_112$ has no inner-shell vectors” has been proved in the proof assistant Lean 4 (with mathlib) and machine-checked. This rules out the kind of error that consists of a gap in the argument (a missing type, a missing case, a wrong direction).
+With the computational facts as #strong[hypotheses], the conclusion “$L_112$ has no inner-shell vectors” has been proved in the proof assistant Lean 4 (with mathlib) and machine-checked. This excludes errors that consist of a gap in the argument (a missing type, a missing case, or a wrong direction).
 
-The setting is abstract: $L_56$ is an additive group with an integer-valued symmetric bilinear form $B$, even norms, nonzero vectors of norm $gt.eq 6$ (F1), and $tau$ with $B\(x tau\,y tau\)= 5 B\(x\,y\)$ and $tau^2 = - 5$. The formalised statements are listed in Table 9.
+The setting is abstract: $L_56$ is an additive group with an integer-valued symmetric bilinear form $B$, even norms, nonzero vectors of norm $gt.eq 6$ (F1), and $tau$ with $B\(x tau\,y tau\)= 5 B\(x\,y\)$ and $tau^2 = - 5$. The formalized statements are listed in Table 9.
 
 #ptable(
   columns: 3, align: (left, left, left,),
@@ -442,26 +440,34 @@ The setting is abstract: $L_56$ is an additive group with an integer-valued symm
   [#raw("theoremA")], [§4.2 and the derivation of Theorem A], [assuming F1 and F2–F5 (the symmetry group is isometric and commutes with $tau$; norm-6 and norm-8 vectors are images of representatives; each representative's class has a certificate), there are no inner-shell vectors],
 )
 
-Check: the package builds, contains no forbidden words such as #raw("sorry"), and each theorem depends only on the standard axioms #raw("propext"), #raw("Classical.choice"), #raw("Quot.sound") #calc("C22"). Not formalised: unimodularity (an integer determinant computation) and the computational facts themselves (the individual numbers in F1–F5).
+Check: the package builds, contains no forbidden keywords such as #raw("sorry"), and each theorem depends only on the standard axioms #raw("propext"), #raw("Classical.choice"), #raw("Quot.sound") #calc("C22"). Not formalized: unimodularity (an integer determinant computation) and the computational facts themselves (the individual numbers in F1–F5).
 
 == 7.2 Identification with Nebe's lattice
 
 Our $L_56$ is $"SL"_2\(29\)$-equivariantly isometric to $L_(56\,2)\(tilde(M)\)$ built from Nebe's definition \[Neb98\] without external data #calc("C23").
 
 #enum(
-  [Build $L_56' = L_(56\,2)\(tilde(M)\)$ and generators $z'$ (order 29), $w'$ (order 4) of $"SL"_2\(29\)$ from the model over $bb(Q)\(zeta_29\)$ (implementation #raw("code/supplementary/nebe/cycloquat.py"); of the two classes of maximal orders, the one whose centralizer has order 12 is $tilde(M)$).],
+  [Build $L_56' = L_(56\,2)\(tilde(M)\)$ and generators $z'$ (order 29), $w'$ (order 4) of $"SL"_2\(29\)$ from the model over $bb(Q)\(zeta_29\)$ (code: #raw("code/supplementary/nebe/cycloquat.py"); of the two classes of maximal orders, the one whose centralizer has order 12 is $tilde(M)$).],
   [Find a group isomorphism between the two copies of $"SL"_2\(29\)$ with GAP (also composed with the outer automorphism), and compute the space of equivariant maps $L_56' arrow.r L_56$; it is 8-dimensional.],
   [On its integral part (rank 8) enumerate the elements with $Q\(T\)= "tr"\(G' ""^(- 1) T G T^(sans(T))\)lt.eq 56$; isometries are exactly the elements with $Q = 56$.],
 )
 
-We find 6 (up to sign) unimodular integer matrices $T$ with $T G T^(sans(T)) = G'$ intertwining the two actions, as many as predicted by the centralizer of order 12. Moreover, in the coordinates of $L_56'$, $tau$ becomes right multiplication by an element of $tilde(M)$ of reduced norm 5. Thus #strong[gluing C is built from Nebe's lattice $L_(56\,2)\(tilde(M)\)$ and one of the two conjugacy classes of $sqrt(- 5)$ in its maximal order $tilde(M)$].
+We find 6 (up to sign) unimodular integer matrices $T$ with $T G T^(sans(T)) = G'$ intertwining the two actions, as many as predicted by the centralizer of order 12. Moreover, in the coordinates of $L_56'$, $tau$ becomes right multiplication by an element of $tilde(M)$ of reduced norm 5. Thus #strong[gluing C is built from Nebe's lattice $L_(56\,2)\(tilde(M)\)$ and an element of reduced norm 5 and reduced trace 0 of its maximal order $tilde(M)$; such elements fall into two classes modulo 2 in the sense of §3.3, and $tau$ belongs to the class giving minimum 10].
+
+#strong[The element explicitly.] The model used by #raw("cycloquat.py") is the following. Let $K_4 subset bb(Q)(zeta_29)$ be the quartic subfield, with Gaussian periods $eta_j = sum_(k=0)^6 zeta_29^(2^(4k+j))$ ($j = 0, dots, 3$; 2 is a primitive root modulo 29), and let $cal(Q) = K_4 plus.o K_4 b$ with $b^2 = -1$ and $b x = macron(x) b$, where $macron(x)$ is the complex conjugate; complex conjugation exchanges $eta_0 arrow.l.r eta_2$ and $eta_1 arrow.l.r eta_3$, and its fixed field in $K_4$ is $bb(Q)(sqrt(29))$. This is the quaternion algebra $cal(Q)$ of §2.4. The maximal order $tilde(M)$ constructed by the program is the $bb(Z)$-module with basis
+$ m_0 = (eta_0 + 41 eta_1 + 144 eta_2 + 104 eta_3 + (133 eta_0 + 88 eta_1 + 12 eta_2 + 492 eta_3) b) / 145, $
+$ m_1 = eta_1 + 2 eta_3 b, quad m_2 = eta_2 + 3 eta_3 b, quad m_3 = eta_3 + 3 eta_3 b, $
+$ m_4 = (eta_0 + eta_3) b, quad m_5 = (eta_1 + eta_3) b, quad m_6 = (eta_2 + 4 eta_3) b, quad m_7 = 5 eta_3 b. $
+In the coordinates of $L_56'$, the similitude $tau$ is right multiplication by
+$ h = x + y b, quad x = (33 (eta_0 - eta_2) + 48 (eta_1 - eta_3)) / 145, quad y = (-106 eta_0 + 4 eta_1 - 39 eta_2 - 4 eta_3) / 145, $
+that is, $h = 33 m_0 - 9 m_1 - 33 m_2 - 24 m_3 - 31 m_4 - 20 m_5 - 3 m_6 + 28 m_7 in tilde(M)$. Since $macron(x) = -x$, the reduced trace of $h$ is $0$, and its reduced norm $x macron(x) + y macron(y)$ is $5$, so that $h^2 = -5$. Replacing $T$ by another of the 6 isometries conjugates $h$ by a unit of $tilde(M)$, which does not change the isometry class of the gluing. The lattice $L_(56,2)(tilde(M))$ is the unimodular member of the family $bb(Z)[zeta_29] tilde(M) (1 - zeta_29)^i$ with the form $"Tr"(c (x macron(x') + y macron(y')))$, $c$ totally positive, of \[Neb98, §3\]. Together with (1.2), these data specify $L_112$ without the files.
 
 = 8. The automorphism group <s8>
 
-We first compute, by finite exact lattice computations, the normalizer of $"SL"_2\(29\)$ in $"Aut"\(L_112\)$; then we prove that $"SL"_2\(29\)$ is normal in $"Aut"\(L_112\)$, by a group-theoretic argument modelled on Sakamoto's determination of the automorphism groups in dimension 88 \[Sak26, App. A\] (Appendix F). Neither step uses the extremality of $L_112$, and Theorem A does not depend on this section.
+We first compute, by finite exact lattice computations, the normalizer of $"SL"_2\(29\)$ in $"Aut"\(L_112\)$; then we prove that $"SL"_2\(29\)$ is normal in $"Aut"\(L_112\)$, by a group-theoretic argument modeled on Sakamoto's determination of the automorphism groups in dimension 88 \[Sak26, App. A\] (Appendix F). Neither step uses the extremality of $L_112$, and Theorem A does not depend on this section.
 
 #thm[
-#strong[Theorem B.] Let $S tilde.equiv "SL"_2\(29\)$ act diagonally on $L_112$. (a) The centralizer $C_("Aut"\(L_112\))\(S\)$ has order exactly $48$ #calc("C24"). (b) The outer automorphism of $S$ is induced by an automorphism of $L_112$; hence $\|N_("Aut"\(L_112\))\(S\)\|= 2 dot.op 24 thin 360 dot.op 48\/2 = 1 thin 169 thin 280$ #calc("C24"). (c) $S$ is the layer $E\("Aut"\(L_112\)\)$ (the product of the components), in particular normal, so #strong[$\|"Aut"\(L_112\)\|= 1 thin 169 thin 280$] #calc("C25") (Appendix F; it uses the classification of finite simple groups through the tables of Hiss–Malle \[HM01, HM02\] and the Schreier conjecture).
+#strong[Theorem B.] Let $S tilde.equiv "SL"_2\(29\)$ act diagonally on $L_112$. (a) The centralizer $C_("Aut"\(L_112\))\(S\)$ has order exactly $48$ #calc("C24"). (b) The outer automorphism of $S$ is induced by an automorphism of $L_112$; hence $\|N_("Aut"\(L_112\))\(S\)\|= 2 dot.op 24 thin 360 dot.op 48\/2 = 1 thin 169 thin 280$ (the factor $1\/2$ because $S$ and its centralizer share $-1$, the factor 2 for the outer automorphism) #calc("C24"). (c) $S$ is the layer $E\("Aut"\(L_112\)\)$ (the product of the components), in particular normal, so #strong[$\|"Aut"\(L_112\)\|= 1 thin 169 thin 280$] #calc("C25") (Appendix F; it uses the classification of finite simple groups through the tables of Hiss–Malle \[HM01, HM02\] and the Schreier conjecture).
 ]
 
 Let $G_112$ be the Gram matrix (3.1) of $L_112$.
@@ -490,15 +496,13 @@ Direction, choice of problem, decisions, and responsibility for publication: roi
 
 
 #refs-list(
-  [#strong[\[Soft\]] The FPLLL development team, #emph[fplll, a lattice reduction library], version 5.5.0, #link("https://github.com/fplll/fplll")[source]; The PARI Group, #emph[PARI/GP], #link("https://pari.math.u-bordeaux.fr/")[website]; The GAP Group, #emph[GAP], #link("https://www.gap-system.org/")[website]; Lean and mathlib, #link("https://github.com/leanprover/lean4")[Lean source], #link("https://github.com/leanprover-community/mathlib4")[mathlib source].],
-  [#strong[\[FP85\]] U. Fincke, M. Pohst, Improved methods for calculating vectors of short length in a lattice, including a complexity analysis, Math. Comp. 44 (1985) 463–471.],
-  [#strong[\[SE94\]] C. P. Schnorr, M. Euchner, Lattice basis reduction: improved practical algorithms and solving subset sum problems, Math. Program. 66 (1994) 181–199.],
-  [#strong[\[Ser73\]] J.-P. Serre, #emph[A Course in Arithmetic], Graduate Texts in Mathematics 7, Springer, 1973, Chapter VII.],
   [#strong[\[Asc00\]] M. Aschbacher, #emph[Finite Group Theory], 2nd ed., Cambridge Studies in Advanced Mathematics 10, Cambridge University Press, 2000.],
   [#strong[\[BN98\]] C. Bachoc, G. Nebe, Extremal lattices of minimum 8 related to the Mathieu group $M_22$, J. reine angew. Math. 494 (1998) 155–171.],
   [#strong[\[BV01\]] C. Bachoc, B. Venkov, Modular forms, lattices and spherical designs, in: Réseaux euclidiens, designs sphériques et formes modulaires, Monogr. Enseign. Math. 37 (2001).],
   [#strong[\[CN13\]] R. Coulangeon, G. Nebe, Dense lattices as Hermitian tensor products, Contemp. Math. 587 (2013); arXiv:1201.1832.],
   [#strong[\[Cou00\]] R. Coulangeon, Tensor products of Hermitian lattices, Acta Arith. 92 (2000) 115–130.],
+  [#strong[\[FP85\]] U. Fincke, M. Pohst, Improved methods for calculating vectors of short length in a lattice, including a complexity analysis, Math. Comp. 44 (1985) 463–471.],
+  [#strong[\[GHY01\]] W. T. Gan, J. P. Hanke, J.-K. Yu, On an exact mass formula of Shimura, Duke Math. J. 107 (2001) 103–133.],
   [#strong[\[HM01\]] G. Hiss, G. Malle, Low-dimensional representations of quasi-simple groups, LMS J. Comput. Math. 4 (2001) 22–63.],
   [#strong[\[HM02\]] G. Hiss, G. Malle, Corrigenda: Low-dimensional representations of quasi-simple groups, LMS J. Comput. Math. 5 (2002) 95–126.],
   [#strong[\[Kin03\]] O. King, A mass formula for unimodular lattices with no roots, Math. Comp. 72 (2003).],
@@ -509,11 +513,14 @@ Direction, choice of problem, decisions, and responsibility for publication: roi
   [#strong[\[NS\]] G. Nebe, N. J. A. Sloane, A Catalogue of Lattices, entries #raw("L_56b"), #raw("L_56c"). #link("https://www.math.rwth-aachen.de/~Gabriele.Nebe/LATTICES/")[Catalogue of Lattices].],
   [#strong[\[Que84\]] H.-G. Quebbemann, A construction of integral lattices, Mathematika 31 (1984) 137–140.],
   [#strong[\[Sak26\]] R. Sakamoto, Two extremal even unimodular lattices of rank 88, preprint (2026); arXiv:2609.15633.],
+  [#strong[\[SE94\]] C. P. Schnorr, M. Euchner, Lattice basis reduction: improved practical algorithms and solving subset sum problems, Math. Program. 66 (1994) 181–199.],
+  [#strong[\[Ser73\]] J.-P. Serre, #emph[A Course in Arithmetic], Graduate Texts in Mathematics 7, Springer, 1973, Chapter VII.],
   [#strong[\[SPLAG\]] J. H. Conway, N. J. A. Sloane, Sphere Packings, Lattices and Groups, 3rd ed., Springer 1999.],
   [#strong[\[SSP99\]] R. Scharlau, R. Schulze-Pillot, Extremal lattices, in: B. H. Matzat, G.-M. Greuel, G. Hiss (eds.), Algorithmic Algebra and Number Theory (Heidelberg, 1997), Springer 1999, 139–170.],
   [#strong[\[SW10\]] D. Stehlé, M. Watkins, On the extremality of an 80-dimensional lattice, ANTS-IX, LNCS 6197 (2010) 340–356.],
   [#strong[\[Wat12\]] M. Watkins, Another 80-dimensional extremal lattice, J. Théor. Nombres Bordeaux 24 (2012).],
-  [#strong[\[Repo\]] roiban1344, #emph[112-dimensional extremal even unimodular lattice] (data, the code that checks and produces the verification data, the verification data, the Lean formalisation), #link("https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice")[public repository] (accessed 18 October 2026).],
+  [#strong[\[Soft\]] The FPLLL development team, #emph[fplll, a lattice reduction library], version 5.5.0, #link("https://github.com/fplll/fplll")[source]; The PARI Group, #emph[PARI/GP], #link("https://pari.math.u-bordeaux.fr/")[website]; The GAP Group, #emph[GAP], #link("https://www.gap-system.org/")[website]; Lean and mathlib, #link("https://github.com/leanprover/lean4")[Lean source], #link("https://github.com/leanprover-community/mathlib4")[mathlib source].],
+  [#strong[\[Repo\]] roiban1344, #emph[112-dimensional extremal even unimodular lattice] (data, the code that checks and produces the verification data, the verification data, the Lean formalization), #link("https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice")[public repository] (tag #raw("v2026-10-18")).],
 )
 
 = Appendix A. Glossary <appA>
@@ -524,12 +531,12 @@ Direction, choice of problem, decisions, and responsibility for publication: roi
   ([Collision of type $\(a\,b\)$], [A pair $\(x\,v\)$ with $x$ of norm $a$ and $v$ of norm $b$ in the coset $x tau + 2 L$ (Definition 4.1). The inner-shell vectors of $L_112$ are exactly the collisions of type $\(6\,6\)\,\(6\,10\)\,\(10\,6\)\,\(8\,8\)$ (Lemma 4.2).]),
   ([Certificate (for a coset)], [A vector $w_0$ of a coset $c$ with norm 14 or 18 (odd coset) or 12, 16, 20 (even coset) and $\|chevron.l w_0\,u chevron.r\|lt.eq 6$ for all minimal vectors $u$; it guarantees $min\(c\)gt.eq 14$ (odd) or $min\(c\)gt.eq 12$ (even) (Corollaries 5.2, 5.3; Check 5.4).]),
   ([Canonical form; $K_8$], [$"can"\(c\)$ is the smallest 56-bit integer in the $"SL"_2\(29\)$-orbit of a coset $c$; $K_8$ is the set of canonical forms of cosets of norm-8 vectors. A coset contains a norm-8 vector iff its canonical form is in $K_8$ (Proposition 6.3).]),
-  ([Orbit representative], [A vector $r_i$ or $x_i u$ selected from an $S$-orbit; distinguish it from the coset representative $w_0$ certifying a bound (§§4.2, 5).]),
+  ([Orbit representative], [A vector $r_i$ or $x_i u$ selected from an $S$-orbit; not to be confused with the coset representative $w_0$ that certifies a bound (§§4.2, 5).]),
 )
 
 = Appendix B. Extremal theta series <appB>
 
-#strong[Scope.] The sources of the numbers used in the text, all exact rational computations. With $A = theta_(E_8) = E_4$ and $B = theta_(Lambda_24) = E_4^3 - 720 Delta$, by \[Ser73, Ch. VII\], every modular form of weight $4 k$ is a polynomial in $A$ and $B$, and the extremal theta series in dimension $n = 8 k$ is the unique one of the form $1 + O\(q^(floor.l n\/24 floor.r + 1)\)$.
+#strong[Scope.] This appendix gives the sources of the numbers used in the text; all are exact rational computations. With $A = theta_(E_8) = E_4$ and $B = theta_(Lambda_24) = E_4^3 - 720 Delta$, by \[Ser73, Ch. VII\], every modular form of weight $4 k$ is a polynomial in $A$ and $B$, and the extremal theta series in dimension $n = 8 k$ is the unique one of the form $1 + O\(q^(floor.l n\/24 floor.r + 1)\)$.
 
 #ptable(
   columns: 3, align: (left, left, left,),
@@ -551,7 +558,7 @@ Since $H = cal(O) e_1 xor cal(O) e_2$ is free, every element of $H times.o_(cal(
 
 == C.3 Injectivity of the coset map on short shells
 
-If $w eq.not plus.minus w'$ have norm $m in { 6\,8 }$ and lie in the same coset, the midpoint lemma gives $2 m + 2 chevron.l w\,w' chevron.r gt.eq 24$ and $2 m - 2 chevron.l w\,w' chevron.r gt.eq 24$; adding, $4 m gt.eq 48$, false. So $L(6)\/{ plus.minus 1 } arrow.r L\/2 L$ and $L(8)\/{ plus.minus 1 } arrow.r L\/2 L$ are injective, with disjoint images (odd and even cosets respectively). Consequently an $S$-orbit of norm-8 vectors and its image in $L\/2 L$ have sizes in ratio $2 : 1$ ($- 1 in S$ acts trivially on $L\/2 L$), and since different canonical forms mean different orbits, $\|K_8\|$ equals the number of $S$-orbits.
+If $w eq.not plus.minus w'$ have norm $m in { 6\,8 }$ and lie in the same coset, the midpoint lemma gives $2 m + 2 chevron.l w\,w' chevron.r gt.eq 24$ and $2 m - 2 chevron.l w\,w' chevron.r gt.eq 24$; adding them gives $4 m gt.eq 48$, which is false. So $L(6)\/{ plus.minus 1 } arrow.r L\/2 L$ and $L(8)\/{ plus.minus 1 } arrow.r L\/2 L$ are injective, with disjoint images (odd and even cosets respectively). Consequently an $S$-orbit of norm-8 vectors and its image in $L\/2 L$ have sizes in ratio $2 : 1$ ($- 1 in S$ acts trivially on $L\/2 L$), and since different canonical forms mean different orbits, $\|K_8\|$ equals the number of $S$-orbits.
 
 == C.4 Reduction of $\(10\,6\)$ to $\(6\,10\)$
 
@@ -577,13 +584,15 @@ $632 dot.op 24 thin 360 + 24 dot.op 8 thin 120 = 15 thin 395 thin 520 + 194 thin
 
 #strong[Conventions.] Row vectors; a matrix $g$ acts by $x mapsto x g$; isometries satisfy $g G g^(sans(T)) = G$; $tau G tau^(sans(T)) = 5 G$. The file #raw("R112_gram_LLL.txt") is PARI's #raw("qflllgram") reduction of (3.1).
 
+#strong[Specification without the files.] The defining matrices (56×56 and 112×112) are not printed in this paper; they are the files of Table D1. By §7.2, $L_56$ is $"SL"_2(29)$-equivariantly isometric to $L_(56,2)(tilde(M))$ of \[Neb98\], and in those coordinates $tau$ is right multiplication by an element of $tilde(M)$ of reduced norm 5 and reduced trace 0, given in §7.2. Together with (1.2), this specifies $L_112$ up to isometry independently of the data files. The files remain the reference: every verification program reads them and checks their hashes.
+
 #strong[Intermediate data] (orbit representatives of $L_56(6)$ and $L_56(8)$, odd and even-coset certificates, witnesses of norm 8 for B) are distributed as verification data in #raw("certificates/") of \[Repo\]; their SHA-256 hashes are listed in #raw("certificates/SHA256SUMS").
 
-#strong[Quick checks anyone can do] (seconds, any computer algebra system): (3.1) has even diagonal and determinant 1; $tau^2 = - 5$, $tau G tau^(sans(T)) = 5 G$; $g_i G g_i^(sans(T)) = G$, $g_i tau = tau g_i$. Checking one odd-coset certificate: (a) $w_0 - r tau$ has even coordinates, (b) $chevron.l w_0\,w_0 chevron.r in { 14\,18 }$, (c) $\|chevron.l w_0\,r' g chevron.r\|lt.eq 6$ for all 656 representatives $r'$ and all $12 thin 180$ elements $g$.
+#strong[Elementary checks] (a few seconds in any computer algebra system): (3.1) has even diagonal and determinant 1; $tau^2 = - 5$, $tau G tau^(sans(T)) = 5 G$; $g_i G g_i^(sans(T)) = G$, $g_i tau = tau g_i$. Checking one odd-coset certificate: (a) $w_0 - r tau$ has even coordinates, (b) $chevron.l w_0\,w_0 chevron.r in { 14\,18 }$, (c) $\|chevron.l w_0\,r' g chevron.r\|lt.eq 6$ for all 656 representatives $r'$ and all $12 thin 180$ elements $g$.
 
 #strong[Code.] Every computation used in this paper is listed in Table D2 with the code that performs it; except for supplementary computations explicitly marked unpublished, the paths in Table D2 are those of the public repository \[Repo\]. The text refers to the rows of Table D2 as \[C1\], \[C2\], ….
 
-Verification from the supplied data takes about 1.2 CPU hours via route A. Alternative routes and additional tests are described in Supplement §S3. The identifier R112 in filenames is an earlier name for $L_112$.
+Checking the computational facts from the supplied data takes about 1.2 CPU hours by the fastest route (route A of Supplement Table S7; the script #raw("code/verify/proof.sh")). Alternative routes and additional tests are described in Supplement §S3. The identifier R112 in filenames is an earlier name for $L_112$.
 
 #calc-table(lang: "en")
 
@@ -625,7 +634,7 @@ COSET-REPRESENTATIVE(w):
 
 = Appendix F. Proof that $"SL"_2\(29\)$ is normal in $"Aut"\(L_112\)$ <appF>
 
-Write $A = "Aut"\(L_112\)$, $S tilde.equiv "SL"_2\(29\)$, $V = L_112 times.o bb(Q)$, so $V\|_S tilde.equiv V_0^2$ with $V_0 = L_56 times.o bb(Q)$ irreducible of dimension 56 and $V times.o bb(C)\|_S = 4 psi + 4 psi'$, where $psi\,psi'$ are the two faithful characters of degree 14. The generalized Fitting subgroup $F^(*)\(A\)= F\(A\)E\(A\)$ satisfies $C_A\(F^(*)\(A\)\)lt.eq F^(*)\(A\)$ (Bender). We show (F.1) that every normal subgroup of $A$ has at most two isotypic components on $V$; (F.2, F.3) that $F\(A\)$ centralizes $S$; and (F.4) that $E\(A\)= S$. Sakamoto \[Sak26, App. A\] used primitivity of the action, which fails here (there are two isotypic components a priori); F.1 replaces it, and F.3 replaces the use of “normal abelian subgroups are cyclic” by a character-degree argument. Finite facts G-F1–G-F5 below were checked with GAP #calc("C25").
+Write $A = "Aut"\(L_112\)$, $S tilde.equiv "SL"_2\(29\)$, $V = L_112 times.o bb(Q)$, so $V\|_S tilde.equiv V_0^2$ with $V_0 = L_56 times.o bb(Q)$ irreducible of dimension 56 and $V times.o bb(C)\|_S = 4 psi + 4 psi'$, where $psi\,psi'$ are the two faithful characters of degree 14. The generalized Fitting subgroup $F^(*)\(A\)= F\(A\)E\(A\)$ satisfies $C_A\(F^(*)\(A\)\)lt.eq F^(*)\(A\)$ (Bender). We show (F.1) that every normal subgroup of $A$ has at most two isotypic components on $V$; (F.2, F.3) that $F\(A\)$ centralizes $S$; and (F.4) that $E\(A\)= S$. Sakamoto \[Sak26, App. A\] used primitivity of the action, which fails here (there are two isotypic components a priori); F.1 replaces it, and F.3 replaces the use of “normal abelian subgroups are cyclic” by a character-degree argument. The finite facts G-F1–G-F5 below were checked with GAP #calc("C25").
 
 #strong[Finite facts.] G-F1: the proper subgroups of $"PSL"_2\(29\)$ of index $lt.eq 112$ are $29 : 14$ (index 30) and $29 : 7$ (index 60). G-F2: every proper subgroup of $"SL"_2\(29\)$ has index $gt.eq 30$. G-F3: the irreducible characters of the preimages in $S$ of $29 : 14$, $29 : 7$ have degrees $1\,14$ and $1\,7$; $psi\,psi'$ restricted to a subgroup $U$ of order 29 do not contain the trivial character. G-F4: the only maximal subgroup of $"Ru"$ of order divisible by 29 is $L_2\(29\)$; both characters of degree 28 of $2 . "Ru"$ restrict irreducibly to $2 . L_2\(29\)$, for each of the 6 possible class fusions. G-F5: $\|"SL"_2\(29\)\|$ divides neither $\|"SL"_2\(59\)\|$ nor $\|"SL"_2\(173\)\|$.
 
@@ -649,7 +658,7 @@ Hence $\|Q_j : Z\(Q_j\)\|lt.eq 112^2 < 2^14$, and $Z\(Q_j\)$ is cyclic. The elem
 
 By F.2–F.3, $F\(A\)lt.eq C_A\(S\)$. Let $E\(A\)= Q_1 dots.h.c Q_r$ be the product of the components (commuting quasisimple subnormal subgroups).
 
-(a) #emph[$S$ normalizes every $Q_i$.] By F.1 for $E\(A\)$, $V\|_(E\(A\))$ has at most two isotypic components; the complex constituents of the $j$-th are Galois conjugates of $X_j = times.o.big_i X_(j\,i)$. Each $Q_i$ acts nontrivially, nontrivial irreducible representations of quasisimple groups have degree $gt.eq 2$, and $2^7 > 112$, so $r lt.eq 12$. By G-F2, $S$ cannot permute the $Q_i$ nontrivially.
+(a) #emph[$S$ normalizes every $Q_i$.] By F.1 for $E\(A\)$, $V\|_(E\(A\))$ has at most two isotypic components; the complex constituents of the $j$-th are Galois conjugates of $X_j = times.o.big_i X_(j\,i)$. Each $Q_i$ acts nontrivially, nontrivial irreducible representations of quasisimple groups have degree $gt.eq 2$, and $2^7 > 112$, so at most 6 of the $Q_i$ act nontrivially on each of the at most two components; hence $r lt.eq 12$. By G-F2, $S$ cannot permute the $Q_i$ nontrivially.
 
 (b) #emph[$S$ induces inner automorphisms on each $Q_i$.] By the Schreier conjecture, a consequence of the classification theorem, the outer automorphism group of the simple group $Q_i/Z(Q_i)$ is solvable. Automorphisms of a quasisimple group act faithfully on its central quotient, so $"Out"(Q_i)$ is solvable as well. Since $S$ is perfect, its image in $"Out"(Q_i)$ is trivial. Thus $S lt.eq E(A)C_A(E(A))$.
 
@@ -657,9 +666,9 @@ By F.2–F.3, $F\(A\)lt.eq C_A\(S\)$. Let $E\(A\)= Q_1 dots.h.c Q_r$ be the prod
 
 (c) #emph[$S$ lies in a single component.] Let $I$ be the set of $i$ for which the projection of $S$ to $Q_i\/Z\(Q_i\)$ is nontrivial. For $i in I$, $Q_i$ contains a quotient of $"SL"_2\(29\)$, so its nontrivial irreducible representations have degree $gt.eq 14$; as $14^2 > 112$, each $X_j$ involves at most one $i in I$, so $\|I\|lt.eq 2$. If $\|I\|= 2$, then $b = 2$, $Q_1$ acts only on $V_1$ and $Q_2$ only on $V_2$; writing $s = z q_1 q_2$ ($z in Z\(E\(A\)\)$, $q_i in Q_i$) gives $\[s\,t\]=\[q_1\,q'_1\]\[q_2\,q'_2\]$ with $\[q_1\,q'_1\]in A$ acting as $\[s\,t\]$ on $V_1$ and trivially on $V_2$. Since $S$ is perfect, $s mapsto\(s\|_(V_1)\,"id"_(V_2)\)$ maps $S$ into $A$; the image $c$ of $- 1$ is an involution in $C_A\(S\)$ for which $g mapsto frac(1 - c, 2) g + frac(1 + c, 2)$ preserves $L_112$. A direct check of the 6 involutions $eq.not plus.minus 1$ of the group of order 48 (Theorem B(a)) shows that none does #calc("C25"). So $\|I\|= 1$ and $S =\[S\,S\]lt.eq\[Q_1\,Q_1\]= Q_1$.
 
-(d) #emph[$E\(A\)= Q_1$.] Any other component centralizes $Q_1 supset.eq S$, so lies in $C_A\(S\)$ of order 48; but quasisimple groups have order $gt.eq 60$.
+(d) #emph[$E\(A\)= Q_1$.] Any other component centralizes $Q_1 supset.eq S$ and hence lies in $C_A\(S\)$ of order 48; but quasisimple groups have order $gt.eq 60$.
 
-(e) #emph[$Q_1 = S$.] Let $X$ be a constituent of $V times.o bb(C)\|_(Q_1)$. Since $- 1 in S$ acts as $- 1$, $macron(Q) = Q_1\/ker X$ is quasisimple with centre of even order, contains $S$ faithfully, and $X$ is a faithful irreducible representation of degree $lt.eq 112$ whose restriction to $S$ is a sum of $psi\,psi'$. By the main theorem of \[HM01\] (with the corrigenda \[HM02\]), such a $macron(Q)$ in characteristic 0 with $29 divides\|macron(Q)\|$ is one of the following. From \[HM01, Table 3\], only $"Ru"$, $2 . "Ru"$, $J_4$ have order divisible by 29 (we checked the orders of all simple groups occurring in rows of degree $lt.eq 112$), and only $2 . "Ru"$ (degree 28) occurs in characteristic 0 with even centre. From \[HM01, Table 2\], $A_n$ has trivial centre, and $2 . L_2\(q\)$ with $29 divides q\(q^2 - 1\)$ and minimal degree $\(q minus.plus 1\)\/2 lt.eq 112$ gives $q in { 29\,59\,173 }$, of which $59$ and $173$ are excluded by G-F5. If $S lt.eq 2 . "Ru"$, the image of $S$ lies in the maximal subgroup $L_2\(29\)$ (G-F4), so $S = 2 . L_2\(29\)$, and $X\|_S$ would be irreducible of degree 28 (G-F4), not a sum of characters of degree 14. Hence $macron(Q) tilde.equiv "SL"_2\(29\)$, $Q_1 = S ker X$ with $ker X$ central, and $Q_1 =\[Q_1\,Q_1\]= S$.
+(e) #emph[$Q_1 = S$.] Let $X$ be a constituent of $V times.o bb(C)\|_(Q_1)$. Since $- 1 in S$ acts as $- 1$, $macron(Q) = Q_1\/ker X$ is quasisimple with center of even order, contains $S$ faithfully, and $X$ is a faithful irreducible representation of degree $lt.eq 112$ whose restriction to $S$ is a sum of $psi\,psi'$. By the main theorem of \[HM01\] (with the corrigenda \[HM02\]), such a $macron(Q)$ in characteristic 0 with $29 divides\|macron(Q)\|$ is one of the following. From \[HM01, Table 3\], only $"Ru"$, $2 . "Ru"$, $J_4$ have order divisible by 29 (we checked the orders of all simple groups occurring in rows of degree $lt.eq 112$), and only $2 . "Ru"$ (degree 28) occurs in characteristic 0 with even center. From \[HM01, Table 2\], $A_n$ has trivial center, and $2 . L_2\(q\)$ with $29 divides q\(q^2 - 1\)$ and minimal degree $\(q minus.plus 1\)\/2 lt.eq 112$ gives $q in { 29\,59\,173 }$, of which $59$ and $173$ are excluded by G-F5. If $S lt.eq 2 . "Ru"$, the image of $S$ lies in the maximal subgroup $L_2\(29\)$ (G-F4), so $S = 2 . L_2\(29\)$, and $X\|_S$ would be irreducible of degree 28 (G-F4), not a sum of characters of degree 14. Hence $macron(Q) tilde.equiv "SL"_2\(29\)$, $Q_1 = S ker X$ with $ker X$ central, and $Q_1 =\[Q_1\,Q_1\]= S$.
 
 Thus $E\(A\)= S$, which is characteristic in $A$; so $S lt.tri.eq A$, $A = N_A\(S\)$ and $\|A\|= 1 thin 169 thin 280$ by Theorem B(b).  #qed
 

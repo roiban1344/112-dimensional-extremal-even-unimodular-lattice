@@ -30,6 +30,14 @@
 | `negative_control_B.npz` | `tau_class_B` int64 (56, 56) | τ² = −5 で他方の類（貼り方 B）の M' の元 | supplementary |
 | | `tau_B`, `x`, `v`, `hit_pairs` | 探索で見つけた貼り方 B の写像（2 を法とした持ち上げで、2 乗は −5 ではない）、衝突 (x, v)、衝突する組 | crosscheck/all_data（陰性対照） |
 | `outer_automorphism_R.txt` | 112 × 112 整数 | SL₂(29) の外部自己同型を与える L₁₁₂ の自己同型 | supplementary/automorphisms |
+| `gram_A.txt` | 112 × 112 整数 | 貼り方 A の Gram 行列 G_A（Nebe の L_{56,2}(M) を、48 個の類の写像の持ち上げで貼り合わせたもの。基底は (3.1)） | supplementary/isometry_ab.py（[C28]） |
+| `isometry_AB.txt` | 112 × 112 整数 | T G_B Tᵀ = G_A、det T = ±1 を満たす基底変換 T（G_B は tau_class_B についての (3.1)）。貼り方 A から B への等長写像 | supplementary/isometry_ab.py（[C28]） |
+| `genus_classes.txt` | 9 個の整数からなる 8 行 | L_{56,2}(M) の極大整環上の階数 2 のユニモジュラー Hermite 格子の種に属する 8 類 Λ_j: 番号 j、\|U(Λ_j)\|（PARI の `qfauto`）、Λ_j の短いベクトルの本数 | supplementary/genus/genus.py（[C29]、[C31]） |
+| `genus_class_<j>.txt`（j = 0, …, 7） | 112 × 112 整数 | X_j = L_{56,2}(M) ⊗ Λ_j の Gram 行列 G_X（LLL 簡約） | supplementary/genus/genus.py（[C30]、[C31]） |
+| `genus_basis_<j>.txt`（j = 0, …, 7） | d と 112 × 112 整数 D | (3.1) と同じ座標（L ⊕ L、形式 diag(G, G)/2）での X_j の基底 D/d: D diag(G, G) Dᵀ = 2d² G_X。g₁, g₂ は X_j に作用する | supplementary/genus/genus.py（[C30]、[C31]） |
+| `genus_witnesses.txt` | 113 個の整数からなる 3 行 | 類 j と、v G_X vᵀ = 8 を満たす X_j のベクトル v（j = 3, 4, 5） | supplementary/genus/genus.py（[C30]、[C31]） |
+| `genus_isometry_7_L112.txt` | 112 × 112 整数 | T G_R Tᵀ = G_X（類 7）、det T = ±1、G_R は (3.1) を満たす T。類 7 は L₁₁₂ である | supplementary/genus/genus.py（[C31]） |
+| `genus_isometry_3_A.txt` | 112 × 112 整数 | T G_A Tᵀ = G_X（類 3）、det T = ±1 を満たす T。類 3 は貼り方 A である | supplementary/genus/genus.py（[C31]） |
 
 経路 T（補遺 §S4.1、[C21]。定理 A の証明には使わない）:
 
