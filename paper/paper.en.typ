@@ -21,7 +21,7 @@ A positive-definite lattice of rank $n$ is a discrete subgroup $Lambda = bb(Z) b
 
 The theta series $theta_Lambda(q)=sum_(x in Lambda)q^(chevron.l x,x chevron.r/2)$ of an even unimodular lattice is a modular form of weight $n/2$. This gives the bound of Mallows–Odlyzko–Sloane \[MOS75\]:
 #tagged("1.1", $ min Lambda <= mu(n):=2 floor(n/24)+2. $)
-Here $min Lambda$ is the smallest norm of a nonzero vector. An even unimodular lattice is extremal when equality holds in (1.1). Unless another class of lattices is explicitly specified, “extremal lattice” in this paper means extremal even unimodular lattice. We retain the abbreviation $mu(n)$ for the bound in later formulas.
+Here $min Lambda$ is the smallest norm of a nonzero vector. An even unimodular lattice is extremal when equality holds in (1.1). Unless another class of lattices is explicitly specified, “extremal lattice” in this paper means extremal even unimodular lattice. We write $mu(n)$ for this bound.
 
 The bound is 6 in dimension 56 and 10 in dimension 112. Thus the construction below must exclude nonzero vectors of norms 2, 4, 6 and 8 in dimension 112. Examples in lower dimensions include $E_8$ and the Leech lattice. More recently, Sakamoto's preprint \[Sak26\] constructs two examples in dimension 88. Further background and comparison tables are collected in Appendix G; the proof of the result below does not depend on those comparisons.
 
@@ -46,7 +46,7 @@ Two further conclusions are treated separately from the extremality proof. The e
 
 We first verify that the lattice in (1.2) is even unimodular (Lemma 3.2). The main remaining task is to prove that it has no nonzero vector of norm below 10. The minimum norm of $L_56$ is 6; this is checked by two rigorous enumerations, one using interval arithmetic and one using an integer quadratic form (§6.1). Consequently, a nonzero vector $lr((x,v))/sqrt(2)$ of norm below 10 in $L_112$ would have both components in $L_56$ and would satisfy
 $ v equiv x tau med (mod 2 L_56), quad (chevron.l x,x chevron.r, chevron.l v,v chevron.r) in {(6,6),(6,10),(10,6),(8,8)}. $
-Lemma 4.2 proves that this list is exhaustive, including the exclusion of zero components. Since $tau^2 equiv 1 med (mod 2)$, interchanging the two components reduces the type $(10,6)$ to $(6,10)$ (Appendix C.4). It therefore suffices to establish the following two bounds:
+Lemma 4.2 shows that this list is exhaustive and that neither component is zero. Since $tau^2 equiv 1 med (mod 2)$, interchanging the two components reduces the type $(10,6)$ to $(6,10)$ (Appendix C.4). It therefore suffices to establish the following two bounds:
 $ min(r tau+2 L_56)>=14 quad "for all" r in L_56(6), $
 $ min(x tau+2 L_56)>=12 quad "for all" x in L_56(8), $
 where $L_56(m)$ denotes the vectors of norm $m$ in $L_56$ and the minimum of a coset is taken over all its vectors. This is Corollary 4.3.
@@ -74,7 +74,7 @@ A separate supplement contains the Siegel means and search motivation (Supplemen
 
 We fix conventions for lattices, cosets, group actions and Hermitian forms. Norm always means squared length.
 
-== 2.1 Conventions and terms to keep apart
+== 2.1 Conventions and terminology
 
 We use $L_56$ for the fixed lattice of §1; the letter $L$ in general definitions and lemmas denotes an arbitrary lattice satisfying the stated assumptions. An isometry between lattices is an additive-group isomorphism preserving the inner product; it need not preserve orientation.
 
@@ -82,7 +82,7 @@ Lattices are given by Gram matrices $G in bb(Z)^(n times n)$ with respect to a b
 
 #ptable(
   columns: 3, align: (left, left, left,),
-  caption: [Table 1. Terms that this paper keeps apart.],
+  caption: [Table 1. Terms distinguished in this paper.],
   table.header([term], [symbol], [meaning]),
   [minimum (of a lattice)], [$min Lambda$], [smallest norm of a nonzero vector of a specific lattice $Lambda$],
   [extremal bound], [$mu\(n\)$], [the upper bound $2 floor.l n\/24 floor.r + 2$ for the minimum in dimension $n$; $mu\(56\)= 6$, $mu\(112\)= 10$],
@@ -302,7 +302,7 @@ Three implementations are referred to below: implementation 1 constructed $L_112
   [F2], [closure + orbits, size sum], [disjointness, design identities (implementation 2); implementation 3], [integer],
   [F3], [marked sums of two minimal vectors, size sum], [recount from $K_8$, design identities; implementation 3], [integer],
   [F4], [matrix identities], [two implementations], [integer],
-  [F5a], [656 odd-coset certificates], [checker of the implementation 2; CVP on two bases; canonical forms], [integer],
+  [F5a], [656 odd-coset certificates], [the checker of implementation 2; CVP on two bases; canonical forms], [integer],
   [F5b], [canonical forms (two implementations)], [exhaustive CVP; implementation 3; even-coset certificates (all pairs); support-module route (Supplement §S4.1)], [integer (CVP: floating point)],
 )
 
@@ -335,13 +335,13 @@ The true partial norm always lies in its interval, so no vector of true norm $lt
 
 #strong[(b) Reduction to Nebe's lattice.] $L_56$ is the sublattice $L_(56\,2)\(M\)X + 2 L_(56\,2)\(M\)$ of the catalogue lattice ($X$ an element whose action modulo 2 has image dimension 28 of $M\/2 M$), rescaled by $1\/sqrt(2)$; the Gram matrix of this sublattice agrees entry by entry with that of $L_56$. Hence norm-4 vectors of $L_56$ correspond bijectively to norm-8 vectors of $L_(56\,2)\(M\)$ whose class lies in an $"SL"_2\(29\)$-invariant 28-dimensional subspace $W$ of $L_(56\,2)\(M\)\/2 L_(56\,2)\(M\)$, and norm-2 vectors of $L_56$ to norm-4 vectors of $L_(56\,2)\(M\)$. Among the $1 thin 528 thin 956$ pairs (norm-8 orbit representative of $L_(56\,2)\(M\)$, centralizer element) — the $127 thin 413$ representatives have orbit sizes summing to the theta coefficient — none has its coset in $W$ #calc("C6"). Positive control: the 656 minimal vectors of $L_56$ all appear in $L_(56\,2)\(M\)$ with norm 12 and class in $W$. This proves “$min L_(56\,2)\(M\)= 6 arrow.r.double min L_56 = 6$”, reducing F1 to a property of the literature lattice \[Neb98, Table II\].
 
-#strong[(c) Floating-point enumerations.] fplll enumeration of all vectors of norm $lt.eq 4.5$ (two bases) and PARI #raw("qfminim") for norm $lt.eq 4$ (a implementation 2, BKZ-50 basis) also found none #calc("C7").
+#strong[(c) Floating-point enumerations.] fplll enumeration of all vectors of norm $lt.eq 4.5$ (two bases) and PARI #raw("qfminim") for norm $lt.eq 4$ (implementation 2, BKZ-50 basis) also found none #calc("C7").
 
 == 6.2 F2: orbits of minimal vectors
 
 We grow the set of minimal vectors by a closure operation, split it into orbits, and stop when the orbit sizes add up to the kissing number $15 thin 590 thin 400$. Disjointness and agreement of the total sizes prove completeness.
 
-Starting from a few minimal vectors found by BKZ, we generated minimal vectors by closure: if $r\,s in L_56(6)$ and $chevron.l r\,s chevron.r = 3$ then $r - s in L_56(6)$. For each new vector we computed its $S$-orbit (by applying all $12 thin 180$ elements of $S\/{ plus.minus 1 }$) and recorded it as one orbit; the closure step is what lets us leave an orbit. We obtained 656 distinct orbits, with sizes adding up to $632 times 24 thin 360 + 24 times 8 thin 120 = 15 thin 590 thin 400 =\|L_56(6)\|$ #calc("C8"). Since distinct orbits are disjoint, #strong[completeness follows from the size sum and F1]. A separate implementation expanded all orbits, checked pairwise disjointness, and checked the identities of §6.3.
+Starting from a few minimal vectors found by BKZ, we generated minimal vectors by closure: if $r\,s in L_56(6)$ and $chevron.l r\,s chevron.r = 3$ then $r - s in L_56(6)$. For each new vector we computed its $S$-orbit (by applying all $12 thin 180$ elements of $S\/{ plus.minus 1 }$) and recorded it as one orbit; the closure step produces vectors outside the orbits already found. We obtained 656 distinct orbits, with sizes adding up to $632 times 24 thin 360 + 24 times 8 thin 120 = 15 thin 590 thin 400 =\|L_56(6)\|$ #calc("C8"). Since distinct orbits are disjoint, #strong[completeness follows from the size sum and F1]. A separate implementation expanded all orbits, checked pairwise disjointness, and checked the identities of §6.3.
 
 == 6.3 Completeness tests: orbit-size sums and design identities
 
@@ -381,7 +381,7 @@ Identify $L_56\/2 L_56$ with $bb(F)_2^56$ via coordinates modulo 2. Each $g in S
 #strong[Proof.] If $w in c$ has norm 8, by F3 $w = x_i u g$ for some $i\,u$ and $g in S$, so $c =\(x_i u + 2 L_56\)g$ and $"can"\(c\)= "can"\(x_i u + 2 L_56\)in K_8$. Conversely, $"can"\(c\)= "can"\(x_i u + 2 L_56\)$ means $c =\(x_i u + 2 L_56\)g$ for some $g$, and $x_i u g in c$ has norm 8.  #qed
 ]
 
-Test for type $\(8\,8\)$: for each pair, compute the coset of $x_i u tau$, its canonical form ($12 thin 180$ table look-ups, about 0.3 ms), and look it up in $K_8$. The results are in Table 6. This test was implemented twice, by two implementations with separately written code (group enumeration, tables, canonical forms, look-up), with self-tests (table look-up equals matrix product; canonical form is $S$-invariant; the $12 thin 180$ group elements are distinct modulo 2). The type $\(6\,6\)$ was tested on the 656 minimal-vector cosets using $K_6={"can"(r_i+2L_56)}$.
+Test for type $\(8\,8\)$: for each pair, compute the coset of $x_i u tau$, its canonical form ($12 thin 180$ table look-ups, about 0.3 ms), and look it up in $K_8$. The results are in Table 6. The test was implemented twice with separately written code (group enumeration, tables, canonical forms, look-up), with self-tests (table look-up equals matrix product; canonical form is $S$-invariant; the $12 thin 180$ group elements are distinct modulo 2). The type $\(6\,6\)$ was tested on the 656 minimal-vector cosets using $K_6={"can"(r_i+2L_56)}$.
 
 #ptable(
   columns: 5, align: (left, right, right, right, right,),
@@ -411,7 +411,7 @@ The certificates were produced by one implementation and re-checked by a separat
 
 == 6.7 F5b: bounds from even-coset representatives
 
-#strong[Even-class certificates.] For every pair we computed an even-coset certificate (Corollary 5.3) by the descent of §6.6, starting from $w = x_i u tau$ (norm 40). Inner products are computed in float64; they are exact because every partial sum of a product $A B$ of integer matrices is bounded by $sum_k |a_k| |b_k| <= (max_"row" sum_k |a_k|) dot max |B|$, which is checked to be below $2^52$ at run time for both products used. #strong[every one of the $1 thin 527 thin 984$ pairs has a certificate] (Table 8) #calc("C13"). Thus F5b also holds by an argument that uses only the midpoint lemma, integer inner products and the list F2, independently of canonical forms. All certificates were re-checked by a separately written program, using integer arithmetic and float32 products only where all partial sums are proved to be below $2^24$ #calc("C27").
+#strong[Even-class certificates.] For every pair we computed an even-coset certificate (Corollary 5.3) by the descent of §6.6, starting from $w = x_i u tau$ (norm 40). Inner products are computed in float64; they are exact because every partial sum of a product $A B$ of integer matrices is bounded by $sum_k |a_k| |b_k| <= (max_"row" sum_k |a_k|) dot max |B|$, which is checked to be below $2^52$ at run time for both products used. The result: #strong[every one of the $1 thin 527 thin 984$ pairs has a certificate] (Table 8) #calc("C13"). Thus F5b also holds by an argument that uses only the midpoint lemma, integer inner products and the list F2, independently of canonical forms. All certificates were re-checked by a separately written program, using integer arithmetic and float32 products only where all partial sums are proved to be below $2^24$ #calc("C27").
 
 #ptable(
   columns: 4, align: (left, left, right, right,),
