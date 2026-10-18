@@ -1,5 +1,5 @@
-"""Certificate files: the data that the verification scripts check (see certificates/MANIFEST.md).
-検証用データ: 検算スクリプトが確かめるデータ（certificates/MANIFEST.md を参照）。
+"""Certificate files: the data that the verification scripts check (see certificates/MANIFEST.md; 日本語は MANIFEST.ja.md).
+検証用データ: 検算スクリプトが確かめるデータ（certificates/MANIFEST.ja.md を参照）。
 
   min_reps.npz       reps  int16 (656, 56)       representatives of the S-orbits on L_6 (F2)
                                                  L_6 の S-軌道の代表（F2）
