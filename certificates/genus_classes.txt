@@ -1,0 +1,14 @@
+# The genus of rank-2 unimodular Hermitian lattices Lambda over the maximal order M (centralizer order 24),
+# K = Q(sqrt29); X_j = L_{56,2}(M) tensor_M Lambda_j. One line per class j:
+#   j  |U(Lambda_j)|  n_2 n_4 ... n_14
+# where n_k is the number of +-pairs of vectors of Lambda_j with Tr_{K/Q} trd h(v, v) = k.
+# |U| by PARI qfauto (code/supplementary/genus/genus.py enum, seed 1); sum 1/|U| = 157/640.
+# 種の 8 類: 類の番号 j、|U(Λ_j)|、Tr trd h = 2, 4, …, 14 のベクトルの ± 対の本数。
+0 1152 0 24 0 312 0 672 0
+1 12 0 0 0 12 0 192 48
+2 288 0 0 0 48 0 72 144
+3 24 0 0 0 24 0 144 96
+4 24 0 0 0 36 0 168 0
+5 20 0 0 0 0 0 180 120
+6 288 0 12 0 36 0 660 72
+7 48 0 0 0 0 0 216 48
