@@ -55,6 +55,10 @@ This runs everything in `proof.sh`, and adds the alternative check of F5b by the
 
 `bash code/verify/quick.sh` is a shorter check of about 40–50 minutes. It runs the base-lattice enumerator on positive controls only and omits v7, so **passing it is not a complete verification of the theorem**. Independent implementations and verification-data generation programs are described in the code documentation.
 
+### Container
+
+The `Dockerfile` builds a light image (Debian 13, Python 3, NumPy in a virtual environment, GCC, curl; no SageMath or Lean) from which all three levels can be run: `docker build -t l112 .` builds it, `docker run --rm l112` runs level (i), and `docker run --rm -v "$PWD/certificates:/work/certificates" -v "$PWD/out:/work/out" l112 bash -c 'bash code/verify/fetch.sh && bash code/verify/proof.sh'` runs level (ii), keeping the downloaded data and the results on the host (replace `proof.sh` by `full.sh 3` for level (iii); on Linux, add `--user "$(id -u):$(id -g)"` if your uid is not 1000). The same image is used by the dev container (`.devcontainer/`): in VS Code choose "Reopen in Container", or open the repository in GitHub Codespaces. `Dockerfile.sage` builds a separate image with SageMath for the supplementary and data-producing computations only; it is not needed for the proof.
+
 ## Versions and reproducibility
 
 Releases are tagged by date; this release is `v2026-10-18.1` (a second release on the same day gets a suffix). Take the paper, the code, and the verification-data hashes from the same tag. Large verification data archives are distributed as assets of the [Release `certificates-v1`](https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1); their hashes are recorded in `certificates/SHA256SUMS`. Programs check these hashes before using the data. Generated results are written to `out/`.

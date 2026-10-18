@@ -1,0 +1,13 @@
+.git
+.github
+.claude
+out/
+.venv/
+build/
+__pycache__/
+*.pyc
+lean/.lake/
+certificates/*.npz
+*.log
+*.swp
+.DS_Store

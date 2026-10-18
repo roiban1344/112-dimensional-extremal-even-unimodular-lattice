@@ -55,6 +55,10 @@ bash code/verify/full.sh 3
 
 `bash code/verify/quick.sh` は約 40〜50 分の短縮した検査です。56 次元格子の列挙は陽性対照だけに対して実行し、v7 を省くので、**通過しても定理の全検算にはなりません。** 独立な実装と検証用データの生成プログラムは、コードの案内で説明しています。
 
+### コンテナ
+
+`Dockerfile` から軽量なイメージ（Debian 13、Python 3、仮想環境中の NumPy、GCC、curl。SageMath と Lean は含まない）を作り、3 つの水準をすべて実行できます。`docker build -t l112 .` でイメージを作り、`docker run --rm l112` で水準 (i) を、`docker run --rm -v "$PWD/certificates:/work/certificates" -v "$PWD/out:/work/out" l112 bash -c 'bash code/verify/fetch.sh && bash code/verify/proof.sh'` で水準 (ii) を実行します（ダウンロードしたデータと結果はホストに残ります。水準 (iii) では `proof.sh` を `full.sh 3` に替えます。Linux で uid が 1000 でない場合は `--user "$(id -u):$(id -g)"` を付けます）。開発コンテナ（`.devcontainer/`）も同じイメージを用います。VS Code では「Reopen in Container」を選ぶか、GitHub Codespaces でリポジトリを開いてください。`Dockerfile.sage` は補足計算とデータ生成のための SageMath 入りの別イメージであり、証明には不要です。
+
 ## 版と再現性
 
 版には日付のタグを付けます。この版は `v2026-10-18.1` です（同じ日に 2 度目の版を出す場合は末尾に番号を付けます）。論文・コード・検証用データのハッシュは、同じタグのものを使ってください。大きな検証用データは [Release `certificates-v1`](https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1) の添付ファイルで配布し、ハッシュを `certificates/SHA256SUMS` に記録します。プログラムは検証用データを使う前にハッシュを照合します。実行結果は `out/` に保存します。
