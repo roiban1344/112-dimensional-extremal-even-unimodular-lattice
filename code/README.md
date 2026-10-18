@@ -7,9 +7,13 @@ as [C1]–[C31]; the last section of this file maps each row to the scripts here
 
 ## What is proved, and what it relies on
 
-Theorem A (L₁₁₂ has minimum 10) follows from Lemmas 3.2 and 4.2 (proved by hand, and checked in
-Lean, `lean/`) and the computational facts F0–F5 of §4.3. The scripts in **`verify/`** check
-F0–F5 from two kinds of input:
+Theorem A (L₁₁₂ has minimum 10) follows from the results proved by hand in §§3–6 (Lemmas 3.2,
+4.2, 5.1, Corollaries 4.3, 5.2, 5.3 and Proposition 6.3), the known upper bound (1.1) and the
+computational facts F0–F5 of §4.3. The deduction from the computational facts (Lemma 4.2,
+Corollary 4.3, Lemma 5.1 with its corollaries, and the final step) is also checked in Lean
+(`lean/`, Table 9 of §7.1). Lemma 3.2 (unimodularity), Proposition 6.3 and the passage from pairs
+(x, xτ + 2y) to vectors of L₁₁₂ through (1.2) remain outside Lean, together with the other items
+listed in §7.1. The scripts in **`verify/`** check F0–F5 from two kinds of input:
 
 * the four published files in `data/` (the Gram matrix of L, the generators of SL₂(29), τ, and a
   reduced Gram matrix of L₁₁₂), whose SHA-256 hashes are fixed in `lib/data.py`;
@@ -19,10 +23,11 @@ F0–F5 from two kinds of input:
 
 We use **verification data** for the distributed auxiliary inputs as a whole. A **certificate** here is a coset representative that establishes a lower bound on the minimum norm of that coset: each row of `odd_bounding.npz` or `even_bounding.npz` is such a representative. The checker verifies its coset membership, norm and inner-product conditions; the lemmas in the paper then give the bound. Orbit representatives and change-of-basis matrices are named separately.
 
-The proof of Theorem A relies on the verification code (about 1,500 lines of Python and one
-C program, using only numpy) and the hand-proved lemmas. It does **not** rely on the correctness of
-the code that produced the verification data (`produce/`): any property of the data that the proof
-uses is re-checked by `verify/`.
+The proof of Theorem A relies on the verification code and the hand-proved results. The
+verification code consists of about 1,750 lines of Python (`verify/` v0–v7 and `lib/`, counting the
+bilingual header comments) and one C program; the Python code uses no package other than numpy.
+The proof does **not** rely on the correctness of the code that produced the verification data
+(`produce/`): any property of the data that the proof uses is re-checked by `verify/`.
 
 ## Layout
 
