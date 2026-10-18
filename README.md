@@ -43,7 +43,7 @@ bash code/verify/fetch.sh
 bash code/verify/proof.sh
 ```
 
-`fetch.sh` needs `curl`; it takes the Release tag as an optional argument (default `certificates-v1`) and downloads every `.npz` file listed in `certificates/SHA256SUMS` (nine files, about 130 MB), including those used only by `full.sh` and the supplementary checks. A file that is already present with the hash in `SHA256SUMS` is not downloaded again; a missing, incomplete or outdated file is downloaded to `<file>.part` and replaces it only after its hash has been checked. `proof.sh` runs every computational check used in the proof of Theorem A: F1 (the 56-dimensional base lattice has minimum 6) by interval enumeration, F2 and F3 (completeness of the orbit representatives), F5a by the odd-coset certificates, and F5b by canonical forms. The final argument also uses the mathematical lemmas in the paper. See the [step-by-step resource requirements](code/README.md#the-verification-steps).
+`fetch.sh` needs `curl`; it takes the Release tag as an optional argument (default `certificates-v2`) and downloads every `.npz` file listed in `certificates/SHA256SUMS` (nine files, about 150 MB), including those used only by `full.sh` and the supplementary checks. A file that is already present with the hash in `SHA256SUMS` is not downloaded again; a missing, incomplete or outdated file is downloaded to `<file>.part` and replaces it only after its hash has been checked. `proof.sh` runs every computational check used in the proof of Theorem A: F1 (the 56-dimensional base lattice has minimum 6) by interval enumeration, F2 and F3 (completeness of the orbit representatives), F5a by the odd-coset certificates, and F5b by canonical forms. The final argument also uses the mathematical lemmas in the paper. See the [step-by-step resource requirements](code/README.md#the-verification-steps).
 
 **(iii) Everything (about 26 CPU hours, roughly 9.5–10 hours elapsed with three workers).**
 
@@ -61,11 +61,11 @@ The `Dockerfile` builds a light image (Debian 13, Python 3, NumPy in a virtual e
 
 ## Versions and reproducibility
 
-Releases are tagged by date; this release is `v2026-10-18.1` (a second release on the same day gets a suffix). Take the paper, the code, and the verification-data hashes from the same tag. Large verification data archives are distributed as assets of the [Release `certificates-v1`](https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1); their hashes are recorded in `certificates/SHA256SUMS`. Programs check these hashes before using the data. Generated results are written to `out/`.
+Releases are tagged by date; this release is `v2026-10-19.1` (a second release on the same day gets a suffix). Take the paper, the code, and the verification-data hashes from the same tag. Large verification data archives are distributed as assets of the [Release `certificates-v2`](https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v2); their hashes are recorded in `certificates/SHA256SUMS`. Programs check these hashes before using the data. Generated results are written to `out/`.
 
 To cite this work, use GitHub's "Cite this repository", which reads [CITATION.cff](CITATION.cff).
 
-Route T in the supplement (§S4) is incomplete in this release: the integer certificates for its search (2) cover only part of the classes, as stated in the [code documentation](code/README.md#route-t-supplement-s4-table-d2-c20-c21), and the file will be replaced when the computation is complete. Theorem A does not depend on it.
+Release `certificates-v2` contains integer certificates for all 763,992 classes of search (2) and all 3,936 classes of search (3) in Supplement §S4, all checked in integer arithmetic. Completing route T as a separate proof still requires confirmation of the completeness of the support-module parameter ranges and the reduction to the three searches. Theorem A does not depend on route T.
 
 The main verification pipeline uses Python, NumPy, and C. Verification-data generation and supplementary computations use SageMath; see [environment.yml](environment.yml). The Lean formalization checks the deductions from stated hypotheses, rather than executing the lattice computations.
 

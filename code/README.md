@@ -57,7 +57,7 @@ bash code/verify/fetch.sh
 bash code/verify/proof.sh
 ```
 
-The optional argument of `fetch.sh` is the Release tag (default `certificates-v1`).
+The optional argument of `fetch.sh` is the Release tag (default `certificates-v2`).
 
 **(iii) Everything.** The full check takes about 26 CPU hours, or roughly 9.5–10 hours elapsed with three workers. It runs everything in `proof.sh`, and adds the alternative check of F5b by the even-coset certificates (v7, about 24 CPU hours) and the consistency test of the spherical-design identities (v8).
 
@@ -191,16 +191,16 @@ structure of L₁₁₂ (route T). They are not used in the proof of Theorem A.
 |---|---|---|
 | `classify.py`, `recount.py` | [C20] classification of the rank-2 support modules (two independent counts: 97 types, 63 dangerous; 58 types at the level of a coarser invariant, identical) | 1–2 min each (SageMath) |
 | `certify.py` | [C21] producing the certificates of searches (2) and (3) (split, resumable) | search (3) about 25 min, search (2) about 13 CPU days |
-| `check.py` | [C21] checking the certificates in integer arithmetic (numpy only) | search (3) about 2 min, search (2) about 12 CPU hours when complete |
+| `check.py` | [C21] checking the certificates in integer arithmetic (numpy only) | search (3) about 2 min, search (2) about 7 CPU hours (estimate from a single-thread trial; batch A: 4.7 h elapsed with 2 threads on a shared machine) |
 | `float_cvp.py` | [C21] search (2) by floating-point closest-vector enumeration (supplementary) | about 3 × 13 hours (SageMath) |
 
-**State of this release**: the certificates of search (3) are complete (all 3,936 classes). The
-computation for search (2) was still running when the files were published, and
-`certificates/route_t_search2.npz` is incomplete (`check.py` reports how many of the 763,992 classes
-are certified). The remaining classes are covered only by the floating-point search. The file will
-be replaced when the computation is complete. To complete it yourself, run `certify.py search2 --missing --part P --nparts Q`
-for P = 0, …, Q−1 (only the classes without a certificate; resumable), then
-`certify.py collect --base` to add them to the distributed file, and `check.py` again.
+**State of this release**: the certificates of both searches are complete: all 3,936 classes of
+search (3) and all 763,992 classes of search (2), and `check.py` passes on all of them. The file
+`certificates/route_t_search2.npz` of the first Release `certificates-v1` covered 610,664 classes of
+search (2); it was replaced in `certificates-v2` (the rows present before are unchanged), and
+`fetch.sh` downloads the new file in place of an old copy. To regenerate missing rows of a partial
+file, run `certify.py search2 --missing --part P --nparts Q` for P = 0, …, Q−1 (resumable), then
+`certify.py collect --base`, and `check.py` again.
 
 ## Correspondence with Table D2 of the paper
 

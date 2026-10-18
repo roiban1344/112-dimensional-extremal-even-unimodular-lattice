@@ -22,14 +22,14 @@ and it is deleted when (c) is complete.
 途中経過（out/<段>.<s3|s2>.state.npz）の扱いも同じ: 検査する certificate の行、入力、(c) を計算するコードの SHA-256 を記録する。
 別のデータのための途中経過があれば不合格とし（再計算するには消す）、(c) が終わると消す。
 
-Search (2) may be incomplete in the distributed file (the computation was still running when the
-files were published); the number of certified classes is reported, and the check covers exactly
-those. The file will be replaced when the computation is complete.
-探索 (2) は配布ファイルで途中のことがある（公開の時点で計算が続いていた）。certificate のある類の数を報告し、検算はちょうどそれらを
-対象にする。計算が終わったらファイルを差し替える。
+The distributed file of search (2) is complete from Release certificates-v2 on (all 763,992 rows;
+certificates-v1 had 610,664). For a partial file the number of certified classes is reported, and
+the check covers exactly those.
+探索 (2) の配布ファイルは Release certificates-v2 から完全（763,992 行すべて。certificates-v1 では 610,664 行）。途中のファイルでは
+certificate のある類の数を報告し、検算はちょうどそれらを対象にする。
 
-Run time: search (3) about 2 minutes; search (2) about 12 CPU hours when complete (resumable, --threads).
-実行時間: 探索 (3) 約 2 分。探索 (2) は全部そろうと約 12 CPU 時間（再開可能、--threads）。
+Run time: search (3) about 2 minutes; search (2) about 7 CPU hours (estimate from a single-thread trial; batch A: 4.7 h elapsed with 2 threads on a shared machine) (resumable, --threads).
+実行時間: 探索 (3) 約 2 分。探索 (2) 約 7 CPU 時間（単一スレッド試験からの見積もり。分割 A の実測: 共用機で 2 スレッド、経過 4.7 時間）（再開可能、--threads）。
 Run / 実行:  python3 code/supplementary/route_t/check.py [search3|search2|both] [--threads T] [--limit N]
 """
 import os

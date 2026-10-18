@@ -5,7 +5,7 @@
 このディレクトリには、軌道代表、剰余類の最小ノルムの下界を保証する代表元（英語では certificate）、基底変換行列、補足計算の入力を収めます。一式を「検証用データ」と呼びます。主検算の入力は `code/verify/` が検査し、補足用の入力は下で区別します。証明では検査した性質と論文の数学的な補題を使い、データを生成したプログラムの正しさには依拠しません。
 
 大きな `.npz` は git に入れず、GitHub Release に添付します。`SHA256SUMS`（git に入っています）が中身を固定し、
-`code/lib/certs.py` の読み込みは使う前にハッシュを照合します。取得は `bash code/verify/fetch.sh` で行います。引数は Release のタグで、省略すると `certificates-v1` です。Release は <https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1> にあります。
+`code/lib/certs.py` の読み込みは使う前にハッシュを照合します。取得は `bash code/verify/fetch.sh` で行います。引数は Release のタグで、省略すると `certificates-v2` です。Release は <https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v2> にあります。
 
 ファイル名には、112 次元格子の以前の呼び名 R が残っています（`outer_automorphism_R.txt`、`reduction_R.txt`、`data/R112_gram_LLL.txt`）。論文では L₁₁₂ と呼びます。
 
@@ -44,7 +44,6 @@
 | ファイル | 配列 | 中身 | 検算 | 作成 |
 |---|---|---|---|---|
 | `route_t_search3.npz` | `w0` int16 (3936, 56) | 探索 (3) の 3,936 類 r u_k μ + 2L の下界を保証する代表元（順序は `code/supplementary/route_t/common.py`） | route_t/check.py | route_t/certify.py |
-| `route_t_search2.npz` | `w0` int16 (763992, 56), `done` bool (763992) | 探索 (2) の類 x_i u_k (1+τ) + 2L の下界を保証する代表元。`done = False` の行は未計算（0） | route_t/check.py | route_t/certify.py |
+| `route_t_search2.npz` | `w0` int16 (763992, 56), `done` bool (763992) | 探索 (2) の 763,992 類 x_i u_k (1+τ) + 2L すべての下界を保証する代表元（順序は `code/supplementary/route_t/common.py`）。`done` はすべての行で True（途中のファイルを `certify.py search2 --missing` で完成させるための配列として残す） | route_t/check.py | route_t/certify.py |
 
-`route_t_search2.npz` はこの版では途中までです。公開の時点で計算が続いており、完了したら差し替えます。`check.py` は代表元を生成済みの類の数を報告し、
-ちょうどそれらを検算します。残りの類は浮動小数点の探索（`route_t/float_cvp.py`）だけで調べてあります。
+`route_t_search2.npz` は Release `certificates-v2` から完全です（763,992 類すべて。`certificates-v1` では 610,664 類）。`certificates-v1` にあった行は変わっていません。`check.py` はすべての行を検算します。
