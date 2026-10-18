@@ -23,7 +23,7 @@ Gram 行列は 2H^{-1} で Coulangeon の評価の等号）と det_k = 19/5（8 
 
 Requires SageMath (the field Q(sqrt -5)). Run time: a few seconds (plus the start-up of SageMath).
 SageMath（体 Q(√-5)）が要る。実行時間: 数秒（SageMath の起動を除く）。
-Run / 実行:  sage -python code/supplementary/anatomy_b.py
+Run / 実行:  python3 code/supplementary/anatomy_b.py
 """
 import argparse
 import os

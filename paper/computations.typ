@@ -57,7 +57,7 @@
    ja: [枠の取り替えの検査: $Lambda$ の 864 個の枠がすべて同じ類を与える], time: [7 min]),
   (id: "C18", files: ("code/supplementary/fixed_sublattices.py",),
    en: [Fixed sublattices of elements of order 3, 5, 7 and their exact minima; BKZ on $L_112$ (tests that cannot separate B from C)],
-   ja: [位数 3, 5, 7 の元の固定部分格子とその厳密な最小ノルム、$L_112$ への BKZ（B と C を区別できない検査）], time: [40 s]),
+   ja: [位数 3, 5, 7 の元の固定部分格子とその厳密な最小ノルム、$L_112$ への BKZ（B と C を区別できない検査）], time: [C 10 min; B 18 min]),
   (id: "C19", files: ("code/supplementary/anatomy_b.py",),
    en: [Support modules of the norm-8 vectors of B (Supplement Table S9)],
    ja: [B のノルム 8 のベクトルの台加群（補遺の表 S9）], time: [2 s]),

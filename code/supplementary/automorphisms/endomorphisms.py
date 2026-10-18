@@ -18,7 +18,7 @@ S9. L_112 のエルミート構造と O_K-構造（論文 §8。表 D2 の [C26]
       （探索が完全であること、すなわち PARI の qfminim が上限の 200,000 本に達していないことも確かめる）。
 
 Requires SageMath. Run time: about 3 minutes. / SageMath が要る。実行時間: 約 3 分。
-Run / 実行:  sage -python code/supplementary/automorphisms/endomorphisms.py
+Run / 実行:  python3 code/supplementary/automorphisms/endomorphisms.py
 """
 import argparse
 import os

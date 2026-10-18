@@ -13,7 +13,7 @@ Fincke-Pohst 列挙のガウスの見積もり: 深さ k の節点数は、半�
 
 Requires SageMath (fpylll, real arithmetic). Run time: a few seconds (plus the start-up of SageMath).
 SageMath（fpylll、実数演算）が要る。実行時間: 数秒（SageMath の起動を除く）。
-Run / 実行:  sage -python code/supplementary/node_estimate.py
+Run / 実行:  python3 code/supplementary/node_estimate.py
 """
 import argparse
 import math

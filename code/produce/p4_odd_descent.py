@@ -1,6 +1,6 @@
 """P4. Find the 656 odd-class certificates of the classes r_j tau + 2L (paper §6.6, Table 7).
-Produces certificates/odd_bounding.npz (checked by verify/v5_odd_bounding.py).
-P4. 類 r_j tau + 2L の奇の類の certificate 656 個を見つける（論文 §6.6、表 7）。certificates/odd_bounding.npz を作る
+Produces the data of certificates/odd_bounding.npz (checked by verify/v5_odd_bounding.py).
+P4. 類 r_j tau + 2L の奇の類の certificate 656 個を見つける（論文 §6.6、表 7）。certificates/odd_bounding.npz のデータを作る
 （verify/v5_odd_bounding.py が確かめる）。
 
 For each representative r_j (certificates/min_reps.npz), run the descent (descent.py) from
@@ -10,16 +10,19 @@ product 5 or 6.
 内積の最大は 5 か 6。
 
 Positive control (as in the paper): starting from (a vector of norm 10) + (an element of 2L), the
-descent must end at norm 10 and never output a false certificate. The norm-10
-vectors are made as r + s or r - s with minimal r, s and <r, s> = -1 or 1.
-陽性対照（論文と同じ）: (ノルム 10 のベクトル) + (2L の元) から始めると、降下はノルム 10 で止まり、偽の certificate を出さないはず。
-ノルム 10 のベクトルは、最小ベクトル r, s（<r, s> = ∓1）の r ± s として作る。
+descent must never output a false certificate (this is checked); the number of runs that end at
+norm 10 is recorded. The norm-10 vectors are made as r + s or r - s with minimal r, s and <r, s> = -1 or 1.
+陽性対照（論文と同じ）: (ノルム 10 のベクトル) + (2L の元) から始めると、降下は偽の certificate を出さないはず（これを検査する）。
+ノルム 10 で止まった回数も記録する。ノルム 10 のベクトルは、最小ベクトル r, s（<r, s> = ∓1）の r ± s として作る。
 
-Output: out/p4_odd_bounding.npz (w0, int16 (656, 56)); compared with certificates/odd_bounding.npz.
-出力: out/p4_odd_bounding.npz。certificates/odd_bounding.npz と比べる。
+Output: out/p4/odd_bounding.npz (w0, int16 (656, 56)); never certificates/, whose files are fixed by
+certificates/SHA256SUMS. It is compared bit for bit with the distributed certificates/odd_bounding.npz;
+a difference is a failure (exit code 1).
+出力: out/p4/odd_bounding.npz（certificates/ には書かない。そこのファイルは certificates/SHA256SUMS で固定されている）。
+配布した certificates/odd_bounding.npz とビット単位で比べ、違えば失敗（終了コード 1）とする。
 
-Run time: about 4 minutes. Memory: about 1 GB.
-実行時間: 約 4 分。メモリ: 約 1 GB。
+Run time: about 6 minutes. Memory: about 1 GB.
+実行時間: 約 6 分。メモリ: 約 1 GB。
 
 Run / 実行:  python3 code/produce/p4_odd_descent.py [--data DIR] [--certificates DIR] [--out DIR]
 """
@@ -85,10 +88,12 @@ def main():
     rep.value("Table 7: (norm, max |<w0, u>|) -> count", dict(sorted(table.items())))
     ok = all(k.split(",")[0] in ("norm 14", "norm 18") and int(k.split()[-1]) <= 6 for k in table)
     rep.check("every class got a certificate (norm 14 or 18, max <= 6)", ok)
-    os.makedirs(rep.out_dir, exist_ok=True)
-    certs.save_npz(os.path.join(rep.out_dir, "p4_odd_bounding.npz"), w0=W.astype(np.int16))
+    pdir = os.path.join(rep.out_dir, "p4")
+    os.makedirs(pdir, exist_ok=True)
+    certs.save_npz(os.path.join(pdir, "odd_bounding.npz"), w0=W.astype(np.int16))
+    rep.log(f"wrote {pdir}/odd_bounding.npz")
     old = certs.load("odd_bounding.npz", "w0", a.certificates).astype(np.int64)
-    rep.check("identical to certificates/odd_bounding.npz", (old == W).all())
+    rep.check("identical (bit for bit) to certificates/odd_bounding.npz", old.shape == W.shape and (old == W).all())
     rep.finish()
 
 

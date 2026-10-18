@@ -20,9 +20,14 @@ would not be reached, or V3 would fail); the final list is checked independently
 既知のベクトルは 64 ビットのハッシュで持つ（符号込み、最後は 1,560 万個）。ハッシュの衝突は軌道を飛ばす方向にしか働かず、
 それは軌道の欠けとして現れる（大きさの和に届かないか、V3 が失敗する）。最終の一覧は V3 が独立に確かめる。
 
-Output: out/p2_min_reps.npz (reps, int16 (656, 56)). Compared with certificates/min_reps.npz by
-the set of canonical forms (the order and the choice of representatives may differ).
-出力: out/p2_min_reps.npz。certificates/min_reps.npz とは標準形の集合で比べる（並びや代表の選び方は違いうる）。
+Output: out/p2/min_reps.npz (reps, int16 (656, 56)); never certificates/, whose files are fixed by
+certificates/SHA256SUMS. Compared with the distributed certificates/min_reps.npz by the set of
+canonical forms of the classes r + 2L and the number of representatives (the order and the choice of
+representatives may differ). Distinct minimal vectors r, r' with r' != +-r lie in distinct classes mod 2L
+(N(r - r') < 24 = min 2L), so equal sets mean the same S-orbits. A difference is a failure (exit code 1).
+出力: out/p2/min_reps.npz（certificates/ には書かない。そこのファイルは certificates/SHA256SUMS で固定されている）。配布した
+certificates/min_reps.npz とは、類 r + 2L の標準形の集合と代表の個数で比べる（並びや代表の選び方は違いうる）。r' ≠ ±r となる最小ベクトルは
+mod 2L でも異なる（N(r - r') < 24 = min 2L）ので、集合が等しければ S-軌道も同じ。違えば失敗（終了コード 1）とする。
 
 Deterministic (fixed random seed). Run time: about 9 minutes. Memory: about 1.5 GB.
 決定的（乱数の種は固定）。実行時間: 約 9 分。メモリ: 約 1.5 GB。
@@ -128,13 +133,18 @@ def main():
     rep.value("seed minimal vectors", len(seeds))
 
     R = minimal_orbits(G, S, seeds, rep)
-    os.makedirs(rep.out_dir, exist_ok=True)
-    certs.save_npz(os.path.join(rep.out_dir, "p2_min_reps.npz"), reps=R.astype(np.int16))
+    pdir = os.path.join(rep.out_dir, "p2")
+    os.makedirs(pdir, exist_ok=True)
+    certs.save_npz(os.path.join(pdir, "min_reps.npz"), reps=R.astype(np.int16))
+    rep.log(f"wrote {pdir}/min_reps.npz")
 
     # Compare with the certificate by canonical forms. / 配布した代表と標準形で比べる。
     can = mod2.Canonical(S)
+    R_old = certs.load("min_reps.npz", "reps", a.certificates).astype(np.int64)
     mine = set(can.canon(mod2.pack(R)).tolist())
-    old = set(can.canon(mod2.pack(certs.load("min_reps.npz", "reps", a.certificates).astype(np.int64))).tolist())
+    old = set(can.canon(mod2.pack(R_old)).tolist())
+    rep.check("as many representatives as certificates/min_reps.npz, in distinct orbits",
+              len(R) == len(R_old) == len(mine) == len(old))
     rep.check("same 656 orbits as certificates/min_reps.npz (equal sets of canonical forms)", mine == old and len(mine) == 656)
     rep.finish()
 

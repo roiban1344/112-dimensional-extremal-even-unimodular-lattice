@@ -64,6 +64,7 @@ def check_c(mv, W, threads, chunk, state, rep):
         mx[done:e] = mv.max_abs_inner(W[done:e], threads=threads)
         done = e
         if time.time() - last > 300 or done == n:
+            os.makedirs(os.path.dirname(state), exist_ok=True)
             certs.save_npz(state, mx=mx, done=np.int64(done))
             last = time.time()
             rep.log(f"(c) {done} / {n}, max so far {int(mx[:done].max())}")

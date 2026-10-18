@@ -24,13 +24,16 @@ supplementary/nebe/gluings_m.py と同じ）。貼り方 B は、L = data/L56_gr
          (32-dimensional); in the bases of the two gluings they are T = B_A Phi B_B^{-1}. On the Z-lattice H of
          those T that are integral, Q(T) = tr(G_A^{-1} T G_B T^T) is positive definite and equals 112 on
          isometries; all T with Q(T) <= 112 are enumerated (qfminim, checked complete by produce/exact_qfminim.py)
-         and T G_B T^T = G_A is tested exactly. Writes certificates/isometry_AB.txt (T) and
-         certificates/gram_A.txt (G_A).
+         and T G_B T^T = G_A is tested exactly. Writes out/s24/isometry_AB.txt (T) and out/s24/gram_A.txt
+         (G_A) (never certificates/, whose files are fixed by certificates/SHA256SUMS) and compares them byte
+         for byte with the distributed certificates/isometry_AB.txt and certificates/gram_A.txt; a difference
+         is a failure (exit code 1).
          SageMath。埋め込み e: L -> L_{56,2}(M)（e(L) = L_{56,2}(M) X + 2 L_{56,2}(M)、<e x, e y> = 2<x, y>、SL_2(29) 同変）により、二つの貼り方は
          同じ有理空間 V ⊕ V の中にあり、対角に作用する同じ群 S で不変。S 同変な線形写像は M'(L_{56,2}(M))⊗Q を成分とするブロック行列（32 次元）で、
          二つの貼り方の基底では T = B_A Phi B_B^{-1}。そのうち整数の T の Z-格子 H の上で Q(T) = tr(G_A^{-1} T G_B T^T) は正定値で、
          等長写像では 112。Q(T) ≤ 112 の T をすべて列挙し（qfminim。exact_qfminim.py で完全性を確かめる）、T G_B T^T = G_A を厳密に確かめる。
-         certificates/isometry_AB.txt（T）と certificates/gram_A.txt（G_A）を書く。
+         out/s24/isometry_AB.txt（T）と out/s24/gram_A.txt（G_A）を書き（certificates/ には書かない。そこのファイルは certificates/SHA256SUMS
+         で固定されている）、配布した certificates/isometry_AB.txt・certificates/gram_A.txt とバイト単位で比べる。違えば失敗（終了コード 1）とする。
   check  (numpy only, integer arithmetic). Rebuilds G_B from data/L56_gram.txt and tau_class_B (checking
          tau_B^2 = -5, tau_B commutes with SL_2(29), G_B even of determinant 1), reads G_A from
          certificates/gram_A.txt and T from certificates/isometry_AB.txt, and checks T G_B T^T = G_A,
@@ -42,7 +45,7 @@ supplementary/nebe/gluings_m.py と同じ）。貼り方 B は、L = data/L56_gr
 
 Run time: find about 8 minutes (SageMath), check a few seconds. Memory: find about 3 GB.
 実行時間: find 約 8 分（SageMath）、check 数秒。メモリ: find 約 3 GB。
-Run / 実行:  sage -python code/supplementary/isometry_ab.py find
+Run / 実行:  python3 code/supplementary/isometry_ab.py find     (with the python3 of an environment that has SageMath / SageMath の入った環境の python3 で)
              python3 code/supplementary/isometry_ab.py check
 """
 import argparse
@@ -206,7 +209,8 @@ def find(a):
     rep.check("T intertwines the actions of S: s_A T = T s_B for the generators", all(x * T == T * y for x, y in zip(sA, sB)))
     rep.value("max |entry| of T", max(abs(x) for x in T.list()))
 
-    cdir = a.certificates or certs.DEFAULT_DIR
+    cdir = os.path.join(rep.out_dir, "s24")
+    os.makedirs(cdir, exist_ok=True)
     Tn = np.array(T.rows(), dtype=np.int64)
     GAn = np.array(GA.rows(), dtype=np.int64)
     certs.save_matrix(os.path.join(cdir, T_FILE), Tn,
@@ -221,7 +225,12 @@ def find(a):
                       "class of 48 maps chosen as in code/supplementary/nebe/gluings_m.py. Written by code/supplementary/isometry_ab.py find.\n"
                       "G_A（112 × 112）: 貼り方 A の Gram 行列（Nebe の L_{56,2}(M) と大きさ 48 の類の f の持ち上げ X_A から）。")
     rep.log(f"wrote {cdir}/{T_FILE} and {cdir}/{GA_FILE}")
+    # Compare with the distributed files (checked against SHA256SUMS first). / 配布ファイルと比べる（先に SHA256SUMS と照合する）。
+    for name in (T_FILE, GA_FILE):
+        with open(os.path.join(cdir, name), "rb") as f, open(certs.path_checked(name, a.certificates), "rb") as g:
+            rep.check(f"{name} is identical (byte for byte) to certificates/{name}", f.read() == g.read(), stop=False)
     rep.finish()
+    sys.exit(1 if rep.failed else 0)
 
 
 def check(a):

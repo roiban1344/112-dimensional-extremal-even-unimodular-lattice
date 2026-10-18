@@ -27,7 +27,7 @@ closest-vector problem with target -t/2. The target modulo L has coordinates 0 o
 Requires SageMath (fpylll, PARI). Run times: svp 10-30 min per basis, qfminim about 30 min, cvp610
 about 2.5 hours (13 s per class), cvp88 about 4 x 9 hours for all pairs (4 parts).
 SageMath（fpylll, PARI）が要る。実行時間: svp 1 基底 10〜30 分、qfminim 約 30 分、cvp610 約 2.5 時間（1 類 13 秒）、cvp88 は全組で約 4 × 9 時間（4 分割）。
-Run / 実行:  sage -python code/supplementary/float_enumerations.py <svp|qfminim|cvp610|cvp88> [--part P --nparts Q] [--tau B]
+Run / 実行:  python3 code/supplementary/float_enumerations.py <svp|qfminim|cvp610|cvp88> [--part P --nparts Q] [--tau B]
 """
 import argparse
 import json
@@ -161,6 +161,7 @@ def main():
         cm = CosetMinimum(G, bkz_basis(G, 40))
         total = 6 * len(X)
         idxs = range(a.part, total, a.nparts)
+        os.makedirs(rep.out_dir, exist_ok=True)
         ck = os.path.join(rep.out_dir, tag + ".state.json")
         st = json.load(open(ck)) if os.path.exists(ck) else {"done": 0, "found": []}
         rep.log(f"part {a.part}/{a.nparts}: {len(idxs)} of {total} pairs; resuming at {st['done']}")
