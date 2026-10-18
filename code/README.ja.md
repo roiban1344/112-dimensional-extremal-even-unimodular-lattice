@@ -145,7 +145,7 @@ P = 0, …, Q−1 について `certify.py search2 --missing --part P --nparts Q
 | [C19] | supplementary/anatomy_b.py |
 | [C20] | supplementary/route_t/classify.py, recount.py (with route_t/hermitian.py) |
 | [C21] | supplementary/route_t/certify.py, check.py, float_cvp.py (with route_t/common.py) |
-| [C22] | lean/ (EEUL/L112/Chain.lean) |
+| [C22] | lean/ (EEUL/L112/Chain.lean, check.sh) |
 | [C23] | supplementary/nebe/identify_nebe.py (with nebe/lattices.py, nebe/cycloquat.py) |
 | [C24] | supplementary/automorphisms/aut_normalizer.py |
 | [C25] | supplementary/automorphisms/group_facts.g, out_facts.g, aut_diagonal.py |

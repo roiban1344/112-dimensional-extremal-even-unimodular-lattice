@@ -427,20 +427,31 @@ The certificates were produced by one implementation and re-checked by a separat
 
 == 7.1 Formalization of the deduction (Lean)
 
-With the computational facts as #strong[hypotheses], the conclusion “$L_112$ has no inner-shell vectors” has been proved in the proof assistant Lean 4 (with mathlib) and machine-checked. This excludes errors that consist of a gap in the argument (a missing type, a missing case, or a wrong direction).
+The deduction from the computational facts to Theorem A has been proved in the proof assistant Lean 4 (with mathlib) and machine-checked. The Lean statement (#raw("theoremA") and #raw("theoremA_canonical") in #raw("lean/EEUL/L112/Chain.lean")) is: #strong[assuming F1–F5, if $\(x\,x tau + 2 y\)eq.not 0$ then $chevron.l x\,x chevron.r + chevron.l x tau + 2 y\,x tau + 2 y chevron.r gt.eq 20$.] By (1.2) this says that $L_112$ has no inner-shell vector. The facts F1–F5 are hypotheses of the Lean theorems, and the translation through (1.2) is outside Lean. The formalization excludes errors that consist of a gap in this deduction (a missing type, a missing case, or a wrong direction).
 
-The setting is abstract: $L_56$ is an additive group with an integer-valued symmetric bilinear form $B$, even norms, nonzero vectors of norm $gt.eq 6$ (F1), and $tau$ with $B\(x tau\,y tau\)= 5 B\(x\,y\)$ and $tau^2 = - 5$. The formalized statements are listed in Table 9.
+The setting is abstract: $L_56$ is an additive group with an integer-valued symmetric bilinear form $B$, even norms, nonzero vectors of norm $gt.eq 6$ (F1), and $tau$ with $B\(x tau\,y tau\)= 5 B\(x\,y\)$ and $tau^2 = - 5$ (F4). The symmetry group, the representatives and the certificates are the fields of a structure whose axioms are F2–F5. Lean writes maps on the left ($tau x$ and $g x$ for our $x tau$ and $x g$). The two ways of checking F5b enter as two forms of the hypothesis: “the coset of each norm-8 representative contains no vector of norm 8” (canonical forms, §6.5; Proposition 6.3, which turns the computed $"can"\(c\)in.not K_8$ into this statement, is applied outside Lean) and “the coset of each norm-8 representative has an even certificate” (§6.7, Corollary 5.3). The formalized statements are listed in Table 9.
 
 #ptable(
   columns: 3, align: (left, left, left,),
   caption: [Table 9. Statements proved in Lean (#raw("lean/EEUL/L112/Chain.lean")).],
   table.header([Lean theorem], [in this paper], [content]),
-  [#raw("no_inner_shell")], [Lemma 4.2, Corollary 4.3], [(i) $min\(r tau + 2 L_56\)gt.eq 14$ ($r in L_56(6)$) and (ii) $min\(x tau + 2 L_56\)gt.eq 12$ ($x in L_56(8)$) imply $chevron.l x\,x chevron.r + chevron.l x tau + 2 y\,x tau + 2 y chevron.r gt.eq 20$ whenever $\(x\,x tau + 2 y\)eq.not 0$],
-  [#raw("odd_bound"), #raw("even_bound")], [Lemma 5.1, Corollaries 5.2, 5.3], [a certificate forces all vectors of its coset to have norm $gt.eq 14$ (odd) or $gt.eq 12$ (even)],
-  [#raw("theoremA")], [§4.2 and the derivation of Theorem A], [assuming F1 and F2–F5 (the symmetry group is isometric and commutes with $tau$; norm-6 and norm-8 vectors are images of representatives; each representative's class has a certificate), there are no inner-shell vectors],
+  [#raw("no_inner_shell_ne8"), #raw("no_inner_shell")], [Lemma 4.2, Corollary 4.3, Appendix C.4], [if (i) $min\(r tau + 2 L_56\)gt.eq 14$ for every $r in L_56(6)$ and (ii) for every $x in L_56(8)$ the coset $x tau + 2 L_56$ contains no vector of norm 8 (or $min\(x tau + 2 L_56\)gt.eq 12$), then $chevron.l x\,x chevron.r + chevron.l x tau + 2 y\,x tau + 2 y chevron.r gt.eq 20$ whenever $\(x\,x tau + 2 y\)eq.not 0$],
+  [#raw("midpoint_lemma")], [Lemma 5.1], [if $w eq.not plus.minus w'$ lie in the same coset, then $chevron.l w\,w chevron.r + chevron.l w'\,w' chevron.r plus.minus 2 chevron.l w\,w' chevron.r gt.eq 24$],
+  [#raw("cert_bound"), #raw("odd_bound"), #raw("even_bound")], [Corollaries 5.2, 5.3], [a certificate (Check 5.4) of norm $N$ with $12 lt.eq N lt.eq 20$ forces all vectors of its coset to have norm $gt.eq 12$; hence $gt.eq 14$ for odd cosets ($N in { 14\,18 }$) and $gt.eq 12$ for even cosets ($N in { 12\,16\,20 }$)],
+  [#raw("class_pred_transport"), #raw("class_bound_transport")], [§4.2], [a property of the norms in the coset $r tau + 2 L_56$ of a representative holds in the coset $\(r g\)tau + 2 L_56$ for every $g in S$],
+  [#raw("theoremA")], [§4.3, derivation of Theorem A with F5b checked by certificates (§6.7)], [assuming F1 and F2–F5 (the elements of $S$ are isometries commuting with $tau$; the norm-6 and norm-8 vectors are images of the representatives; the coset of each norm-6 representative has an odd certificate, that of each norm-8 representative an even one), $chevron.l x\,x chevron.r + chevron.l x tau + 2 y\,x tau + 2 y chevron.r gt.eq 20$ whenever $\(x\,x tau + 2 y\)eq.not 0$],
+  [#raw("theoremA_canonical")], [§4.3, derivation of Theorem A with F5b checked by canonical forms (§6.5)], [the same conclusion, with F5b in the form “the coset of each norm-8 representative contains no vector of norm 8”],
 )
 
-Check: the package builds, contains no forbidden keywords such as #raw("sorry"), and each theorem depends only on the standard axioms #raw("propext"), #raw("Classical.choice"), #raw("Quot.sound") #calc("C22"). Not formalized: unimodularity (an integer determinant computation) and the computational facts themselves (the individual numbers in F1–F5).
+Check: the package builds, contains no forbidden keyword such as #raw("sorry") outside comments, and each theorem depends only on the standard axioms #raw("propext"), #raw("Classical.choice"), #raw("Quot.sound"). The script #raw("lean/check.sh") runs the three checks and compares the axioms with #raw("lean/expected-axioms.txt") #calc("C22").
+
+Not formalized (outside the Lean statements):
+- the computational facts themselves: F0 (unimodularity, an integer determinant), the matrix identities of F4, and the individual numbers in F1–F5 (§6);
+- the passage from the pair $\(x\,x tau + 2 y\)$ to the vector $\(x\,x tau + 2 y\)\/sqrt(2) in L_112$ and the factor $1\/2$ in its norm (1.2);
+- the extension of F4 from the two generators checked by the programs to the whole group $S$ (the Lean hypothesis is about every element of $S$);
+- the completeness arguments behind F2 and F3 (disjoint orbits whose sizes add up to the theta-series coefficient, §6.2 and §6.4) and the theta series itself (§2.3, Appendix B); Lean assumes the conclusion “every vector of norm 6 (norm 8) is the image of a representative”;
+- Proposition 6.3, which turns the computed $"can"\(c\)in.not K_8$ into “the coset $c$ contains no vector of norm 8”;
+- the upper bound (1.1), $min L_112 lt.eq 10$.
 
 == 7.2 Identification with Nebe's lattice
 

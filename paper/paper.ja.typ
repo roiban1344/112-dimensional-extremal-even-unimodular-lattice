@@ -429,20 +429,31 @@ $\(8\,8\)$ 型の検査では、各組について $x_i u tau$ の類とその�
 
 == 7.1 論証の形式化（Lean）
 
-計算事実を#strong[仮定]として置き、その仮定から「$L_112$ は内殻ベクトルをもたない」という結論が導かれることを、証明支援系 Lean 4（mathlib）で証明し、機械的に検査した。この形式化によって、論証の「抜け」（型の数え落とし、場合分けの漏れ、向きの取り違えなど）という種類の誤りは排除される。
+計算事実から定理 A への導出を、証明支援系 Lean 4（mathlib）で証明し、機械的に検査した。Lean の主張（#raw("lean/EEUL/L112/Chain.lean") の #raw("theoremA") と #raw("theoremA_canonical")）は次のとおりである。#strong[F1〜F5 を仮定すると、$\(x\,x tau + 2 y\)eq.not 0$ ならば $chevron.l x\,x chevron.r + chevron.l x tau + 2 y\,x tau + 2 y chevron.r gt.eq 20$。] (1.2) により、これは $L_112$ が内殻ベクトルをもたないことを意味する。事実 F1〜F5 は Lean の定理の仮定であり、(1.2) による読み替えは Lean の外で行う。この形式化によって、この導出の「抜け」（型の数え落とし、場合分けの漏れ、向きの取り違えなど）という種類の誤りは排除される。
 
-形式化では抽象的な設定を用いる。$L_56$ は加法群、$B$ は $L_56$ 上の整数値の対称双線形形式であり、ノルムは偶数で、0 でないベクトルのノルムは 6 以上である（F1）。$tau$ は $B\(x tau\,y tau\)= 5 B\(x\,y\)$ と $tau^2 = - 5$ を満たす。形式化した主張は表 9 のとおりである。
+形式化では抽象的な設定を用いる。$L_56$ は加法群、$B$ は $L_56$ 上の整数値の対称双線形形式であり、ノルムは偶数で、0 でないベクトルのノルムは 6 以上である（F1）。$tau$ は $B\(x tau\,y tau\)= 5 B\(x\,y\)$ と $tau^2 = - 5$ を満たす（F4）。対称性の群、代表、証明書は、F2〜F5 を公理とする構造体のフィールドである。Lean では写像を左から書く（本稿の $x tau$、$x g$ は $tau x$、$g x$）。F5b の二つの確かめ方は、仮定の二つの形として現れる。「ノルム 8 の各代表の類はノルム 8 のベクトルを含まない」（標準形、§6.5。計算した $"can"\(c\)in.not K_8$ をこの主張にする命題 6.3 は Lean の外で適用する）と、「ノルム 8 の各代表の類に偶の証明書がある」（§6.7、系 5.3）である。形式化した主張は表 9 のとおりである。
 
 #ptable(
   columns: 3, align: (left, left, left,),
   caption: [表 9. Lean で証明した主張（#raw("lean/EEUL/L112/Chain.lean")）。],
   table.header([Lean の定理], [本稿の対応箇所], [内容]),
-  [#raw("no_inner_shell")], [補題 4.2、系 4.3], [(i) $min\(r tau + 2 L_56\)gt.eq 14$（$r in L_56(6)$）と (ii) $min\(x tau + 2 L_56\)gt.eq 12$（$x in L_56(8)$）から、$\(x\,x tau + 2 y\)eq.not 0$ なら $chevron.l x\,x chevron.r + chevron.l x tau + 2 y\,x tau + 2 y chevron.r gt.eq 20$],
-  [#raw("odd_bound"), #raw("even_bound")], [補題 5.1、系 5.2、系 5.3], [代表元があれば、類の元はすべてノルム 14 以上（奇）、12 以上（偶）],
-  [#raw("theoremA")], [§4.2、定理 A の導出], [F1、F2〜F5（対称性の群が等長で $tau$ と可換、ノルム 6・8 のベクトルが代表の像、各代表の類に代表元がある）を仮定すると、内殻ベクトルは存在しない],
+  [#raw("no_inner_shell_ne8"), #raw("no_inner_shell")], [補題 4.2、系 4.3、付録 C.4], [(i) すべての $r in L_56(6)$ について $min\(r tau + 2 L_56\)gt.eq 14$、かつ (ii) すべての $x in L_56(8)$ について類 $x tau + 2 L_56$ がノルム 8 のベクトルを含まない（または $min\(x tau + 2 L_56\)gt.eq 12$）ならば、$\(x\,x tau + 2 y\)eq.not 0$ のとき $chevron.l x\,x chevron.r + chevron.l x tau + 2 y\,x tau + 2 y chevron.r gt.eq 20$],
+  [#raw("midpoint_lemma")], [補題 5.1], [同じ類の $w eq.not plus.minus w'$ について $chevron.l w\,w chevron.r + chevron.l w'\,w' chevron.r plus.minus 2 chevron.l w\,w' chevron.r gt.eq 24$],
+  [#raw("cert_bound"), #raw("odd_bound"), #raw("even_bound")], [系 5.2、系 5.3], [ノルム $N$（$12 lt.eq N lt.eq 20$）の証明書（検査 5.4）があれば、その類の元はすべてノルム 12 以上。したがって奇の類（$N in { 14\,18 }$）では 14 以上、偶の類（$N in { 12\,16\,20 }$）では 12 以上],
+  [#raw("class_pred_transport"), #raw("class_bound_transport")], [§4.2], [代表の類 $r tau + 2 L_56$ のノルムについての性質は、すべての $g in S$ について類 $\(r g\)tau + 2 L_56$ でも成り立つ],
+  [#raw("theoremA")], [§4.3、F5b を証明書で確かめた場合（§6.7）の定理 A の導出], [F1 と F2〜F5（$S$ の元は等長で $tau$ と可換、ノルム 6・8 のベクトルは代表の像、ノルム 6 の各代表の類に奇の証明書、ノルム 8 の各代表の類に偶の証明書がある）を仮定すると、$\(x\,x tau + 2 y\)eq.not 0$ のとき $chevron.l x\,x chevron.r + chevron.l x tau + 2 y\,x tau + 2 y chevron.r gt.eq 20$],
+  [#raw("theoremA_canonical")], [§4.3、F5b を標準形で確かめた場合（§6.5）の定理 A の導出], [同じ結論。F5b は「ノルム 8 の各代表の類はノルム 8 のベクトルを含まない」の形],
 )
 
-検査の結果、パッケージはビルドでき、#raw("sorry") などの禁止語を含まず、各定理が依存する公理は標準の #raw("propext"), #raw("Classical.choice"), #raw("Quot.sound") だけであることを確認した #calc("C22")。形式化していないのは、ユニモジュラー性（$det = 1$ の整数行列の計算）と、計算事実そのもの（F1〜F5 の個々の数値）である。
+検査の結果、パッケージはビルドでき、コメントの外に #raw("sorry") などの禁止語を含まず、各定理が依存する公理は標準の #raw("propext"), #raw("Classical.choice"), #raw("Quot.sound") だけであることを確認した。スクリプト #raw("lean/check.sh") がこの三つの検査を行い、公理を #raw("lean/expected-axioms.txt") と比較する #calc("C22")。
+
+形式化していないもの（Lean の主張の外にあるもの）:
+- 計算事実そのもの。F0（ユニモジュラー性、整数行列の行列式）、F4 の行列の恒等式、F1〜F5 の個々の数値（§6）。
+- 対 $\(x\,x tau + 2 y\)$ からベクトル $\(x\,x tau + 2 y\)\/sqrt(2) in L_112$ への移行と、そのノルムの因子 $1\/2$（式 (1.2)）。
+- プログラムが確かめる生成元 2 個から群 $S$ 全体への F4 の拡張（Lean の仮定は $S$ のすべての元についてのもの）。
+- F2・F3 の網羅性の論法（互いに素な軌道の大きさの和がテータ級数の係数に等しいこと。§6.2、§6.4）とテータ級数そのもの（§2.3、付録 B）。Lean は結論「ノルム 6（8）のベクトルはすべて代表の像」を仮定する。
+- 計算した $"can"\(c\)in.not K_8$ を「類 $c$ はノルム 8 のベクトルを含まない」にする命題 6.3。
+- 上界 (1.1)、すなわち $min L_112 lt.eq 10$。
 
 == 7.2 Nebe の格子との同定
 
