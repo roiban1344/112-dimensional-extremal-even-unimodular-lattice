@@ -25,7 +25,7 @@
 
 リポジトリのルートで実行してください。主検算には Python 3.10 以降、NumPy、128 ビット整数に対応した GCC・Clang などの C コンパイラが必要です。検査は 3 段あります。
 
-**(i) 入力だけ（20 秒）。**
+**(i) 入力だけ（20 秒）。** Debian・Ubuntu では `python3 -m venv` にパッケージ `python3-venv` が必要です。
 
 ```bash
 python3 -m venv .venv
@@ -43,7 +43,7 @@ bash code/verify/fetch.sh
 bash code/verify/proof.sh
 ```
 
-`fetch.sh` の引数は Release のタグで、省略すると `certificates-v1` です。`proof.sh` は定理 A の証明で使う計算の検査をすべて行います。F1（素材となる 56 次元格子の最小ノルムが 6）は区間演算の列挙で、F2・F3（軌道代表の網羅性）、F5a（奇の剰余類の下界を保証する代表元）、F5b（標準形）を検査します。結論には論文中の数学的な補題も使います。[各段の所要時間とメモリ](code/README.ja.md#検算の各段)を参照してください。
+`fetch.sh` には `curl` が必要です。引数は Release のタグで、省略すると `certificates-v1` です。`certificates/SHA256SUMS` に載っているすべての `.npz` ファイル（9 個、約 130 MB）を取得し、`full.sh` や補足の検査だけが使うものも含みます。`proof.sh` は定理 A の証明で使う計算の検査をすべて行います。F1（素材となる 56 次元格子の最小ノルムが 6）は区間演算の列挙で、F2・F3（軌道代表の網羅性）、F5a（奇の剰余類の下界を保証する代表元）、F5b（標準形）を検査します。結論には論文中の数学的な補題も使います。[各段の所要時間とメモリ](code/README.ja.md#検算の各段)を参照してください。
 
 **(iii) すべて（約 26 CPU 時間、3 並列で経過時間約 9.5〜10 時間）。**
 
@@ -57,7 +57,7 @@ bash code/verify/full.sh 3
 
 ## 版と再現性
 
-版には日付のタグを付けます。この版は `v2026-10-18` です。論文・コード・検証用データのハッシュは、同じタグのものを使ってください。大きな検証用データは [Release `certificates-v1`](https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1) の添付ファイルで配布し、ハッシュを `certificates/SHA256SUMS` に記録します。プログラムは検証用データを使う前にハッシュを照合します。実行結果は `out/` に保存します。
+版には日付のタグを付けます。この版は `v2026-10-18.1` です（同じ日に 2 度目の版を出す場合は末尾に番号を付けます）。論文・コード・検証用データのハッシュは、同じタグのものを使ってください。大きな検証用データは [Release `certificates-v1`](https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1) の添付ファイルで配布し、ハッシュを `certificates/SHA256SUMS` に記録します。プログラムは検証用データを使う前にハッシュを照合します。実行結果は `out/` に保存します。
 
 引用には、GitHub の「Cite this repository」を使ってください。[CITATION.cff](CITATION.cff) を読みます。
 
