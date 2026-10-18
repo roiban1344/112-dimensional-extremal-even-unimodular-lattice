@@ -11,8 +11,8 @@ scaling a 200-bit Cholesky factor of (3.1) by 2^40 (accurate enough for an estim
 Fincke-Pohst 列挙のガウスの見積もり: 深さ k の節点数は、半径 r の k 次元球の体積を射影格子の体積で割ったもの（上の式、r^2 = 8）。
 基底は LLL、BKZ-20、BKZ-30（fpylll）。(3.1) の 200 ビットの Cholesky 分解を 2^40 倍して丸めた整数基底に掛ける（見積もりには十分な精度）。
 
-Requires SageMath (fpylll, real arithmetic). Run time: about 15 seconds.
-SageMath（fpylll、実数演算）が要る。実行時間: 約 15 秒。
+Requires SageMath (fpylll, real arithmetic). Run time: a few seconds (plus the start-up of SageMath).
+SageMath（fpylll、実数演算）が要る。実行時間: 数秒（SageMath の起動を除く）。
 Run / 実行:  sage -python code/supplementary/node_estimate.py
 """
 import argparse

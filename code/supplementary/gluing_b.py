@@ -85,7 +85,9 @@ def main():
     rep.check("(b) all 656 classes r_j tau_B + 2L have an odd-class certificate (no norm 6, no (6,10))", (mx <= 6).all())
 
     # (c) type (8,8). / 型 (8,8)。
-    K8 = np.load(os.path.join(rep.out_dir, "K8.npy"))
+    k8_path = os.path.join(rep.out_dir, "K8.npy")
+    rep.check("out/K8.npy (written by verify/v4_norm8_orbits.py) exists", os.path.exists(k8_path))
+    K8 = np.load(k8_path)
     rep.check("K_8 from V4 has 1517130 entries", len(K8) == 1517130)
     can = mod2.Canonical(S)
     XU = np.concatenate([mm(X, u)[:, None, :] for u in U], axis=1).reshape(-1, 56)     # row 6 i + k
@@ -107,6 +109,7 @@ def main():
     for idx, f in enumerate(allforms.tolist()):
         first.setdefault(f, idx)
     partners = []
+    partners_ok = True
     for h in hits:
         x = XU[h]
         c = mod2.pack(mm(x, tB))
@@ -117,12 +120,15 @@ def main():
         s = S[int(np.argmin(img_c))].astype(np.int64)
         s2 = S[int(np.argmin(img_y))].astype(np.int64)
         v = mm(mm(y, s2), group.inverse_isometry(s, G, Ginv))
-        assert ((v - mm(x, tB)) % 2 == 0).all() and int(v @ G @ v) == 8
-        yv = (v - mm(x, tB)) // 2
-        zc = np.concatenate([x, yv])                                     # coordinates in the basis (3.1)
-        assert int(zc @ GR @ zc) == 8
+        ok = bool(((v - mm(x, tB)) % 2 == 0).all()) and int(v @ G @ v) == 8
+        if ok:
+            yv = (v - mm(x, tB)) // 2
+            zc = np.concatenate([x, yv])                                 # coordinates in the basis (3.1)
+            ok = int(zc @ GR @ zc) == 8
+        partners_ok &= ok
         partners.append(v)
-    rep.check("(c) every colliding pair has an explicit partner v of norm 8, and (x, v)/sqrt2 has norm 8 in L_B", len(partners) == len(hits))
+    rep.check("(c) every colliding pair has an explicit partner v of norm 8, and (x, v)/sqrt2 has norm 8 in L_B",
+              partners_ok and len(partners) == len(hits) > 0)
     # Saved for supplementary/anatomy_b.py. / supplementary/anatomy_b.py のために保存する。
     certs.save_npz(os.path.join(rep.out_dir, "gluing_b_collisions.npz"), x=XU[hits], v=np.stack(partners), tau_B=tB)
 

@@ -160,7 +160,7 @@ def collect(src, out, rep, base=None):
         Wf = np.load(f)["w0"]
         n_done = json.load(open(f[:-4] + ".json"))["done"]
         idx = np.arange(part, N_SEARCH2, nparts)[lo:lo + n_done]
-        assert len(idx) == n_done <= len(Wf)
+        rep.check(f"{os.path.basename(f)}: {n_done} certificates for as many classes", len(idx) == n_done <= len(Wf))
         W2[idx], done[idx] = Wf[:n_done], True
         rep.log(f"{os.path.basename(f)}: {n_done} certificates")
     rep.value("search (2): classes with a certificate (of 763,992)", int(done.sum()))
@@ -207,17 +207,29 @@ def main():
         st = run(cz, out, "n6-C", starts, targets, rep)
     else:
         X = certs.load("norm8_reps.npz", "reps", a.certificates).astype(np.int64)
+        pos = f"-pos{a.lo}-{a.hi}" if a.lo is not None else ""
         if a.missing:
-            done = certs.load("route_t_search2.npz", "done", a.certificates).astype(bool)
-            idx = np.flatnonzero(~done)[a.part::a.nparts]
-            name = f"n8-missing-part{a.part}of{a.nparts}"
-            certs.save_npz(os.path.join(out, name + ".idx.npz"), idx=idx)
+            # The classes are those still missing in the distributed file, sliced by --lo/--hi; the list is saved
+            # under the final name (collect reads it from there) and reused on a restart, so that certificates
+            # made before a change of the distributed file keep their classes.
+            # 対象は配布ファイルでまだ欠けている類（--lo/--hi で切り出す）。一覧は最終的な名前で保存し（collect はそこから読む）、
+            # 再開時にはそれを使う。配布ファイルが途中で変わっても、それ以前に作った certificate の類はずれない。
+            name = f"n8-missing-part{a.part}of{a.nparts}{pos}"
+            idx_path = os.path.join(out, name + ".idx.npz")
+            if os.path.exists(idx_path):
+                idx = np.load(idx_path)["idx"]
+                rep.log(f"reusing the class list {idx_path}")
+            else:
+                done = certs.load("route_t_search2.npz", "done", a.certificates).astype(bool)
+                idx = np.flatnonzero(~done)[a.part::a.nparts]
+                if a.lo is not None:
+                    idx = idx[a.lo:a.hi]
+                certs.save_npz(idx_path, idx=idx)
         else:
             idx = np.arange(a.part, N_SEARCH2, a.nparts)
-            name = f"n8-C-1tau-part{a.part}of{a.nparts}"
-        if a.lo is not None:
-            idx = idx[a.lo:a.hi]
-            name += f"-pos{a.lo}-{a.hi}"
+            if a.lo is not None:
+                idx = idx[a.lo:a.hi]
+            name = f"n8-C-1tau-part{a.part}of{a.nparts}{pos}"
         starts = search2_starts(X, U, t, keep, idx)
         st = run(cz, out, name, starts, ["8"] * len(idx), rep)
     rep.value("(target: norm, max |<w0, y>|) -> count", st["hist"])

@@ -17,7 +17,7 @@ The elements of norm 2 of Lambda are found as the vectors of norm <= 8 of a 16-d
 form (qfminim, checked complete against the exact enumerator).
 Lambda のノルム 2 の元は、16 次元の整数形式のノルム 8 以下のベクトルとして求める（qfminim。厳密な列挙と照合して完全性を確かめる）。
 
-Requires SageMath. Run time: about 2 minutes. / SageMath が要る。実行時間: 約 2 分。
+Requires SageMath. Run time: about 7 minutes. / SageMath が要る。実行時間: 約 7 分。
 Run / 実行:  sage -python code/supplementary/frames.py
 """
 import argparse
@@ -79,15 +79,22 @@ def main():
             # Images of e1 = (1, tau), e2 = (0, 2): p = h(e, w1), q = h(e, w2). / e1, e2 の像。
             p1, q1 = (adj(a1) + X * adj(b1)) / 2, (adj(a2) + X * adj(b2)) / 2
             p2, q2 = adj(b1), adj(b2)
-            assert all(c in ZZ for M_ in (p1, q1) for c in M_.list()), "h is not M'-valued on Lambda"
+            if not all(c in ZZ for M_ in (p1, q1) for c in M_.list()):
+                stat["h not M'-valued"] = stat.get("h not M'-valued", 0) + 1      # never expected / 起きないはず
+                continue
             p1b, q1b, p2b, q2b = (M_.change_ring(F2) for M_ in (p1, q1, p2, q2))
             if p1b.is_invertible():
                 phi = p1b.inverse() * q1b
-                assert p2b * phi == q2b
+                consistent = p2b * phi == q2b
             elif p2b.is_invertible():
                 phi = p2b.inverse() * q2b
-                assert p1b * phi == q1b
+                consistent = p1b * phi == q1b
             else:
+                consistent = None
+            if consistent is False:                     # the two images disagree: not a graph of one map / 2 つの像が合わない
+                stat["inconsistent"] = stat.get("inconsistent", 0) + 1
+                continue
+            if consistent is None:
                 stat["not a graph"] = stat.get("not a graph", 0) + 1
                 continue
             k = tuple(phi.list())
@@ -95,6 +102,7 @@ def main():
             stat[lab] = stat.get(lab, 0) + 1
         rep.value(f"tau of gluing {name}: elements of norm 2 in Lambda, ordered frames, class seen from each frame",
                   [len(W), len(frames), stat])
+        rep.check(f"gluing {name}: 72 elements of norm 2 in Lambda and 864 frames (supplement §S3.4)", [len(W), len(frames)] == [72, 864])
         rep.check(f"gluing {name}: every frame gives the class of {name}", stat == {f"class {name}": len(frames)} and len(frames) > 0)
     rep.finish()
 

@@ -19,8 +19,8 @@ Checks / 確かめること:
       one of them.
       M' には t^2 = -5 となる元がちょうど 24 個（q(t) = tr(t t*)/56 = 5 となる有限個の中から見つかる）。12 個ずつ類 B と類 C に落ち、
       与えた tau はその 1 つ。
-The rows of Table 2 for Nebe's lattice L_{56,2}(M) are computed in supplementary/nebe_gluings.py.
-表 2 の Nebe の格子 L_{56,2}(M) の行は supplementary/nebe_gluings.py で計算する。
+The rows of Table 2 for Nebe's lattice L_{56,2}(M) are computed in supplementary/nebe/gluings_m.py.
+表 2 の Nebe の格子 L_{56,2}(M) の行は supplementary/nebe/gluings_m.py で計算する。
 
 Requires SageMath (linear algebra over F_2, PARI qfminim). Run time: about 1 minute.
 SageMath（F_2 上の線形代数、PARI の qfminim）が要る。実行時間: 約 1 分。

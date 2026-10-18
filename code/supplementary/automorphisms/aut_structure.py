@@ -50,13 +50,16 @@ def main():
     X, _ = st.outer_automorphism()
     rep.check("all generators are isometries of L_112", all(M * st.GR * M.transpose() == st.GR for M in cent + st.sR + [X]))
     rep.value("(5) determinants: S, C_A(S), X", [sorted({int(M.det()) for M in st.sR}), sorted({int(M.det()) for M in cent}), int(X.det())])
+    rep.check("(5) all generators have determinant 1 (A in SO(112))", all(M.det() == 1 for M in st.sR + cent + [X]))
 
     F3 = GF(3)
     gp = lambda Ms: libgap.Group([libgap(M.change_ring(F3)) for M in Ms])   # noqa: E731
     S, C, A, K = gp(st.sR), gp(cent), gp(st.sR + cent + [X]), gp(cent + [X])
     rep.value("|S|, |C_A(S)|, |<C_A(S), X>|", [int(S.Size()), int(C.Size()), int(K.Size())])
+    rep.check("|S| = 24360 and |C_A(S)| = 48", [int(S.Size()), int(C.Size())] == [24360, 48])
     rep.check("(1) |A| = 1169280", int(A.Size()) == 1169280)
     rep.value("(2) C_A(S): StructureDescription", str(C.StructureDescription()))
+    rep.check("(2) C_A(S) = SL_2(3) o C_4 = SmallGroup(48,33)", C.IdGroup().sage() == [48, 33])
     # <C, X> is small (order 1440): decide membership in S element by element and form the quotient
     # in its regular permutation representation (the matrix-group Intersection is slow).
     # <C, X> は小さい（位数 1440）。S への所属を元ごとに判定し、正則置換表現で商を作る（行列群の Intersection は遅い）。
@@ -67,6 +70,7 @@ def main():
     KSp = libgap.Group([libgap.Image(hom, k) for k, b in zip(Kel, inS) if b])
     Q = libgap.FactorGroup(Kp, KSp)
     rep.value("(2) A/S = <C, X>S/S: order and StructureDescription", [int(Q.Size()), str(Q.StructureDescription())])
+    rep.check("(2) A/S = C_2 x S_4", Q.IdGroup() == libgap.DirectProduct(libgap.CyclicGroup(2), libgap.SymmetricGroup(4)).IdGroup())
     SC = libgap.ClosureGroup(S, C)
     Xg = libgap(X.change_ring(F3))
     rep.check("(3) X^2 lies in S C_A(S)", bool(libgap.IN(Xg ** 2, SC)))
@@ -74,6 +78,7 @@ def main():
     rep.value("(3) elements of <C, X> outside S C_A(S): number and element orders",
               [len(outside), sorted({int(libgap.Order(k)) for k in outside})])
     rep.value("(4) |Z(A)|", int(A.Centre().Size()))
+    rep.check("(4) Z(A) = {+-1}", int(A.Centre().Size()) == 2)
 
     # (6) splitting. / 分裂。
     Cset = {tuple(M.change_ring(F3).list()) for M in cent}

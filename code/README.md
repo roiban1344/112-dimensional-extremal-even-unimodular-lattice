@@ -119,6 +119,25 @@ Each producer compares its output with the distributed verification data. p4 and
 the representative arrays bit for bit; p2 and p3 may choose other representatives, so they are compared by
 the set of canonical forms (the same orbits).
 
+## Second implementations and supplementary computations
+
+`crosscheck/all_data/check_all.py <step>` (Python with SageMath, see the docstring) runs the steps
+`theta`, `v0`, `v1` (it builds the table of minimal vectors used by the later steps), `v2`, `v3cheap`,
+`v4`, `v3full`, `neg` and `summary` in this order. Each step ends with exit code 1 if its verdict is
+FAIL; `summary` ends with exit code 1 unless every required step has passed on the current inputs
+(the inputs are checked against `SHA256SUMS`, and the caches are kept per input digest).
+`min_L.py 4` and `min_L.py 4 --test e8x7` check F1 and its positive control. The three scripts of
+`crosscheck/second_impl/` (numpy only) compare their results with the numbers of the paper and end
+with `RESULT: PASS` (exit code 0) or `RESULT: FAIL` (exit code 1).
+
+`bash code/run_supplementary.sh [names…]` runs the computations of `supplementary/` (all of them
+by default; the list and what is left out are in its header). It needs a Python with SageMath as
+`PYTHON` (default `python3`, for example that of the conda environment of `environment.yml`;
+`PYTHON="sage -python"` for a SageMath distribution), GAP with CTblLib as `GAP` (default `gap`), the
+data downloaded by `fetch.sh`, and, for the step `gluing_b`, the file `out/K8.npy` written by
+`verify/v4_norm8_orbits.py`. A failing step does not stop the others; at the end the failed steps are
+listed and the exit code is 1.
+
 ## Route T (supplement §S4, Table D2 [C20], [C21])
 
 `supplementary/route_t/` contains the computations of the supplementary argument using the hermitian
