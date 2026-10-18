@@ -488,15 +488,12 @@ Direction, choice of problem, decisions, and responsibility for publication: roi
 
 
 #refs-list(
-  [#strong[\[Soft\]] The FPLLL development team, #emph[fplll, a lattice reduction library], version 5.5.0, #link("https://github.com/fplll/fplll")[source]; The PARI Group, #emph[PARI/GP], #link("https://pari.math.u-bordeaux.fr/")[website]; The GAP Group, #emph[GAP], #link("https://www.gap-system.org/")[website]; Lean and mathlib, #link("https://github.com/leanprover/lean4")[Lean source], #link("https://github.com/leanprover-community/mathlib4")[mathlib source].],
-  [#strong[\[FP85\]] U. Fincke, M. Pohst, Improved methods for calculating vectors of short length in a lattice, including a complexity analysis, Math. Comp. 44 (1985) 463–471.],
-  [#strong[\[SE94\]] C. P. Schnorr, M. Euchner, Lattice basis reduction: improved practical algorithms and solving subset sum problems, Math. Program. 66 (1994) 181–199.],
-  [#strong[\[Ser73\]] J.-P. Serre, #emph[A Course in Arithmetic], Graduate Texts in Mathematics 7, Springer, 1973, Chapter VII.],
   [#strong[\[Asc00\]] M. Aschbacher, #emph[Finite Group Theory], 2nd ed., Cambridge Studies in Advanced Mathematics 10, Cambridge University Press, 2000.],
   [#strong[\[BN98\]] C. Bachoc, G. Nebe, Extremal lattices of minimum 8 related to the Mathieu group $M_22$, J. reine angew. Math. 494 (1998) 155–171.],
   [#strong[\[BV01\]] C. Bachoc, B. Venkov, Modular forms, lattices and spherical designs, in: Réseaux euclidiens, designs sphériques et formes modulaires, Monogr. Enseign. Math. 37 (2001).],
   [#strong[\[CN13\]] R. Coulangeon, G. Nebe, Dense lattices as Hermitian tensor products, Contemp. Math. 587 (2013); arXiv:1201.1832.],
   [#strong[\[Cou00\]] R. Coulangeon, Tensor products of Hermitian lattices, Acta Arith. 92 (2000) 115–130.],
+  [#strong[\[FP85\]] U. Fincke, M. Pohst, Improved methods for calculating vectors of short length in a lattice, including a complexity analysis, Math. Comp. 44 (1985) 463–471.],
   [#strong[\[HM01\]] G. Hiss, G. Malle, Low-dimensional representations of quasi-simple groups, LMS J. Comput. Math. 4 (2001) 22–63.],
   [#strong[\[HM02\]] G. Hiss, G. Malle, Corrigenda: Low-dimensional representations of quasi-simple groups, LMS J. Comput. Math. 5 (2002) 95–126.],
   [#strong[\[Kin03\]] O. King, A mass formula for unimodular lattices with no roots, Math. Comp. 72 (2003).],
@@ -507,10 +504,13 @@ Direction, choice of problem, decisions, and responsibility for publication: roi
   [#strong[\[NS\]] G. Nebe, N. J. A. Sloane, A Catalogue of Lattices, entries #raw("L_56b"), #raw("L_56c"). #link("https://www.math.rwth-aachen.de/~Gabriele.Nebe/LATTICES/")[Catalogue of Lattices].],
   [#strong[\[Que84\]] H.-G. Quebbemann, A construction of integral lattices, Mathematika 31 (1984) 137–140.],
   [#strong[\[Sak26\]] R. Sakamoto, Two extremal even unimodular lattices of rank 88, preprint (2026); arXiv:2609.15633.],
+  [#strong[\[SE94\]] C. P. Schnorr, M. Euchner, Lattice basis reduction: improved practical algorithms and solving subset sum problems, Math. Program. 66 (1994) 181–199.],
+  [#strong[\[Ser73\]] J.-P. Serre, #emph[A Course in Arithmetic], Graduate Texts in Mathematics 7, Springer, 1973, Chapter VII.],
   [#strong[\[SPLAG\]] J. H. Conway, N. J. A. Sloane, Sphere Packings, Lattices and Groups, 3rd ed., Springer 1999.],
   [#strong[\[SSP99\]] R. Scharlau, R. Schulze-Pillot, Extremal lattices, in: B. H. Matzat, G.-M. Greuel, G. Hiss (eds.), Algorithmic Algebra and Number Theory (Heidelberg, 1997), Springer 1999, 139–170.],
   [#strong[\[SW10\]] D. Stehlé, M. Watkins, On the extremality of an 80-dimensional lattice, ANTS-IX, LNCS 6197 (2010) 340–356.],
   [#strong[\[Wat12\]] M. Watkins, Another 80-dimensional extremal lattice, J. Théor. Nombres Bordeaux 24 (2012).],
+  [#strong[\[Soft\]] The FPLLL development team, #emph[fplll, a lattice reduction library], version 5.5.0, #link("https://github.com/fplll/fplll")[source]; The PARI Group, #emph[PARI/GP], #link("https://pari.math.u-bordeaux.fr/")[website]; The GAP Group, #emph[GAP], #link("https://www.gap-system.org/")[website]; Lean and mathlib, #link("https://github.com/leanprover/lean4")[Lean source], #link("https://github.com/leanprover-community/mathlib4")[mathlib source].],
   [#strong[\[Repo\]] roiban1344, #emph[112-dimensional extremal even unimodular lattice] (data, the code that checks and produces the verification data, the verification data, the Lean formalization), #link("https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice")[public repository] (accessed 18 October 2026).],
 )
 
