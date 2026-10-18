@@ -19,3 +19,5 @@ typst compile --root . paper/supplement.ja.typ paper/supplement.ja.pdf
 同じ組版には New Computer Modern・IPAex 明朝／ゴシック・DejaVu の各書体を用います。書式と計算参照の定義も同梱しており、このディレクトリだけで組版できます。
 
 PDF・ソース・コード・検証用データのハッシュは同じ版のものを使ってください。表 D2 の計算参照は、その版に同梱されたパスに対応します。
+
+整合性の検査: リポジトリ直下で `python3 -I paper/tools/check-paper.py` を実行します。必要なのは Python 3 だけで、このスクリプトが置かれたリポジトリのファイルを読みます。`paper.en`/`paper.ja` と `supplement.en`/`supplement.ja` で節・定理類・表の番号が一致し（それぞれ重複なし）、本文が参照する節・表・定理類が存在し、`#calc("Cn")` のラベルがすべて `computations.typ` に定義されて台帳の各行が引用され、`computations.typ` と `code/README.md`・`code/README.ja.md` の表 D2 の対応に現れる `code/`・`lean/` のパスがすべて存在することを確かめます。数学的な計算は走らせません。成功すると `PASS` の行を 1 行出力して終了コード 0 で終わり、失敗すると assertion のメッセージとともに 0 以外で終了します。ワークフロー `.github/workflows/checks.yml` が、プルリクエストと `main` への push のたびに、4 文書の Typst 組版とともにこれを実行します。
