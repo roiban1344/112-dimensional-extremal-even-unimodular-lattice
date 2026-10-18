@@ -42,7 +42,7 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from lib import certs, data, exact, group, mod2  # noqa: E402
+from lib import certs, data, exact, group, mod2, require  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 N6 = 15590400
@@ -62,7 +62,7 @@ def minimal_orbits(G, S, seeds, rep, n6=N6):
 
     def orbit(x):
         """The S-orbit of x with both signs, as distinct int64 rows. / x の S-軌道（符号込み、相異なる行）。"""
-        assert int(np.abs(x).sum()) * smax < 2 ** 24                               # float32 exactness / float32 の厳密さ
+        require(int(np.abs(x).sum()) * smax < 2 ** 24, "float32 exactness (x s)")                # float32 の厳密さ
         O = np.rint(x.astype(np.float32) @ S32).astype(np.int64)
         return np.unique(np.concatenate([O, -O]), axis=0)
 
@@ -78,7 +78,7 @@ def minimal_orbits(G, S, seeds, rep, n6=N6):
     def add(x):
         nonlocal known, total
         O = orbit(x)
-        assert (exact.norms(O[:1], G) == 6).all()
+        require((exact.norms(O[:1], G) == 6).all(), "(exact.norms(O[:1], G) == 6).all()")
         reps.append(x)
         queue.append(len(reps) - 1)
         total += len(O)

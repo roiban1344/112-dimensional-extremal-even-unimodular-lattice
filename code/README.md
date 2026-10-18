@@ -179,7 +179,8 @@ by default; the list and what is left out are in its header). It needs a Python 
 `PYTHON="sage -python"` for a SageMath distribution), GAP with CTblLib as `GAP` (default `gap`), the
 data downloaded by `fetch.sh`, and, for the step `gluing_b`, the file `out/K8.npy` written by
 `verify/v4_norm8_orbits.py`. A failing step does not stop the others; at the end the failed steps are
-listed and the exit code is 1.
+listed and the exit code is 1. Functions shared by several of these scripts (the classes of parity-preserving
+maps, the search for equivariant isometries, …) are in `supplementary/_shared.py`.
 
 ## Route T (supplement §S4, Table D2 [C20], [C21])
 

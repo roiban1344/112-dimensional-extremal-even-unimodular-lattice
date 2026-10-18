@@ -7,6 +7,17 @@
  * output: one line per found x != 0 (only the first maxprint), then a summary line
  *   "SUMMARY count=<found x != 0, both signs> nodes=<nodes> hash2=<sum (a.x)^2 mod 2^64> hash4=<sum (a.x)^4 mod 2^64>"
  * with a_j = 2j+1 (odd weights).
+ *
+ * Overflow bounds (i128 holds |v| < 2^127; each bound below is enforced by an explicit check that exits,
+ * not by assert, so it holds under any compiler flags):
+ *   input:  |T| <= 2^120 (parse), |R_ij| <= 2^80 (RLIM), and every x_j stays in [-2^40, 2^40] (range guard);
+ *   SETUP:  |R_ij x_j| <= 2^120 and the partial sum is kept <= 2^120 by chk, so each sum is <= 2^121;
+ *           b = isqrt(rem) <= 2^60, so -b - s and b - s are <= 2^121;
+ *   leaf:   |y| = |R_ii x_i + s_i| <= 2^121 before chk; inside the exact range |y| <= b <= 2^60, and
+ *           YLIM = 2^61 is checked before squaring, so y^2 <= 2^122 and rem - y^2 >= -2^122;
+ *   hashes: uint64_t arithmetic, intentionally mod 2^64 (well defined for unsigned types).
+ * 溢れの上界: 入力で |T| <= 2^120、|R_ij| <= 2^80、x_j は [-2^40, 2^40] に制限する。各積と和はこの範囲で
+ * 2^122 以下に収まる。各上界は assert ではなく明示的な検査（失敗すれば終了）で確かめる。
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,6 +31,8 @@ typedef __int128 i128;
 static i128 R[NMAX][NMAX];
 static int n;
 static const i128 LIM = ((i128)1) << 120;
+static const i128 RLIM = ((i128)1) << 80;   /* entries of R: |R_ij x_j| <= 2^80 * 2^40 = 2^120 */
+static const i128 YLIM = ((i128)1) << 61;   /* |y| before squaring: y^2 <= 2^122 */
 
 static i128 parse(const char *s) {
     int neg = 0; i128 v = 0;
@@ -53,6 +66,7 @@ int main(void) {
     for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) {
         if (scanf("%127s", buf) != 1) return 2;
         R[i][j] = parse(buf);
+        if (R[i][j] > RLIM || R[i][j] < -RLIM) { fprintf(stderr, "entry of R too big\n"); return 2; }
         if (j < i && R[i][j] != 0) { fprintf(stderr, "not upper triangular\n"); return 2; }
     }
     for (int i = 0; i < n; i++) if (R[i][i] <= 0) { fprintf(stderr, "diag <= 0\n"); return 2; }
@@ -83,6 +97,7 @@ int main(void) {
         }
         i128 y = R[i][i] * (i128)x[i] + s[i];
         chk(y);
+        if (y > YLIM || y < -YLIM) { fprintf(stderr, "overflow guard (y)\n"); exit(3); }
         i128 r = rem[i + 1] - y * y;
         if (r < 0) { x[i]++; continue; }  /* cannot happen inside the exact range; kept as a guard */
         if (i == 0) {

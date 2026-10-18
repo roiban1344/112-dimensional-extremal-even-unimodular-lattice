@@ -27,7 +27,8 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
-from common import Setup, commutant_in_end_S  # noqa: E402
+from aut_common import Setup, commutant_in_end_S  # noqa: E402
+from lib import require  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 
@@ -44,7 +45,7 @@ def integral_part(mats):
         span = span.stack(matrix(ZZ, [[int(d * x) for x in r] for r in rows[i:i + 300]])).hermite_form(include_zero_rows=False)
     H = (span.change_ring(QQ) / d).inverse().transpose()
     out = [sum(c * M for c, M in zip(row, mats)) for row in H.rows()]
-    assert all(x in ZZ for M in out for x in M.list())
+    require(all(x in ZZ for M in out for x in M.list()), "all(x in ZZ for M in out for x in M.list())")
     return out, H
 
 
@@ -67,7 +68,7 @@ def main():
     Ys = [sum(c * g for c, g in zip(row, gens32)) for row in KA.rows()]
     Y = next(Y for Y in Ys if Y.minimal_polynomial().degree() == 2)
     J = Y + Y.minimal_polynomial()[1] / 2 * I2                    # trace-free part / トレースが 0 の部分
-    assert J * J == (J * J)[0, 0] * I2
+    require(J * J == (J * J)[0, 0] * I2, "J * J == (J * J)[0, 0] * I2")
     J = J * (QQ(-29) / (J * J)[0, 0]).sqrt()
     rep.check("(1) J^2 = -29 and J is integral on L_112", J * J == -29 * I2 and all(x in ZZ for x in J.list()))
     rep.check("(1) J is skew-adjoint: J G_R = -(J G_R)^T", J * st.GR == -(J * st.GR).transpose())

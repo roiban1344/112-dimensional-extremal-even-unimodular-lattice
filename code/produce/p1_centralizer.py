@@ -38,7 +38,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 sys.path.insert(0, HERE)                     # exact_qfminim (python -I does not add the script's directory) / python -I はスクリプトの置き場所を加えない
-from lib import certs, data, group  # noqa: E402
+from lib import certs, data, group, require  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 
@@ -66,7 +66,7 @@ def commutant_basis(gens, n):
         if acc is None:
             acc, P, piv = K, p, K.pivots()
         else:
-            assert K.pivots() == piv, "kernel dimension or pivots changed between primes"
+            require(K.pivots() == piv, "kernel dimension or pivots changed between primes")
             u = P * P.inverse_mod(p)                     # = 0 mod P, = 1 mod p
             acc = (acc + (K - acc) * u) % (P * p)
             P = P * p
@@ -81,7 +81,7 @@ def commutant_basis(gens, n):
         raise RuntimeError("rational reconstruction did not converge")
     B = matrix(ZZ, [[x * lcm([y.denominator() for y in r]) for x in r] for r in rows]).saturation()
     basis = [matrix(ZZ, n, n, list(r)) for r in B.rows()]
-    assert all(X * g == g * X for X in basis for g in gens)
+    require(all(X * g == g * X for X in basis for g in gens), "all(X * g == g * X for X in basis for g in gens)")
     return basis
 
 
@@ -95,7 +95,7 @@ def elements_of_norm(basis, G, N):
     Ginv = G.inverse()
     adj = [G * X.transpose() * Ginv for X in basis]
     Q = matrix(QQ, len(basis), len(basis), lambda i, j: (basis[i] * adj[j]).trace())
-    assert Q.is_symmetric() and all(x in ZZ for x in Q.list())
+    require(Q.is_symmetric() and all(x in ZZ for x in Q.list()), "Q.is_symmetric() and all(x in ZZ for x in Q.list())")
     Qz = Q.change_ring(ZZ)
     out = []
     for c in qfminim_checked(Qz, N * n):

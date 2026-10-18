@@ -21,8 +21,8 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "produce"))
-from exact_qfminim import qfminim_checked  # noqa: E402
-from lib import certs, data  # noqa: E402
+from lib import certs, data, require  # noqa: E402
+from supplementary._shared import equivariant_isometries  # noqa: E402
 
 N = 56
 
@@ -37,24 +37,24 @@ class Setup:
         self.g1, self.g2 = [matrix(ZZ, g.tolist()) for g in data.generators(data_dir)]
         self.tau = matrix(ZZ, data.tau(data_dir).tolist())
         self.Mb = [matrix(ZZ, X.tolist()) for X in certs.load("commutant.npz", "basis", cert_dir)]
-        assert len(self.Mb) == 8 and all(X * g == g * X for X in self.Mb for g in (self.g1, self.g2))
+        require(len(self.Mb) == 8 and all(X * g == g * X for X in self.Mb for g in (self.g1, self.g2)), "len(self.Mb) == 8 and all(X * g == g * X for X in self.Mb for g in (self.g1, self.g2))")
         I, Z = identity_matrix(ZZ, n), zero_matrix(ZZ, n, n)
         self.B = block_matrix(ZZ, [[I, self.tau], [Z, 2 * I]], subdivide=False).change_ring(QQ)
         self.Bi = self.B.inverse()
         GR = self.B * block_matrix(QQ, [[self.G, 0], [0, self.G]], subdivide=False) / 2 * self.B.transpose()
-        assert all(x in ZZ for x in GR.list())
+        require(all(x in ZZ for x in GR.list()), "all(x in ZZ for x in GR.list())")
         self.GR = GR.change_ring(ZZ)
-        assert self.GR.det() == 1
+        require(self.GR.det() == 1, "self.GR.det() == 1")
         self.GRi = self.GR.inverse().change_ring(ZZ)
         # The generators of SL_2(29) acting on L_112, in the L_112-basis. / L_112 に作用する SL_2(29) の生成元（L_112 の基底で）。
         self.sR = [self.in_R(block_matrix(QQ, [[g, 0], [0, g]], subdivide=False)) for g in (self.g1, self.g2)]
         self.cert_dir = cert_dir
 
     def in_R(self, X):
-        """Ambient matrix X -> matrix in the L_112-basis (asserted integral). / 周囲の行列 X → L_112 の基底での行列（整数であることを確かめる）。"""
+        """Ambient matrix X -> matrix in the L_112-basis (checked integral). / 周囲の行列 X → L_112 の基底での行列（整数であることを確かめる）。"""
         from sage.all import ZZ
         Y = self.B * X * self.Bi
-        assert all(x in ZZ for x in Y.list()), "does not preserve L_112"
+        require(all(x in ZZ for x in Y.list()), "does not preserve L_112")
         return Y.change_ring(ZZ)
 
     def block_generators(self, Ts):
@@ -74,36 +74,10 @@ class Setup:
         """All isometries of L_112 (up to sign) in the Z-lattice H = { sum y_k X_k integral } spanned by the 32
         block matrices built from Ts. On H, Q(X) = tr(G_R^{-1} X G_R X^T) is positive definite and equals
         112 on isometries, so they are among the finitely many X with Q(X) <= 112 (PARI qfminim, checked complete against the
-        exact enumerator by produce/exact_qfminim.py).
+        exact enumerator by produce/exact_qfminim.py). The search is supplementary/_shared.equivariant_isometries.
         Ts から作る 32 個のブロック行列の Z-格子 H = { Σ y_k X_k が整数 } の中の、L_112 の等長変換すべて（符号を除く）。H 上の
-        Q(X) = tr(G_R^{-1} X G_R X^T) は正定値で等長変換では 112 なので、Q(X) ≤ 112 の有限個の中にある（PARI の qfminim。produce/exact_qfminim.py で厳密な列挙と照合して完全性を確かめる）。"""
-        from sage.all import QQ, ZZ, lcm, matrix, pari
-        gens = self.block_generators(Ts)
-        k = len(gens)
-        # H is dual to the Z-span of the coefficient rows (one row per matrix entry).
-        # H は係数の行（行列の成分ごとに 1 行）の Z-スパンの双対。
-        rows = {tuple(col) for col in zip(*[g.list() for g in gens])}
-        rows.discard(tuple([QQ(0)] * k))
-        rows = [list(r) for r in rows]
-        d = lcm([QQ(x).denominator() for r in rows for x in r])
-        span = matrix(ZZ, 0, k)
-        for i in range(0, len(rows), 200):           # add rows in chunks to keep the HNF small / HNF を小さく保つため少しずつ足す
-            span = span.stack(matrix(ZZ, [[int(d * x) for x in r] for r in rows[i:i + 200]])).hermite_form(include_zero_rows=False)
-        S = span.change_ring(QQ) / d
-        assert S.nrows() == k
-        Hb = S.inverse().transpose()                 # rows: a basis of H / 行が H の基底
-        Xs = []
-        for row in Hb.rows():
-            X = sum(c * g for c, g in zip(row, gens))
-            assert all(x in ZZ for x in X.list())
-            Xs.append(X.change_ring(ZZ))
-        Ys = [self.GRi * X * self.GR for X in Xs]
-        Q = matrix(ZZ, [Y.list() for Y in Ys]) * matrix(ZZ, [X.list() for X in Xs]).transpose()
-        Q = Q + Q.transpose()                        # 2 Q, integral / 2Q（整数）
-        assert Q.is_positive_definite()
-        cands = qfminim_checked(Q, 2 * 112)
-        isos = [X for X in (sum(ci * Xi for ci, Xi in zip(c, Xs)) for c in cands) if X * self.GR * X.transpose() == self.GR]
-        return isos, len(cands), k
+        Q(X) = tr(G_R^{-1} X G_R X^T) は正定値で等長変換では 112 なので、Q(X) ≤ 112 の有限個の中にある（PARI の qfminim。produce/exact_qfminim.py で厳密な列挙と照合して完全性を確かめる）。探索は supplementary/_shared.py の equivariant_isometries。"""
+        return equivariant_isometries(self.B, self.GR, self.B, self.GR, Ts)
 
     def centralizer(self):
         """C_A(S): the 48 automorphisms of L_112 commuting with SL_2(29) (both signs).

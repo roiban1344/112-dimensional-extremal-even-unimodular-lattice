@@ -28,11 +28,8 @@ SageMath（F_2 上の線形代数、PARI の qfminim）が要る。実行時間:
 Run / 実行:  python3 code/supplementary/gluings.py
 """
 import argparse
-import itertools
 import os
 import sys
-
-import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
@@ -40,6 +37,7 @@ sys.path.insert(0, os.path.join(HERE, "..", "produce"))
 from p1_centralizer import elements_of_norm  # noqa: E402
 from lib import certs, data  # noqa: E402
 from lib.report import Report  # noqa: E402
+from supplementary._shared import parity_preserving_classes  # noqa: E402
 
 
 def main():
@@ -58,65 +56,16 @@ def main():
     basis = [matrix(ZZ, X.tolist()) for X in certs.load("commutant.npz", "basis", a.certificates)]
     rep.check("the 8 basis elements of M' commute with g1, g2", len(basis) == 8 and all(X * g == g * X for X in basis for g in gens))
 
-    # (a) commutant of g1, g2 on L/2L. / L/2L 上の g1, g2 の可換子。
-    I2 = identity_matrix(F2, n)
-    rows = None
-    for g in gens:
-        g2 = g.change_ring(F2)
-        K = I2.tensor_product(g2.transpose()) - g2.tensor_product(I2)       # vec(X g - g X), row-major
-        rows = K if rows is None else rows.stack(K)
-    E = rows.right_kernel()
+    # (a)-(c): the F_2-commutant of g1, g2 on L/2L, its invertible parity-preserving elements, and their classes under
+    # u f u' and inversion (supplementary/_shared.py).
+    # (a)〜(c): L/2L 上の g1, g2 の F_2-可換子、その可逆で偶奇を保つ元、u f u' と逆元による類（supplementary/_shared.py）。
+    E, maps, C2, classes = parity_preserving_classes(G, gens, basis)
     img = matrix(F2, [X.change_ring(F2).list() for X in basis]).row_space()
     rep.value("dim of the F_2-commutant of SL_2(29) on L/2L", E.dimension())
     rep.check("(a) it is 8-dimensional and equals the image of M'/2M'", E.dimension() == 8 and E == img)
-
-    # (b) invertible parity-preserving elements. / 可逆で偶奇を保つ元。
-    Gb = G.change_ring(F2)
-    q0 = [int(G[i, i]) // 2 % 2 for i in range(n)]
-
-    def parity_preserving(f):
-        # f preserves the bilinear form mod 2 and q on a basis; then it preserves q everywhere
-        # (q(x + y) = q(x) + q(y) + <x, y> mod 2).
-        # f が 2 を法とした双線形形式と基底上の q を保てば、q 全体を保つ（q(x+y) = q(x) + q(y) + <x,y>）。
-        if f * Gb * f.transpose() != Gb:
-            return False
-        for i in range(n):
-            v = f.row(i).change_ring(ZZ)
-            if (v * G * v) // 2 % 2 != q0[i]:
-                return False
-        return True
-    Eb = [matrix(F2, n, n, list(v)) for v in E.basis()]
-    maps = []
-    for coeffs in itertools.product([0, 1], repeat=8):
-        f = sum((c * b for c, b in zip(coeffs, Eb)), matrix(F2, n, n))
-        if f.is_invertible() and parity_preserving(f):
-            f.set_immutable()
-            maps.append(f)
     rep.value("invertible parity-preserving elements", len(maps))
     rep.check("(b) exactly 60", len(maps) == 60)
-
-    # (c) classes under u f u' and inversion. / u f u' と逆元による類。
-    half = elements_of_norm(basis, G, 1)
-    C2 = []
-    for X in half:
-        Xb = X.change_ring(F2)
-        Xb.set_immutable()
-        if Xb not in C2:
-            C2.append(Xb)                                    # -1 = 1 mod 2 / 2 を法として -1 = 1
     rep.value("|C mod 2|", len(C2))
-    todo = set(maps)
-    classes = []
-    while todo:
-        f0 = min(todo, key=lambda f: tuple(f.list()))
-        orb = set()
-        for u in C2:
-            for v in C2:
-                for f in (f0, f0.inverse()):
-                    h = u * f * v
-                    h.set_immutable()
-                    orb.add(h)
-        classes.append(orb)
-        todo -= orb
     tau2 = tau.change_ring(F2)
     tau2.set_immutable()
     info = []

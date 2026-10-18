@@ -249,7 +249,7 @@ def main():
     rep = Report("s27_route_t_recount", a_.out)
     out_dir = os.path.join(rep.out_dir, "route_t")
     os.makedirs(out_dir, exist_ok=True)
-    seen_N = []; stats = dict(N=0, dangerous=0, uncovered=0)
+    stats = dict(N=0, dangerous=0, uncovered=0)
     classes = {}
     for IA, IB in itertools.product("OP", repeat=2):
         for a in range(3, 7):
@@ -285,9 +285,7 @@ def main():
                         raise RuntimeError(f"H (x) N has a non-integral Gram matrix: {IA}, {IB}, a = {a}, c = {c}")
                     GH = [[int(x) for x in r] for r in GH]
                     mH, cnt, _ = minimum_exact(GH, 8)
-                    if mH is None:
-                        rec = None
-                    else:
+                    if mH is not None:
                         stats["dangerous"] += 1
                         mn, theta, cov = analyse(G, T)
                         covered = any(cov.values())

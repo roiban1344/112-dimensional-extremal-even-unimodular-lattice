@@ -12,7 +12,7 @@ w0 を w0 - 2 sign y に替える（類にとどまり、ノルムが下がる�
 未解決として記録する。w0 の見つけ方は正しさに関係しない: 使う性質はすべて check.py が確かめ直す。
 
 The inner products <r_j g, w> (656 orbit representatives r_j times the 12,180 elements g of
-SL_2(29)/{+-1}) are computed in float64 with the exactness bound asserted (all partial sums are
+SL_2(29)/{+-1}) are computed in float64 with the exactness bound checked (all partial sums are
 integers below 2^52). The distributed certificates were produced with another table of SL_2(29)/{+-1} (the same group, other
 signs and order), so a rerun may choose other certificates; both are valid.
 内積 <r_j g, w>（656 個の軌道代表 r_j と SL_2(29)/{±1} の 12,180 元 g）は float64 で、厳密さの上界（部分和がすべて 2^52 未満の整数）を
@@ -61,7 +61,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
 from common import ALLOWED, N_SEARCH2, N_SEARCH3, kept_units, search2_starts, search3_classes  # noqa: E402
-from lib import certs, data, group  # noqa: E402
+from lib import certs, data, group, require  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 
@@ -74,11 +74,11 @@ class Certifier:
         self.emax, self.rmax = float(np.abs(self.E).max()), float(np.abs(self.R).max())
 
     def ips(self, w):
-        """P[g, j] = <r_j g, w>; float64, exact (bound asserted). / float64 で厳密（上界を確かめる）。"""
+        """P[g, j] = <r_j g, w>; float64, exact (bound checked). / float64 で厳密（上界を確かめる）。"""
         gw = (self.G @ w).astype(np.float64)
-        assert self.emax * np.abs(gw).sum() < 2.0 ** 52
+        require(self.emax * np.abs(gw).sum() < 2.0 ** 52, "self.emax * np.abs(gw).sum() < 2.0 ** 52")
         t = self.E @ gw
-        assert self.rmax * np.abs(t).sum(axis=1).max() < 2.0 ** 52
+        require(self.rmax * np.abs(t).sum(axis=1).max() < 2.0 ** 52, "self.rmax * np.abs(t).sum(axis=1).max() < 2.0 ** 52")
         return t @ self.RT
 
     def certify(self, w_start, target):
@@ -94,7 +94,7 @@ class Certifier:
             y = np.rint(self.R[j] @ self.E[g]).astype(np.int64)
             w = w - 2 * (1 if m > 0 else -1) * y
         N = int(w @ self.G @ w)
-        assert ((w - w_start) % 2 == 0).all() and np.abs(w).max() < 2 ** 15
+        require(((w - w_start) % 2 == 0).all() and np.abs(w).max() < 2 ** 15, "((w - w_start) % 2 == 0).all() and np.abs(w).max() < 2 ** 15")
         return w, N, abs(m), (abs(m) <= 6 and N in ALLOWED[target])
 
 

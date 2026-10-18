@@ -41,9 +41,9 @@ which would show up as a missing size; the result is checked independently by V4
 既知のベクトルは 64 ビットのハッシュで持つ。衝突は軌道を飛ばす方向にしか働かず、大きさの不足として現れる。結果は V4 が独立に確かめる。
 
 Products in float32 are exact: all entries are small integers, and the bound on the partial sums
-(max row sum of |A| times max |B|) is asserted before every float32 product (explicit asserts below).
+(max row sum of |A| times max |B|) is checked before every float32 product (explicit `require` below).
 float32 の積は厳密: 成分はすべて小さな整数で、どの float32 の積でも、掛ける前に部分和の上界（|A| の行和の最大 × |B| の最大）を
-確かめる（下の assert）。
+確かめる（下の `require`）。
 
 Checkpoint: out/p3/state.npz every 10 minutes and after each i; rerun the same command to resume.
 The checkpoint records a SHA-256 fingerprint of the inputs (G, the generators, min_reps, centralizer);
@@ -80,7 +80,7 @@ import time
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from lib import certs, data, exact, group, mod2  # noqa: E402
+from lib import certs, data, exact, group, mod2, require  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 N8 = 36957286800
@@ -192,13 +192,13 @@ def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None, inputs=""):
     # W = { r_i g }, with hashes sorted for look-up. / W = { r_i g } とその整列したハッシュ。
     S32 = S.astype(np.float32)
     smax = int(np.abs(S).max())
-    assert int(np.abs(R6).sum(axis=1).max()) * smax < 2 ** 24
+    require(int(np.abs(R6).sum(axis=1).max()) * smax < 2 ** 24, "int(np.abs(R6).sum(axis=1).max()) * smax < 2 ** 24")
     W = np.rint(np.einsum("ij,gjk->igk", R.astype(np.float32), S32)).astype(np.int64).reshape(m * ng, n)
-    assert np.abs(W).max() < 2 ** 15
+    require(np.abs(W).max() < 2 ** 15, "np.abs(W).max() < 2 ** 15")
     GR = (G @ R.T).astype(np.float32)                         # (56, m): <y, r_i> = y @ GR[:, i]
     # Bound for O @ GR[:, i] in candidates(): O runs over all minimal vectors. / candidates() の O @ GR[:, i] の上界（O は全最小ベクトル）。
     min_row = max(int(np.abs(np.rint(s.astype(np.float32) @ S32)).sum(axis=1).max()) for s in R6)
-    assert min_row * int(np.abs(G @ R.T).max()) < 2 ** 24
+    require(min_row * int(np.abs(G @ R.T).max()) < 2 ** 24, "min_row * int(np.abs(G @ R.T).max()) < 2 ** 24")
     rng = random.Random(0)
     hv = np.array([rng.getrandbits(62) | 1 for _ in range(n)], dtype=np.int64)
     hW = W @ hv
@@ -207,7 +207,7 @@ def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None, inputs=""):
     oW = np.argsort(hW, kind="stable")
     hWs = hW[oW]
     Einv = np.stack([group.inverse_isometry(g, G, Ginv) for g in S])
-    assert np.abs(Einv).max() < 2 ** 15
+    require(np.abs(Einv).max() < 2 ** 15, "np.abs(Einv).max() < 2 ** 15")
     Einv32 = Einv.astype(np.float32)
     einv_max = int(np.abs(Einv).max())
     del Einv
@@ -250,7 +250,7 @@ def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None, inputs=""):
         N2G, N3G = N2G.astype(np.float32), N3G.astype(np.float32)
         order = np.argsort(hX)
         hs = hX[order]
-        assert (np.diff(hs) != 0).all(), "hash collision inside X_i"
+        require((np.diff(hs) != 0).all(), "hash collision inside X_i")
         flags = np.zeros(len(Xi), dtype=bool)
         if st.pending[i]:
             flags |= np.isin(hX, np.concatenate(st.pending[i]))
@@ -258,7 +258,7 @@ def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None, inputs=""):
         if sum(st.sizes) == n8 and st.cur is None:
             # All vectors are accounted for: confirm that X_i has no unmarked candidate.
             # 全ベクトルが数え終わっている: X_i に印の無い候補が無いことを確かめる。
-            assert flags.all(), "all vectors are accounted for, but an unmarked candidate remains"
+            require(flags.all(), "all vectors are accounted for, but an unmarked candidate remains")
             st.i = i + 1
             st.nx.append(len(Xi))
             st.pending[i] = None
@@ -285,7 +285,7 @@ def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None, inputs=""):
             # 分解 x = w + w' に現れる最小ベクトル w。x = r + u0 のとき <x, w> = 4 ⟺ (<r,w>, <u0,w>) が上のどれか。
             u0 = x - r
             u0f = u0.astype(np.float32)
-            assert n23_row * int(np.abs(u0).max()) < 2 ** 24                   # float32 exactness / float32 の厳密さ
+            require(n23_row * int(np.abs(u0).max()) < 2 ** 24, "float32 exactness (N3G @ u0)")       # float32 の厳密さ
             Aw = N3[np.rint(N3G @ u0f) == 1]
             Bw = N2[np.rint(N2G @ u0f) == 2]
             Dc = np.concatenate([r[None, :], u0[None, :], Aw, x[None, :] - Aw, Bw])
@@ -308,27 +308,27 @@ def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None, inputs=""):
             if nverify < 25:
                 # Cross-check against the plain scan of W. / W の素朴な走査と突き合わせる。
                 GXU = G @ XU.T
-                assert w_row * int(np.abs(GXU).max()) < 2 ** 24                 # float32 exactness / float32 の厳密さ
+                require(w_row * int(np.abs(GXU).max()) < 2 ** 24, "float32 exactness (W @ GXU)")       # float32 の厳密さ
                 P = W.astype(np.float32) @ GXU.astype(np.float32)
                 r2, c2 = np.nonzero(np.abs(P) == 4.0)
                 s2 = np.sign(P[r2, c2]).astype(np.int64)
-                assert sorted(zip(rows.tolist(), cols.tolist(), sgn.tolist())) == sorted(zip(r2.tolist(), c2.tolist(), s2.tolist())), \
-                    "decomposition method disagrees with the plain scan"
+                require(sorted(zip(rows.tolist(), cols.tolist(), sgn.tolist())) == sorted(zip(r2.tolist(), c2.tolist(), s2.tolist())),
+                        "decomposition method disagrees with the plain scan")
                 nverify += 1
             keep = rows >= i * ng                                # members of X_{i'} with i' >= i / i' ≥ i の X_{i'} の元
             rows, cols, sgn = rows[keep], cols[keep], sgn[keep]
             ii, gi = np.divmod(rows, ng)
-            assert int(np.abs(XU).sum(axis=1).max()) * einv_max < 2 ** 24
+            require(int(np.abs(XU).sum(axis=1).max()) * einv_max < 2 ** 24, "int(np.abs(XU).sum(axis=1).max()) * einv_max < 2 ** 24")
             Y = np.rint(np.matmul(XU32[cols][:, None, :], Einv32[gi])[:, 0, :]).astype(np.int64) * sgn[:, None]   # y = +-x u g^{-1}
             if checked < 3000:
                 # Spot check: y has norm 8 and y - r_{i'} has norm 6. / 抜き取り検査。
                 Dd = Y - R[ii]
-                assert (exact.norms(Y, G) == 8).all() and (exact.norms(Dd, G) == 6).all(), "bad marked element"
+                require((exact.norms(Y, G) == 8).all() and (exact.norms(Dd, G) == 6).all(), "bad marked element")
                 checked += len(Y)
             hY = Y @ hv
             here = ii == i
             pos = np.searchsorted(hs, hY[here])
-            assert (hs[pos] == hY[here]).all()
+            require((hs[pos] == hY[here]).all(), "(hs[pos] == hY[here]).all()")
             flags[order[pos]] = True
             stab = int((Y[here] == x).all(axis=1).sum())
             for j in np.unique(ii[~here]).tolist():
@@ -336,7 +336,7 @@ def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None, inputs=""):
                 pj.append(hY[ii == j])
                 if len(pj) > 256:                                # avoid many small arrays / 小さな配列を溜めない
                     st.pending[j] = [np.concatenate(pj)]
-            assert stab >= 1 and GSTAR % stab == 0, stab
+            require(stab >= 1 and GSTAR % stab == 0, f"stabilizer of size {stab}")
             st.reps.append(x.astype(np.int16))
             st.sizes.append(GSTAR // stab)
             new_here += 1
