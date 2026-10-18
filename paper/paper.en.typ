@@ -27,18 +27,18 @@ The bound is 6 in dimension 56 and 10 in dimension 112. Thus the construction be
 
 == 1.2 Construction and main result
 
-Let $L_56$ denote the 56-dimensional lattice specified by the Gram matrix in Appendix D. It is equivariantly isometric to Nebe's lattice $L_(56,2)(tilde(M))$ \[Neb98, Table II\]; the identification is established in §7.2. The two matrices of Appendix D are isometries of $L_56$ and generate a group $S$ isomorphic to $"SL"_2(29)$ (F4). Let $tau$ be the endomorphism specified in Appendix D. It commutes with $S$ and satisfies
+Let $L_56$ denote the 56-dimensional lattice whose Gram matrix is the file #raw("L56_gram.txt") listed in Appendix D. (The defining matrices are not printed in this paper; they are distributed as data files identified by their SHA-256 hashes. Appendix D also records a specification of $L_56$ and $tau$ in terms of Nebe's construction that does not depend on the files.) The lattice $L_56$ is $"SL"_2(29)$-equivariantly isometric to Nebe's lattice $L_(56,2)(tilde(M))$ \[Neb98, Table II\]; the identification is established in §7.2. The two matrices in the file #raw("sl2_29_generators.txt") are isometries of $L_56$ and generate a group $S$ isomorphic to $"SL"_2(29)$ (F4). Let $tau$ be the endomorphism given by the file #raw("tau.txt"). It commutes with $S$ and satisfies
 $ tau^2=-5 "id", quad chevron.l x tau,y tau chevron.r=5 chevron.l x,y chevron.r quad (x,y in L_56). $
 Matrices act on row vectors on the right. These identities and the defining matrices are checked by #calc("C2"). For this choice of $tau$, set
 #tagged("1.2", $ L_112 = L_tau := { lr((x,x tau+2 y))/sqrt(2) : x,y in L_56 } subset 1/sqrt(2) (L_56 perp L_56). $)
 
 #thm[
-#strong[Theorem A.] The lattice $L_112$ defined by the data of Appendix D and (1.2) is an even unimodular lattice of dimension 112 with minimum norm 10. In particular, it is extremal.
+#strong[Theorem A.] The lattice $L_112$ defined by the data files of Appendix D and (1.2) is an even unimodular lattice of dimension 112 with minimum norm 10. In particular, it is extremal.
 ]
 
 The diagonal action of $S$ preserves $L_112$. The proof of Theorem A is outlined in §1.3 and completed in §4.3 using the finite computations in §6. The construction and the verification are given separately, so the verification does not require repeating the search that led to $tau$.
 
-For comparison, the centralizer of $S$ in $"Aut"(L_56)$ has order 12. The 24 endomorphisms commuting with $S$ and satisfying $tau^2=-5$ form two conjugacy classes under this centralizer #calc("C2"). Conjugate choices give isometric glued lattices (Proposition 3.3); the class containing the supplied $tau$ gives lattices isometric to $L_112$. The other class gives an even unimodular lattice with minimum norm 8 and exactly $292 thin 320$ vectors of norm 8 #calc("C4"). This second lattice provides a test case in which the verification programs must detect shorter vectors. The classification of the gluings is discussed in §3.3.
+The choice of $tau$ is not unique. The centralizer $C$ of $S$ in $"Aut"(L_56)$ has order 12, and exactly 24 endomorphisms of $L_56$ commute with $S$ and satisfy $tau^2=-5$ #calc("C2"). Only the reduction of $tau$ modulo $2 L_56$ enters the glued lattice. Proposition 3.3 classifies these reductions into three classes of gluing maps; the 24 endomorphisms reduce into two of them, called B and C below, 12 into each #calc("C2"), and endomorphisms in the same class give isometric glued lattices. The supplied $tau$ lies in class C, which gives $L_112$. Class B gives an even unimodular lattice with minimum norm 8 and exactly $292 thin 320$ vectors of norm 8 #calc("C4"). This second lattice serves as a negative control: the verification programs must detect its short vectors. The classification of the gluings is completed in §3.3.
 
 Two further conclusions are treated separately from the extremality proof. The extremal theta series determines that $L_112$ has $10 thin 888 thin 335 thin 360$ vectors of norm 10 and $247 thin 006 thin 775 thin 232 thin 000$ vectors of norm 12 (Appendix B). Its full automorphism group has order $1 thin 169 thin 280$ (Theorem B, §8 and Appendix F). Theorem A does not use the determination of this full group.
 
@@ -55,7 +55,7 @@ Because the group $S$ preserves norms and commutes with $tau$, each bound need o
 
 The lower bounds are then verified as follows. For each norm-6 representative, we supply a vector in its prescribed coset whose norm and inner products with all minimal vectors of $L_56$ imply the bound 14. The implication follows from the midpoint lemma and Corollary 5.2; the supplied vector and its conditions are checked in §6.6. For the norm-8 test vectors, there are two alternatives. One uses canonical forms to test whether the prescribed coset contains a norm-8 vector (§6.5). The other checks coset representatives whose norm and inner products imply the bound 12 (Corollary 5.3 and §6.7). Either alternative, together with the common norm-6 bounds and completeness checks, proves the required absence of short vectors. The upper bound (1.1) then gives $min L_112=10$.
 
-Thus the two even-coset tests are alternative ways of completing the same proof, and their shared inputs are part of the verification. Separately written implementations check these inputs and computations. Spherical-design identities, changes of frame and tests on the second gluing provide further consistency checks. Floating-point closest-vector searches and random samples are also reported, but are not substituted for the rigorous checks in the proof. The support-module argument in Supplement §S4.1 is supplementary and shares the norm-8 exclusion with the main proof. The Lean formalisation checks the deduction from the stated computational hypotheses (§7.1).
+Thus the two even-coset tests are alternative ways of completing the same proof, and their shared inputs are part of the verification. Separately written implementations check these inputs and computations. Spherical-design identities, changes of frame and tests on the second gluing provide further consistency checks. Floating-point closest-vector searches and random samples are also reported, but are not substituted for the rigorous checks in the proof. Supplement §S4 describes a further route through support modules. It is not used in the proof, and it is not independent of the proof either, because it relies on the same exclusion of type $(8,8)$ (F5b) as the main argument. The Lean formalisation checks the deduction from the stated computational hypotheses (§7.1).
 
 
 == 1.4 Relation to previous constructions and the choice of dimension
@@ -119,7 +119,7 @@ We glue two copies of a 56-dimensional lattice along a correspondence of cosets 
 #strong[Definition 3.1 (gluing).] Let $L$ be even unimodular of dimension $n$ and $f$ an invertible parity-preserving linear map on $L\/2 L$. The #strong[gluing] of two copies of $L$ along $f$ is $ L_f =  {  1 / sqrt(2)\(x\,v\)med : med x\,v in L\,med v + 2 L =\(x + 2 L\)f  } \,#h(2em)  chevron.l  frac(\(x\,v\), sqrt(2))\,frac(\(x\,v\), sqrt(2))  chevron.r  = 1 / 2  (  chevron.l x\,x chevron.r + chevron.l v\,v chevron.r  )  . $
 ]
 
-Taking $L=L_56$, when $f$ is the reduction of an integer matrix $tau$ with $chevron.l x tau\,y tau chevron.r = 5 chevron.l x\,y chevron.r$, we get the lattice $L_tau$ of (1.2).
+We call $f$ the gluing map and $L_f$ the glued lattice. Taking $L=L_56$, when $f$ is the reduction of an integer matrix $tau$ with $chevron.l x tau\,y tau chevron.r = 5 chevron.l x\,y chevron.r$, we get the lattice $L_tau$ of (1.2).
 
 #thm[
 #strong[Lemma 3.2.] Let $L$ be even unimodular of dimension $n$ and $tau in "End"\(L\)$ with $chevron.l x tau\,y tau chevron.r = 5 chevron.l x\,y chevron.r$. Then $L_tau$ is an even unimodular lattice of dimension $2n$.
@@ -134,8 +134,6 @@ The basis $\(e_i\,e_i tau\)\/sqrt(2)$, $\(0\,2 e_i\)\/sqrt(2)$ $\(1 lt.eq i lt.e
 == 3.2 Forced collisions from the centralizer
 
 If $f$ agrees modulo 2 with an element $u in C$, then $\(x\,x u\)\/sqrt(2) in L_f$ for all $x$, and a minimal vector $x$ of $L_56$ gives an inner-shell vector of norm $1 / 2\(6 + 6\)= 6$. We call this a #strong[forced collision]: it is caused by symmetry, not by chance. Examples of such constructions are discussed in Supplement §S5.
-
-We call $f$ the gluing map and $L_f$ the glued lattice.
 
 == 3.3 All $"SL"_2\(29\)$-equivariant gluings
 
@@ -158,7 +156,7 @@ For (b): $\(x\,v\)mapsto\(x u\,v u'\)$ maps $L_f$ isometrically onto $L_(u^(- 1)
   [#strong[C]], [$L_56$], [does not (18)], [#strong[10 (Theorem A)]], [#strong[none]],
 )
 
-Both surviving classes B and C on $L_56$ lift to elements $tau in M'$ with $tau^2=-5$. The 24 such elements form two conjugacy classes of 12 under $C$ #calc("C2"). Whether gluings A and B are isometric remains undetermined.
+Both surviving classes B and C on $L_56$ lift to elements $tau in M'$ with $tau^2=-5$. Of the 24 such elements, 12 reduce modulo 2 into class B and 12 into class C #calc("C2"). Whether gluings A and B are isometric remains undetermined.
 
 == 3.4 The Hermitian description
 
@@ -212,7 +210,7 @@ To collect representatives for $L_56(8)$ we use the larger group $S^(*) = S dot.
 
 == 4.3 Finite verification and the proof of Theorem A <s43>
 
-Fix the data of Appendix D: the Gram matrix $G$ of $L_56$, the two generators of the symmetry group $S$, and the endomorphism matrix $tau$. The labels F0–F5 below identify the statements used by the verification programs; the headings describe their mathematical content.
+Fix the data files of Appendix D: the Gram matrix $G$ of $L_56$, the two generators of the symmetry group $S$, and the endomorphism matrix $tau$. The labels F0–F5 below identify the statements used by the verification programs; the headings describe their mathematical content.
 
 #fact[
 #strong[Defining matrices (F0).] The matrix $G$ in Appendix D is positive definite, even integral and of determinant 1; (3.1) is also even and of determinant 1. #calc("C2")
@@ -227,7 +225,7 @@ Fix the data of Appendix D: the Gram matrix $G$ of $L_56$, the two generators of
 ]
 
 #fact[
-#strong[Complete norm-8 orbit list (F3).] $L_56(8)$ is the union of the $S$-orbits of the $1 thin 527 thin 984$ vectors $x_i u$; it consists of $1 thin 517 thin 130$ regular $S$-orbits. #calc("C9")
+#strong[Complete norm-8 orbit list (F3).] $L_56(8)$ is the union of the $S$-orbits of the $1 thin 527 thin 984$ vectors $x_i u$; it consists of $1 thin 517 thin 130$ regular $S$-orbits, that is, orbits with trivial stabilizer, hence of size $|S| = 24 thin 360$. #calc("C9")
 ]
 
 #fact[
@@ -235,7 +233,7 @@ Fix the data of Appendix D: the Gram matrix $G$ of $L_56$, the two generators of
 ]
 
 #fact[
-#strong[Lower bounds for the prescribed cosets (F5).] (a) $min\(r tau + 2 L_56\)gt.eq 14$ for each of the 656 representatives $r$. (b) $min\(x_i u tau + 2 L_56\)gt.eq 12$ for each of the $1 thin 527 thin 984$ pairs. #calc("C10", "C11", "C13")
+#strong[Lower bounds for the prescribed cosets (F5).] (a) $min\(r tau + 2 L_56\)gt.eq 14$ for each of the 656 representatives $r$. (b) $min\(x_i u tau + 2 L_56\)gt.eq 12$ for each of the $1 thin 527 thin 984$ pairs. Part (b) is established by two different methods (§§6.5 and 6.7); either one suffices. #calc("C10", "C11", "C13")
 ]
 
 #proofbox[
@@ -243,7 +241,7 @@ Fix the data of Appendix D: the Gram matrix $G$ of $L_56$, the two generators of
 
 The isometries in $S$ commute with $tau$ by F4. Hence the minimum norm of the coset $(x g)tau+2 L_56$ equals that of $x tau+2 L_56$ for $g in S$. By F2 and F3, the two lower bounds of Corollary 4.3 therefore need only be checked on the supplied norm-6 and norm-8 collections. F5 gives the bounds 14 and 12 on these collections. The type $(10,6)$ is covered by the interchange argument of Appendix C.4. Thus no type can occur, and $min L_112>=10$.
 
-Since $L_112$ is even unimodular of dimension 112, (1.1) gives $min L_112<=10$. This proves the theorem. The two even-coset checks establish the same part of F5 and are alternatives; they are not two assumptions that must both hold. #qed
+Since $L_112$ is even unimodular of dimension 112, (1.1) gives $min L_112<=10$. This proves the theorem. #qed
 ]
 
 #figure(
@@ -255,7 +253,7 @@ Since $L_112$ is even unimodular of dimension 112, (1.1) gives $min L_112<=10$. 
 
 = 5. Certificates for coset minima <s5>
 
-We derive lower bounds for a coset minimum from the norm of one representative and its inner products with all minimal vectors. The midpoint lemma proves that the stated conditions on a representative imply the required bound; the finite computations later check these conditions.
+We derive lower bounds for a coset minimum from the norm of one representative and its inner products with all minimal vectors. The midpoint lemma proves that the stated conditions on a representative imply the required bound; the finite computations later check these conditions. A representative $w_0$ satisfying these conditions (Check 5.4) is called a #strong[certificate] for its coset: checking it is a finite computation, and the corollaries below turn it into a proof of the bound.
 
 #thm[
 #strong[Lemma 5.1 (midpoint lemma).] Let $L$ be even unimodular with $min L = 6$. If $w\,w' in L$ lie in the same coset modulo $2 L$ and $w eq.not plus.minus w'$, then $ chevron.l w\,w chevron.r + chevron.l w'\,w' chevron.r plus.minus 2 chevron.l w\,w' chevron.r med gt.eq med 24 #h(2em) upright("for both signs.") $
@@ -294,7 +292,7 @@ These conditions are sufficient; they need not hold for a representative of ever
 
 = 6. Algorithms and the verification <s6>
 
-For each computational fact we describe the algorithm and the checks on its output. Completeness requires both disjointness and agreement of the orbit-size sum with the theta-series coefficient. The two rigorous even-coset methods share these orbit lists and the odd-coset bounds (§1.3); separate implementations and tests on gluings A and B check their results. Floating-point searches and samples have the supplementary scope stated below. Running times are those observed on the machine used (8 cores, 15 GB of memory). Code references are given in Appendix D and pseudocode in Appendix E.
+Three implementations are referred to below: implementation 1 constructed $L_112$ and performed the main computations; implementation 2 re-implemented every step, sharing only the data files; implementation 3 started from the four data files of Appendix D alone (Supplement §S3.3). For each computational fact we describe the algorithm and the checks on its output. Completeness requires both disjointness and agreement of the orbit-size sum with the theta-series coefficient. The two rigorous even-coset methods share these orbit lists and the odd-coset bounds (§1.3); separate implementations and tests on gluings A and B check their results. Floating-point searches and samples have the supplementary scope stated below. Running times are those observed on the machine used (8 cores, 15 GB of memory). Code references are given in Appendix D and pseudocode in Appendix E.
 
 #ptable(
   columns: 4, align: (left, left, left, left,),
@@ -454,14 +452,14 @@ Our $L_56$ is $"SL"_2\(29\)$-equivariantly isometric to $L_(56\,2)\(tilde(M)\)$ 
   [On its integral part (rank 8) enumerate the elements with $Q\(T\)= "tr"\(G' ""^(- 1) T G T^(sans(T))\)lt.eq 56$; isometries are exactly the elements with $Q = 56$.],
 )
 
-We find 6 (up to sign) unimodular integer matrices $T$ with $T G T^(sans(T)) = G'$ intertwining the two actions, as many as predicted by the centralizer of order 12. Moreover, in the coordinates of $L_56'$, $tau$ becomes right multiplication by an element of $tilde(M)$ of reduced norm 5. Thus #strong[gluing C is built from Nebe's lattice $L_(56\,2)\(tilde(M)\)$ and one of the two conjugacy classes of $sqrt(- 5)$ in its maximal order $tilde(M)$].
+We find 6 (up to sign) unimodular integer matrices $T$ with $T G T^(sans(T)) = G'$ intertwining the two actions, as many as predicted by the centralizer of order 12. Moreover, in the coordinates of $L_56'$, $tau$ becomes right multiplication by an element of $tilde(M)$ of reduced norm 5. Thus #strong[gluing C is built from Nebe's lattice $L_(56\,2)\(tilde(M)\)$ and an element of reduced norm 5 and reduced trace 0 of its maximal order $tilde(M)$; such elements fall into two classes modulo 2 in the sense of §3.3, and $tau$ belongs to the class giving minimum 10].
 
 = 8. The automorphism group <s8>
 
 We first compute, by finite exact lattice computations, the normalizer of $"SL"_2\(29\)$ in $"Aut"\(L_112\)$; then we prove that $"SL"_2\(29\)$ is normal in $"Aut"\(L_112\)$, by a group-theoretic argument modelled on Sakamoto's determination of the automorphism groups in dimension 88 \[Sak26, App. A\] (Appendix F). Neither step uses the extremality of $L_112$, and Theorem A does not depend on this section.
 
 #thm[
-#strong[Theorem B.] Let $S tilde.equiv "SL"_2\(29\)$ act diagonally on $L_112$. (a) The centralizer $C_("Aut"\(L_112\))\(S\)$ has order exactly $48$ #calc("C24"). (b) The outer automorphism of $S$ is induced by an automorphism of $L_112$; hence $\|N_("Aut"\(L_112\))\(S\)\|= 2 dot.op 24 thin 360 dot.op 48\/2 = 1 thin 169 thin 280$ #calc("C24"). (c) $S$ is the layer $E\("Aut"\(L_112\)\)$ (the product of the components), in particular normal, so #strong[$\|"Aut"\(L_112\)\|= 1 thin 169 thin 280$] #calc("C25") (Appendix F; it uses the classification of finite simple groups through the tables of Hiss–Malle \[HM01, HM02\] and the Schreier conjecture).
+#strong[Theorem B.] Let $S tilde.equiv "SL"_2\(29\)$ act diagonally on $L_112$. (a) The centralizer $C_("Aut"\(L_112\))\(S\)$ has order exactly $48$ #calc("C24"). (b) The outer automorphism of $S$ is induced by an automorphism of $L_112$; hence $\|N_("Aut"\(L_112\))\(S\)\|= 2 dot.op 24 thin 360 dot.op 48\/2 = 1 thin 169 thin 280$ (the factor $1\/2$ because $S$ and its centralizer share $-1$, the factor 2 for the outer automorphism) #calc("C24"). (c) $S$ is the layer $E\("Aut"\(L_112\)\)$ (the product of the components), in particular normal, so #strong[$\|"Aut"\(L_112\)\|= 1 thin 169 thin 280$] #calc("C25") (Appendix F; it uses the classification of finite simple groups through the tables of Hiss–Malle \[HM01, HM02\] and the Schreier conjecture).
 ]
 
 Let $G_112$ be the Gram matrix (3.1) of $L_112$.
@@ -577,13 +575,15 @@ $632 dot.op 24 thin 360 + 24 dot.op 8 thin 120 = 15 thin 395 thin 520 + 194 thin
 
 #strong[Conventions.] Row vectors; a matrix $g$ acts by $x mapsto x g$; isometries satisfy $g G g^(sans(T)) = G$; $tau G tau^(sans(T)) = 5 G$. The file #raw("R112_gram_LLL.txt") is PARI's #raw("qflllgram") reduction of (3.1).
 
+#strong[Specification without the files.] The defining matrices (56×56 and 112×112) are not printed in this paper; they are the files of Table D1. By §7.2, $L_56$ is $"SL"_2(29)$-equivariantly isometric to $L_(56,2)(tilde(M))$ of \[Neb98\], and in those coordinates $tau$ is right multiplication by an element of $tilde(M)$ of reduced norm 5 and reduced trace 0, given in §7.2. Together with (1.2), this specifies $L_112$ up to isometry independently of the data files. The files remain the reference: every verification program reads them and checks their hashes.
+
 #strong[Intermediate data] (orbit representatives of $L_56(6)$ and $L_56(8)$, odd and even-coset certificates, witnesses of norm 8 for B) are distributed as verification data in #raw("certificates/") of \[Repo\]; their SHA-256 hashes are listed in #raw("certificates/SHA256SUMS").
 
 #strong[Quick checks anyone can do] (seconds, any computer algebra system): (3.1) has even diagonal and determinant 1; $tau^2 = - 5$, $tau G tau^(sans(T)) = 5 G$; $g_i G g_i^(sans(T)) = G$, $g_i tau = tau g_i$. Checking one odd-coset certificate: (a) $w_0 - r tau$ has even coordinates, (b) $chevron.l w_0\,w_0 chevron.r in { 14\,18 }$, (c) $\|chevron.l w_0\,r' g chevron.r\|lt.eq 6$ for all 656 representatives $r'$ and all $12 thin 180$ elements $g$.
 
 #strong[Code.] Every computation used in this paper is listed in Table D2 with the code that performs it; except for supplementary computations explicitly marked unpublished, the paths in Table D2 are those of the public repository \[Repo\]. The text refers to the rows of Table D2 as \[C1\], \[C2\], ….
 
-Verification from the supplied data takes about 1.2 CPU hours via route A. Alternative routes and additional tests are described in Supplement §S3. The identifier R112 in filenames is an earlier name for $L_112$.
+Checking the computational facts from the supplied data takes about 1.2 CPU hours by the fastest route (route A of Supplement Table S7; the script #raw("code/verify/proof.sh")). Alternative routes and additional tests are described in Supplement §S3. The identifier R112 in filenames is an earlier name for $L_112$.
 
 #calc-table(lang: "en")
 

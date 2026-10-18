@@ -39,7 +39,7 @@ The difference between the extremal theta series and $E_(n\/2)$ is a cusp form. 
 
 The mean number of nonzero vectors of norm at most 6 in dimension 112 is about 0.007; the mean number of norm-8 vectors is about 51,000. Thus most of the mean count below the extremal bound comes from norm 8. These are weighted averages over lattices. §S1.1 explains how they were used to motivate the search without interpreting them as the distribution of lattices with a prescribed symmetry group.
 
-By §S1, with $n = 2 k$ the average number of vectors of norm $2 m$ is $- frac(2 k, B_k) sigma_(k - 1)\(m\)$; $Sigma\(n\)$ is its sum over $1 lt.eq m lt.eq floor.l n\/24 floor.r$.
+By the formula above, with $n = 2 k$ the average number of vectors of norm $2 m$ is $- frac(2 k, B_k) sigma_(k - 1)\(m\)$; $Sigma\(n\)$ is its sum over $1 lt.eq m lt.eq floor.l n\/24 floor.r$.
 
 #ptable(
   columns: 4, align: (left, left, left, left,),
