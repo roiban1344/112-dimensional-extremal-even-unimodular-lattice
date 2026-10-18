@@ -57,7 +57,7 @@ This runs everything in `proof.sh`, and adds the alternative check of F5b by the
 
 ## Versions and reproducibility
 
-Releases are tagged by date (`v2026-10-DD`). Take the paper, the code, and the verification-data hashes from the same tag. Large verification data archives are distributed as assets of the [Release `certificates-v1`](https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1); their hashes are recorded in `certificates/SHA256SUMS`. Programs check these hashes before using the data. Generated results are written to `out/`.
+Releases are tagged by date; this release is `v2026-10-18`. Take the paper, the code, and the verification-data hashes from the same tag. Large verification data archives are distributed as assets of the [Release `certificates-v1`](https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1); their hashes are recorded in `certificates/SHA256SUMS`. Programs check these hashes before using the data. Generated results are written to `out/`.
 
 To cite this work, use GitHub's "Cite this repository", which reads [CITATION.cff](CITATION.cff).
 

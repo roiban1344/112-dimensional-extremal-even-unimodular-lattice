@@ -57,7 +57,7 @@ bash code/verify/full.sh 3
 
 ## 版と再現性
 
-版は日付のタグ（`v2026-10-DD`）で付けます。論文・コード・検証用データのハッシュは、同じタグのものを使ってください。大きな検証用データは [Release `certificates-v1`](https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1) の添付ファイルで配布し、ハッシュを `certificates/SHA256SUMS` に記録します。プログラムは検証用データを使う前にハッシュを照合します。実行結果は `out/` に保存します。
+版には日付のタグを付けます。この版は `v2026-10-18` です。論文・コード・検証用データのハッシュは、同じタグのものを使ってください。大きな検証用データは [Release `certificates-v1`](https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1) の添付ファイルで配布し、ハッシュを `certificates/SHA256SUMS` に記録します。プログラムは検証用データを使う前にハッシュを照合します。実行結果は `out/` に保存します。
 
 引用には、GitHub の「Cite this repository」を使ってください。[CITATION.cff](CITATION.cff) を読みます。
 
