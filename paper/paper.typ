@@ -1,5 +1,5 @@
-// 112 次元の論文（英日）の書式。共通の書式 typst/eeul.typ の上に、この論文だけの囲みと印を足す。
-// 使い方: #import "/docs/paper-112/r112.typ": *  ;  #show: paper.with(lang: "en" | "ja", title: [...], ...)
+// 112 次元の論文（英日）の書式。共通の書式 style/eeul.typ の上に、この論文だけの囲みと印を足す。
+// 使い方: #import "paper.typ": *  ;  #show: paper.with(lang: "en" | "ja", title: [...], ...)
 #import "style/eeul.typ": *
 
 #let _lang = state("r112-lang", "en")
@@ -85,7 +85,3 @@
   block(width: 100%, inset: 6pt, radius: 3pt, stroke: 0.9pt + c, fill: c.lighten(92%), align(center, text(size: 0.85em, body)))
 }
 #let deparrow = align(center + horizon, text(size: 1.4em, fill: luma(90), sym.arrow.r))
-
-// 未了の主張（作業用の印）: 内容は最終形で書き、まだ成り立っていないあいだだけ黄色で塗る。成り立ったら #pending を外す。
-// 公開版には残さない（`grep -n "#pending" R112-paper.*.typ` で確認）。
-#let pending(body) = highlight(fill: rgb("#fff1a8"), body)
