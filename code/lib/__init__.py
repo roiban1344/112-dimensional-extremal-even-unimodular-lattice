@@ -38,20 +38,24 @@ Guards / 保証の検査:
   Every condition on which a result depends (exactness of floating-point products, absence of
   overflow, completeness of an expansion or enumeration, ...) is checked by `require`, which
   raises `CheckError`. `assert` is not used for this, because `python -O` (or PYTHONOPTIMIZE)
-  removes assert statements. In addition, importing this package under `-O` is refused, so a run
-  in optimized mode stops at once instead of silently skipping checks elsewhere.
+  removes assert statements. In addition, a run under `-O` is refused: every script creates its
+  `report.Report` first (right after reading its arguments), and Report, after removing the old
+  out/<step>.json, records the refusal there ("passed": false) and exits with code 1. So a run in
+  optimized mode stops at once instead of silently skipping checks elsewhere, and leaves no earlier
+  "passed": true behind.
   CheckError derives from RuntimeError, not AssertionError, so that code catching
   AssertionError (for example around a test assertion) cannot swallow a failed guard.
   結果が依存する条件（浮動小数点の積が厳密なこと、オーバーフローしないこと、展開や列挙が完全なことなど）は、
   `require` で確かめる。偽なら `CheckError` を送出する。`python -O`（または PYTHONOPTIMIZE）は assert 文を取り除くので、
-  これには assert を使わない。さらに、-O の下でこのパッケージを読み込むことを拒否する。最適化モードでの実行は、
-  どこかの検査を黙って飛ばす代わりに、すぐに止まる。
+  これには assert を使わない。さらに、-O の下での実行を拒否する: どのスクリプトも最初に（引数を読んだ直後に）
+  `report.Report` を作る。Report は古い out/<段>.json を消したうえで、拒否したことをそこに記録し（"passed": false）、
+  終了コード 1 で終わる。最適化モードでの実行は、どこかの検査を黙って飛ばす代わりにすぐに止まり、以前の "passed": true も残らない。
   CheckError は AssertionError ではなく RuntimeError から派生させる。AssertionError を捕まえるコード
   （例えば試験の assert の周り）が、失敗した検査を握りつぶすことがないようにするためである。
 """
 
-if not __debug__:
-    raise SystemExit("refusing to run under python -O / PYTHONOPTIMIZE: the checks must not be optimized away; "
+# The message with which report.Report refuses a run under -O. / report.Report が -O の下での実行を拒否するときの文言。
+OPTIMIZED_MESSAGE = ("refusing to run under python -O / PYTHONOPTIMIZE: the checks must not be optimized away; "
                      "run without -O (the shell scripts use python -I, which also ignores PYTHONOPTIMIZE)\n"
                      "python -O / PYTHONOPTIMIZE の下では実行しない（検査が取り除かれてはならない）。-O を付けずに実行する"
                      "（シェルスクリプトは python -I で呼ぶので PYTHONOPTIMIZE も無視される）")

@@ -38,6 +38,16 @@ conda environment of environment.yml):
 import sys, os, json, time, subprocess, platform, argparse, shutil
 
 if not __debug__:
+    # Remove the result this run would write (out/crosscheck_all_data/F1-r<r>[-<test>].json), so that an earlier
+    # "PASS" is not taken for this run's. / この実行が書くはずの結果を消す。以前の「PASS」が今回の結果に見えないようにする。
+    _pos = [x for i, x in enumerate(sys.argv[1:], 1) if not x.startswith("-") and sys.argv[i - 1] not in ("--k", "--test")]
+    _test = [x.split("=", 1)[1] for x in sys.argv if x.startswith("--test=")] + \
+            [sys.argv[i + 1] for i, x in enumerate(sys.argv[:-1]) if x == "--test"]
+    if _pos and _pos[0].isdigit():
+        _p = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))),
+                          "out", "crosscheck_all_data", f"F1-r{_pos[0]}" + (f"-{_test[0]}" if _test else "") + ".json")
+        if os.path.exists(_p):
+            os.remove(_p)
     sys.exit("run without -O: the exactness guards are assert statements / -O を付けずに実行すること（厳密性の検査は assert で書かれている）")
 from fractions import Fraction
 import numpy as np

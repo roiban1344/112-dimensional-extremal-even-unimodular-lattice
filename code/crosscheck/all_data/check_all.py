@@ -54,6 +54,13 @@ Every int64 product is guarded by a bound < 2^62 (`imul`).
 import sys, os
 
 if not __debug__:
+    # Remove the result this run would write, so that an earlier "PASS" is not taken for this run's.
+    # この実行が書くはずの結果を消す。以前の「PASS」が今回の結果に見えないようにする。
+    _out = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))),
+                        "out", "crosscheck_all_data")
+    for _step in sys.argv[1:2] + ["summary"]:
+        if _step.isidentifier() and os.path.exists(os.path.join(_out, _step + ".json")):
+            os.remove(os.path.join(_out, _step + ".json"))
     sys.exit("run without -O: the exactness guards are assert statements / -O を付けずに実行すること（厳密性の検査は assert で書かれている）")
 
 # BLAS threads: we parallelise with Python threads and single-threaded BLAS calls.

@@ -88,6 +88,15 @@ class Report:
             os.remove(self.path)
         except FileNotFoundError:
             pass
+        if not __debug__:
+            # Refuse a run under -O (see lib/__init__.py), after removing the old result, and record why.
+            # -O の下での実行を拒否する（lib/__init__.py を参照）。古い結果を消したうえで、理由を記録する。
+            from . import OPTIMIZED_MESSAGE
+            self.failed = True
+            self.error = "refused: python -O / PYTHONOPTIMIZE"
+            self.finish()
+            print(OPTIMIZED_MESSAGE, file=sys.stderr)
+            sys.exit(1)
         self._previous_hook = sys.excepthook
         sys.excepthook = self._excepthook
         atexit.register(self._at_exit)

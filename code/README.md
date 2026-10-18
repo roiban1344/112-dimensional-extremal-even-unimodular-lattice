@@ -94,7 +94,7 @@ partial sum is an integer below 2²⁴ (float32) or 2⁵³ (float64); such produ
 helpers are in `lib/exact.py`; each script's header states which products it computes this way.
 These guards, and the other conditions a result depends on (no int64 overflow, a complete expansion
 or enumeration), are written as `require(...)`, which raises an error, not as `assert`, which
-`python -O` would remove; in addition `lib` refuses to be imported under `-O`.
+`python -O` would remove; in addition a step run under `-O` refuses to start (it removes its old `out/<step>.json` and records the refusal there).
 The enumeration of F1 uses outward-rounded interval arithmetic (`verify/enum_interval.c`, header).
 
 ## Requirements
