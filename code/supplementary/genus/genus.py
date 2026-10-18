@@ -30,11 +30,11 @@ Subcommands (SageMath unless stated otherwise) / サブコマンド（特記し�
             すべて L ⊗_M Λ（森田）。
   mass      zeta_K(-1) = 1/2 and zeta_K(-3) = 157/20 exactly from generalized Bernoulli numbers B_{k,chi_29}, compared
             with Siegel's divisor-sum formulas and with PARI lfun (numerically); the mass
-            2^{-4} |zeta_K(-1) zeta_K(-3)| = 157/640 [Gan-Hanke-Yu 2001, Prop. 9.3]. Normalization check in rank 1:
+            2^{-4} |zeta_K(-1) zeta_K(-3)| = 157/640 [Gan-Hanke-Yu 2001, Prop. 9.4; = Prop. 9.3 when S_D is empty]. Normalization check in rank 1:
             the unit groups {u : nrd u = 1} of the two classes of maximal orders have orders 24 and 12, and
             1/24 + 1/12 = 2^{-2} |zeta_K(-1)|.
             一般化 Bernoulli 数 B_{k,χ_29} から ζ_K(-1) = 1/2、ζ_K(-3) = 157/20 を厳密に求め、Siegel の約数和の公式と PARI の lfun（数値）と照合する。
-            質量 2^{-4}|ζ_K(-1)ζ_K(-3)| = 157/640 [Gan–Hanke–Yu 2001, 命題 9.3]。階数 1 での正規化の確認: 極大整環の 2 類の {u : nrd u = 1} の
+            質量 2^{-4}|ζ_K(-1)ζ_K(-3)| = 157/640 [Gan–Hanke–Yu 2001, 命題 9.4。S_D が空なら命題 9.3 に一致]。階数 1 での正規化の確認: 極大整環の 2 類の {u : nrd u = 1} の
             位数は 24 と 12 で、1/24 + 1/12 = 2^{-2}|ζ_K(-1)|。
   enum      Kneser neighbours at the prime p = ((7 + sqrt29)/2) of norm 5 (Siegel type: N = Lambda cap Lambda'
             with h(N, N) in p M, Lambda' between N and pi^{-1} N), walked at random from Lambda_0 = M + M with a fixed
@@ -42,7 +42,7 @@ Subcommands (SageMath unless stated otherwise) / サブコマンド（特記し�
             by the invariants (|U|, number of vectors of each norm <= 14 of Tr trd h), independently of the order in
             which the walk finds them. Writes out/genus/lambda.txt and certificates/genus_classes.txt.
             ノルム 5 の素イデアル p = ((7 + √29)/2) での Kneser の近傍（Siegel 型: N = Λ ∩ Λ' で h(N, N) ⊂ pM、Λ' は N と π^{-1}N の間）を、
-            Λ_0 = M ⊕ M から固定した種（--seed、既定 1）で無作為にたどり、Σ 1/|U(Λ)| が質量 157/640 に達するまで続ける。類の番号 0〜7 は
+            Λ_0 = M ⊕ M から固定した乱数シード（--seed、既定 1）で無作為にたどり、Σ 1/|U(Λ)| が質量 157/640 に達するまで続ける。類の番号 0〜7 は
             不変量（|U| と Tr trd h のノルム 14 以下のベクトルの本数）で付け、見つかる順序によらない。out/genus/lambda.txt と
             certificates/genus_classes.txt を書く。
   build     X_j = L tensor_M Lambda_j for the 8 classes, LLL-reduced (PARI qflllgram). Writes the Gram matrices
@@ -65,7 +65,7 @@ Subcommands (SageMath unless stated otherwise) / サブコマンド（特記し�
             BKZ and pruned enumeration with fpylll, fixed seeds). Each vector is checked exactly (v G_X v^T = 8) and
             written, in the basis of genus_class_<j>.txt, to certificates/genus_witnesses.txt.
             類 3, 4（位数 3 の s = zw と位数 3 の u ∈ U(Λ) の積 s u の固定部分格子。PARI の qfminim）と類 5（位数 4 の s = w と位数 4 の u の積の
-            固定部分格子、56 次元。fpylll の BKZ と枝刈りつき列挙、種は固定）のノルム 8 のベクトル。v G_X v^T = 8 を厳密に確かめ、
+            固定部分格子、56 次元。fpylll の BKZ と枝刈りつき列挙、乱数シードは固定）のノルム 8 のベクトル。v G_X v^T = 8 を厳密に確かめ、
             genus_class_<j>.txt の基底での座標を certificates/genus_witnesses.txt に書く。
   identify  Explicit isometries class 7 -> L_112 (the basis (3.1) from data/) and class 3 -> gluing A
             (certificates/gram_A.txt), found as in isometry_ab.py: among the S-equivariant maps (32-dimensional) that
@@ -261,7 +261,7 @@ class Genus:
         self.Dpi = [self.form(X.hmul(n, self.pinv)) for n in self.Mdual.rows()]
         self.Lpi, self.Lpinv = self.lmul(self.pi), self.lmul(self.pinv)
         # A rank-1 idempotent of M/pM = M_2(F_5): trd = 1, nrd = 0 mod p (fixed seed).
-        # M/pM ≅ M_2(F_5) の階数 1 の冪等元: trd ≡ 1, nrd ≡ 0 (mod p)（種は固定）。
+        # M/pM ≅ M_2(F_5) の階数 1 の冪等元: trd ≡ 1, nrd ≡ 0 (mod p)（乱数シードは固定）。
         rng = random.Random(1)
         while True:
             c = vector(QQ, [rng.randint(-2, 2) for _ in range(8)])
@@ -562,7 +562,7 @@ def cmd_mass(a):
     rep.value("PARI lfun (numerical) at -1, -3", num)
     rep.check("PARI lfun agrees to 1e-12", abs(num[0] - 0.5) < 1e-12 and abs(num[1] - 7.85) < 1e-12)
     mass = abs(z1 * z3) / 16
-    rep.value("mass 2^{-4} |zeta_K(-1) zeta_K(-3)| [GHY01, Prop. 9.3; rank 2, d = 2, D unramified at finite places]",
+    rep.value("mass 2^{-4} |zeta_K(-1) zeta_K(-3)| [GHY01, Prop. 9.4 (= 9.3 for S_D empty); rank 2, d = 2, D unramified at finite places]",
               str(mass))
     rep.check("the mass is 157/640", mass == QQ(MASS.numerator) / MASS.denominator)
     from cycloquat import CycloQuat
@@ -758,7 +758,7 @@ def fixed_basis(g):
 
 def pruned_witness(Gs, rep, trials=20):
     """A vector of norm <= 8 of the positive definite integer Gram matrix Gs by BKZ-30 and pruned enumeration
-    (fpylll), with fixed random seeds, or None. / BKZ-30 と枝刈りつき列挙（fpylll、種は固定）でノルム 8 以下のベクトルを探す。"""
+    (fpylll), with fixed random seeds, or None. / BKZ-30 と枝刈りつき列挙（fpylll、乱数シードは固定）でノルム 8 以下のベクトルを探す。"""
     from fpylll import BKZ, GSO, LLL, Enumeration, EnumerationError, IntegerMatrix, Pruning
     from fpylll.algorithms.bkz2 import BKZReduction
     from sage.all import ZZ, identity_matrix, matrix, random_matrix, set_random_seed, vector
