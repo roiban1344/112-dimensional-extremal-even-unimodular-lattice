@@ -156,7 +156,7 @@ For (b): $\(x\,v\)mapsto\(x u\,v u'\)$ maps $L_f$ isometrically onto $L_(u^(- 1)
   [#strong[C]], [$L_56$], [does not (18)], [#strong[10 (Theorem A)]], [#strong[none]],
 )
 
-Both surviving classes B and C on $L_56$ lift to elements $tau in M'$ with $tau^2=-5$. Of the 24 such elements, 12 reduce modulo 2 into class B and 12 into class C #calc("C2"). Whether gluings A and B are isometric remains undetermined.
+Both surviving classes B and C on $L_56$ lift to elements $tau in M'$ with $tau^2=-5$. Of the 24 such elements, 12 reduce modulo 2 into class B and 12 into class C #calc("C2"). Gluings A and B are isometric: an $"SL"_2(29)$-equivariant isometry between them is supplied with the verification data and checked in integer arithmetic #calc("C28"). Thus the two gluings of minimum 8 in Table 2 are the same lattice.
 
 == 3.4 The Hermitian description
 
