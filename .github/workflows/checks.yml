@@ -12,7 +12,7 @@ permissions:
 jobs:
   verify-inputs:
     if: github.ref_type == 'branch'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: actions/setup-python@v7.0.0
@@ -26,7 +26,7 @@ jobs:
 
   paper-consistency:
     if: github.ref_type == 'branch'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: actions/setup-python@v7.0.0
@@ -36,7 +36,7 @@ jobs:
 
   typst-build:
     if: github.ref_type == 'branch'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: typst-community/setup-typst@v5.3.0
@@ -61,7 +61,7 @@ jobs:
   # release-pdfs: delete this job (and the `tags` trigger above) to stop attaching PDFs to releases.
   release-pdfs:
     if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
