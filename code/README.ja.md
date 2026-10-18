@@ -84,7 +84,7 @@ F5b は無関係な 2 つの議論（v6 と v7）で確かめます。証明に�
 
 ## 動作環境
 
-* `verify/`、`crosscheck/second_impl/`: Python 3.10 以上と numpy（Python 3.12、numpy 2.5 で確認）。v1 には 128 ビット整数をもつ C コンパイラ（gcc か clang。`$CC` があればそれ、無ければ `cc`・`gcc`・`clang` の順に探す）。ほかのパッケージは要りません。
+* `verify/`、`crosscheck/second_impl/`: Python 3.10 以上と numpy（Python 3.12、numpy 2.5 で確認）。v1 には 128 ビット整数をもつ C コンパイラ（gcc か clang。`$CC` があればそれ、無ければ `cc`・`gcc`・`clang` の順に探す）。`fetch.sh` には `curl` が必要です。ほかのパッケージは要りません。
 * `produce/`、`supplementary/`、`crosscheck/all_data/`: SageMath 10（PARI/GP、GAP、fpylll を含む）。SageMath 10.9 で確認。リポジトリの根の
   `environment.yml` で conda/micromamba から入れられます。
 * `lean/`: Lean 4 と Mathlib（版は `lean/lean-toolchain` と `lean/lake-manifest.json` に固定）。

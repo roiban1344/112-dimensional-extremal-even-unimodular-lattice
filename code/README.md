@@ -92,7 +92,7 @@ The enumeration of F1 uses outward-rounded interval arithmetic (`verify/enum_int
 ## Requirements
 
 * `verify/`, `crosscheck/second_impl/`: Python ≥ 3.10 with numpy (tested with Python 3.12, numpy 2.5),
-  a C compiler with 128-bit integers (gcc or clang; `$CC` if set, otherwise the first of `cc`, `gcc`, `clang`) for v1. No other package.
+  a C compiler with 128-bit integers (gcc or clang; `$CC` if set, otherwise the first of `cc`, `gcc`, `clang`) for v1, and `curl` for `fetch.sh`. No other package.
 * `produce/`, `supplementary/`, `crosscheck/all_data/`: SageMath 10 (which includes PARI/GP, GAP and
   fpylll); tested with SageMath 10.9. `environment.yml` at the repository root installs it with
   conda/micromamba.
