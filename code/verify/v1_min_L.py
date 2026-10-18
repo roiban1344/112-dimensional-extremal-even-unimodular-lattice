@@ -24,16 +24,18 @@ Positive controls (same code path): E_8 at radius 2 (240 vectors), the Leech lat
 陽性対照（同じ経路）: E_8（半径 2、240 本）、Leech 格子（半径 4、ノルム 4 が 196,560 本、ノルム 2 は無し）、
 Leech + Leech + E_8（半径 4、240 本と 395,280 本）。
 
-Run time: about 35 minutes (8.5 x 10^9 nodes) on one core; controls take seconds.
-実行時間: 1 コアで約 35 分（8.5 × 10^9 節点）。対照は数秒。
+The input of the enumerator (steps 2, 3), its compilation and the parsing of its output are in
+lib/enumerate.py, shared with the other users of the enumerator. The enumerator is recompiled on every run.
+列挙器の入力（手順 2, 3）、コンパイル、出力の解釈は lib/enumerate.py にあり、列挙器のほかの利用者と共有する。列挙器は毎回コンパイルし直す。
+
+Run time: about 34 minutes (8.5 x 10^9 nodes) on one core; controls take seconds.
+実行時間: 1 コアで約 34 分（8.5 × 10^9 節点）。対照は数秒。
 
 Run / 実行:  python3 code/verify/v1_min_L.py [--controls-only] [--data DIR] [--certificates DIR] [--out DIR]
 Requires a C compiler with 128-bit integers (gcc or clang; $CC, else cc, gcc, clang). / 128 ビット整数をもつ C コンパイラ（gcc か clang。$CC、無ければ cc, gcc, clang の順に探す）が要る。
 """
 import argparse
-import math
 import os
-import subprocess
 import sys
 
 import numpy as np
@@ -41,7 +43,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 from lib import certs, data, exact  # noqa: E402
-from lib.enumerate import c_compiler  # noqa: E402
+from lib import enumerate as exact_enum  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 E8 = np.array([  # Gram matrix of E_8 (a reduced basis) / E_8 の Gram 行列（簡約基底）
@@ -49,49 +51,15 @@ E8 = np.array([  # Gram matrix of E_8 (a reduced basis) / E_8 の Gram 行列（
     [1, 1, 1, 0, 2, 0, 0, 0], [1, 1, 0, 0, 0, 2, 0, 1], [1, 0, 1, -1, 0, 0, 2, 1], [1, 1, 1, -1, 0, 1, 1, 2]], dtype=np.int64)
 
 
-def compile_enumerator(build_dir):
-    exe = os.path.join(build_dir, "enum_interval")
-    os.makedirs(build_dir, exist_ok=True)
-    subprocess.run([c_compiler(), "-O2", "-std=c11", "-fno-fast-math", "-ffp-contract=off",
-                    "-o", exe, os.path.join(HERE, "enum_interval.c"), "-lm"], check=True)
-    return exe
-
-
-def interval(q):
-    """[nextbelow(f), nextabove(f)] for f = float(q) (nearest rounding), containing q.
-    f = float(q)（最近接丸め）の両隣の区間。q を含む。"""
-    f = float(q)
-    lo, hi = math.nextafter(f, -math.inf), math.nextafter(f, math.inf)
-    assert lo <= q <= hi
-    return lo, hi
-
-
 def enumerate_short(exe, G, radius, rep, name):
     """Run the enumerator on the Gram matrix G; returns {norm: count} and the node count.
-    Gram 行列 G について列挙器を走らせ、{ノルム: 本数} と節点数を返す。"""
-    n = len(G)
-    D, V = exact.ldl_exact(G)
-    lines = [f"{n} {radius}"]
-    lines += [" ".join(str(int(v)) for v in row) for row in G]
-    for d in D:
-        lo, hi = interval(d)
-        lines.append(f"{lo!r} {hi!r}")
-    for i in range(n):
-        for j in range(i + 1, n):
-            lo, hi = interval(V[i][j])
-            lines.append(f"{lo!r} {hi!r}")
-    proc = subprocess.run([exe], input="\n".join(lines) + "\n", stdout=subprocess.PIPE, text=True, check=True)
-    counts, nodes = {}, None
-    for line in proc.stdout.splitlines():
-        if line.startswith("nodes"):
-            nodes = int(line.split()[1])
-        elif line.startswith("nonzero vectors of norm"):
-            q, c = line[len("nonzero vectors of norm "):].split(":")
-            counts[int(q)] = int(c)
-    assert proc.stdout.rstrip().endswith("done"), "enumerator did not finish"
-    rep.value(f"{name}: nodes", nodes)
-    rep.value(f"{name}: nonzero vectors by norm", counts)
-    return counts, nodes
+    lib.enumerate.run_enumerator checks that the enumerator finished and that no vector fell outside its table.
+    Gram 行列 G について列挙器を走らせ、{ノルム: 本数} と節点数を返す。
+    列挙器が最後まで走ったことと、表の範囲外に落ちたベクトルが無いことは lib.enumerate.run_enumerator が確かめる。"""
+    res = exact_enum.run_enumerator(exe, G, radius)
+    rep.value(f"{name}: nodes", res["nodes"])
+    rep.value(f"{name}: nonzero vectors by norm", res["counts"])
+    return res["counts"], res["nodes"]
 
 
 def main():
@@ -102,7 +70,7 @@ def main():
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("v1_min_L" + ("_controls" if a.controls_only else ""), a.out)
-    exe = compile_enumerator(os.path.join(rep.out_dir, "build"))
+    exe = exact_enum.compile_enumerator(os.path.join(rep.out_dir, "build"), force=True)
 
     # Positive controls. / 陽性対照。
     leech = data.read_integers(os.path.join(HERE, "controls", "leech.txt")).reshape(24, 24)

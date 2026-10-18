@@ -16,14 +16,24 @@ condition (ii) of Corollary 4.3 without canonical forms (an alternative to V6).
 系 5.3 より、類はノルム 8 のベクトルを含まない。F3（V4）と合わせて、標準形を使わずに系 4.3 の条件 (ii) が示される（V6 の代わり）。
 
 (c) is the expensive part: 1.5 million x 7.8 million inner products. It is done in chunks with
-a checkpoint (out/v7_even_bounding.state.npz), so an interrupted run resumes with the same
-command. Use --threads to run several BLAS-free Python threads (each matrix product is
-single-threaded then).
-(c) が重い部分で、150 万 × 780 万の内積。チャンクごとに途中経過（out/v7_even_bounding.state.npz）を保存するので、
-止まっても同じコマンドで再開する。--threads で複数の Python のスレッドを使う（そのとき各行列積は 1 スレッド）。
+a checkpoint (out/v7_even_bounding.state.npz, or out/v7_even_bounding_first<N>.state.npz with
+--limit N), so an interrupted run resumes with the same command. The checkpoint records the SHA-256
+of the certificate rows checked, of min_reps.npz, L56_gram.txt, sl2_29_generators.txt and of the
+code computing (c) (lib/shells.py, exact.py, group.py), and n and --limit. If any of them differs
+when resuming, the run FAILS and asks to delete the checkpoint (it is never used for other data,
+and never deleted silently). The checkpoint is deleted when (c) is complete, so every complete run
+computes (c) from the start. Use --threads to run several BLAS-free Python threads (each matrix
+product is single-threaded then).
+(c) が重い部分で、150 万 × 780 万の内積。チャンクごとに途中経過（out/v7_even_bounding.state.npz。--limit N のときは
+out/v7_even_bounding_first<N>.state.npz）を保存するので、止まっても同じコマンドで再開する。途中経過には、検査する certificate の行、
+min_reps.npz、L56_gram.txt、sl2_29_generators.txt、(c) を計算するコード（lib/shells.py, exact.py, group.py）の SHA-256 と、
+n と --limit を記録する。再開するときにどれかが異なれば不合格とし、途中経過を消すよう求める（別のデータに使うことはなく、
+黙って消すこともない）。(c) が終わると途中経過を消すので、最後まで走る実行は毎回 (c) を最初から計算する。
+--threads で複数の Python のスレッドを使う（そのとき各行列積は 1 スレッド）。
 
-Exactness: (a), (b) in int64; (c) in float32 with the exactness bound asserted for every chunk.
-厳密さ: (a), (b) は int64。(c) は float32 で、チャンクごとに厳密さの上界を確かめる。
+Exactness: (a), (b) in int64; (c) in float32 with the exactness bound checked for every chunk.
+The maxima are kept in int64 (no wrap-around).
+厳密さ: (a), (b) は int64。(c) は float32 で、チャンクごとに厳密さの上界を確かめる。最大値は int64 で持つ（回り込まない）。
 
 Run time: about 24 CPU hours for (c) (7.9 hours with --threads 3). Memory: about 3 GB.
 実行時間: (c) に約 24 CPU 時間（--threads 3 で 7.9 時間）。メモリ: 約 3 GB。
@@ -34,7 +44,7 @@ Run / 実行:  python3 code/verify/v7_even_bounding.py [--threads T] [--limit N]
 import os
 import sys
 
-if "--threads" in sys.argv:
+if any(arg == "--threads" or arg.startswith("--threads=") for arg in sys.argv):
     # One BLAS thread per Python thread. Must be set before numpy is imported.
     # Python のスレッド 1 本につき BLAS も 1 スレッド。numpy を読み込む前に設定する。
     os.environ["OPENBLAS_NUM_THREADS"] = "1"
@@ -42,7 +52,6 @@ if "--threads" in sys.argv:
     os.environ["MKL_NUM_THREADS"] = "1"
 
 import argparse  # noqa: E402
-import time  # noqa: E402
 
 import numpy as np  # noqa: E402
 
@@ -71,13 +80,15 @@ def main():
     X = certs.load("norm8_reps.npz", "reps", a.certificates).astype(np.int64)
     U = certs.load("centralizer.npz", "units", a.certificates).astype(np.int64)
     W = certs.load("even_bounding.npz", "w0", a.certificates)
-    rep.check("1527984 certificates, one per pair (row 6 i + k)", W.shape == (NPAIRS, 56) and 6 * len(X) == NPAIRS)
+    rep.check("254664 representatives x_i and 6 matrices u_k", X.shape == (NPAIRS // 6, 56) and U.shape == (6, 56, 56))
+    rep.check("1527984 certificates, one per pair (row 6 i + k)", W.shape == (NPAIRS, 56))
     n = a.limit or NPAIRS
+    rep.check("1 <= --limit <= 1527984", 1 <= n <= NPAIRS)
     mm = exact.i64_matmul
 
     # (a), (b): grouped by k, rows k, k + 6, k + 12, ... / k ごとにまとめる（第 k, k+6, k+12, … 行）
     ok_a = True
-    norms = np.empty(NPAIRS, dtype=np.int64)
+    norms = np.full(NPAIRS, -1, dtype=np.int64)
     for k, u in enumerate(U):
         Wk = W[k::6].astype(np.int64)
         start = mm(mm(X, u), t)
@@ -92,27 +103,13 @@ def main():
     mv = shells.MinimalVectors(G, R6, S)
     rep.log(f"expanded {2 * mv.count} minimal vectors; checking (c) for {n} pairs with {a.threads} thread(s)")
     state = os.path.join(rep.out_dir, rep.step + ".state.npz")
-    if os.path.exists(state):
-        with np.load(state, allow_pickle=False) as z:
-            mx, done, secs = z["mx"].copy(), int(z["done"]), float(z["seconds"])
-        assert len(mx) == n
-        rep.log(f"resuming at {done} / {n}")
-    else:
-        mx, done, secs = np.full(n, -1, dtype=np.int8), 0, 0.0
-    last = time.time()
-    while done < n:
-        t1 = time.time()
-        e = min(n, done + a.chunk)
-        mx[done:e] = mv.max_abs_inner(W[done:e], threads=a.threads)
-        secs += time.time() - t1
-        done = e
-        if time.time() - last > 300 or done == n:
-            os.makedirs(rep.out_dir, exist_ok=True)
-            certs.save_npz(state, mx=mx, done=np.int64(done), seconds=np.float64(secs))
-            last = time.time()
-            rep.log(f"(c) {done} / {n}: {1000 * secs / done:.1f} ms per pair, max so far {int(mx[:done].max())}")
+    inputs = [certs.path_checked("min_reps.npz", a.certificates)]
+    inputs += [os.path.join(a.data or data.DEFAULT_DIR, f) for f in ("L56_gram.txt", "sl2_29_generators.txt")]
+    fp = shells.fingerprint(W[:n], inputs + shells.CODE_FILES, {"n": n, "limit": a.limit})
+    mx, secs, resumed = shells.max_abs_inner_checkpointed(mv, W[:n], a.threads, a.chunk, state, fp, rep)
+    rep.value("(c) pairs taken over from the checkpoint", resumed)
     table = {}
-    for (nn, m), c in zip(*np.unique(np.stack([norms[:n], mx.astype(np.int64)], axis=1), axis=0, return_counts=True)):
+    for (nn, m), c in zip(*np.unique(np.stack([norms[:n], mx], axis=1), axis=0, return_counts=True)):
         table[f"norm {nn}, max {m}"] = int(c)
     rep.value("Table 8: (norm, max |<w0, u>|) -> count", table)
     rep.value("seconds spent in (c)", round(secs))

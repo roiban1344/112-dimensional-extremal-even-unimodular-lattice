@@ -24,6 +24,8 @@ Everything is exact integer arithmetic (uint64 XOR and comparisons).
 """
 import numpy as np
 
+from . import require
+
 N = 56
 _BITS = np.uint64(1) << np.arange(N, dtype=np.uint64)
 _SHIFTS = np.uint64(8) * np.arange(7, dtype=np.uint64)
@@ -89,7 +91,7 @@ class Canonical:
             img = self.images(c[i:i + batch])
             can[i:i + batch] = img.min(axis=1)
             stab = (img == c[i:i + batch, None]).sum(axis=1)
-            assert (self.size % stab == 0).all()
+            require((self.size % stab == 0).all(), "stabilizer size does not divide |S|")
             size[i:i + batch] = self.size // stab
         return can, size
 
@@ -100,5 +102,5 @@ class Canonical:
         v = rng.integers(0, 2, size=(trials, N))
         idx = rng.integers(0, self.size, size=trials)
         naive = pack(np.einsum("ij,ijk->ik", v, S[idx].astype(np.int64)) % 2)
-        assert (self.images(pack(v))[np.arange(trials), idx] == naive).all(), "table look-up disagrees with matrix product"
-        assert (self.canon(naive) == self.canon(pack(v))).all(), "canonical form is not invariant"
+        require((self.images(pack(v))[np.arange(trials), idx] == naive).all(), "table look-up disagrees with matrix product")
+        require((self.canon(naive) == self.canon(pack(v))).all(), "canonical form is not invariant")

@@ -20,7 +20,7 @@ Two independent arguments are checked / 独立な 2 つの議論を確かめる:
       x -> x + 2L は符号を除いて単射（中点補題 5.1。F1 を使う）なので、|x の S-軌道| = 2 |x + 2L の S/{±1}-軌道|。
       この大きさの和が 15,590,400 = 632 × 24,360 + 24 × 8,120。
 
-Exactness: norms in int64; r s in float32 with the exactness bound asserted (lib.shells).
+Exactness: norms in int64; r s in float32 with the exactness bound checked (lib.shells).
 厳密さ: ノルムは int64。r s は float32 で、厳密さの上界を確かめる（lib.shells）。
 
 Run time: about 3 minutes. Memory: about 2 GB.
@@ -38,7 +38,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 from lib import certs, data, exact, group, mod2, shells  # noqa: E402
 from lib.report import Report  # noqa: E402
 
-N6 = 15590400       # |L_6| from the extremal theta series (V2) / 極値テータ級数（V2）から
+N6 = shells.N6      # |L_6| = 15590400 from the extremal theta series (V2) / 極値テータ級数（V2）から
 
 
 def main():

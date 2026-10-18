@@ -17,7 +17,7 @@ because tau^2 = -5 is the identity modulo 2 (Appendix C.4).
 系 5.2 より、類はノルム 6 も 10 も含まない。つまり最小は 14 以上。これで衝突の型 (6,6) と (6,10) が片づく。
 型 (10,6) は (6,10) と同じ（tau^2 = -5 は 2 を法として恒等写像なので。付録 C.4）。
 
-Exactness: (a), (b) in int64; (c) in float32 with the exactness bound asserted (lib.shells).
+Exactness: (a), (b) in int64; (c) in float32 with the exactness bound checked (lib.shells).
 厳密さ: (a), (b) は int64。(c) は float32 で、厳密さの上界を確かめる（lib.shells）。
 
 Run time: about 2 minutes. Memory: about 2 GB.

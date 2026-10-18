@@ -23,8 +23,10 @@ Argument (as in V3 (B)) / 議論（V3 (B) と同じ）:
     相異なる標準形にわたる大きさの和が 36,957,286,800 = |L_8|（V2）で、どの軌道も最大の大きさ 24,360。
     よって並べた軌道で L_8 全体。
 The table K_8 of these canonical forms is written to out/K8.npy for V6, and one index 6 i + k per
-orbit to out/K8_first.npy for V8.
+orbit to out/K8_first.npy for V8. Their SHA-256, and that of the two input files, are recorded in
+out/v4_norm8_orbits.json; V6 and V8 check them before use.
 この標準形の表 K_8 を V6 のために out/K8.npy に、軌道ごとの添字 6i+k を 1 つずつ V8 のために out/K8_first.npy に書く。
+その SHA-256 と 2 つの入力ファイルの SHA-256 を out/v4_norm8_orbits.json に記録し、V6・V8 は使う前に照合する。
 
 Also checked (not needed for F3): each u_k is an isometry of L commuting with g1, g2, and the
 u_k are distinct modulo +-1.
@@ -33,8 +35,8 @@ u_k are distinct modulo +-1.
 Exactness: integer arithmetic only (int64 with overflow guards, uint64 XOR).
 厳密さ: 整数演算のみ（オーバーフローを確かめた int64、uint64 の XOR）。
 
-Run time: about 9 minutes. Memory: about 1.5 GB.
-実行時間: 約 9 分。メモリ: 約 1.5 GB。
+Run time: about 9 minutes. Memory: about 2 GB.
+実行時間: 約 9 分。メモリ: 約 2 GB。
 
 Run / 実行:  python3 code/verify/v4_norm8_orbits.py [--data DIR] [--certificates DIR] [--out DIR]
 """
@@ -45,10 +47,10 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from lib import certs, data, exact, group, mod2  # noqa: E402
+from lib import certs, data, exact, group, mod2, shells  # noqa: E402
 from lib.report import Report  # noqa: E402
 
-N8 = 36957286800    # |L_8| from the extremal theta series (V2) / 極値テータ級数（V2）から
+N8 = shells.N8      # |L_8| = 36957286800 from the extremal theta series (V2) / 極値テータ級数（V2）から
 
 
 def main():
@@ -95,10 +97,14 @@ def main():
     rep.check("all orbits are regular (size 24360)", (vec_sizes == 24360).all())
     rep.check("sizes add up to |L_8| = 36957286800", int(vec_sizes.sum()) == N8)
     os.makedirs(rep.out_dir, exist_ok=True)
-    np.save(os.path.join(rep.out_dir, "K8.npy"), K8)
-    np.save(os.path.join(rep.out_dir, "K8_first.npy"), first)
+    for name, arr in (("K8.npy", K8), ("K8_first.npy", first)):
+        path = os.path.join(rep.out_dir, name)
+        np.save(path + ".tmp.npy", arr)
+        os.replace(path + ".tmp.npy", path)
+        rep.value(f"SHA-256 of out/{name}", data.sha256_file(path))
     rep.log("wrote out/K8.npy (sorted canonical forms of the norm-8 classes) and out/K8_first.npy "
             "(for each, the first index 6 i + k with that canonical form)")
+    rep.value("SHA-256 of the inputs", certs.file_hashes(certs.K8_INPUTS, a.certificates))
     rep.finish()
 
 

@@ -53,14 +53,17 @@ def main():
     a = ap.parse_args()
     rep = Report("v0_inputs", a.out)
 
-    # The readers check the SHA-256 hashes of the four files.
-    # 読み込みの際に 4 つのファイルの SHA-256 を照合する。
+    # The SHA-256 hashes of the four files, recorded as checks (the readers below check them again
+    # and would raise on a mismatch).
+    # 4 つのファイルの SHA-256 を検査として記録する（下の読み込みも照合し、不一致なら例外になる）。
+    for name, h in data.SHA256.items():
+        got = data.sha256_file(os.path.join(a.data or data.DEFAULT_DIR, name))
+        rep.check(f"data/{name} has the published SHA-256 {h[:16]}...", got == h)
     G = data.gram(a.data)
     g1, g2 = data.generators(a.data)
     t = data.tau(a.data)
     I = np.eye(56, dtype=np.int64)
     mm = exact.i64_matmul
-    rep.check("input files match the published SHA-256 hashes", True)
 
     # --- L ---
     rep.check("G is symmetric with even diagonal", is_even_symmetric(G))

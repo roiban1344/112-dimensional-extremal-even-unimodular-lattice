@@ -25,6 +25,7 @@ from fractions import Fraction
 from math import comb
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+from lib import require  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 
@@ -81,7 +82,7 @@ def extremal_theta(n, prec):
     for j in range(1, mu + 1):
         c = f[j]
         f = [x - c * y for x, y in zip(f, basis[j])]
-    assert all(x.denominator == 1 for x in f)
+    require(all(x.denominator == 1 for x in f), "extremal theta series with non-integral coefficients")
     return [int(x) for x in f]
 
 

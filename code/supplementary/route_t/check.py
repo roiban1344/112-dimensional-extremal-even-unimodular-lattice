@@ -14,8 +14,13 @@ certificates/route_t_search3.npz（3,936 行）と certificates/route_t_search2.
   (c) |<w0, y>| <= 6 for every minimal vector y of L (all 15,590,400, expanded from min_reps.npz).
       L のすべての最小ベクトル y（min_reps.npz から展開した 15,590,400 本）について |<w0, y>| ≤ 6。
 That the expansion gives all minimal vectors is F2 (verify/v3). (c) uses the same exact routine as
-verify/v7 (float32 with the exactness bound asserted).
-展開ですべての最小ベクトルが得られることは F2（verify/v3）。(c) は verify/v7 と同じ厳密な手続き（float32、厳密さの上界を確かめる）。
+verify/v7 (float32 with the exactness bound checked), with the same checkpoint
+(out/<step>.<s3|s2>.state.npz): it records the SHA-256 of the certificate rows checked, of the inputs
+and of the code computing (c); a checkpoint made for other data FAILS the run (delete it to recompute),
+and it is deleted when (c) is complete.
+展開ですべての最小ベクトルが得られることは F2（verify/v3）。(c) は verify/v7 と同じ厳密な手続き（float32、厳密さの上界を確かめる）で、
+途中経過（out/<段>.<s3|s2>.state.npz）の扱いも同じ: 検査する certificate の行、入力、(c) を計算するコードの SHA-256 を記録する。
+別のデータのための途中経過があれば不合格とし（再計算するには消す）、(c) が終わると消す。
 
 Search (2) may be incomplete in the distributed file (the computation was still running when the
 files were published); the number of certified classes is reported, and the check covers exactly
@@ -30,13 +35,12 @@ Run / 実行:  python3 code/supplementary/route_t/check.py [search3|search2|both
 import os
 import sys
 
-if "--threads" in sys.argv:
+if any(arg == "--threads" or arg.startswith("--threads=") for arg in sys.argv):
     os.environ["OPENBLAS_NUM_THREADS"] = "1"
     os.environ["OMP_NUM_THREADS"] = "1"
     os.environ["MKL_NUM_THREADS"] = "1"
 
 import argparse  # noqa: E402
-import time  # noqa: E402
 
 import numpy as np  # noqa: E402
 
@@ -46,29 +50,6 @@ sys.path.insert(0, os.path.join(HERE, "..", ".."))
 from common import ALLOWED, N_SEARCH2, N_SEARCH3, kept_units, search2_starts, search3_classes  # noqa: E402
 from lib import certs, data, exact, group, shells  # noqa: E402
 from lib.report import Report  # noqa: E402
-
-
-def check_c(mv, W, threads, chunk, state, rep):
-    """max |<w0, y>| per row, with a checkpoint. / 行ごとの max |<w0, y>|。途中経過を保存する。"""
-    n = len(W)
-    if os.path.exists(state):
-        with np.load(state, allow_pickle=False) as z:
-            mx, done = z["mx"].copy(), int(z["done"])
-        assert len(mx) == n
-        rep.log(f"resuming at {done} / {n}")
-    else:
-        mx, done = np.full(n, -1, dtype=np.int8), 0
-    last = time.time()
-    while done < n:
-        e = min(n, done + chunk)
-        mx[done:e] = mv.max_abs_inner(W[done:e], threads=threads)
-        done = e
-        if time.time() - last > 300 or done == n:
-            os.makedirs(os.path.dirname(state), exist_ok=True)
-            certs.save_npz(state, mx=mx, done=np.int64(done))
-            last = time.time()
-            rep.log(f"(c) {done} / {n}, max so far {int(mx[:done].max())}")
-    return mx
 
 
 def main():
@@ -91,6 +72,9 @@ def main():
     rep.value("kept units", keep)
     mv = shells.MinimalVectors(G, R6, S)
     rep.log(f"expanded {2 * mv.count} minimal vectors")
+    # Files that determine the minimal vectors, for the checkpoint. / 最小ベクトルを決めるファイル（途中経過のため）。
+    inputs = [certs.path_checked("min_reps.npz", a.certificates)]
+    inputs += [os.path.join(a.data or data.DEFAULT_DIR, f) for f in ("L56_gram.txt", "sl2_29_generators.txt")]
 
     jobs = []
     if a.which in ("search3", "both"):
@@ -116,7 +100,10 @@ def main():
         ok_b = all(int(nv) in ALLOWED[tg] for nv, tg in zip(norms, targets))
         rep.check(f"{label} (b): every norm is allowed by the lemma", ok_b)
         tag = "s3" if label == "search (3)" else "s2"
-        mx = check_c(mv, W, a.threads, a.chunk, os.path.join(rep.out_dir, f"{rep.step}.{tag}.state.npz"), rep)
+        fp = shells.fingerprint(W, inputs + shells.CODE_FILES, {"n": len(W), "which": label, "limit": a.limit})
+        mx, _, resumed = shells.max_abs_inner_checkpointed(mv, W, a.threads, a.chunk,
+                                                           os.path.join(rep.out_dir, f"{rep.step}.{tag}.state.npz"), fp, rep)
+        rep.value(f"{label} (c): rows taken over from the checkpoint", resumed)
         table = {}
         for nv, m, tg in zip(norms.tolist(), mx.tolist(), targets):
             k = f"target {tg}: norm {nv}, max {m}"
