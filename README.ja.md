@@ -4,10 +4,10 @@
 
 最小ノルム 10 の 112 次元偶ユニモジュラー格子を構成する論文の付属リポジトリです。格子を定義する行列、計算を用いた証明の検算プログラム、検証用データを配布します。
 
-- **論文：** [英語 PDF](paper/paper.en.pdf)・[日本語 PDF](paper/paper.ja.pdf)・[本体・補遺のソースと組版手順](paper/README.md)
+- **論文：** [英語 PDF](paper/paper.en.pdf)・[日本語 PDF](paper/paper.ja.pdf)・[本体・補遺のソースと組版手順](paper/README.ja.md)
 - **検算：** [実行手順と論文との対応](code/README.ja.md)
-- **データ：** [行列の約束](data/README.md)・[検証用データの形式とハッシュ](certificates/MANIFEST.md)
-- **形式化：** [論証の Lean による検査](lean/README.md)
+- **データ：** [行列の約束](data/README.ja.md)・[検証用データの形式とハッシュ](certificates/MANIFEST.ja.md)
+- **形式化：** [論証の Lean による検査](lean/README.ja.md)
 
 ## 最初に実行すること
 
