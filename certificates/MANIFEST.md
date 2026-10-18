@@ -39,6 +39,8 @@ Data for cross-checks and supplementary computations / 別実装の検算・補�
 | `negative_control_B.npz` | `tau_class_B` int64 (56, 56) | an element of M' with τ² = −5 in the other class (gluing B) / τ² = −5 で他方の類（貼り方 B）の M' の元 | supplementary |
 | | `tau_B`, `x`, `v`, `hit_pairs` | the gluing map of gluing B as found in the search (a lift modulo 2, not of square −5), a collision (x, v), and the colliding pairs / 探索で見つけた貼り方 B の写像（2 を法とした持ち上げで、2 乗は −5 ではない）、衝突 (x, v)、衝突する組 | crosscheck/all_data (negative controls) |
 | `outer_automorphism_R.txt` | 112 × 112 integers | an automorphism of L₁₁₂ inducing the outer automorphism of SL₂(29) / SL₂(29) の外部自己同型を与える L₁₁₂ の自己同型 | supplementary/automorphisms |
+| `gram_A.txt` | 112 × 112 integers | Gram matrix G_A of gluing A (Nebe's L_{56,2}(M) glued by a lift of a map in the class of 48), in the basis (3.1) / 貼り方 A の Gram 行列 G_A（基底 (3.1)） | supplementary/isometry_ab.py ([C28]) |
+| `isometry_AB.txt` | 112 × 112 integers | basis change T with T G_B Tᵀ = G_A, det T = ±1 (G_B = (3.1) for tau_class_B), an isometry from gluing A onto gluing B / T G_B Tᵀ = G_A、det T = ±1 の基底変換（貼り方 A から B への等長写像） | supplementary/isometry_ab.py ([C28]) |
 
 Route T (supplement §S4.1, [C21]; not used in the proof of Theorem A) / 経路 T（補遺 §S4.1、[C21]。定理 A の証明には使わない）:
 
