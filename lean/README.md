@@ -2,17 +2,26 @@
 
 [日本語](README.ja.md)
 
-`EEUL/L112/Chain.lean` formalizes the deductions from the stated lattice and certificate hypotheses to the absence of short vectors. It does not verify the numerical input or run the certificate checkers. See the paper for the scope of the formalization.
+## What is proved
 
-Lean and Mathlib versions are fixed by `lean-toolchain` and `lake-manifest.json`. With the matching Lean toolchain installed:
+`EEUL/L112/Chain.lean` proves, in Lean 4 with Mathlib, the deduction from the computational facts F1–F5 of the paper to the conclusion that L₁₁₂ has no vector of norm less than 10. The facts are hypotheses: they are the fields of the structures `Setting`, `Data`, `DataCert` and `DataCanonical`, and the file neither reads the matrices nor runs the certificate checkers. §7.1 of the paper (Table 9) lists the formalized statements and what stays outside Lean.
+
+## How to read Chain.lean
+
+- Start with the module comment at the top: what is proved, the reading order, the hypotheses, the notation. Then read the statements of `theoremA` (F5b checked by certificates) and `theoremA_canonical` (F5b checked by canonical forms), together with the fields of `Setting` and `Data` that they assume. Everything else is proof.
+- Maps are written on the left: `S.τ x` and `g r` are xτ and rg of the paper. `S.N x` is the norm ⟨x, x⟩ and `2 • y` is y + y.
+- The proofs are short tactic scripts; `omega` closes the integer case analysis of the paper.
+
+## How to check
+
+Lean and Mathlib versions are fixed by `lean-toolchain` and `lake-manifest.json`; `elan` installs the toolchain named in `lean-toolchain`. Then:
 
 ```bash
 cd lean
-lake exe cache get
-lake build
-lake env lean CheckAxioms.lean
+lake exe cache get   # Mathlib cache, once (several hundred MB)
+./check.sh
 ```
 
-The first command fetches the Mathlib cache; subsequent builds use the local dependencies. This package contains the argument of the paper (the part that takes the computational facts as hypotheses).
+`check.sh` builds the package, checks that the sources contain no forbidden keyword outside comments (`sorry`, `admit`, `axiom`, `native_decide`, `unsafe`, …), and compares the axioms each theorem depends on (`lake env lean CheckAxioms.lean`) with `expected-axioms.txt`: only `propext`, `Classical.choice` and `Quot.sound`. The computational hypotheses remain hypotheses. The individual commands are `lake build` and `lake env lean CheckAxioms.lean`.
 
-`CheckAxioms.lean` lists the axioms used by the main results. The expected dependencies are only `propext`, `Classical.choice` and `Quot.sound`; the stated computational hypotheses remain hypotheses.
+Once the Mathlib cache is present, the build takes about a minute and 2 GB of memory (measured with Lean 4.34.1: 52 s, 1.7 GB). To cap memory, use a cgroup (for example `systemd-run --user -p MemoryMax=5G`) rather than `ulimit -v`, under which Lean fails to create threads.
