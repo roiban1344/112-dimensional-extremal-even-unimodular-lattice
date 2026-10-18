@@ -306,14 +306,13 @@ def main():
     # Comparison with classify.py at the level of the coarse invariant (new in the published version).
     # classify.py との突き合わせ（粗い不変量の水準で。公開版で追加）。
     cj = os.path.join(out_dir, "classify.json")
-    rep.check("out/route_t/classify.json exists (run classify.py first)", os.path.exists(cj), stop=False)
-    if os.path.exists(cj):
-        rows = json.load(open(cj))
-        first = {(r["real_det"], tuple(r["theta"][:3]), r["min_HN"]) for r in rows if r["min_HN"] is not None}
-        second = {(v["real_det"], tuple(v["theta"]), v["min_HN"]) for v in classes.values()}
-        rep.value("dangerous types after regrouping: classify.json, here", [len(first), len(second)])
-        rep.check(f"the same {EXPECTED_DANGEROUS_TYPES} dangerous types as classify.json after regrouping by the coarse invariant",
-                  first == second and len(first) == EXPECTED_DANGEROUS_TYPES)
+    rep.check("out/route_t/classify.json exists (run classify.py first)", os.path.exists(cj))
+    rows = json.load(open(cj))
+    first = {(r["real_det"], tuple(r["theta"][:3]), r["min_HN"]) for r in rows if r["min_HN"] is not None}
+    second = {(v["real_det"], tuple(v["theta"]), v["min_HN"]) for v in classes.values()}
+    rep.value("dangerous types after regrouping: classify.json, here", [len(first), len(second)])
+    rep.check(f"the same {EXPECTED_DANGEROUS_TYPES} dangerous types as classify.json after regrouping by the coarse invariant",
+              first == second and len(first) == EXPECTED_DANGEROUS_TYPES)
     rep.finish()
     return stats, classes
 
