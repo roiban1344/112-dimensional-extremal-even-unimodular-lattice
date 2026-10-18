@@ -33,7 +33,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "produce"))
-from lib import certs, exact, group, mod2  # noqa: E402
+from lib import certs, exact, group, mod2, require  # noqa: E402
 from lib import enumerate as exact_enum  # noqa: E402
 from lib.report import Report  # noqa: E402
 
@@ -41,7 +41,6 @@ N6, N8 = 15590400, 36957286800
 
 
 def main():
-    from sage.all import ZZ, matrix
     from lattices import load
     from p1_centralizer import commutant_basis, elements_of_norm
     from p2_minimal_orbits import minimal_orbits
@@ -63,7 +62,7 @@ def main():
 
     # 2. minimum 6 / 最小 6
     T = bkz_transform(G, 40)
-    assert abs(exact.det_bareiss(T)) == 1
+    require(abs(exact.det_bareiss(T)) == 1, "abs(exact.det_bareiss(T)) == 1")
     Gr = exact.i64_matmul(exact.i64_matmul(T, G), T.T)
     found, nodes = exact_enum.short_vectors(Gr, 4, os.path.join(rep.out_dir, "build"))
     rep.value("2. nodes of the enumeration of norm <= 4", nodes)

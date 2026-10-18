@@ -41,6 +41,7 @@ sys.path.insert(0, os.path.join(HERE, "..", "produce"))
 from descent import Descent  # noqa: E402
 from lib import certs, data, exact, group, mod2, shells  # noqa: E402
 from lib.report import Report  # noqa: E402
+from supplementary._shared import norm8_distributions  # noqa: E402
 
 N8 = 36957286800
 
@@ -137,24 +138,8 @@ def main():
     reps_xv = {}
     for h, v in zip(hits, partners):
         reps_xv.setdefault(int(can.canon(mod2.pack(XU[h]))[0]), (XU[h], v))
-    S64 = S.astype(np.int64)
-    XS, VS = [], []
-    for x, v in reps_xv.values():
-        xg, vg = np.einsum("j,gjk->gk", x, S64), np.einsum("j,gjk->gk", v, S64)
-        for sx in (1, -1):
-            for sv in (1, -1):
-                XS.append(sx * xg)
-                VS.append(sv * vg)
-    XS, VS = np.concatenate(XS), np.concatenate(VS)
-    keys = np.concatenate([XS, VS], axis=1)
-    rep.check("(d) these are 292320 distinct vectors", len(np.unique(keys, axis=0)) == 292320)
-    XG, VG = exact.f64_matmul(XS, G).astype(np.float64), exact.f64_matmul(VS, G).astype(np.float64)
-    dists = {}
-    for i0 in range(0, len(XS), len(S)):
-        ip = np.rint((XG @ XS[i0] + VG @ VS[i0]) / 2).astype(np.int64)  # <z0, z> = (1/2)(<x0,x> + <v0,v>)
-        vals, cnt = np.unique(ip, return_counts=True)
-        key = str(list(zip(vals.tolist(), cnt.tolist())))
-        dists[key] = dists.get(key, 0) + 1
+    ndistinct, dists = norm8_distributions(reps_xv.values(), S, G)            # supplementary/_shared.py
+    rep.check("(d) these are 292320 distinct vectors", ndistinct == 292320)
     rep.value("(d) inner-product distributions of the norm-8 vectors (one per block of 12180): {distribution: blocks}", dists)
     rep.finish()
 

@@ -74,7 +74,6 @@ def analyse(B, T):
     HT = ts.HermTensor(GH, AH, GN, tauN, 5); R = HT.R
     mR = ts.exact_minimum(R, 10)
     n6 = int(pari(R).qfminim(6, 0, 0)[0]); n8 = int(pari(R).qfminim(8, 0, 0)[0]) - n6
-    mN = int(min(GN[i, i] for i in range(4)))
     U = matrix(ZZ, pari(GN).qflllgram()); GL = U.transpose() * GN * U
     minN = min(int(t) for t in [GL[i, i] for i in range(4)])
     # 厳密な最小

@@ -31,7 +31,9 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
-from common import Setup  # noqa: E402
+from aut_common import Setup  # noqa: E402
+from lib import require  # noqa: E402
+from supplementary._shared import word_lifter  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 ORDER = 1169280
@@ -56,7 +58,6 @@ def main():
     ckeys = {tuple(M.change_ring(Fp).list()): M for M in cent}
     cint = [ckeys[tuple(matrix(Fp, c.sage()).list())] for c in libgap.SmallGeneratingSet(Cg)]
     intgens = st.sR + cint + [X]
-    intinv = [M.inverse().change_ring(ZZ) for M in intgens]
     gens = [libgap(M.change_ring(Fp)) for M in intgens]
     A = libgap.Group(gens)
     rep.check("|A| = 1169280", int(A.Size()) == ORDER)
@@ -75,16 +76,13 @@ def main():
     rep.value("number of conjugacy classes", len(cls))
     rep.check("(1) 206 conjugacy classes", len(cls) == 206)
     rep.check("class sizes add up to |A|", sum(sizes) == ORDER)
-    epi = libgap.EpimorphismFromFreeGroup(libgap.GroupWithGenerators([libgap.Image(toP, g) for g in gens]))
+    lift = word_lifter(libgap.EpimorphismFromFreeGroup(libgap.GroupWithGenerators([libgap.Image(toP, g) for g in gens])), intgens)
 
     def int_matrix(perm):
-        """The integer matrix of a permutation, via a word in the generators (checked modulo 3).
-        置換に対応する整数行列（生成元の語を経由。3 を法として確かめる）。"""
-        word = libgap.LetterRepAssocWord(libgap.PreImagesRepresentative(epi, perm)).sage()
-        M = identity_matrix(ZZ, 112)
-        for e in word:
-            M = M * (intgens[e - 1] if e > 0 else intinv[-e - 1])
-        assert M.change_ring(Fp) == matrix(Fp, libgap.Image(fromP, perm).sage())
+        """The integer matrix of a permutation, via a word in the generators (_shared.py; checked modulo 3).
+        置換に対応する整数行列（生成元の語を経由。_shared.py。3 を法として確かめる）。"""
+        M = lift(perm)
+        require(M.change_ring(Fp) == matrix(Fp, libgap.Image(fromP, perm).sage()), "the lifted matrix does not reduce to the permutation")
         return M
 
     power_sums = []

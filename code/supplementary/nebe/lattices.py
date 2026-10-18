@@ -29,6 +29,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "produce"))
+from lib import require  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 
@@ -45,7 +46,7 @@ def write_mats(path, header, mats):
 
 def read_mats(path, n, ring=None):
     """Matrices from a text file (integers, or rationals written as a/b). / テキストファイルの行列（整数または a/b の有理数）。"""
-    from sage.all import QQ, ZZ, matrix
+    from sage.all import ZZ, matrix
     ring = ring or ZZ
     flat = [ring(t) for line in open(path) if not line.startswith("#") for t in line.split()]
     return [matrix(ring, n, n, flat[k * n * n:(k + 1) * n * n]) for k in range(len(flat) // (n * n))]
@@ -63,10 +64,10 @@ def load(name, out_dir, reduce=False):
     if reduce:
         from sage.all import ZZ, pari
         U = pari(G).qflllgram().sage().transpose().change_ring(ZZ)
-        assert abs(U.det()) == 1
+        require(abs(U.det()) == 1, "abs(U.det()) == 1")
         Ui = U.inverse().change_ring(ZZ)
         G, gens = U * G * U.transpose(), [U * g * Ui for g in gens]
-        assert all(g * G * g.transpose() == G for g in gens)
+        require(all(g * G * g.transpose() == G for g in gens), "all(g * G * g.transpose() == G for g in gens)")
     return G, gens
 
 

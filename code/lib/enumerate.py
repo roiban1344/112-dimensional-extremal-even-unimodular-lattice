@@ -5,12 +5,12 @@ cannot miss vectors (verify/enum_interval.c: interval arithmetic, exact norms at
 Used by verify/v1_min_L.py (F1; `interval`, `compile_enumerator`, `run_enumerator`), and to check that
 PARI's qfminim, whose documentation does not guarantee completeness, has returned every short vector:
 produce/exact_qfminim.py calls `short_vectors` for the automorphisms of L_112 (paper §8, Table D2
-[C24], through supplementary/automorphisms/common.py) and the centralizer of SL_2(29) in Aut(L)
+[C24], through supplementary/_shared.py) and the centralizer of SL_2(29) in Aut(L)
 (produce/p1_centralizer.py). supplementary/fixed_sublattices.py, anatomy_b.py and nebe/tables.py
 call `short_vectors` directly.
 verify/v1_min_L.py（F1。`interval`, `compile_enumerator`, `run_enumerator`）が使う。また、文書に完全性の保証が無い PARI の
 qfminim が、短いベクトルをすべて返したことを確かめるのに使う: produce/exact_qfminim.py が `short_vectors` を呼び、
-L_112 の自己同型（論文 §8、表 D2 の [C24]。supplementary/automorphisms/common.py 経由）と、Aut(L) における SL_2(29) の
+L_112 の自己同型（論文 §8、表 D2 の [C24]。supplementary/_shared.py 経由）と、Aut(L) における SL_2(29) の
 中心化群（produce/p1_centralizer.py）に使う。supplementary/fixed_sublattices.py, anatomy_b.py, nebe/tables.py は
 `short_vectors` を直接呼ぶ。
 

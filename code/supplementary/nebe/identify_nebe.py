@@ -38,23 +38,7 @@ sys.path.insert(0, os.path.join(HERE, "..", "..", "produce"))
 sys.path.insert(0, os.path.join(HERE, "..", "automorphisms"))
 from lib import data  # noqa: E402
 from lib.report import Report  # noqa: E402
-
-
-def write_mats(path, header, mats):
-    with open(path, "w") as f:
-        for line in header.splitlines():
-            f.write("# " + line + "\n")
-        for k, A in enumerate(mats):
-            if k:
-                f.write("\n")
-            for r in A.rows():
-                f.write(" ".join(str(x) for x in r) + "\n")
-
-
-def read_mats(path, n):
-    from sage.all import ZZ, matrix
-    flat = [int(t) for line in open(path) if not line.startswith("#") for t in line.split()]
-    return [matrix(ZZ, n, n, flat[k * n * n:(k + 1) * n * n]) for k in range(len(flat) // (n * n))]
+from lattices import read_mats, write_mats  # noqa: E402
 
 
 def check(rep, out, a):
@@ -80,7 +64,7 @@ def check(rep, out, a):
 
 
 def main():
-    from sage.all import GF, QQ, ZZ, block_matrix, identity_matrix, lcm, libgap, matrix, pari, vector, zero_matrix
+    from sage.all import QQ, ZZ, block_matrix, matrix, vector
     ap = argparse.ArgumentParser(description="S11: identification with L_{56,2}(M~)")
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--data", default=None)
@@ -98,12 +82,12 @@ def main():
 
     # 1. L' = L_{56,2}(M~) from the definition, built by lattices.py (run it first).
     # 1. 定義から作った L' = L_{56,2}(M~)（先に lattices.py を走らせる）。
-    from lattices import load, read_mats as read_q
+    from lattices import load
     X = CycloQuat(29)
     n = 56
     Gp, (ZL, WL) = load("Mtilde", rep.out_dir)
-    M = read_q(os.path.join(out, "Mtilde_order.txt"), 8, QQ)[0]
-    Lb = read_q(os.path.join(out, "Mtilde_basis.txt"), 56, QQ)[0]
+    M = read_mats(os.path.join(out, "Mtilde_order.txt"), 8, QQ)[0]
+    Lb = read_mats(os.path.join(out, "Mtilde_basis.txt"), 56, QQ)[0]
     rep.check("L' (out/nebe/Mtilde_*) is even unimodular and z', w' preserve its Gram matrix",
               Gp.det() == 1 and all(Gp[i, i] % 2 == 0 for i in range(n)) and all(h * Gp * h.transpose() == Gp for h in (ZL, WL)))
     Cp = commutant_basis([ZL, WL], n)

@@ -55,7 +55,7 @@ import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
-from lib import certs, data  # noqa: E402
+from lib import certs, data, require  # noqa: E402
 from lib import enumerate as exact_enum  # noqa: E402
 from lib.report import Report  # noqa: E402
 
@@ -84,7 +84,7 @@ def bkz_stages(GR, block_sizes, rep, label):
         if bs:
             BKZReduction(M)(BKZ.Param(block_size=bs, max_loops=BKZ_TOURS, strategies=BKZ.DEFAULT_STRATEGY))
         T = matrix(ZZ, n, n, lambda i, j: U[i, j])
-        assert abs(T.det()) == 1
+        require(abs(T.det()) == 1, "abs(T.det()) == 1")
         return T * G * T.transpose()                       # exact; floating point only steers the reduction
 
     cur = reduce(GR, "mpfr", 0)
@@ -139,7 +139,7 @@ def main():
         Gs = Kc * GR * Kc.transpose()
         dim, det = Kc.nrows(), Gs.det()
         U = pari(Gs).qflllgram().sage().transpose()
-        assert abs(U.det()) == 1
+        require(abs(U.det()) == 1, "abs(U.det()) == 1")
         Gr = U * Gs * U.transpose()
         res = pari(Gr).qfminim(None, 1, 0)                         # PARI: the minimum and one minimal vector
         m = int(res[1])

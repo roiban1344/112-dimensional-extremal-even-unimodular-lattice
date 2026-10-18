@@ -3,8 +3,8 @@ proof of Theorem A.
 S5. Aut(L_112) における S = SL_2(29) の正規化群（論文 §3.4、§8。表 D2 の [C24]）。定理 A の証明には使わない。
 
 (1) Centralizer: the automorphisms of L_112 commuting with S are found among the block matrices
-    [[a, b], [c, d]] (a, b, c, d in M' tensor Q) as in common.Setup.isometries_from. Expected: 48.
-    中心化群: S と可換な L_112 の自己同型を、ブロック行列 [[a, b], [c, d]] の中から common.Setup.isometries_from で求める。期待値 48。
+    [[a, b], [c, d]] (a, b, c, d in M' tensor Q) as in aut_common.Setup.isometries_from. Expected: 48.
+    中心化群: S と可換な L_112 の自己同型を、ブロック行列 [[a, b], [c, d]] の中から aut_common.Setup.isometries_from で求める。期待値 48。
 (2) Outer automorphism: for the outer automorphism alpha of S (GAP, on the reduction modulo 3, which
     is faithful on a finite group of integer matrices), the twisted intertwiners T with
     x g T = x T alpha(g) on L give a 32-dimensional space in the same way, and the isometries of L_112
@@ -28,13 +28,14 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
-from common import Setup, intertwiners  # noqa: E402
+from aut_common import Setup, intertwiners  # noqa: E402
+from supplementary._shared import word_lifter  # noqa: E402
 from lib import certs  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 
 def main():
-    from sage.all import GF, QQ, ZZ, identity_matrix, lcm, libgap, matrix
+    from sage.all import GF, QQ, ZZ, lcm, libgap, matrix
     ap = argparse.ArgumentParser(description="S5: normalizer of SL_2(29) in Aut(L_112)")
     ap.add_argument("--data", default=None)
     ap.add_argument("--certificates", default=None)
@@ -56,18 +57,9 @@ def main():
     tr = libgap.RightTransversal(aut, inn)
     reps = [tr[i] for i in range(int(libgap.Size(tr)))]
     rep.value("|Out(SL_2(29))| (GAP)", len(reps))
-    hom = libgap.EpimorphismFromFreeGroup(GB)
-    gi = {1: st.g1, 2: st.g2}
-    ginv = {1: st.g1.inverse(), 2: st.g2.inverse()}
-
-    def lift(img):
-        """An element of the mod-3 group, as an integer matrix: write it as a word in g1, g2 and multiply.
-        3 を法とした群の元を、g1, g2 の語で書いて掛け、整数行列にする。"""
-        word = libgap.LetterRepAssocWord(libgap.PreImagesRepresentative(hom, img)).sage()
-        A = identity_matrix(ZZ, n)
-        for e in word:
-            A = A * (gi[e] if e > 0 else ginv[-e])
-        return A.change_ring(ZZ)
+    # An element of the mod-3 group, as an integer matrix: write it as a word in g1, g2 and multiply (_shared.py).
+    # 3 を法とした群の元を、g1, g2 の語で書いて掛け、整数行列にする（_shared.py）。
+    lift = word_lifter(libgap.EpimorphismFromFreeGroup(GB), [st.g1, st.g2])
 
     found = []
     for j, alpha in enumerate(reps):

@@ -37,7 +37,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 sys.path.insert(0, HERE)
 from descent import Descent  # noqa: E402
-from lib import certs, data, exact, group  # noqa: E402
+from lib import certs, data, exact, group, require  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 
@@ -65,7 +65,7 @@ def main():
         if abs(ip) != 1:
             continue
         w10 = r - s if ip == 1 else r + s
-        assert int(w10 @ G @ w10) == 10
+        require(int(w10 @ G @ w10) == 10, "int(w10 @ G @ w10) == 10")
         shift = sum(rng.choice((-1, 1)) * vec() for _ in range(3))
         w, m, _ = d.descend(w10 + 2 * shift, 40)
         nw = int(w @ G @ w)
@@ -80,7 +80,7 @@ def main():
     for j, r in enumerate(R6):
         w0 = exact.i64_matmul(r, t)
         w, m, _ = d.descend(w0, 40)
-        assert ((w - w0) % 2 == 0).all()
+        require(((w - w0) % 2 == 0).all(), "((w - w0) % 2 == 0).all()")
         nw = int(w @ G @ w)
         key = f"norm {nw}, max {m}"
         table[key] = table.get(key, 0) + 1

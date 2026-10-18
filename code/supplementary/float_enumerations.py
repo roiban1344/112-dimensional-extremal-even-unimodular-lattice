@@ -39,7 +39,7 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
-from lib import certs, data, exact  # noqa: E402
+from lib import certs, data, exact, require  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 
@@ -76,7 +76,7 @@ class CosetMinimum:
 
     def __init__(self, G, T):
         from fpylll import GSO, IntegerMatrix
-        from sage.all import ZZ, matrix
+        from sage.all import ZZ
         self.n = G.nrows()
         self.G = np.array(G.rows(), dtype=np.int64)
         self.T = np.array(T.rows(), dtype=np.int64)                     # reduced basis = T * original
@@ -100,7 +100,7 @@ class CosetMinimum:
             return None
         y = np.array([int(round(c)) for c in sol[0][1]], dtype=np.int64)
         v = (tr - 2 * y) @ self.T
-        assert ((v - w) % 2 == 0).all()
+        require(((v - w) % 2 == 0).all(), "((v - w) % 2 == 0).all()")
         return v
 
 
@@ -138,7 +138,7 @@ def main():
     elif a.mode == "qfminim":
         T = bkz_basis(G, 50)
         Gr = T * G * T.transpose()
-        assert abs(T.det()) == 1
+        require(abs(T.det()) == 1, "abs(T.det()) == 1")
         r = pari(Gr).qfminim(4, 1, 0)
         rep.check("PARI qfminim on a BKZ-50 basis: no nonzero vector of norm <= 4", int(r[0]) == 0)
     elif a.mode == "cvp610":

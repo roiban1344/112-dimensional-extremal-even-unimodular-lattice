@@ -91,6 +91,7 @@ F1 の列挙は外向きに丸める区間演算を使います（`verify/enum_i
 * `produce/`、`supplementary/`、`crosscheck/all_data/`: SageMath 10（PARI/GP、GAP、fpylll を含む）。SageMath 10.9 で確認。リポジトリのルートの
   `environment.yml` で conda/micromamba から入れられます。これらのスクリプトは、その環境の `python3` で実行します（`python3 -I code/...`）。
   conda-forge 版の SageMath では `sage -python` は使えません。
+* コンテナ: リポジトリのルートの `Dockerfile` は、`verify/` のためにこれらを備えたイメージを作ります（SageMath 入りのイメージは `Dockerfile.sage`）。ルートの README を参照してください。
 * `lean/`: Lean 4 と Mathlib（版は `lean/lean-toolchain` と `lean/lake-manifest.json` に固定）。
 
 ## 検証用データの生成
@@ -99,7 +100,7 @@ F1 の列挙は外向きに丸める区間演算を使います（`verify/enum_i
 |---|---|---|
 | `produce/p1_centralizer.py` | M′ と中心化群 C（`centralizer.npz`、`commutant.npz`） | 10 分 |
 | `produce/p2_minimal_orbits.py` | `min_reps.npz`（閉包、§6.2） | 10 分 |
-| `produce/p3_norm8_orbits.py` | `norm8_reps.npz`（印の付く元、§6.4） | 1.2 時間 |
+| `produce/p3_norm8_orbits.py` | `norm8_reps.npz`（印の付く元（2 本の最小ベクトルの和）、§6.4） | 1.2 時間 |
 | `produce/p4_odd_descent.py` | `odd_bounding.npz`（降下、§6.6） | 6 分 |
 | `produce/p5_even_descent.py` | `even_bounding.npz`（降下、§6.7。6 分割、再開可能） | 約 190 CPU 時間 |
 | `produce/p6_reduction.py` | `reduction_L.txt`、`reduction_R.txt` | 1 分 |
@@ -128,7 +129,8 @@ p2 は類 r + 2L の標準形の集合（最小ベクトルではこれが同じ
 スクリプトの冒頭にあります）。SageMath を含む Python を `PYTHON` で（既定は `python3`。例えば `environment.yml` の conda 環境の
 もの。SageMath の配布物なら `PYTHON="sage -python"`）、CTblLib を含む GAP を `GAP` で（既定は `gap`）与え、`fetch.sh` で
 データを取得しておきます。段 `gluing_b` には `verify/v4_norm8_orbits.py` が書く `out/K8.npy` が要ります。失敗した段があっても
-残りは続け、最後に失敗した段を一覧にして終了コード 1 で終わります。
+残りは続け、最後に失敗した段を一覧にして終了コード 1 で終わります。いくつかのスクリプトが共有する関数（偶奇を保つ写像の類、
+同変な等長写像の探索など）は `supplementary/_shared.py` にあります。
 
 ## 経路 T（補遺 §S4、表 D2 の [C20]・[C21]）
 

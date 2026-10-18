@@ -5,5 +5,5 @@ channels:
   - conda-forge
 dependencies:
   - python=3.12
-  - sage=10.*        # SageMath (bundles PARI/GP, GAP, fplll/fpylll)
-  - numpy
+  - sage=10.9        # SageMath (bundles PARI/GP, GAP, fplll/fpylll); the tested version / 試験した版
+  - numpy=2.5        # the tested version / 試験した版

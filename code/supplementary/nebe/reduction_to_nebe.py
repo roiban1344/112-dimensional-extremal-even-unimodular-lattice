@@ -36,7 +36,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "produce"))
-from lib import certs, data, exact  # noqa: E402
+from lib import certs, data, exact, require  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 
@@ -78,7 +78,7 @@ def main():
         GX = GX.change_ring(ZZ)
         Bi = Bm.change_ring(QQ).inverse()
         hz, hw = (Bm * h * Bi for h in (zM, wM))
-        assert all(c in ZZ for h in (hz, hw) for c in h.list())
+        require(all(c in ZZ for h in (hz, hw) for c in h.list()), "all(c in ZZ for h in (hz, hw) for c in h.list())")
         hz, hw = hz.change_ring(ZZ), hw.change_ring(ZZ)
         isos = equivariant_isometries(GX, hz, hw, G, g1, g2, rep)
         rep.value(f"subspace {k}: SL_2(29)-equivariant isometries to L (up to sign)", len(isos))
@@ -88,7 +88,7 @@ def main():
     rep.check("1. one sublattice L_X is SL_2(29)-equivariantly isometric to L", found is not None)
     X, Bm, T = found                                   # T G T^T = G_X: rows of T = basis of L_X in the basis of L
     Ti = T.inverse()
-    assert all(c in ZZ for c in Ti.list())
+    require(all(c in ZZ for c in Ti.list()), "all(c in ZZ for c in Ti.list())")
     Emb = (Ti * Bm).change_ring(ZZ)                    # rows: the basis of L, in coordinates of L_{56,2}(M)
     rep.check("1. the embedding e: L -> L_{56,2}(M) satisfies <e(x), e(y)> = 2 <x, y>", Emb * GM * Emb.transpose() == 2 * G)
     write_mats(os.path.join(out, "embedding_L_into_M.txt"),

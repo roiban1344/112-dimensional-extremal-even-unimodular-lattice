@@ -49,7 +49,6 @@ Run / 実行:  python3 code/supplementary/isometry_ab.py find     (with the pyth
              python3 code/supplementary/isometry_ab.py check
 """
 import argparse
-import itertools
 import os
 import sys
 
@@ -61,6 +60,7 @@ sys.path.insert(0, os.path.join(HERE, "nebe"))
 sys.path.insert(0, os.path.join(HERE, "..", "produce"))
 from lib import certs, data, exact  # noqa: E402
 from lib.report import Report  # noqa: E402
+from supplementary._shared import equivariant_isometries, parity_preserving_classes, short_lift  # noqa: E402
 
 N = 56
 T_FILE = "isometry_AB.txt"
@@ -69,69 +69,25 @@ GA_FILE = "gram_A.txt"
 
 def lift_class_A(Gs, gens_s, rep):
     """The integral lift X_A in M'(L_{56,2}(M)) of an element of the class of size 48, chosen exactly as in
-    nebe/gluings_m.py (c): the first element, in qfminim order and by increasing norm, whose reduction lies
-    in the class. / 大きさ 48 の類の元の整数の持ち上げ X_A。nebe/gluings_m.py (c) と同じ選び方。"""
-    from sage.all import GF, ZZ, identity_matrix, matrix
-    from p1_centralizer import commutant_basis, elements_of_norm
-    n = N
-    F2 = GF(2)
-    basis = commutant_basis(gens_s, n)
-    I2 = identity_matrix(F2, n)
-    rows = None
-    for g in gens_s:
-        g2 = g.change_ring(F2)
-        Kx = I2.tensor_product(g2.transpose()) - g2.tensor_product(I2)
-        rows = Kx if rows is None else rows.stack(Kx)
-    E = rows.right_kernel()
-    Gb = Gs.change_ring(F2)
-    q0 = [int(Gs[i, i]) // 2 % 2 for i in range(n)]
-
-    def parity_preserving(f):
-        if f * Gb * f.transpose() != Gb:
-            return False
-        return all((f.row(i).change_ring(ZZ) * Gs * f.row(i).change_ring(ZZ)) // 2 % 2 == q0[i] for i in range(n))
-    Eb = [matrix(F2, n, n, list(v)) for v in E.basis()]
-    maps = []
-    for coeffs in itertools.product([0, 1], repeat=8):
-        f = sum((c * b for c, b in zip(coeffs, Eb)), matrix(F2, n, n))
-        if f.is_invertible() and parity_preserving(f):
-            f.set_immutable()
-            maps.append(f)
-    C2 = []
-    for Y in elements_of_norm(basis, Gs, 1):
-        Yb = Y.change_ring(F2)
-        Yb.set_immutable()
-        if Yb not in C2:
-            C2.append(Yb)
-    todo, classes = set(maps), []
-    while todo:
-        f0 = min(todo, key=lambda f: tuple(f.list()))
-        orb = set()
-        for u in C2:
-            for v in C2:
-                for f in (f0, f0.inverse()):
-                    h = u * f * v
-                    h.set_immutable()
-                    orb.add(h)
-        classes.append(orb)
-        todo -= orb
+    nebe/gluings_m.py (c), by the same shared functions (supplementary/_shared.py): the first element, in qfminim
+    order and by increasing norm, whose reduction lies in the class. Returns (X_A, basis of M').
+    大きさ 48 の類の元の整数の持ち上げ X_A。nebe/gluings_m.py (c) と同じ共有の関数（supplementary/_shared.py）で、同じ選び方をする。
+    (X_A, M' の基底) を返す。"""
+    from p1_centralizer import commutant_basis
+    basis = commutant_basis(gens_s, N)
+    _, maps, C2, classes = parity_preserving_classes(Gs, gens_s, basis)
     info = sorted(((len(o), any(u in o for u in C2)) for o in classes))
     rep.check("the 60 invertible parity-preserving maps form two classes: 12 (containing C) and 48 (gluing A)",
               len(maps) == 60 and info == [(12, True), (48, False)])
     clsA = next(o for o in classes if len(o) == 48)
-    for Nq in range(1, 8):
-        for Y in elements_of_norm(basis, Gs, Nq):
-            Yb = Y.change_ring(F2)
-            Yb.set_immutable()
-            if Yb in clsA:
-                rep.value("norm q of the lift X_A", Nq)
-                return Y, basis
-    return None, basis
+    Y, q = short_lift(basis, Gs, clsA)
+    if Y is not None:
+        rep.value("norm q of the lift X_A", q)
+    return Y, basis
 
 
 def find(a):
-    from sage.all import QQ, ZZ, block_matrix, identity_matrix, lcm, matrix, zero_matrix
-    from exact_qfminim import qfminim_checked
+    from sage.all import QQ, ZZ, block_matrix, identity_matrix, matrix, zero_matrix
     from lattices import load, read_mats
     rep = Report("s24_isometry_ab_find", a.out)
     n = N
@@ -166,44 +122,16 @@ def find(a):
     BB = block_matrix(ZZ, [[Emb, tB * Emb], [Z, 2 * Emb]], subdivide=False)
     D = block_matrix(ZZ, [[Gs, Z], [Z, Gs]], subdivide=False)
     rep.check("B_B diag(G_M, G_M) B_B^T / 4 = G_B", BB * D * BB.transpose() == 4 * GB)
-    BBi = BB.change_ring(QQ).inverse()
-    BAq = BA.change_ring(QQ)
 
-    # The 32 equivariant maps T_k = B_A Phi_k B_B^{-1}. / 32 個の同変写像。
-    Zq = zero_matrix(QQ, n, n)
-    gens = []
-    for t in basis:
-        for pos in range(4):
-            blocks = [[Zq, Zq], [Zq, Zq]]
-            blocks[pos // 2][pos % 2] = t.change_ring(QQ)
-            gens.append(BAq * block_matrix(QQ, blocks, subdivide=False) * BBi)
-    k = len(gens)
+    # The S-equivariant maps T = B_A Phi B_B^{-1} and the isometries among them (supplementary/_shared.py).
+    # S 同変な写像 T = B_A Phi B_B^{-1} と、そのうちの等長写像（supplementary/_shared.py）。
+    isos, ncands, k = equivariant_isometries(BA.change_ring(QQ), GA, BB.change_ring(QQ), GB, basis, rep)
     rep.value("dimension of the S-equivariant maps", k)
-    rows = {tuple(col) for col in zip(*[g.list() for g in gens])}
-    rows.discard(tuple([QQ(0)] * k))
-    rows = [list(r) for r in rows]
-    d = lcm([QQ(x).denominator() for r in rows for x in r])
-    span = matrix(ZZ, 0, k)
-    for i in range(0, len(rows), 200):
-        span = span.stack(matrix(ZZ, [[int(d * x) for x in r] for r in rows[i:i + 200]])).hermite_form(include_zero_rows=False)
-    rep.check("the coefficient rows span a lattice of full rank 32", span.nrows() == k)
-    Hb = (span.change_ring(QQ) / d).inverse().transpose()
-    Xs = []
-    for row in Hb.rows():
-        X = sum(c * g for c, g in zip(row, gens))
-        assert all(x in ZZ for x in X.list())
-        Xs.append(X.change_ring(ZZ))
-    GAi = GA.inverse().change_ring(ZZ)
-    Ys = [GAi * X * GB for X in Xs]
-    Q = matrix(ZZ, [Y.list() for Y in Ys]) * matrix(ZZ, [X.list() for X in Xs]).transpose()
-    Q = Q + Q.transpose()                                            # 2 Q / 2Q
-    rep.check("Q(T) = tr(G_A^-1 T G_B T^T) is positive definite on H", Q.is_positive_definite())
-    cands = qfminim_checked(Q, 2 * 2 * N)
-    isos = [X for X in (sum(ci * Xi for ci, Xi in zip(c, Xs)) for c in cands) if X * GB * X.transpose() == GA]
-    rep.value("integral equivariant maps with Q <= 112 (up to sign), isometries among them", [len(cands), len(isos)])
+    rep.value("integral equivariant maps with Q <= 112 (up to sign), isometries among them", [ncands, len(isos)])
     rep.check("there is an S-equivariant isometry from gluing A onto gluing B", len(isos) > 0)
     T = min(isos, key=lambda X: (max(abs(x) for x in X.list()), sum(abs(x) for x in X.list())))
     rep.check("T G_B T^T = G_A and det T = +-1", T * GB * T.transpose() == GA and abs(T.det()) == 1)
+    Zq = zero_matrix(QQ, n, n)
     sA = [BA * block_matrix(QQ, [[h, Zq], [Zq, h]], subdivide=False) * BA.inverse() for h in gens_s]
     sB = [BL * block_matrix(QQ, [[h, Zq], [Zq, h]], subdivide=False) * BL.inverse() for h in hL]
     rep.check("T intertwines the actions of S: s_A T = T s_B for the generators", all(x * T == T * y for x, y in zip(sA, sB)))

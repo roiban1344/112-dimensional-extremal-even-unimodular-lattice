@@ -24,6 +24,8 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "automorphisms"))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "produce"))
+sys.path.insert(0, os.path.join(HERE, "..", ".."))
+from lib import require  # noqa: E402
 
 
 def equivariant_isometries(Gp, zp, wp, G, g1, g2, rep, n=56):
@@ -31,9 +33,10 @@ def equivariant_isometries(Gp, zp, wp, G, g1, g2, rep, n=56):
     T: integer matrix with T G T^T = G' and z' T = T phi(z'), w' T = T phi(w') (rows of T = images of the basis
     of L' in the basis of L). Returns all such T up to sign for that class.
     等長写像が存在する最初の外部類について (T, phi(z'), phi(w')) のリスト（無ければ []）。符号を除いてすべての T を返す。"""
-    from common import intertwiners
+    from aut_common import intertwiners
     from exact_qfminim import qfminim_checked
-    from sage.all import GF, QQ, ZZ, identity_matrix, lcm, libgap, matrix
+    from sage.all import GF, QQ, ZZ, lcm, libgap, matrix
+    from supplementary._shared import word_lifter
     F3 = GF(3)
     GA = libgap.Group([libgap(zp.change_ring(F3)), libgap(wp.change_ring(F3))])
     GB = libgap.Group([libgap(g1.change_ring(F3)), libgap(g2.change_ring(F3))])
@@ -43,15 +46,7 @@ def equivariant_isometries(Gp, zp, wp, G, g1, g2, rep, n=56):
     autA = libgap.AutomorphismGroup(GA)
     tr = libgap.RightTransversal(autA, libgap.InnerAutomorphismsAutomorphismGroup(autA))
     outreps = [tr[k] for k in range(int(libgap.Size(tr)))]
-    hom = libgap.EpimorphismFromFreeGroup(GB)
-    gg, gi = {1: g1, 2: g2}, {1: g1.inverse(), 2: g2.inverse()}
-
-    def lift(img):
-        word = libgap.LetterRepAssocWord(libgap.PreImagesRepresentative(hom, img)).sage()
-        A = identity_matrix(ZZ, n)
-        for e in word:
-            A = A * (gg[e] if e > 0 else gi[-e])
-        return A.change_ring(ZZ)
+    lift = word_lifter(libgap.EpimorphismFromFreeGroup(GB), [g1, g2])         # words in g1, g2 (_shared.py) / g1, g2 の語
 
     Gpi = Gp.inverse()
     for k, alpha in enumerate(outreps):
@@ -67,7 +62,7 @@ def equivariant_isometries(Gp, zp, wp, G, g1, g2, rep, n=56):
         Hb = [matrix(ZZ, n, n, list(r)) for r in B.saturation().rows()]
         Q = matrix(QQ, len(Hb), len(Hb), lambda i, j: (Gpi * Hb[i] * G * Hb[j].transpose()).trace())
         Q = (Q + Q.transpose()) / 2
-        assert Q.is_positive_definite()
+        require(Q.is_positive_definite(), "Q.is_positive_definite()")
         dQ = lcm([x.denominator() for x in Q.list()])
         cands = qfminim_checked((dQ * Q).change_ring(ZZ), dQ * n)
         isos = [T for T in (sum(c_ * H_ for c_, H_ in zip(c, Hb)) for c in cands) if T * G * T.transpose() == Gp]

@@ -45,7 +45,7 @@ sys.path.insert(0, os.path.join(HERE, ".."))
 sys.path.insert(0, HERE)
 from descent import Descent  # noqa: E402
 from p3_norm8_orbits import fingerprint  # noqa: E402
-from lib import certs, data, exact, group  # noqa: E402
+from lib import certs, data, exact, group, require  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 NPAIRS = 1527984
@@ -120,7 +120,7 @@ def main():
         i, k = divmod(p, 6)
         w0 = exact.i64_matmul(exact.i64_matmul(X[i], U[k]), t)
         w, m, _ = d.descend(w0, 80)
-        assert ((w - w0) % 2 == 0).all() and np.abs(w).max() < 2 ** 15
+        require(((w - w0) % 2 == 0).all() and np.abs(w).max() < 2 ** 15, "((w - w0) % 2 == 0).all() and np.abs(w).max() < 2 ** 15")
         nw = int(w @ G @ w)
         key = f"norm {nw}, max {m}"
         hist[key] = hist.get(key, 0) + 1

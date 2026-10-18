@@ -5,6 +5,10 @@
                                                  L_6 の S-軌道の代表（F2）
   centralizer.npz    units int64 (6, 56, 56)     representatives of C/{+-1} (paper §4.2)
                                                  C/{±1} の代表（論文 §4.2）
+  commutant.npz      basis int64 (8, 56, 56)     a Z-basis of M' = End_{SL2(29)}(L) (produce/p1, supplementary,
+                                                 crosscheck/all_data; not read by verify/)
+                                                 M' = End_{SL2(29)}(L) の Z-基底（produce/p1、supplementary、
+                                                 crosscheck/all_data が使う。verify/ は読まない）
   norm8_reps.npz     reps  int16 (254664, 56)    representatives x_i of the S*-orbits on L_8 (F3)
                                                  L_8 の S*-軌道の代表 x_i（F3）
   odd_bounding.npz   w0    int16 (656, 56)       odd-class certificate of r_j tau + 2L, row j (F5a)

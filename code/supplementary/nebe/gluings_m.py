@@ -32,7 +32,6 @@ SageMath が要る。実行時間: 約 30 分。メモリ: 約 3 GB。
 Run / 実行:  python3 code/supplementary/nebe/gluings_m.py
 """
 import argparse
-import itertools
 import os
 import sys
 
@@ -44,6 +43,7 @@ sys.path.insert(0, os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "produce"))
 from lib import exact, group, mod2, shells  # noqa: E402
 from lib.report import Report  # noqa: E402
+from supplementary._shared import norm8_distributions, parity_preserving_classes, short_lift  # noqa: E402
 
 
 def main():
@@ -62,51 +62,13 @@ def main():
     with np.load(os.path.join(out, "M_tables.npz"), allow_pickle=False) as z:
         U, R6, X8, K8 = z["units"].astype(np.int64), z["min_reps"].astype(np.int64), z["norm8_reps"].astype(np.int64), z["K8"]
     basis = commutant_basis(gens_s, n)
-    half = elements_of_norm(basis, Gs, 1)
 
-    # (a) / (a)
-    I2 = identity_matrix(F2, n)
-    rows = None
-    for g in gens_s:
-        g2 = g.change_ring(F2)
-        Kx = I2.tensor_product(g2.transpose()) - g2.tensor_product(I2)
-        rows = Kx if rows is None else rows.stack(Kx)
-    E = rows.right_kernel()
+    # (a) the F_2-commutant, its invertible parity-preserving elements and their classes (supplementary/_shared.py).
+    # (a) F_2-可換子、その可逆で偶奇を保つ元とその類（supplementary/_shared.py）。
+    E, maps, C2, classes = parity_preserving_classes(Gs, gens_s, basis)
     img = matrix(F2, [Y.change_ring(F2).list() for Y in basis]).row_space()
     rep.check("(a) the commutant on L/2L is 8-dimensional and equals the image of M'/2M'", E.dimension() == 8 and E == img)
-    Gb = Gs.change_ring(F2)
-    q0 = [int(Gs[i, i]) // 2 % 2 for i in range(n)]
-
-    def parity_preserving(f):
-        if f * Gb * f.transpose() != Gb:
-            return False
-        return all((f.row(i).change_ring(ZZ) * Gs * f.row(i).change_ring(ZZ)) // 2 % 2 == q0[i] for i in range(n))
-    Eb = [matrix(F2, n, n, list(v)) for v in E.basis()]
-    maps = []
-    for coeffs in itertools.product([0, 1], repeat=8):
-        f = sum((c * b for c, b in zip(coeffs, Eb)), matrix(F2, n, n))
-        if f.is_invertible() and parity_preserving(f):
-            f.set_immutable()
-            maps.append(f)
     rep.check("(a) exactly 60 invertible parity-preserving maps", len(maps) == 60)
-    C2 = []
-    for Y in half:
-        Yb = Y.change_ring(F2)
-        Yb.set_immutable()
-        if Yb not in C2:
-            C2.append(Yb)
-    todo, classes = set(maps), []
-    while todo:
-        f0 = min(todo, key=lambda f: tuple(f.list()))
-        orb = set()
-        for u in C2:
-            for v in C2:
-                for f in (f0, f0.inverse()):
-                    h = u * f * v
-                    h.set_immutable()
-                    orb.add(h)
-        classes.append(orb)
-        todo -= orb
     info = sorted(((len(o), any(u in o for u in C2)) for o in classes))
     rep.value("(a) classes (size, contains an element of C)", info)
     rep.check("(a) two classes: 12 (containing C) and 48", info == [(12, True), (48, False)])
@@ -124,16 +86,9 @@ def main():
 
     # (c) gluing A / 貼り方 A
     clsA = next(o for o in classes if len(o) == 48)
-    lift = None
-    for N in range(1, 8):                                       # a short integral lift of an element of the class / 類の元の短い整数の持ち上げ
-        for Y in elements_of_norm(basis, Gs, N):
-            Yb = Y.change_ring(F2)
-            Yb.set_immutable()
-            if Yb in clsA:
-                lift = Y
-                break
-        if lift is not None:
-            break
+    # A short integral lift of an element of the class, chosen as in isometry_ab.py (supplementary/_shared.py).
+    # 類の元の短い整数の持ち上げ。isometry_ab.py と同じ選び方（supplementary/_shared.py）。
+    lift, _ = short_lift(basis, Gs, clsA)
     rep.check("(c) an integral lift X in M' of an element of the class of size 48", lift is not None)
     Xs = lift
     I = identity_matrix(ZZ, n)
@@ -193,23 +148,8 @@ def main():
         vv = exact.i64_matmul(exact.i64_matmul(XU[jj], S[int(np.argmin(yi))].astype(np.int64)),
                               group.inverse_isometry(S[int(np.argmin(ci))].astype(np.int64), G, Ginv))
         reps_xv.setdefault(int(can.canon(mod2.pack(xx))[0]), (xx, vv))
-    S64 = S.astype(np.int64)
-    XS, VS = [], []
-    for xx, vv in reps_xv.values():
-        xg, vg = np.einsum("j,gjk->gk", xx, S64), np.einsum("j,gjk->gk", vv, S64)
-        for sx in (1, -1):
-            for sv in (1, -1):
-                XS.append(sx * xg)
-                VS.append(sv * vg)
-    XS, VS = np.concatenate(XS), np.concatenate(VS)
-    rep.check("(d) 292320 distinct norm-8 vectors", len(np.unique(np.concatenate([XS, VS], axis=1), axis=0)) == 292320)
-    XG, VG = exact.f64_matmul(XS, G).astype(np.float64), exact.f64_matmul(VS, G).astype(np.float64)
-    dists = {}
-    for i0 in range(0, len(XS), len(S)):
-        ip = np.rint((XG @ XS[i0] + VG @ VS[i0]) / 2).astype(np.int64)
-        vals, cnt = np.unique(ip, return_counts=True)
-        key = str(list(zip(vals.tolist(), cnt.tolist())))
-        dists[key] = dists.get(key, 0) + 1
+    ndistinct, dists = norm8_distributions(reps_xv.values(), S, G)            # supplementary/_shared.py
+    rep.check("(d) 292320 distinct norm-8 vectors", ndistinct == 292320)
     rep.value("(d) inner-product distributions of the norm-8 vectors of gluing A: {distribution: blocks}", dists)
     rep.finish()
 
