@@ -68,7 +68,7 @@
    en: [Supplement §S4: three searches modulo 2. All 3 936 certificates for test (3) checked in integers. Test (2): floating-point enumeration of all 763 992 classes; integer certificates for part of them (`certificates/route_t_search2.npz`, to be replaced when complete)],
    ja: [補遺 §S4: 2 を法とする三つの探索。(3) の代表元 3,936 個は整数で全数検査済み。(2) は 763,992 類すべてを浮動小数点で列挙し、整数演算で検算する代表元は一部（`certificates/route_t_search2.npz`、完了後に差し替え）], time: [1.6 h + 3 × 13 h (CVP); (3) の代表元 25 min]),
   (id: "C22", files: ("lean/EEUL/L112/Chain.lean",),
-   en: [Lean formalisation of the deduction from F1–F5 to Theorem A, and its check (no `sorry`; standard axioms only)],
+   en: [Lean formalization of the deduction from F1–F5 to Theorem A, and its check (no `sorry`; standard axioms only)],
    ja: [F1〜F5 から定理 A を導く論理の Lean による形式化と、その検査（`sorry` なし、標準の公理のみ）], time: [min]),
   (id: "C23", files: ("code/supplementary/nebe/identify_nebe.py", "code/supplementary/nebe/lattices.py", "code/supplementary/nebe/cycloquat.py"),
    en: [Identification of $L$ with Nebe's $L_(56,2)(tilde(M))$ built from the definition; $tau$ as right multiplication by an element of reduced norm 5],

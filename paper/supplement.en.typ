@@ -122,10 +122,10 @@ Type $\(6\,10\)$: $\|L_56(6)\|\|L_56(10)\|\/N_(-) = 15 thin 590 thin 400 times 1
   [F1], [interval enumeration, norm $lt.eq 4$, BKZ-40 basis], [34 min ($8.5 times 10^9$ nodes); floating-point enumerations 51 min – 2.3 h],
   [F2], [closure + orbits], [about 13 min (finding 10 min, checking 3 min)],
   [F3], [marked sums of two minimal vectors], [about 1.2 h (checking 9 min)],
-  [F5a], [odd-class certificates (656)], [finding 4 min, checking 2 min],
+  [F5a], [odd-coset certificates (656)], [finding 4 min, checking 2 min],
   [F5b], [canonical forms (two implementations)], [24 min – about 2 h],
   [F5b], [CVP, radius² 2.05], [4 × 9 h],
-  [F5b], [even-class certificates], [finding 6 × about 31 h (shared machine); checking 7.9 h on 3 threads],
+  [F5b], [even-coset certificates], [finding 6 × about 31 h (shared machine); checking 7.9 h on 3 threads],
 )
 
 
@@ -142,8 +142,8 @@ An independent verification needs only F0 ($L_112$ is even unimodular) and F1–
   columns: 4, align: (left, left, left, left,),
   caption: [Table S7. Verification routes. \[m\] measured; \[e\] estimated from measured per-operation costs.],
   table.header([route], [content], [criteria and programs used], [total]),
-  [A (fastest)], [F1 by interval enumeration (34 min \[m\]); F2, F3 by orbit sizes and distinct canonical forms (3 min and 9 min \[m\]); F5a by odd-class certificates (2 min \[m\]); F5b by canonical-form look-up (24 min \[m\])], [the interval enumerator, the canonical-form code, Proposition 6.3], [about 1.2 CPU hours \[m\]],
-  [B (no canonical forms in the decision)], [as A, with F5b by checking the distributed even-class certificates (7.9 h on 3 threads \[m\]); finding them again would take 763 992 pairs (using the frame-preserving symmetry #calc("C14")) × 0.7 s \[m\]], [the interval enumerator, the midpoint lemma], [about 25 CPU hours to check \[m\]; about 150 to find again \[e\]],
+  [A (fastest)], [F1 by interval enumeration (34 min \[m\]); F2, F3 by orbit sizes and distinct canonical forms (3 min and 9 min \[m\]); F5a by odd-coset certificates (2 min \[m\]); F5b by canonical-form look-up (24 min \[m\])], [the interval enumerator, the canonical-form code, Proposition 6.3], [about 1.2 CPU hours \[m\]],
+  [B (no canonical forms in the decision)], [as A, with F5b by checking the distributed even-coset certificates (7.9 h on 3 threads \[m\]); finding them again would take 763 992 pairs (using the frame-preserving symmetry #calc("C14")) × 0.7 s \[m\]], [the interval enumerator, the midpoint lemma], [about 25 CPU hours to check \[m\]; about 150 to find again \[e\]],
   [C (closest vectors)], [as A, with F5b by closest-vector enumeration], [pruning in the enumeration (not a proof if floating point)], [about 40 CPU hours \[m\]],
   [D (from scratch)], [rebuild the orbit lists from the four data files only (the approach of implementation 3)], [one's own code only], [A–C plus 2–3 hours \[e\]],
   [S (#calc("C15"), sampling; #strong[not a proof])], [re-check $k$ random certificates with code independent of the producer (group rebuilt from the generators, the distributed $tau$, 64-bit integers only)], [—], [$k = 200 + 200$ in 8 min \[m\]; #strong[all 400 pass]],
@@ -179,7 +179,7 @@ Every exhaustive test above was also run on the negative controls with known ans
   caption: [Table S8. Possible errors and the checks that would detect them.],
   table.header([possible error], [would be detected by]),
   [Orbit lists incomplete (shared by all $\(8\,8\)$ tests)], [orbit-size sums (exact); recount from $K_8$; design identities of degree 2, 4, 6; implementation 3 from scratch],
-  [The canonical-form criterion is wrong], [Proposition 6.3 (proof); CVP test without canonical forms; even-class certificates for all pairs; support-module route (§S4.1)],
+  [The canonical-form criterion is wrong], [Proposition 6.3 (proof); CVP test without canonical forms; even-coset certificates for all pairs; support-module route (§S4.1)],
   [A gap in the logic (missing type, case $x = 0$, wrong direction)], [written proofs (§§3–5); three implementations re-deriving the reduction; tests in both directions $tau\,tau^(- 1)$; #strong[formalization in Lean (§7.1)]],
   [The 112-dimensional Gram matrix is not the lattice described], [two implementations rebuilt (3.1) independently; the third reproduced the LLL-reduced matrix exactly; frame test],
   [$min L_56 < 6$], [#strong[rigorous interval enumeration]; reduction to $L_(56\,2)\(M\)$; three floating-point enumerations; exact agreement of shell sizes and design identities (indirect)],
