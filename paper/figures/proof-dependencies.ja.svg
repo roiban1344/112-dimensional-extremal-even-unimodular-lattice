@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="1140" viewBox="0 0 960 1140">
-<title>Logical dependencies in the extremality proof</title>
-<desc>Two alternative even-class tests share orbit completeness and meet the common odd-class bound. Consistency tests and the support-module route are not part of this main-proof DAG.</desc>
+<title>極値性の証明の論理的な依存関係</title>
+<desc>偶の剰余類についての二つの代替の判定は、軌道の網羅性を共有し、奇の剰余類の下界と合流する。整合性の検査と台加群の経路は、この主証明の図には含めない。</desc>
 <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#50677a"/></marker></defs>
 <rect width="960" height="1140" fill="white"/>
 <path d="M 480.0 80 C 480.0 105.0 155.0 105.0 155.0 130" fill="none" stroke="#50677a" stroke-width="2" marker-end="url(#arrow)"/>
