@@ -158,7 +158,7 @@ $"SL"_2\(29\)$ の対称性を保つため、$f$ は $L_56\/2 L_56$ 上の $"SL"
   [#strong[C]], [$L_56$], [含まない（18）], [#strong[10（定理 A）]], [#strong[なし]],
 )
 
-$L_56$ 上の B・C の両類は $tau^2=-5$ を満たす $tau in M'$ に持ち上がる。そのような元 24 個のうち、2 を法とする還元が類 B に属するものが 12 個、類 C に属するものが 12 個ある #calc("C2")。貼り方 A と B は等長同型である。両者の間の $"SL"_2(29)$ 同変な等長写像を検証用データとして配布し、整数演算で検算した #calc("C28")。したがって、表 2 の最小ノルム 8 の二つの貼り合わせは同じ格子である。
+$L_56$ 上の B・C の両類は $tau^2=-5$ を満たす $tau in M'$ に持ち上がる。そのような元 24 個のうち、2 を法とする還元が類 B に属するものが 12 個、類 C に属するものが 12 個ある #calc("C2")。貼り方 A と B は等長同型である。両者の間の $"SL"_2(29)$ 同変な等長写像を検証用データとして配布し、整数演算で検算した #calc("C28")。したがって、表 2 の最小ノルム 8 の二つの貼り合わせは同じ格子である。より一般に、$"SL"_2(29)$ が $L_112$ と同じ形で作用する 112 次元の偶ユニモジュラー格子はすべて、極大整環 $M$ 上の階数 2 のユニモジュラーなエルミート格子 $Lambda$ によって $L_(56,2)(M) times.o_M Lambda$ と書け、そのような $Lambda$ は等長同型を除いてちょうど 8 個ある。表 2 にはそのうち 4 個の格子が現れている。この分類の主張と証明は補遺 §S6 に与える #calc("C29", "C30", "C31")。
 
 == 3.4 エルミート格子としての記述
 
@@ -509,6 +509,7 @@ $G_112$ を (3.1) の $L_112$ の Gram 行列とする。
   [#strong[\[BV01\]] C. Bachoc, B. Venkov, Modular forms, lattices and spherical designs, in: Réseaux euclidiens, designs sphériques et formes modulaires, Monogr. Enseign. Math. 37 (2001).],
   [#strong[\[CN13\]] R. Coulangeon, G. Nebe, Dense lattices as Hermitian tensor products, Contemp. Math. 587 (2013); arXiv:1201.1832.],
   [#strong[\[Cou00\]] R. Coulangeon, Tensor products of Hermitian lattices, Acta Arith. 92 (2000) 115–130.],
+  [#strong[\[GHY01\]] W. T. Gan, J. P. Hanke, J.-K. Yu, On an exact mass formula of Shimura, Duke Math. J. 107 (2001) 103–133.],
   [#strong[\[HM01\]] G. Hiss, G. Malle, Low-dimensional representations of quasi-simple groups, LMS J. Comput. Math. 4 (2001) 22–63.],
   [#strong[\[HM02\]] G. Hiss, G. Malle, Corrigenda: Low-dimensional representations of quasi-simple groups, LMS J. Comput. Math. 5 (2002) 95–126.],
   [#strong[\[Kin03\]] O. King, A mass formula for unimodular lattices with no roots, Math. Comp. 72 (2003).],
