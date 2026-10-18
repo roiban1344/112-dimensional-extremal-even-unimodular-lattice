@@ -156,7 +156,7 @@ For (b): $\(x\,v\)mapsto\(x u\,v u'\)$ maps $L_f$ isometrically onto $L_(u^(- 1)
   [#strong[C]], [$L_56$], [does not (18)], [#strong[10 (Theorem A)]], [#strong[none]],
 )
 
-Both surviving classes B and C on $L_56$ lift to elements $tau in M'$ with $tau^2=-5$. Of the 24 such elements, 12 reduce modulo 2 into class B and 12 into class C #calc("C2"). Gluings A and B are isometric: an $"SL"_2(29)$-equivariant isometry between them is supplied with the verification data and checked in integer arithmetic #calc("C28"). Thus the two gluings of minimum 8 in Table 2 are the same lattice.
+Both surviving classes B and C on $L_56$ lift to elements $tau in M'$ with $tau^2=-5$. Of the 24 such elements, 12 reduce modulo 2 into class B and 12 into class C #calc("C2"). Gluings A and B are isometric: an $"SL"_2(29)$-equivariant isometry between them is supplied with the verification data and checked in integer arithmetic #calc("C28"). Thus the two gluings of minimum 8 in Table 2 are the same lattice. More generally, every even unimodular lattice of dimension 112 on which $"SL"_2(29)$ acts as on $L_112$ is $L_(56,2)(M) times.o_M Lambda$ for a unimodular Hermitian lattice $Lambda$ of rank 2 over the maximal order $M$, and there are exactly eight such $Lambda$ up to isometry; Table 2 contains four of the resulting lattices. Supplement §S6 states and proves this classification #calc("C29", "C30", "C31").
 
 == 3.4 The Hermitian description
 
@@ -502,6 +502,7 @@ Direction, choice of problem, decisions, and responsibility for publication: roi
   [#strong[\[CN13\]] R. Coulangeon, G. Nebe, Dense lattices as Hermitian tensor products, Contemp. Math. 587 (2013); arXiv:1201.1832.],
   [#strong[\[Cou00\]] R. Coulangeon, Tensor products of Hermitian lattices, Acta Arith. 92 (2000) 115–130.],
   [#strong[\[FP85\]] U. Fincke, M. Pohst, Improved methods for calculating vectors of short length in a lattice, including a complexity analysis, Math. Comp. 44 (1985) 463–471.],
+  [#strong[\[GHY01\]] W. T. Gan, J. P. Hanke, J.-K. Yu, On an exact mass formula of Shimura, Duke Math. J. 107 (2001) 103–133.],
   [#strong[\[HM01\]] G. Hiss, G. Malle, Low-dimensional representations of quasi-simple groups, LMS J. Comput. Math. 4 (2001) 22–63.],
   [#strong[\[HM02\]] G. Hiss, G. Malle, Corrigenda: Low-dimensional representations of quasi-simple groups, LMS J. Comput. Math. 5 (2002) 95–126.],
   [#strong[\[Kin03\]] O. King, A mass formula for unimodular lattices with no roots, Math. Comp. 72 (2003).],
