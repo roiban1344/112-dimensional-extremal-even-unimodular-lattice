@@ -118,7 +118,7 @@ Run time (single thread, measured on a shared, loaded machine): local 20 minutes
 80 seconds (numpy). Memory: each step ran under a 3-4 GB cap.
 実行時間（1 スレッド。負荷のかかった共用の計算機で計測）: local 20 分、mass 1 秒、enum 16 分（種 1 で近傍 62 個）、build 4 分、frames 12 分、
 witness 2 分、identify 13 分、check 80 秒（numpy）。メモリ: どの段も 3〜4 GB の上限の下で動いた。
-Run / 実行:  sage -python code/supplementary/genus/genus.py local|mass|enum|build|frames|witness|identify
+Run / 実行:  python3 code/supplementary/genus/genus.py local|mass|enum|build|frames|witness|identify
              python3 code/supplementary/genus/genus.py check
 """
 import argparse

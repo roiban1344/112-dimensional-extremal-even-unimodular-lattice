@@ -40,17 +40,29 @@ Known vectors are stored as 64-bit hashes; a collision could only make the searc
 which would show up as a missing size; the result is checked independently by V4.
 既知のベクトルは 64 ビットのハッシュで持つ。衝突は軌道を飛ばす方向にしか働かず、大きさの不足として現れる。結果は V4 が独立に確かめる。
 
-Products in float32 are exact: all entries are small integers, and the bound on the partial sums is
-asserted (lib.exact / explicit asserts below).
-float32 の積は厳密: 成分はすべて小さな整数で、部分和の上界を確かめる（lib.exact と下の assert）。
+Products in float32 are exact: all entries are small integers, and the bound on the partial sums
+(max row sum of |A| times max |B|) is asserted before every float32 product (explicit asserts below).
+float32 の積は厳密: 成分はすべて小さな整数で、どの float32 の積でも、掛ける前に部分和の上界（|A| の行和の最大 × |B| の最大）を
+確かめる（下の assert）。
 
 Checkpoint: out/p3/state.npz every 10 minutes and after each i; rerun the same command to resume.
-途中経過: 10 分ごとと各 i のあとに out/p3/state.npz に保存する。同じコマンドで再開する。
+The checkpoint records a SHA-256 fingerprint of the inputs (G, the generators, min_reps, centralizer);
+a checkpoint made from other inputs is refused. A --trial run starts afresh and keeps its checkpoint
+in out/p3-trial/, so it never overwrites the checkpoint of the full run.
+途中経過: 10 分ごとと各 i のあとに out/p3/state.npz に保存する。同じコマンドで再開する。途中経過には入力（G、生成元、min_reps、
+centralizer）の SHA-256 による指紋を記録し、別の入力から作られた途中経過は使わない。--trial の実行は新しく始め、途中経過を out/p3-trial/ に
+置くので、本番の途中経過を上書きしない。
 
-Output: out/p3_norm8_reps.npz (reps int16 (k, 56), sizes int64 (k,)). It is compared with
-certificates/norm8_reps.npz by the set of canonical forms of the classes x u_k (the order and the
-choice of representatives may differ).
-出力: out/p3_norm8_reps.npz。certificates/norm8_reps.npz とは、類 x u_k の標準形の集合で比べる（並びと代表の選び方は違いうる）。
+Output: out/p3/norm8_reps.npz (reps int16 (k, 56), sizes int64 (k,)); never certificates/, whose files
+are fixed by certificates/SHA256SUMS. It is compared with the distributed certificates/norm8_reps.npz by
+(a) the set of canonical forms of the classes x u_k + 2L (k = 0, ..., 5), (b) the number of orbits and
+(c) the multiset of orbit sizes; the order and the choice of representatives may differ. (Equal sets of
+classes mod 2L are weaker than equal orbits on L_8, since two norm-8 vectors with inner product -4 lie
+in the same class mod 2L; (b) and (c), and verify/v4, close the gap.) A difference is a failure (exit code 1).
+出力: out/p3/norm8_reps.npz（certificates/ には書かない。そこのファイルは certificates/SHA256SUMS で固定されている）。配布した
+certificates/norm8_reps.npz とは、(a) 類 x u_k + 2L（k = 0, …, 5）の標準形の集合、(b) 軌道の個数、(c) 軌道の大きさの多重集合で比べる
+（並びと代表の選び方は違いうる）。（mod 2L の類の集合が等しいことは、L_8 上の軌道が等しいことより弱い。内積 -4 のノルム 8 のベクトル 2 本は
+mod 2L で同じ類に入るからである。(b)(c) と verify/v4 がその差を埋める。）違えば失敗（終了コード 1）とする。
 
 Run time: about 1.2 hours. Memory: up to about 5 GB while saving checkpoints.
 実行時間: 約 1.2 時間。メモリ: チェックポイントの保存中に最大約 5 GB。
@@ -59,6 +71,7 @@ Run / 実行:  python3 code/produce/p3_norm8_orbits.py [--trial N] [--data DIR] 
              (--trial N stops after N orbits and reports the speed / N 軌道で止めて速さを報告する)
 """
 import argparse
+import hashlib
 import os
 import random
 import sys
@@ -71,6 +84,17 @@ from lib import certs, data, exact, group, mod2  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 N8 = 36957286800
+
+
+def fingerprint(*arrays):
+    """SHA-256 of the inputs (shape, dtype and contents of each array), to tie a checkpoint to its inputs.
+    入力（各配列の形・型・内容）の SHA-256。途中経過を入力に結び付けるのに使う。"""
+    h = hashlib.sha256()
+    for x in arrays:
+        x = np.ascontiguousarray(x)
+        h.update(f"{x.shape} {x.dtype.str};".encode())
+        h.update(x.tobytes())
+    return h.hexdigest()
 
 
 def gstar_roots(R6, U, can):
@@ -96,7 +120,8 @@ def gstar_roots(R6, U, can):
 class State:
     """Search state, saved as .npz (no pickle). / 探索の状態（pickle を使わず .npz で保存）。"""
 
-    def __init__(self, m):
+    def __init__(self, m, inputs=""):
+        self.inputs = inputs                            # fingerprint of the inputs / 入力の指紋
         self.i = 0
         self.reps, self.sizes, self.nx = [], [], []
         self.pending = {j: [] for j in range(m)}       # hashes of X_j-members already marked / 印の付いた X_j の元のハッシュ
@@ -111,6 +136,7 @@ class State:
                 pend_idx.append(np.full(len(v), j, dtype=np.int32))
                 pend_val.append(v)
         arrays = dict(
+            inputs=np.array(self.inputs),
             i=np.int64(self.i),
             reps=np.array(self.reps, dtype=np.int16).reshape(-1, 56),
             sizes=np.array(self.sizes, dtype=np.int64),
@@ -123,9 +149,12 @@ class State:
         certs.save_npz(path, **arrays)
 
     @classmethod
-    def load(cls, path, m):
-        st = cls(m)
+    def load(cls, path, m, inputs):
+        st = cls(m, inputs)
         with np.load(path, allow_pickle=False) as z:
+            if (str(z["inputs"]) if "inputs" in z.files else "") != inputs:
+                raise SystemExit(f"{path} was made from other inputs (or by an older version); "
+                                 "delete it or use another --out / 別の入力（または古い版）で作られた途中経過。消すか別の --out を使う")
             st.i = int(z["i"])
             st.reps = list(z["reps"])
             st.sizes = [int(v) for v in z["sizes"]]
@@ -140,12 +169,12 @@ class State:
         return st
 
 
-def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None):
+def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None, inputs=""):
     """Representatives and sizes of the S*-orbits on the norm-8 vectors of the lattice with Gram matrix G
     (S* generated by S and the centralizer elements Un), by marked elements (sums of two minimal vectors) as described above.
-    Checkpoints in `pdir`. Usable for any lattice with an action of SL_2(29) (also supplementary/nebe).
+    Checkpoints in `pdir`, tied to the fingerprint `inputs` of the inputs (resumed only if it matches). Usable for any lattice with an action of SL_2(29) (also supplementary/nebe).
     Gram 行列 G の格子のノルム 8 のベクトルの S*-軌道（S* は S と中心化群の元 Un が生成）の代表と大きさを、上の印の付く元の方法で求める。
-    途中経過は `pdir` に保存する。SL_2(29) が作用する任意の格子に使える（supplementary/nebe にも）。"""
+    途中経過は `pdir` に保存し、入力の指紋 `inputs` に結び付ける（一致するときだけ再開する）。SL_2(29) が作用する任意の格子に使える（supplementary/nebe にも）。"""
     n = len(G)
     Ginv = exact.inverse_unimodular(G)
     S = np.asarray(S, dtype=np.int64)
@@ -167,9 +196,13 @@ def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None):
     W = np.rint(np.einsum("ij,gjk->igk", R.astype(np.float32), S32)).astype(np.int64).reshape(m * ng, n)
     assert np.abs(W).max() < 2 ** 15
     GR = (G @ R.T).astype(np.float32)                         # (56, m): <y, r_i> = y @ GR[:, i]
+    # Bound for O @ GR[:, i] in candidates(): O runs over all minimal vectors. / candidates() の O @ GR[:, i] の上界（O は全最小ベクトル）。
+    min_row = max(int(np.abs(np.rint(s.astype(np.float32) @ S32)).sum(axis=1).max()) for s in R6)
+    assert min_row * int(np.abs(G @ R.T).max()) < 2 ** 24
     rng = random.Random(0)
     hv = np.array([rng.getrandbits(62) | 1 for _ in range(n)], dtype=np.int64)
     hW = W @ hv
+    w_row = int(np.abs(W).sum(axis=1).max())                 # for the plain scan W @ (G XU^T) / 素朴な走査の上界用
     W = W.astype(np.int16)
     oW = np.argsort(hW, kind="stable")
     hWs = hW[oW]
@@ -201,7 +234,7 @@ def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None):
 
     os.makedirs(pdir, exist_ok=True)
     ckpt = os.path.join(pdir, "state.npz")
-    st = State.load(ckpt, m) if (os.path.exists(ckpt) and trial is None) else State(m)
+    st = State.load(ckpt, m, inputs) if (os.path.exists(ckpt) and trial is None) else State(m, inputs)
     if st.i or st.reps:
         rep.log(f"resuming at i = {st.i} with {len(st.reps)} orbits")
     t0 = time.time()
@@ -212,8 +245,9 @@ def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None):
         hX = Xi @ hv
         r = R[i]
         N2 = r - Xi                                             # N_2(r) = { s : <r, s> = 2 } = r - X_i
-        N2G = (N2 @ G).astype(np.float32)
-        N3G = (N3 @ G).astype(np.float32)
+        N2G, N3G = N2 @ G, N3 @ G
+        n23_row = max(int(np.abs(N2G).sum(axis=1).max(initial=0)), int(np.abs(N3G).sum(axis=1).max(initial=0)))
+        N2G, N3G = N2G.astype(np.float32), N3G.astype(np.float32)
         order = np.argsort(hX)
         hs = hX[order]
         assert (np.diff(hs) != 0).all(), "hash collision inside X_i"
@@ -251,6 +285,7 @@ def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None):
             # 分解 x = w + w' に現れる最小ベクトル w。x = r + u0 のとき <x, w> = 4 ⟺ (<r,w>, <u0,w>) が上のどれか。
             u0 = x - r
             u0f = u0.astype(np.float32)
+            assert n23_row * int(np.abs(u0).max()) < 2 ** 24                   # float32 exactness / float32 の厳密さ
             Aw = N3[np.rint(N3G @ u0f) == 1]
             Bw = N2[np.rint(N2G @ u0f) == 2]
             Dc = np.concatenate([r[None, :], u0[None, :], Aw, x[None, :] - Aw, Bw])
@@ -272,7 +307,9 @@ def norm8_orbits(G, S, R6, Un, pdir, rep, n8=N8, trial=None):
             rows, cols, sgn = np.concatenate(rows_l), np.concatenate(cols_l), np.concatenate(sgn_l)
             if nverify < 25:
                 # Cross-check against the plain scan of W. / W の素朴な走査と突き合わせる。
-                P = W.astype(np.float32) @ (G @ XU.T).astype(np.float32)
+                GXU = G @ XU.T
+                assert w_row * int(np.abs(GXU).max()) < 2 ** 24                 # float32 exactness / float32 の厳密さ
+                P = W.astype(np.float32) @ GXU.astype(np.float32)
                 r2, c2 = np.nonzero(np.abs(P) == 4.0)
                 s2 = np.sign(P[r2, c2]).astype(np.int64)
                 assert sorted(zip(rows.tolist(), cols.tolist(), sgn.tolist())) == sorted(zip(r2.tolist(), c2.tolist(), s2.tolist())), \
@@ -328,16 +365,19 @@ def main():
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("p3_norm8_orbits" + (f"_trial{a.trial}" if a.trial else ""), a.out)
+    pdir = os.path.join(rep.out_dir, "p3-trial" if a.trial else "p3")
     G = data.gram(a.data)
     S = group.sl2_29_mod_sign(data.generators(a.data)).astype(np.int64)
     R6 = certs.load("min_reps.npz", "reps", a.certificates).astype(np.int64)
     Un = certs.load("centralizer.npz", "units", a.certificates).astype(np.int64)
     can = mod2.Canonical(S)
-    reps, sizes = norm8_orbits(G, S, R6, Un, os.path.join(rep.out_dir, "p3"), rep, trial=a.trial)
+    inputs = fingerprint(G, data.generators(a.data), R6, Un)
+    reps, sizes = norm8_orbits(G, S, R6, Un, pdir, rep, trial=a.trial, inputs=inputs)
     if reps is None:
         rep.finish()
         return
-    certs.save_npz(os.path.join(rep.out_dir, "p3_norm8_reps.npz"), reps=reps, sizes=sizes)
+    certs.save_npz(os.path.join(pdir, "norm8_reps.npz"), reps=reps, sizes=sizes)
+    rep.log(f"wrote {pdir}/norm8_reps.npz")
 
     # Compare with the certificate: the same set of S-orbits (canonical forms of x u_k).
     # 配布した代表と比べる: 同じ S-軌道の集合（x u_k の標準形）。
@@ -348,9 +388,14 @@ def main():
             for b in range(0, len(XU), 1 << 15):
                 out |= set(can.canon(mod2.pack(XU[b:b + (1 << 15)])).tolist())
         return out
+    old_reps = certs.load("norm8_reps.npz", "reps", a.certificates)
+    old_sizes = certs.load("norm8_reps.npz", "sizes", a.certificates)
+    rep.check("as many S*-orbits as certificates/norm8_reps.npz", len(reps) == len(old_reps) == len(old_sizes))
+    rep.check("the same multiset of orbit sizes as certificates/norm8_reps.npz",
+              (np.sort(sizes) == np.sort(old_sizes.astype(np.int64))).all())
     mine = forms(reps)
-    old = forms(certs.load("norm8_reps.npz", "reps", a.certificates))
-    rep.check("same 1517130 S-orbits as certificates/norm8_reps.npz (equal sets of canonical forms)",
+    old = forms(old_reps)
+    rep.check("same 1517130 classes x u_k + 2L up to S as certificates/norm8_reps.npz (equal sets of canonical forms)",
               mine == old and len(mine) == 1517130)
     rep.finish()
 

@@ -16,7 +16,7 @@ S9. L_112 のエルミート構造と O_K-構造（論文 §8。表 D2 の [C26]
       よって Lambda は M_2(K) の極大整環（森田同値: L_112 = P ⊗_{O_K} M、P は階数 2）。tr(x x*) ≤ 56 となる跡 56 の冪等元は無い。
 
 Requires SageMath. Run time: about 3 minutes. / SageMath が要る。実行時間: 約 3 分。
-Run / 実行:  sage -python code/supplementary/automorphisms/endomorphisms.py
+Run / 実行:  python3 code/supplementary/automorphisms/endomorphisms.py
 """
 import argparse
 import os

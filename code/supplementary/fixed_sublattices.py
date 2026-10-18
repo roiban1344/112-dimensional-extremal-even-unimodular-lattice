@@ -19,7 +19,7 @@ L_112 そのものへの BKZ-30 と BKZ-40: 見つかった最短（上界にす
 
 Requires SageMath (PARI, fpylll). Run time: about 20 minutes. Memory: about 1 GB.
 SageMath（PARI, fpylll）が要る。実行時間: 約 20 分。メモリ: 約 1 GB。
-Run / 実行:  sage -python code/supplementary/fixed_sublattices.py [--tau B]
+Run / 実行:  python3 code/supplementary/fixed_sublattices.py [--tau B]
 """
 import argparse
 import os
