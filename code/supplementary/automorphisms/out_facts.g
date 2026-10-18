@@ -52,8 +52,17 @@ res := [];
 # Simple groups occurring in rows of degree <= 112 of Hiss-Malle Table 3 (CTblLib names; extracted mechanically from the
 #   table, plus L3(3) from the corrigenda). Ru (degree 28) and J4 (degree 112, characteristic 2) are the
 #   ones with 29 | |T|; they are listed so that the output matches Appendix F.4 (e).
+#   Completeness of the list (checked against the text of both tables): the rows of degree <= 112 of
+#   Table 3 of [HM01] contain 77 simple groups (the central extension, e.g. "2." or "3_1.", removed), Table 3 of
+#   the corrigenda [HM02] the same 77 and L3(3), 78 in all. They are exactly the 75 names below and the 3 groups
+#   after them (S4(11), S4(13), U8(2)), with no group missing or extra. (The list of the research computation
+#   omitted Ru and J4 because it was used only for the groups with 29 not dividing |T|.)
 # Hiss–Malle 表 3 の次数 ≤ 112 の行に現れる単純群（CTblLib の名前。表を機械的に抜き出したもの + 正誤表の L3(3)）。
 #   Ru（28 次）と J4（標数 2 の 112 次）は 29 | |T| となる群であり、出力が付録 F.4 (e) と対応するように一覧に含める。
+#   一覧が漏れなく正しいこと（両方の表のテキストと照合した）: [HM01] の表 3 の次数 112 以下の行には、中心拡大（「2.」「3_1.」など）を
+#   外すと 77 個の単純群があり、正誤表 [HM02] の表 3 には同じ 77 個と L3(3) の計 78 個がある。これは下の 75 個の名前と、その後の
+#   3 つ（S4(11)、S4(13)、U8(2)）にちょうど一致し、過不足は無い（研究時の計算の一覧に Ru と J4 が無かったのは、29 が |T| を割らない
+#   群だけに使っていたため）。
 names := ["M22","L3(4)","U4(3)","2F4(2)'","A10","A11","A12","A13","A14","A15","A16","A17","A6","A7","A8","A9","Co1","Co2","Co3","Fi22","F4(2)","G2(4)","G2(3)","HS","J1","J2","J3","L4(3)","M12","O8+(2)","O8-(2)","S4(5)","S4(7)","S4(9)","S4(4)","S6(2)","S6(3)","S6(5)","S8(3)","S8(2)","Suz","Sz(8)","U4(2)","U4(5)","U6(2)","3D4(2)","L3(7)","McL","O7(3)","ON","U3(11)","U3(5)","U3(8)","U3(3)","U3(4)","U3(7)","U3(9)","U4(4)","U5(2)","U5(3)","U7(2)","L3(5)","L3(8)","L3(9)","L4(4)","L5(2)","L6(2)","Ly","He","M11","M23","M24","L3(3)","Ru","J4"];
 for n in names do Add(res, test(n, Size(CharacterTable(n)))); od;
 # CTblLib に無い 3 つは位数の公式で

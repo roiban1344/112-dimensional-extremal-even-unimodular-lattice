@@ -4,3 +4,4 @@ __pycache__/
 .venv/
 lean/.lake/
 certificates/*.npz
+.pytest_cache/

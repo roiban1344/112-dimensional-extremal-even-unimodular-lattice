@@ -1,0 +1,26 @@
+# Compile the four documents of paper/ into build/*.pdf (the committed PDFs are not touched), and fail if
+# typst reports a missing font. Used by the jobs typst-build and release-pdfs of workflows/checks.yml.
+# paper/ の 4 文書を build/*.pdf にコンパイルする（コミットした PDF には触れない）。typst がフォントの欠落を報告したら失敗する。
+# workflows/checks.yml の job typst-build と release-pdfs が使う。
+name: build-pdfs
+description: Compile paper.{en,ja} and supplement.{en,ja} with typst into build/
+runs:
+  using: composite
+  steps:
+    - uses: typst-community/setup-typst@fee4b65b091cc546f02ce3be15fad8760f38a108 # v5.3.0
+      with:
+        typst-version: 0.14.2
+    - name: Install the fonts
+      shell: bash
+      run: sudo apt-get update && sudo apt-get install -y fonts-ipaexfont fonts-dejavu
+    - name: Compile the four documents (PDFs go to build/; the committed PDFs are not touched)
+      shell: bash
+      run: |
+        mkdir -p build
+        for f in paper.en paper.ja supplement.en supplement.ja; do
+          typst compile --root . "paper/$f.typ" "build/$f.pdf" 2> "build/$f.log" || { cat "build/$f.log"; exit 1; }
+          cat "build/$f.log"
+        done
+        if grep -l "unknown font family" build/*.log; then
+          echo "::error::a font is missing"; exit 1
+        fi
