@@ -26,7 +26,7 @@ Method (independent of the earlier fplll / qfminim runs):
     vectors of norm 2 and 4 is known (7*240 = 1680 and 7*2160 + 21*240^2 = 1,224,720).
     (r = 6 on L, which would recount the 15,590,400 minimal vectors, needs ~5e12 nodes: not done.)
 
-usage (from the repository root): sage -python -I code/crosscheck/all_data/min_L.py <r> [--k 40] [--test e8x7]
+usage (from the repository root): python3 -I code/crosscheck/all_data/min_L.py <r> [--k 40] [--test e8x7]
 """
 import sys, os, json, time, subprocess, platform, argparse, shutil
 from fractions import Fraction

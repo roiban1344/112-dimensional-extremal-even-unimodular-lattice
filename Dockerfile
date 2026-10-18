@@ -9,13 +9,16 @@
 #
 # (ii) The computational part of the proof (about 1.2 CPU hours). Mount the host directories
 #      certificates/ and out/ of a clone of this repository, so that the 130 MB download and the
-#      results survive the container. The user in the image has uid 1000; on Linux with another uid,
-#      add --user "$(id -u):$(id -g)" to the commands that mount host directories:
+#      results survive the container. Create out/ first: Docker would otherwise create the missing
+#      host directory owned by root, and the user in the image could not write to it. The user in the
+#      image has uid 1000; on Linux with another uid, add --user "$(id -u):$(id -g)" to the commands
+#      that mount host directories:
 #   mkdir -p out
 #   docker run --rm -v "$PWD/certificates:/work/certificates" -v "$PWD/out:/work/out" l112 \
 #       bash -c 'bash code/verify/fetch.sh && bash code/verify/proof.sh'
 #
 # (iii) Everything (about 26 CPU hours with three workers):
+#   mkdir -p out
 #   docker run --rm -v "$PWD/certificates:/work/certificates" -v "$PWD/out:/work/out" l112 \
 #       bash -c 'bash code/verify/fetch.sh && bash code/verify/full.sh 3'
 #
@@ -29,13 +32,15 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 RUN useradd --create-home --uid 1000 --shell /bin/bash lattice \
- && mkdir /work && chown lattice:lattice /work
+ && mkdir /work /opt/venv && chown lattice:lattice /work /opt/venv
 USER lattice
 WORKDIR /work
 
 # The venv is created first so that the layer with numpy is cached when only the sources change.
-ENV VIRTUAL_ENV=/work/.venv
-ENV PATH="/work/.venv/bin:${PATH}"
+# It lives outside /work, so that it stays visible when a host checkout is mounted on /work
+# (the dev container does this).
+ENV VIRTUAL_ENV=/opt/venv
+ENV PATH="/opt/venv/bin:${PATH}"
 COPY --chown=lattice:lattice requirements-verify.txt /work/
 RUN python3 -m venv "$VIRTUAL_ENV" \
  && python3 -m pip install --no-cache-dir -r requirements-verify.txt

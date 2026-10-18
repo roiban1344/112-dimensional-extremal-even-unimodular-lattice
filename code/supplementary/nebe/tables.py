@@ -21,7 +21,7 @@ Output in out/nebe/: M_tables.npz (units, min_reps, norm8_reps, K8).
 
 Requires SageMath (for steps 1, 2). Run time: about 3 hours (after lattices.py). Memory: about 3 GB.
 SageMath が要る（手順 1, 2）。実行時間: 約 3 時間（lattices.py のあと）。メモリ: 約 3 GB。
-Run / 実行:  sage -python code/supplementary/nebe/tables.py
+Run / 実行:  python3 code/supplementary/nebe/tables.py
 """
 import argparse
 import os

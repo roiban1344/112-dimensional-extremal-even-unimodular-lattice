@@ -40,19 +40,19 @@ Subcommands (SageMath unless stated otherwise) / サブコマンド（特記し�
             with h(N, N) in p M, Lambda' between N and pi^{-1} N), walked at random from Lambda_0 = M + M with a fixed
             seed (--seed, default 1) until sum 1/|U(Lambda)| reaches the mass 157/640. The classes are labelled 0-7
             by the invariants (|U|, number of vectors of each norm <= 14 of Tr trd h), independently of the order in
-            which the walk finds them. Writes out/genus/lambda.txt and certificates/genus_classes.txt.
+            which the walk finds them. Writes out/genus/lambda.txt and genus_classes.txt (see Output below).
             ノルム 5 の素イデアル p = ((7 + √29)/2) での Kneser の近傍（Siegel 型: N = Λ ∩ Λ' で h(N, N) ⊂ pM、Λ' は N と π^{-1}N の間）を、
             Λ_0 = M ⊕ M から固定した乱数シード（--seed、既定 1）で無作為にたどり、Σ 1/|U(Λ)| が質量 157/640 に達するまで続ける。類の番号 0〜7 は
             不変量（|U| と Tr trd h のノルム 14 以下のベクトルの本数）で付け、見つかる順序によらない。out/genus/lambda.txt と
-            certificates/genus_classes.txt を書く。
+            genus_classes.txt を書く（下の「出力」を参照）。
   build     X_j = L tensor_M Lambda_j for the 8 classes, LLL-reduced (PARI qflllgram). Writes the Gram matrices
-            certificates/genus_class_<j>.txt and, in certificates/genus_basis_<j>.txt, the basis of X_j in the
+            genus_class_<j>.txt and, in genus_basis_<j>.txt, the basis of X_j in the
             coordinates of data/L56_gram.txt (L~ below): through the embedding e: L~ -> L_{56,2}(M) of
             nebe/reduction_to_nebe.py (out/nebe/embedding_L_into_M.txt; <e x, e y> = 2 <x, y>), W^2 = (L~ tensor Q)^2,
             and the basis is scaled so that the form is diag(G, G)/2 as in (3.1). The file holds d, then
             D = d B (integers), B the rational basis matrix: D diag(G, G) D^T = 2 d^2 G_X.
-            8 類の X_j = L ⊗_M Λ_j を作り LLL 簡約する（PARI の qflllgram）。Gram 行列を certificates/genus_class_<j>.txt に、
-            data/L56_gram.txt（以下 L~）の座標での X_j の基底を certificates/genus_basis_<j>.txt に書く。nebe/reduction_to_nebe.py の
+            8 類の X_j = L ⊗_M Λ_j を作り LLL 簡約する（PARI の qflllgram）。Gram 行列を genus_class_<j>.txt に、
+            data/L56_gram.txt（以下 L~）の座標での X_j の基底を genus_basis_<j>.txt に書く。nebe/reduction_to_nebe.py の
             埋め込み e: L~ -> L_{56,2}(M)（out/nebe/embedding_L_into_M.txt。<e x, e y> = 2<x, y>）で W^2 = (L~ ⊗ Q)^2 とし、形式が (3.1) と同じ
             diag(G, G)/2 になるように基底を倍する。ファイルには d と D = d B（整数。B は有理数の基底行列）を書く: D diag(G, G) D^T = 2 d^2 G_X。
   frames    For each class, the decompositions Lambda = J + J' (J = Lambda cap H v for v with h(v, v) in {2, 2pi, 2pi~},
@@ -63,23 +63,23 @@ Subcommands (SageMath unless stated otherwise) / サブコマンド（特記し�
   witness   Norm-8 vectors for classes 3, 4 (in the fixed sublattice of s u, s = z w of order 3, u in U(Lambda) of
             order 3; PARI qfminim) and class 5 (fixed sublattice of s u, s = w of order 4, u of order 4, dimension 56;
             BKZ and pruned enumeration with fpylll, fixed seeds). Each vector is checked exactly (v G_X v^T = 8) and
-            written, in the basis of genus_class_<j>.txt, to certificates/genus_witnesses.txt.
+            written, in the basis of genus_class_<j>.txt, to genus_witnesses.txt.
             類 3, 4（位数 3 の s = zw と位数 3 の u ∈ U(Λ) の積 s u の固定部分格子。PARI の qfminim）と類 5（位数 4 の s = w と位数 4 の u の積の
             固定部分格子、56 次元。fpylll の BKZ と枝刈りつき列挙、乱数シードは固定）のノルム 8 のベクトル。v G_X v^T = 8 を厳密に確かめ、
-            genus_class_<j>.txt の基底での座標を certificates/genus_witnesses.txt に書く。
+            genus_class_<j>.txt の基底での座標を genus_witnesses.txt に書く。
   identify  Explicit isometries class 7 -> L_112 (the basis (3.1) from data/) and class 3 -> gluing A
             (certificates/gram_A.txt), found as in isometry_ab.py: among the S-equivariant maps (32-dimensional) that
             are integral, those with Q(T) = tr(G_X^{-1} T G_Y T^T) <= 112 are enumerated (qfminim, checked complete)
             and T G_Y T^T = G_X is tested exactly. Class 7 is compared in the coordinates of L~ (data/), class 3 in
             the reduced coordinates of L_{56,2}(M) of isometry_ab.py. As a cross-check of the orders |U(Lambda)|
             (computed by qfauto in enum), the same enumeration with Y = X_j counts the S-equivariant automorphisms
-            of X_j, which form U(Lambda_j) (Morita). Writes certificates/genus_isometry_7_L112.txt and
-            certificates/genus_isometry_3_A.txt (rows: the basis of X_j in the basis of the target).
+            of X_j, which form U(Lambda_j) (Morita). Writes genus_isometry_7_L112.txt and
+            genus_isometry_3_A.txt (rows: the basis of X_j in the basis of the target).
             明示的な等長写像 類 7 -> L_112（data/ からの基底 (3.1)）と 類 3 -> 貼り方 A（certificates/gram_A.txt）を isometry_ab.py と同じ方法で求める:
             S 同変な写像（32 次元）のうち整数のものの中で Q(T) = tr(G_X^{-1} T G_Y T^T) ≤ 112 となるものを列挙し（qfminim。完全性を確かめる）、
             T G_Y T^T = G_X を厳密に確かめる。類 7 は L~（data/）の座標で、類 3 は isometry_ab.py の L_{56,2}(M) の簡約座標で比べる。
             enum で qfauto が求めた位数 |U(Λ)| の検算として、Y = X_j とした同じ列挙で X_j の S 同変な自己同型（森田により U(Λ_j)）を数える。
-            certificates/genus_isometry_7_L112.txt と certificates/genus_isometry_3_A.txt を書く（行は X_j の基底を行き先の基底で書いたもの）。
+            genus_isometry_7_L112.txt と genus_isometry_3_A.txt を書く（行は X_j の基底を行き先の基底で書いたもの）。
   check     (numpy only, integer arithmetic; no SageMath.) For each class j: G_X symmetric, even, det 1 (Bareiss);
             D diag(G, G) D^T = 2 d^2 G_X with G = data/L56_gram.txt; the generators g1, g2 of data/ act on X_j:
             s_i = D diag(g_i, g_i) D^{-1} = D diag(g_i, g_i) diag(G, G) D^T G_X^{-1} / (2 d^2) is an integer matrix
@@ -103,6 +103,20 @@ others; check reports which classes have a witness.
 類 1 はここでは決めない。極値かどうかは別の計算で調べる。類 1 のノルム 8 のベクトルが見つかれば certificates/genus_witnesses.txt に 1 行足すだけで、
 check がほかと同じく確かめる。check はどの類に証拠があるかを報告する。
 
+Output. enum, build, witness and identify write their files to --dest, by default out/genus/; the distributed
+files in certificates/ are not overwritten (pass --dest certificates/ to replace them, then update
+certificates/SHA256SUMS). A step that needs the output of an earlier step reads it from --dest if it is there,
+otherwise the distributed file. Each written file is compared with the distributed one and reported as identical,
+the same integers (only comment lines differ), or different. For genus_classes.txt the integers are a canonical
+invariant (the labels do not depend on the walk) and must agree; the other files may legitimately differ (another
+walk, PARI's enumeration order, another embedding e), and check verifies the distributed ones. check reads only the
+distributed files (--certificates).
+出力. enum, build, witness, identify はファイルを --dest（既定は out/genus/）に書き、certificates/ の配布ファイルは上書きしない（置き換えるには
+--dest certificates/ を指定し、certificates/SHA256SUMS を更新する）。前の段の出力が要る段は、--dest にあればそれを、無ければ配布ファイルを読む。
+書いたファイルはそれぞれ配布ファイルと比べ、同じ、整数が同じ（注釈行だけが違う）、違う、のいずれかを報告する。genus_classes.txt の整数は標準的な
+不変量（類の番号は歩き方によらない）なので一致しなければならない。ほかのファイルは違ってもよく（別の歩き方、PARI の列挙順、別の埋め込み e）、
+配布したものを check が確かめる。check は配布ファイル（--certificates）だけを読む。
+
 Prerequisites: out/nebe/M_* and Mtilde_order.txt (nebe/lattices.py), out/nebe/embedding_L_into_M.txt
 (nebe/reduction_to_nebe.py; used by build and identify). The embedding is determined only up to an
 automorphism of L~ normalizing SL_2(29), and reduction_to_nebe.py need not return the same one on every run; the
@@ -118,7 +132,7 @@ Run time (single thread, measured on a shared, loaded machine): local 20 minutes
 80 seconds (numpy). Memory: each step ran under a 3-4 GB cap.
 実行時間（1 スレッド。負荷のかかった共用の計算機で計測）: local 20 分、mass 1 秒、enum 16 分（種 1 で近傍 62 個）、build 4 分、frames 12 分、
 witness 2 分、identify 13 分、check 80 秒（numpy）。メモリ: どの段も 3〜4 GB の上限の下で動いた。
-Run / 実行:  sage -python code/supplementary/genus/genus.py local|mass|enum|build|frames|witness|identify
+Run / 実行:  python3 code/supplementary/genus/genus.py local|mass|enum|build|frames|witness|identify
              python3 code/supplementary/genus/genus.py check
 """
 import argparse
@@ -149,17 +163,24 @@ LABELS = {
     1: (12, (0, 0, 0, 12, 0, 192, 48)),           # mod-2 gluing of type bc; extremality decided separately
     2: (288, (0, 0, 0, 48, 0, 72, 144)),          # L~ + L~
     3: (24, (0, 0, 0, 24, 0, 144, 96)),           # gluing A = gluing B
-    4: (24, (0, 0, 0, 36, 0, 168, 0)),            # mod-2 gluing of type bc, norm 8
-    5: (20, (0, 0, 0, 0, 0, 180, 120)),           # no mod-2 frame, norm 8
+    4: (24, (0, 0, 0, 36, 0, 168, 0)),            # mod-2 gluing of type bc, has a vector of norm 8
+    5: (20, (0, 0, 0, 0, 0, 180, 120)),           # no mod-2 frame, has a vector of norm 8
     6: (288, (0, 12, 0, 36, 0, 660, 72)),         # L + L~
     7: (48, (0, 0, 0, 0, 0, 216, 48)),            # L_112
 }
 # Types of the mod-2 frames (frames). / mod 2 の枠の型（frames）。
 FRAME_TYPES = {0: ["bb"], 1: ["bc"], 2: ["cc"], 3: ["bb", "cc"], 4: ["bc"], 5: [], 6: [], 7: ["cc"]}
-# Minimum norm: 6 for the orthogonal sums, 8 where a witness is distributed, 10 for L_112 (Theorem A).
-# 最小ノルム: 直交和は 6、証拠を配布する類は 8、L_112 は 10（定理 A）。
+# Minimum norm, as in Table S10 and Theorem S6.1 (c) of the supplement, with where it is proved. 6 for the orthogonal
+# sums (min L = min L~ = 6); 8 for class 3 (gluing A = gluing B: isometry_ab.py [C28], min L_B = 8 by gluing_b.py
+# [C4]); only <= 8 for classes 4 and 5, where the norm-8 witness gives an upper bound (no lower bound is computed);
+# 10 for L_112 (Theorem A). check verifies the witnesses and the isometries, not these minima.
+# 最小ノルム（補遺の表 S10・定理 S6.1 (c) のとおり）とその根拠。直交和は 6（min L = min L~ = 6）。類 3 は 8（貼り方 A = 貼り方 B:
+# isometry_ab.py [C28]、min L_B = 8 は gluing_b.py [C4]）。類 4、5 はノルム 8 の証拠による上界 ≤ 8 だけ（下界は計算しない）。
+# L_112 は 10（定理 A）。check が確かめるのは証拠と等長写像であって、これらの最小ではない。
 STATUS = {0: "orthogonal sum L + L, min 6", 1: "open (decided by a separate computation)",
-          2: "orthogonal sum L~ + L~, min 6", 3: "gluing A = gluing B, min 8", 4: "min 8", 5: "min 8",
+          2: "orthogonal sum L~ + L~, min 6",
+          3: "gluing A = gluing B, min 8 (A = B: isometry_ab.py [C28]; min L_B = 8: gluing_b.py [C4])",
+          4: "min <= 8 (norm-8 witness; not extremal)", 5: "min <= 8 (norm-8 witness; not extremal)",
           6: "orthogonal sum L + L~, min 6", 7: "L_112, min 10 (Theorem A)"}
 WITNESS_CLASSES = (3, 4, 5)
 
@@ -478,6 +499,53 @@ def gdir(out_dir):
     return d
 
 
+def dest_dir(a, rep):
+    """Directory where enum, build, witness, identify write their certificate files: --dest, by default out/genus/
+    (next to lambda.txt). The distributed files in certificates/ are replaced only when --dest names that directory.
+    enum, build, witness, identify が検証用データのファイルを書くディレクトリ: --dest、既定は out/genus/（lambda.txt と同じ場所）。
+    certificates/ の配布ファイルは、--dest でそのディレクトリを指定したときだけ置き換わる。"""
+    d = a.dest or gdir(rep.out_dir)
+    os.makedirs(d, exist_ok=True)
+    return d
+
+
+def produced(name, a, rep):
+    """Path of a file written by an earlier step: in the output directory if it is there, otherwise the distributed
+    file (SHA-256 checked). / 前の段が書いたファイルのパス: 出力先にあればそれ、無ければ配布ファイル（SHA-256 を照合）。"""
+    p = os.path.join(dest_dir(a, rep), name)
+    return p if os.path.exists(p) else certs.path_checked(name, a.certificates)
+
+
+def compare_with_distributed(name, a, rep, canonical=False):
+    """Compare a file just written with the distributed one: identical bytes, the same integers (only comment lines
+    differ), or different. A difference is not an error in general (the walk, PARI's enumeration order and the
+    embedding of nebe/reduction_to_nebe.py may vary; every distributed file is verified by check). With
+    canonical=True the integers are a canonical invariant (genus_classes.txt: the labels do not depend on the walk)
+    and must agree.
+    書いたばかりのファイルを配布ファイルと比べる: バイト単位で同じ、整数が同じ（注釈行だけが違う）、違う、のいずれか。違うことは一般には誤りでない
+    （近傍の歩き方、PARI の列挙順、nebe/reduction_to_nebe.py の埋め込みは変わりうる。配布ファイルはすべて check が確かめる）。canonical=True のときは
+    整数が標準的な不変量なので（genus_classes.txt: 類の番号は歩き方によらない）、一致しなければならない。"""
+    cdir = a.certificates or certs.DEFAULT_DIR
+    new = os.path.join(dest_dir(a, rep), name)
+    dist = os.path.join(cdir, name)
+    if os.path.realpath(new) == os.path.realpath(dist):
+        rep.log(f"{name}: written into the distributed directory {cdir}; update {cdir}/SHA256SUMS")
+        return
+    if not os.path.exists(dist):
+        rep.value(f"{name}: compared with the distributed file", "no distributed file")
+        return
+    dist = certs.path_checked(name, cdir)
+    with open(new, "rb") as f1, open(dist, "rb") as f2:
+        same_bytes = f1.read() == f2.read()
+    vn, vd = data.read_integers(new), data.read_integers(dist)
+    same_ints = vn.shape == vd.shape and bool((vn == vd).all())
+    verdict = ("identical" if same_bytes else "the same integers (comment lines differ)" if same_ints else "different" if canonical
+               else "different (allowed: another walk, enumeration order or embedding; check verifies the distributed file)")
+    rep.value(f"{name}: written to {new}; compared with the distributed file", verdict)
+    if canonical:
+        rep.check(f"{name}: the same integers as the distributed file (canonical labels)", same_ints)
+
+
 def load_lambdas(out_dir):
     from lattices import read_mats
     from sage.all import QQ
@@ -624,7 +692,7 @@ def cmd_enum(a):
     write_rational_mats(os.path.join(gdir(rep.out_dir), "lambda.txt"),
                         "Lambda_j, j = 0..7: 16 x 16 rational basis matrices in the coordinates of Lambda_0 = M + M "
                         f"(genus.py enum, seed {a.seed})", [labels[j]["C"] for j in range(NCLASS)])
-    cdir = a.certificates or certs.DEFAULT_DIR
+    cdir = dest_dir(a, rep)
     tmp = os.path.join(cdir, CLASSES_FILE + ".tmp")
     with open(tmp, "w") as f:
         f.write("# The genus of rank-2 unimodular Hermitian lattices Lambda over the maximal order M (centralizer order 24),\n"
@@ -638,6 +706,7 @@ def cmd_enum(a):
             f.write(" ".join(str(int(t)) for t in [j, c["U"]] + list(c["inv"])) + "\n")
     os.replace(tmp, os.path.join(cdir, CLASSES_FILE))
     rep.log(f"wrote {gdir(rep.out_dir)}/lambda.txt and {cdir}/{CLASSES_FILE}")
+    compare_with_distributed(CLASSES_FILE, a, rep, canonical=True)
     rep.finish()
 
 
@@ -667,7 +736,7 @@ def cmd_build(a):
     Z = zero_matrix(QQ, N, N)
     PP = block_matrix(QQ, [[P, Z], [Z, P]], subdivide=False)
     GG = block_matrix(ZZ, [[G, zero_matrix(ZZ, N, N)], [zero_matrix(ZZ, N, N), G]], subdivide=False)
-    cdir = a.certificates or certs.DEFAULT_DIR
+    cdir = dest_dir(a, rep)
     info = []
     for j, C in enumerate(lams):
         Bx, Gx = S.build_X(C)
@@ -703,6 +772,10 @@ def cmd_build(a):
                 f.write(" ".join(str(int(v)) for v in r) + "\n")
         os.replace(tmp, os.path.join(cdir, basis_file(j)))
     rep.value("per class: [j, d, max |G_X|, max |D|, min diagonal of G_X]", info)
+    rep.log(f"wrote {cdir}/genus_class_<j>.txt and genus_basis_<j>.txt, j = 0..7")
+    for j in range(NCLASS):
+        compare_with_distributed(gram_file(j), a, rep)
+        compare_with_distributed(basis_file(j), a, rep)
     rep.finish()
 
 
@@ -800,13 +873,14 @@ def cmd_witness(a):
     S = Genus(rep.out_dir)
     lams = load_lambdas(rep.out_dir)
     two = lambda A: block_matrix(ZZ, [[A, zero_matrix(ZZ, N, N)], [zero_matrix(ZZ, N, N), A]], subdivide=False)   # noqa: E731
-    cdir = a.certificates or certs.DEFAULT_DIR
+    cdir = dest_dir(a, rep)
     rows = []
     for j in WITNESS_CLASSES:
         C = lams[j]
         Bx, Gx = S.build_X(C)
-        rep.check(f"class {j}: G_X equals certificates/{gram_file(j)}",
-                  np.array_equal(np.array(Gx.rows(), dtype=np.int64), certs.load_matrix(gram_file(j), NX, cdir)))
+        path = produced(gram_file(j), a, rep)
+        rep.check(f"class {j}: G_X equals {path}",
+                  np.array_equal(np.array(Gx.rows(), dtype=np.int64), data.read_integers(path).reshape(NX, NX)))
         Bxi = Bx.inverse()
         toX = lambda A: (Bx * A * Bxi).change_ring(ZZ)                         # noqa: E731
         Uel = closure([toX(A) for A in S.unit_actions(C)], NX)
@@ -861,6 +935,7 @@ def cmd_witness(a):
             f.write(" ".join(str(t) for t in r) + "\n")
     os.replace(tmp, os.path.join(cdir, WITNESS_FILE))
     rep.log(f"wrote {cdir}/{WITNESS_FILE}")
+    compare_with_distributed(WITNESS_FILE, a, rep)
     rep.finish()
 
 
@@ -915,9 +990,9 @@ def equivariant_isometries(BX, GX, BY, GY, comm, rep, label):
     return isos
 
 
-def read_basis(j, cdir):
-    """(d, D) from certificates/genus_basis_<j>.txt. / genus_basis_<j>.txt の (d, D)。"""
-    v = data.read_integers(certs.path_checked(basis_file(j), cdir))
+def read_basis(j, cdir, path=None):
+    """(d, D) from certificates/genus_basis_<j>.txt (or from path). / genus_basis_<j>.txt（または path）の (d, D)。"""
+    v = data.read_integers(path or certs.path_checked(basis_file(j), cdir))
     assert v.size == 1 + NX * NX, basis_file(j)
     return int(v[0]), v[1:].reshape(NX, NX)
 
@@ -928,7 +1003,8 @@ def cmd_identify(a):
     from p1_centralizer import commutant_basis
     from sage.all import QQ, ZZ, block_matrix, identity_matrix, matrix, zero_matrix
     rep = Report("s25_genus_identify", a.out)
-    cdir = a.certificates or certs.DEFAULT_DIR
+    cdir = a.certificates or certs.DEFAULT_DIR                                # gram_A.txt (isometry_ab.py)
+    odir = dest_dir(a, rep)
     g1, g2 = [matrix(ZZ, g.tolist()) for g in data.generators(a.data)]
     tau = matrix(ZZ, data.tau(a.data).tolist())
     I, Z = identity_matrix(ZZ, N), zero_matrix(ZZ, N, N)
@@ -937,8 +1013,8 @@ def cmd_identify(a):
     GX = {}
     BX = {}
     for j in range(NCLASS):
-        GX[j] = matrix(ZZ, certs.load_matrix(gram_file(j), NX, cdir).tolist())
-        d, D = read_basis(j, cdir)
+        GX[j] = matrix(ZZ, data.read_integers(produced(gram_file(j), a, rep)).reshape(NX, NX).tolist())
+        d, D = read_basis(j, None, produced(basis_file(j), a, rep))
         BX[j] = matrix(ZZ, D.tolist()).change_ring(QQ) / d
     # class 7 -> L_112, basis (3.1) / 類 7 -> L_112（基底 (3.1)）
     BR = block_matrix(ZZ, [[I, tau], [Z, 2 * I]], subdivide=False).change_ring(QQ)
@@ -947,7 +1023,7 @@ def cmd_identify(a):
     rep.check("class 7 is S-equivariantly isometric to L_112", len(isos) > 0)
     T7 = min(isos, key=lambda T: (max(abs(x) for x in T.list()), sum(abs(x) for x in T.list())))
     rep.check("T G_R T^T = G_7 and det T = +-1", T7 * GR * T7.transpose() == GX[7] and abs(T7.det()) == 1)
-    certs.save_matrix(os.path.join(cdir, ISO7_FILE), np.array(T7.rows(), dtype=np.int64),
+    certs.save_matrix(os.path.join(odir, ISO7_FILE), np.array(T7.rows(), dtype=np.int64),
                       "T (112 x 112): T G_R T^T = G_X, det T = +-1, G_X = certificates/genus_class_7.txt, G_R = (3.1) from data/\n"
                       "([[3G, tau G], [(tau G)^T, 2G]]); rows: the basis of X_7 in the basis (3.1) of L_112. T commutes with the\n"
                       "action of SL_2(29) (diag(g, g) on (3.1)). Found by code/supplementary/genus/genus.py identify.\n"
@@ -968,7 +1044,7 @@ def cmd_identify(a):
     rep.check("class 3 is S-equivariantly isometric to gluing A", len(isos) > 0)
     T3 = min(isos, key=lambda T: (max(abs(x) for x in T.list()), sum(abs(x) for x in T.list())))
     rep.check("T G_A T^T = G_3 and det T = +-1", T3 * GA * T3.transpose() == GX[3] and abs(T3.det()) == 1)
-    certs.save_matrix(os.path.join(cdir, ISO3_FILE), np.array(T3.rows(), dtype=np.int64),
+    certs.save_matrix(os.path.join(odir, ISO3_FILE), np.array(T3.rows(), dtype=np.int64),
                       "T (112 x 112): T G_A T^T = G_X, det T = +-1, G_X = certificates/genus_class_3.txt, G_A = certificates/gram_A.txt;\n"
                       "rows: the basis of X_3 in the basis of gluing A. SL_2(29)-equivariant. Found by\n"
                       "code/supplementary/genus/genus.py identify.\n"
@@ -981,6 +1057,9 @@ def cmd_identify(a):
             orders.append(2 * len(auts))
         rep.value("|centralizer of SL_2(29) in Aut(X_j)| = |U(Lambda_j)|, j = 0..7 (recounted)", orders)
         rep.check("the recounted orders agree with qfauto in enum", orders == [LABELS[j][0] for j in range(NCLASS)])
+    rep.log(f"wrote {odir}/{ISO7_FILE} and {odir}/{ISO3_FILE}")
+    compare_with_distributed(ISO7_FILE, a, rep)
+    compare_with_distributed(ISO3_FILE, a, rep)
     rep.finish()
 
 
@@ -1048,7 +1127,7 @@ def check(a):
         have.append(j)
     rep.value("classes with a norm-8 witness", sorted(have))
     rep.check("witnesses for classes 3, 4, 5", set(WITNESS_CLASSES) <= set(have))
-    rep.value("status of the minimum norm per class", {j: STATUS[j] + (" [witness]" if j in have else "") for j in range(NCLASS)})
+    rep.value("status of the minimum norm per class (as in Table S10; [witness]: a norm-8 vector checked above)", {j: STATUS[j] + (" [witness]" if j in have else "") for j in range(NCLASS)})
     # isometries / 等長写像
     GR = data.gram_R(G, tau)
     T7 = certs.load_matrix(ISO7_FILE, NX, cdir).astype(np.int64)
@@ -1073,7 +1152,10 @@ def main():
     ap.add_argument("--bound", type=int, default=28, help="bound on Tr trd h for the frame search (frames)")
     ap.add_argument("--skip-units", action="store_true", help="identify: skip the recount of |U(Lambda_j)|")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    ap.add_argument("--certificates", default=None, help="the distributed certificates (read by check and compared with)")
+    ap.add_argument("--dest", default=None,
+                    help="enum, build, witness, identify: directory for the files they write (default out/genus/); "
+                         "pass certificates/ to replace the distributed files (then update SHA256SUMS)")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     if a.mode == "check":

@@ -18,7 +18,7 @@ form (qfminim, checked complete against the exact enumerator).
 Lambda のノルム 2 の元は、16 次元の整数形式のノルム 8 以下のベクトルとして求める（qfminim。厳密な列挙と照合して完全性を確かめる）。
 
 Requires SageMath. Run time: about 2 minutes. / SageMath が要る。実行時間: 約 2 分。
-Run / 実行:  sage -python code/supplementary/frames.py
+Run / 実行:  python3 code/supplementary/frames.py
 """
 import argparse
 import os
