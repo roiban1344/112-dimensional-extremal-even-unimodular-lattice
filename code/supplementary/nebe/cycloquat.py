@@ -18,9 +18,10 @@ Model (a concrete form of [Neb98, Remark 3.3]; this explicit form is not written
     これらと可換な自己準同型は H = K4 ⊕ K4 b の右からの積。K4 は Q(ζ_p) の 4 次部分体。H は K = Q(√p) 上の、2 つの無限素点だけで分岐する四元数環。
   * Invariant forms: Tr_{Q(zeta)/Q}(c (x conj(x') + y conj(y'))) with c in K totally positive.
     不変な内積: Tr_{Q(ζ)/Q}(c (x conj(x') + y conj(y')))、c ∈ K は総正。
-  * For each maximal order M of H, exactly one of the lattices Z[zeta] M (1 - zeta)^i can be made
-    unimodular; it is L_{2(p-1),2}(M) [Neb98, Thm 2.4, Prop 3.2].
-    H の各極大整環 M について、Z[ζ] M (1-ζ)^i のうちユニモジュラーにできるものがちょうど 1 つあり、それが L_{2(p-1),2}(M)。
+  * For each maximal order M of H, the lattices (1 - zeta)^i Z[zeta] M (products with Z[zeta] on the left, M on
+    the right) are unimodular for two values of i (an isometric pair); the SL_2(p)-invariant one is L_{2(p-1),2}(M)
+    [Neb98, Thm 2.4, Prop 3.2].
+    H の各極大整環 M について、(1-ζ)^i Z[ζ] M（Z[ζ] を左、M を右から掛ける）がユニモジュラーになる i は 2 つあり（互いに等長）、SL_2(p) で不変な方が L_{2(p-1),2}(M)。
 The resulting Gram matrix is checked directly to be integral, even and of determinant 1.
 得られた Gram 行列が整数・偶・行列式 1 であることを最後に直接確かめる。
 """
