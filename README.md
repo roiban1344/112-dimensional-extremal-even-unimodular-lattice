@@ -25,7 +25,7 @@ An even unimodular lattice is a lattice in ℝⁿ all of whose vectors have even
 
 Run the commands from the repository root. The main verifier needs Python 3.10 or later, NumPy, and a C compiler supporting 128-bit integers, such as GCC or Clang. There are three levels of checking.
 
-**(i) Inputs only (20 seconds).**
+**(i) Inputs only (20 seconds).** On Debian and Ubuntu, `python3 -m venv` needs the package `python3-venv`.
 
 ```bash
 python3 -m venv .venv
@@ -43,7 +43,7 @@ bash code/verify/fetch.sh
 bash code/verify/proof.sh
 ```
 
-`fetch.sh` takes the Release tag as an optional argument (default `certificates-v1`). `proof.sh` runs every computational check used in the proof of Theorem A: F1 (the 56-dimensional base lattice has minimum 6) by interval enumeration, F2 and F3 (completeness of the orbit representatives), F5a by the odd-coset certificates, and F5b by canonical forms. The final argument also uses the mathematical lemmas in the paper. See the [step-by-step resource requirements](code/README.md#the-verification-steps).
+`fetch.sh` needs `curl`; it takes the Release tag as an optional argument (default `certificates-v1`) and downloads every `.npz` file listed in `certificates/SHA256SUMS` (nine files, about 130 MB), including those used only by `full.sh` and the supplementary checks. `proof.sh` runs every computational check used in the proof of Theorem A: F1 (the 56-dimensional base lattice has minimum 6) by interval enumeration, F2 and F3 (completeness of the orbit representatives), F5a by the odd-coset certificates, and F5b by canonical forms. The final argument also uses the mathematical lemmas in the paper. See the [step-by-step resource requirements](code/README.md#the-verification-steps).
 
 **(iii) Everything (about 26 CPU hours, roughly 9.5–10 hours elapsed with three workers).**
 
@@ -57,7 +57,7 @@ This runs everything in `proof.sh`, and adds the alternative check of F5b by the
 
 ## Versions and reproducibility
 
-Releases are tagged by date; this release is `v2026-10-18`. Take the paper, the code, and the verification-data hashes from the same tag. Large verification data archives are distributed as assets of the [Release `certificates-v1`](https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1); their hashes are recorded in `certificates/SHA256SUMS`. Programs check these hashes before using the data. Generated results are written to `out/`.
+Releases are tagged by date; this release is `v2026-10-18.1` (a second release on the same day gets a suffix). Take the paper, the code, and the verification-data hashes from the same tag. Large verification data archives are distributed as assets of the [Release `certificates-v1`](https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1); their hashes are recorded in `certificates/SHA256SUMS`. Programs check these hashes before using the data. Generated results are written to `out/`.
 
 To cite this work, use GitHub's "Cite this repository", which reads [CITATION.cff](CITATION.cff).
 
