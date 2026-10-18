@@ -26,9 +26,14 @@ import os
 
 import numpy as np
 
+from . import require
 from .data import read_integers, sha256_file
 
 DEFAULT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "certificates")
+
+# The certificate files that determine the table K_8 written by verify/v4 (out/K8.npy, out/K8_first.npy).
+# verify/v4 が書く表 K_8（out/K8.npy, out/K8_first.npy）を決める検証用データ。
+K8_INPUTS = ("norm8_reps.npz", "centralizer.npz")
 
 
 def expected_hashes(directory):
@@ -59,6 +64,12 @@ def path_checked(name, directory=None, require_hash=True):
     return path
 
 
+def file_hashes(names, directory=None):
+    """{name: SHA-256} of certificate files, after checking them against SHA256SUMS.
+    検証用データのファイルの {名前: SHA-256}（SHA256SUMS と照合したうえで）。"""
+    return {name: sha256_file(path_checked(name, directory)) for name in names}
+
+
 def load(name, key, directory=None, require_hash=True):
     """One array from a certificate .npz file. / 検証用データの .npz から配列を 1 つ読む。"""
     with np.load(path_checked(name, directory, require_hash), allow_pickle=False) as z:
@@ -68,7 +79,7 @@ def load(name, key, directory=None, require_hash=True):
 def load_matrix(name, n, directory=None, require_hash=True):
     """An n x n integer matrix from a text certificate. / テキストの検証用データから n × n の整数行列を読む。"""
     v = read_integers(path_checked(name, directory, require_hash))
-    assert v.size == n * n, name
+    require(v.size == n * n, f"{name}: expected {n * n} integers, found {v.size}")
     return v.reshape(n, n)
 
 

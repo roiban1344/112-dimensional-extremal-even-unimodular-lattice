@@ -24,7 +24,7 @@ listed in §7.1. The scripts in **`verify/`** check F0–F5 from two kinds of in
 We use **verification data** for the distributed auxiliary inputs as a whole. A **certificate** here is a coset representative that establishes a lower bound on the minimum norm of that coset: each row of `odd_bounding.npz` or `even_bounding.npz` is such a representative. The checker verifies its coset membership, norm and inner-product conditions; the lemmas in the paper then give the bound. Orbit representatives and change-of-basis matrices are named separately.
 
 The proof of Theorem A relies on the verification code and the hand-proved results. The
-verification code consists of about 1,750 lines of Python (`verify/` v0–v7 and `lib/`, counting the
+verification code consists of about 2,000 lines of Python (`verify/` v0–v7 and `lib/`, counting the
 bilingual header comments) and one C program; the Python code uses no package other than numpy.
 The proof does **not** rely on the correctness of the code that produced the verification data
 (`produce/`): any property of the data that the proof uses is re-checked by `verify/`.
@@ -66,7 +66,7 @@ bash code/verify/full.sh 3
 
 `bash code/verify/quick.sh` (about 40–50 minutes) is an abbreviated check. It runs F1 only on the positive controls and omits v7 and v8, so passing it is not a complete verification of the theorem.
 
-Each step prints `[ok]`/`[FAIL]` for every check and writes `out/<step>.json` with the results, software versions and running time.
+Each step prints `[ok]`/`[FAIL]` for every check and writes `out/<step>.json` with the results, software versions and running time. A step removes its old `out/<step>.json` when it starts, and a step that stops on an error (for example a hash mismatch) writes `"passed": false` with the error, so the file never shows a stale pass; the exit code (nonzero on any failure) is the primary verdict. The shell scripts run Python with `-I` (isolated mode), and the library refuses to run under `python -O`.
 
 ## The verification steps
 
@@ -81,7 +81,7 @@ Times were measured on the machine used for the paper (8 cores, 15 GB, shared wi
 | `v4_norm8_orbits.py` | F3, §6.4 | the 1,527,984 vectors x_i u_k give 1,517,130 distinct regular orbits covering \|L₈\| | 9 min | 2 GB |
 | `v5_odd_bounding.py` | F5a, Cor. 5.2, Table 7 | 656 odd-class certificates | 2.5 min | 2 GB |
 | `v6_canonical_lookup.py` | F5b, Prop. 6.3, Table 6 | no class x_i u_k τ + 2L contains a norm-8 vector (canonical forms); also type (6,6) | 24 min | 2 GB |
-| `v7_even_bounding.py` | F5b, Cor. 5.3, Table 8 | 1,527,984 even-class certificates (resumable; `--threads`) | 24 CPU h (7.9 h with 3 threads) | 3 GB |
+| `v7_even_bounding.py` | F5b, Cor. 5.3, Table 8 | 1,527,984 even-class certificates (resumable, with the checkpoint bound to the inputs by SHA-256; `--threads`) | 24 CPU h (7.9 h with 3 threads) | 3 GB |
 | `v8_design_identities.py` | §6.3 | 18 spherical-design identities (consistency test, not needed for the proof) | 14 min | 2 GB |
 
 F5b is checked twice by unrelated arguments (v6 and v7); either one suffices for the proof.
@@ -89,9 +89,12 @@ F5b is checked twice by unrelated arguments (v6 and v7); either one suffices for
 ### How exactness is ensured
 
 All decisions are made in integer arithmetic. Where a matrix product of integer matrices is
-computed in floating point (for speed), the code first asserts from the actual inputs that every
+computed in floating point (for speed), the code first checks from the actual inputs that every
 partial sum is an integer below 2²⁴ (float32) or 2⁵³ (float64); such products are exact. The
 helpers are in `lib/exact.py`; each script's header states which products it computes this way.
+These guards, and the other conditions a result depends on (no int64 overflow, a complete expansion
+or enumeration), are written as `require(...)`, which raises an error, not as `assert`, which
+`python -O` would remove; in addition `lib` refuses to be imported under `-O`.
 The enumeration of F1 uses outward-rounded interval arithmetic (`verify/enum_interval.c`, header).
 
 ## Requirements

@@ -4,14 +4,16 @@
  * 取りこぼしの無い、ノルム R 以下の全格子ベクトルの列挙
  * （区間演算による Fincke-Pohst / Schnorr-Euchner。論文 §6.1 (a)、表 5）。
  *
- * Input (stdin), written by v1_min_L.py:
- * 入力（標準入力。v1_min_L.py が書く）:
+ * Input (stdin), written by lib/enumerate.py (enumerator_input; used by v1_min_L.py and short_vectors):
+ * 入力（標準入力。lib/enumerate.py の enumerator_input が書く。v1_min_L.py と short_vectors が使う）:
  *   n R                         dimension, radius (an integer)
  *                               次元、半径（整数）
  *   G (n lines of n integers)   the Gram matrix of the (reduced) basis
  *                               （簡約した）基底の Gram 行列
  *   n lines "lo hi"             intervals containing D_i, where G = V^T diag(D) V
+ *                               (only lo is used by the enumeration; hi is read for the sanity check lo <= hi)
  *                               G = V^T diag(D) V の D_i を含む区間
+ *                               （列挙に使うのは lo だけ。hi は lo <= hi の確認のために読む）
  *   n(n-1)/2 lines "lo hi"      intervals containing V_ij (i < j), row by row
  *                               V_ij (i < j) を含む区間（行ごと）
  *
@@ -39,11 +41,15 @@
  * counts are doubled to count both signs.
  * ±x の片方だけを列挙する（上の座標がすべて 0 のときは x_i ≥ 0）。出力の本数は 2 倍して両方の符号を数える。
  *
- * Output (stdout): "nodes N leaves M", one line per norm "nonzero vectors of norm q: count",
- * the vectors found (one of each +-pair; at most the number given as the first command-line
- * argument, default 5), and "done".
- * 出力（標準出力）: 「nodes N leaves M」、ノルムごとに「nonzero vectors of norm q: 本数」、見つけたベクトル（±の片方。
- * 最初のコマンドライン引数で与えた本数まで。既定 5）、最後に「done」。
+ * Output (stdout): the vectors found (one of each +-pair; at most the number given as the first
+ * command-line argument, default 5) as "vector of norm q: x_0 ... x_{n-1}", then "nodes N leaves M",
+ * one line per norm "nonzero vectors of norm q: count" (q < 4096), the line
+ * "untabulated vectors of norm >= 4096: count" (vectors of norm <= R that do not fit the table;
+ * the callers require 0), and "done".
+ * 出力（標準出力）: 見つけたベクトル（±の片方。最初のコマンドライン引数で与えた本数まで。既定 5）を
+ * 「vector of norm q: x_0 … x_{n-1}」の形で、続いて「nodes N leaves M」、ノルムごとに「nonzero vectors of norm q: 本数」
+ * （q < 4096）、「untabulated vectors of norm >= 4096: 本数」（ノルム R 以下で表に収まらないベクトル。呼び出し側は 0 を要求する）、
+ * 最後に「done」。
  *
  * Compile / コンパイル:  gcc -O2 -std=c11 -fno-fast-math -ffp-contract=off -o enum_interval enum_interval.c -lm
  * (-fno-fast-math and -ffp-contract=off keep every operation a separately rounded IEEE operation,
@@ -72,7 +78,9 @@ static int pbeg[MAXN];
 /* zero_above[i]: all coordinates x_j with j >= i are 0. / zero_above[i]: j ≥ i の座標 x_j がすべて 0。 */
 static int zero_above[MAXN + 1];
 static unsigned long long nodes = 0, leaves = 0;
-static unsigned long long found[4096];
+#define QMAX 4096
+static unsigned long long found[QMAX];
+static unsigned long long untabulated = 0; /* leaves of norm <= R outside 0 .. QMAX-1 / ノルム R 以下で 0 .. QMAX-1 の外にある葉 */
 static long long printed = 0, maxprint = 5;
 
 static inline double dn(double a) { return a - fabs(a) * 0x1p-51 - 0x1p-1060; }
@@ -93,7 +101,8 @@ static void leaf(void) {
         q += s * x[i];
     }
     if (q <= (__int128)R) {
-        if (q >= 0 && q < 4096) found[(int)q]++;
+        if (q >= 0 && q < QMAX) found[(int)q]++;
+        else untabulated++;
         if (printed < maxprint) {
             printed++;
             printf("vector of norm %lld:", (long long)q);
@@ -197,8 +206,9 @@ int main(int argc, char **argv) {
     zero_above[n] = 1;
     rec(n - 1, 0.0);
     printf("nodes %llu leaves %llu\n", nodes, leaves);
-    for (int q = 0; q < 4096; q++)
+    for (int q = 0; q < QMAX; q++)
         if (found[q]) printf("nonzero vectors of norm %d: %llu\n", q, 2 * found[q]);
+    printf("untabulated vectors of norm >= %d: %llu\n", QMAX, 2 * untabulated);
     printf("done\n");
     return 0;
 }

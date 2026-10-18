@@ -13,18 +13,19 @@ The left sides are computed from the orbit lists: for an orbit O = x G,
 左辺を軌道の一覧から計算する。軌道 O = x G について
     sum_{y in O} <y, a>^k = (|O| / |S|) sum_{g in S} <x g, a>^k = (|O| / |S|) * 2 sum_{s in S/{+-1}} <x s, a>^k
 (k even). For m = 6 the orbits are those of min_reps.npz with their sizes (V3); for m = 8 one
-vector per orbit is taken from out/K8_first.npy (V4), all orbits being regular.
+vector per orbit is taken from out/K8_first.npy (V4; its SHA-256 is checked against out/v4_norm8_orbits.json),
+all orbits being regular.
 A duplicated or missing orbit would break the identities (barring coincidence).
-（k は偶数）。m = 6 では min_reps.npz の軌道とその大きさ（V3）、m = 8 では out/K8_first.npy（V4）から軌道ごとに 1 本を取る
+（k は偶数）。m = 6 では min_reps.npz の軌道とその大きさ（V3）、m = 8 では out/K8_first.npy（V4。SHA-256 を out/v4_norm8_orbits.json と照合する）から軌道ごとに 1 本を取る
 （どの軌道も正則）。軌道の重複や欠落があれば、（偶然を除いて）等式が崩れる。
 
-Exactness: inner products in float64 with the exactness bound asserted; powers and sums in int64
+Exactness: inner products in float64 with the exactness bound checked; powers and sums in int64
 per block (bounded), accumulated in Python integers; comparison with exact fractions.
 厳密さ: 内積は float64 で厳密さの上界を確かめる。冪と和はブロックごとに int64（上界を確かめる）で、Python の整数に足し込む。
 比較は厳密な分数で。
 
-Run time: about 15 minutes (after V4). Memory: about 2 GB.
-実行時間: 約 15 分（V4 のあと）。メモリ: 約 2 GB。
+Run time: about 14 minutes (after V4). Memory: about 2 GB.
+実行時間: 約 14 分（V4 のあと）。メモリ: 約 2 GB。
 
 Run / 実行:  python3 code/verify/v8_design_identities.py [--data DIR] [--certificates DIR] [--out DIR]
 """
@@ -36,10 +37,10 @@ from fractions import Fraction
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from lib import certs, data, exact, group, mod2  # noqa: E402
-from lib.report import Report  # noqa: E402
+from lib import certs, data, exact, group, mod2, require, shells  # noqa: E402
+from lib.report import Report, load_output_of  # noqa: E402
 
-N6, N8 = 15590400, 36957286800
+N6, N8 = shells.N6, shells.N8   # from the extremal theta series (V2) / 極値テータ級数（V2）から
 
 
 def power_sums(X, weights, B):
@@ -50,7 +51,7 @@ def power_sums(X, weights, B):
         Xb = X[i:i + 256]
         P = exact.f64_matmul(Xb, B)                          # (block, |S|): <x s, a>
         pmax = int(np.abs(P).max())
-        assert pmax ** 6 * P.shape[1] < 2 ** 62, "int64 power sum could overflow"
+        require(pmax ** 6 * P.shape[1] < 2 ** 62, "int64 power sum could overflow")
         P2 = P * P
         for j, Pk in enumerate((P2, P2 * P2, P2 * P2 * P2)):
             rows = Pk.sum(axis=1)                             # per representative, exact in int64
@@ -71,7 +72,7 @@ def main():
     R6 = certs.load("min_reps.npz", "reps", a.certificates).astype(np.int64)
     X = certs.load("norm8_reps.npz", "reps", a.certificates).astype(np.int64)
     U = certs.load("centralizer.npz", "units", a.certificates).astype(np.int64)
-    first = np.load(os.path.join(rep.out_dir, "K8_first.npy"))
+    first = load_output_of(rep, "v4_norm8_orbits", "K8_first.npy", certs.file_hashes(certs.K8_INPUTS, a.certificates))
     rep.check("one vector for each of the 1517130 orbits of L_8 (from V4)", len(first) == 1517130)
     X8 = np.empty((len(first), 56), dtype=np.int64)                               # x_i u_k, one u_k at a time
     for k in range(len(U)):

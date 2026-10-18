@@ -53,7 +53,7 @@ bash code/verify/full.sh 3
 
 This runs everything in `proof.sh`, and adds the alternative check of F5b by the even-coset certificates (v7, about 24 CPU hours) and the consistency test of the spherical-design identities (v8).
 
-`bash code/verify/quick.sh` is a shorter check of about 40–50 minutes. It runs the base-lattice enumerator on positive controls only and omits v7, so **passing it is not a complete verification of the theorem**. Independent implementations and verification-data generation programs are described in the code documentation.
+`bash code/verify/quick.sh` is a shorter check of about 40–50 minutes. It runs the base-lattice enumerator on positive controls only and omits v7 and v8, so **passing it is not a complete verification of the theorem**. Independent implementations and verification-data generation programs are described in the code documentation.
 
 ### Container
 
