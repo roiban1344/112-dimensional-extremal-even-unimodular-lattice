@@ -56,6 +56,7 @@ def main():
     G = matrix(ZZ, Gn.tolist())
     cm = CosetMinimum(G, bkz_basis(G, 40))
     idx = np.arange(a.part, N_SEARCH2, a.nparts)
+    os.makedirs(rep.out_dir, exist_ok=True)
     ck = os.path.join(rep.out_dir, tag + ".state.json")
     st = json.load(open(ck)) if os.path.exists(ck) else {"done": 0, "found": []}
     rep.log(f"part {a.part}/{a.nparts}: {len(idx)} of {N_SEARCH2} classes; resuming at {st['done']}")

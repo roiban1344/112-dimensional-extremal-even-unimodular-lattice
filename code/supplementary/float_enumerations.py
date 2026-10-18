@@ -161,6 +161,7 @@ def main():
         cm = CosetMinimum(G, bkz_basis(G, 40))
         total = 6 * len(X)
         idxs = range(a.part, total, a.nparts)
+        os.makedirs(rep.out_dir, exist_ok=True)
         ck = os.path.join(rep.out_dir, tag + ".state.json")
         st = json.load(open(ck)) if os.path.exists(ck) else {"done": 0, "found": []}
         rep.log(f"part {a.part}/{a.nparts}: {len(idxs)} of {total} pairs; resuming at {st['done']}")
