@@ -104,6 +104,10 @@ F5b は無関係な 2 つの議論（v6 と v7）で確かめます。証明に�
 各生成スクリプトは、出力を配布した検証用データと比べます。p4 と p5 は配布したファイルをビット単位で再現します。p2 と p3 は別の代表を選びうるので、
 標準形の集合（同じ軌道か）で比べます。
 
+`supplementary/genus/genus.py` のデータを作る段（`enum`、`build`、`witness`、`identify`）は、既定では `certificates/` ではなく `out/genus/` に書き、
+書いたファイルを配布したファイルと比べます（同じ、整数が同じ、違う、のいずれかを報告します。`genus_classes.txt` は一致しなければならず、
+ほかのファイルは近傍の歩き方や PARI の列挙順によって違うことがあります）。配布したファイルを置き換えるには `--dest certificates/` を指定します。
+
 ## 経路 T（補遺 §S4、表 D2 の [C20]・[C21]）
 
 `supplementary/route_t/` は、L₁₁₂ のエルミート構造を使う補足の議論（経路 T）の計算です。定理 A の証明には使いません。
@@ -142,7 +146,7 @@ P = 0, …, Q−1 について `certify.py search2 --missing --part P --nparts Q
 | [C15] | supplementary/sample_check.py |
 | [C16] | supplementary/node_estimate.py |
 | [C17] | supplementary/frames.py |
-| [C18] | supplementary/fixed_sublattices.py |
+| [C18] | supplementary/fixed_sublattices.py（貼り方 B は `--tau B`。既定で BKZ-20〜BKZ-60。L₁₁₂ で約 10 分、B で約 18 分（大半は BKZ-60）。`--bkz 30,40` なら 1 分未満） |
 | [C19] | supplementary/anatomy_b.py |
 | [C20] | supplementary/route_t/classify.py, recount.py (with route_t/hermitian.py) |
 | [C21] | supplementary/route_t/certify.py, check.py, float_cvp.py (with route_t/common.py) |

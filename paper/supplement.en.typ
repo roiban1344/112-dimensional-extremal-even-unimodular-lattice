@@ -164,7 +164,7 @@ Write $L_112 = L_56 times.o_(M') Lambda$ with $Lambda = {\(a\,b\)in M' ""^2 : b 
 
 == S3.5. Fixed sublattices and BKZ
 
-Elements of order 3, 5, 7 of $"SL"_2\(29\)$ have fixed sublattices of $L_112$ of dimension 32, 16, 16 with exact minima 12, 10, 14 (determinants $3^32\,5^16\,7^16$) #calc("C18"). The fixed sublattice of an element of order 5 contains explicit vectors of norm 10, so $min L_112 lt.eq 10$. These types are among those not excluded for extremal lattices of dimension 112 by \[Neb13\]. These fixed sublattices do not establish a lower bound for the minimum of the whole lattice: gluing B has the same fixed-sublattice minima while its own minimum is 8. Likewise BKZ reduction of $L_112$ with block size up to 60 finds no vector below norm 12, but also fails to detect a norm-8 vector in B.
+Elements of order 3, 5, 7 of $"SL"_2\(29\)$ have fixed sublattices of $L_112$ of dimension 32, 16, 16 with exact minima 12, 10, 14 (determinants $3^32\,5^16\,7^16$) #calc("C18"). The fixed sublattice of an element of order 5 contains explicit vectors of norm 10, so $min L_112 lt.eq 10$. These types are among those not excluded for extremal lattices of dimension 112 by \[Neb13\]. These fixed sublattices do not establish a lower bound for the minimum of the whole lattice: gluing B has the same fixed-sublattice minima while its own minimum is 8. Nor does BKZ reduction separate the two: applying BKZ with block sizes 20, 30, 40, 50, 60 in turn, the shortest vectors found have norms 16, 16, 16, 14, 10 for $L_112$ and 16, 16, 16, 18, 10 for B. BKZ-60 thus reaches norm 10 in both lattices and misses the norm-8 vectors of B (the values depend on the starting basis; those of #calc("C18")).
 
 == S3.6. Controls and closest-vector searches
 

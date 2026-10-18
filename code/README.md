@@ -119,6 +119,11 @@ Each producer compares its output with the distributed verification data. p4 and
 the representative arrays bit for bit; p2 and p3 may choose other representatives, so they are compared by
 the set of canonical forms (the same orbits).
 
+The data-producing steps of `supplementary/genus/genus.py` (`enum`, `build`, `witness`, `identify`) write to
+`out/genus/` by default, not to `certificates/`, and compare each file with the distributed one (identical, the
+same integers, or different; `genus_classes.txt` must agree, the other files may differ with the random walk or
+PARI's enumeration order). `--dest certificates/` replaces the distributed files.
+
 ## Route T (supplement §S4, Table D2 [C20], [C21])
 
 `supplementary/route_t/` contains the computations of the supplementary argument using the hermitian
@@ -160,7 +165,7 @@ for P = 0, …, Q−1 (only the classes without a certificate; resumable), then
 | [C15] | supplementary/sample_check.py |
 | [C16] | supplementary/node_estimate.py |
 | [C17] | supplementary/frames.py |
-| [C18] | supplementary/fixed_sublattices.py |
+| [C18] | supplementary/fixed_sublattices.py (`--tau B` for gluing B; BKZ-20 to BKZ-60 by default: about 10 min for L₁₁₂ and 18 min for B, mostly BKZ-60; `--bkz 30,40` under a minute) |
 | [C19] | supplementary/anatomy_b.py |
 | [C20] | supplementary/route_t/classify.py, recount.py (with route_t/hermitian.py) |
 | [C21] | supplementary/route_t/certify.py, check.py, float_cvp.py (with route_t/common.py) |
