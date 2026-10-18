@@ -44,7 +44,7 @@ Two further conclusions are treated separately from the extremality proof. The e
 
 == 1.3 Outline of the proof and the verification methods
 
-We first verify that the lattice in (1.2) is even unimodular (Lemma 3.2). The main remaining task is to prove that it has no nonzero vector of norm below 10. The minimum norm of $L_56$ is 6; this is checked by two rigorous enumerations, one using interval arithmetic and one using an integer quadratic form (§6.1). Consequently, a nonzero vector $lr((x,v))/sqrt(2)$ of norm below 10 in $L_112$ would have both components in $L_56$ and would satisfy
+We first verify that the lattice in (1.2) is even unimodular (Lemma 3.2). The main remaining task is to prove that it has no nonzero vector of norm below 10. The minimum norm of $L_56$ is 6, as reported in \[Neb98\]; we do not rely on that value but check it directly from the data file by two rigorous enumerations, one using interval arithmetic and one using an integer quadratic form (§6.1). Consequently, a nonzero vector $lr((x,v))/sqrt(2)$ of norm below 10 in $L_112$ would have both components in $L_56$ and would satisfy
 $ v equiv x tau med (mod 2 L_56), quad (chevron.l x,x chevron.r, chevron.l v,v chevron.r) in {(6,6),(6,10),(10,6),(8,8)}. $
 Lemma 4.2 shows that this list is exhaustive and that neither component is zero. Since $tau^2 equiv 1 med (mod 2)$, interchanging the two components reduces the type $(10,6)$ to $(6,10)$ (Appendix C.4). It therefore suffices to establish the following two bounds:
 $ min(r tau+2 L_56)>=14 quad "for all" r in L_56(6), $
@@ -101,7 +101,7 @@ If $L$ is extremal of dimension 56, its theta series is $ theta_L = 1 + 15 thin 
 
 == 2.4 Nebe's lattices with $"SL"_2\(29\)$ and the centralizer
 
-The group $"SL"_2\(29\)$ has a faithful irreducible representation of degree 14 whose character field is $bb(Q)\(sqrt(29)\)$ and which has Schur index 2 over $bb(Q)$; as a rational representation it has degree 56, and its endomorphism algebra is the totally definite quaternion algebra $cal(Q)$ over $bb(Q)\(sqrt(29)\)$ ramified only at the two infinite places \[Neb98\]. Nebe constructs $"SL"_2\(29\)$-invariant even unimodular lattices $L_(56\,2)\(M\)$ and $L_(56\,2)\(tilde(M)\)$ attached to the two conjugacy classes of maximal orders $M\,tilde(M)$ of $cal(Q)$, and reports minimum 6 for both, computed with PARI \[Neb98, Table II\]. For $L_56$ we re-establish the minimum rigorously in §6.1.
+The group $"SL"_2\(29\)$ has a faithful irreducible representation of degree 14 whose character field is $bb(Q)\(sqrt(29)\)$ and which has Schur index 2 over $bb(Q)$; as a rational representation it has degree 56, and its endomorphism algebra is the totally definite quaternion algebra $cal(Q)$ over $bb(Q)\(sqrt(29)\)$ ramified only at the two infinite places \[Neb98\]. Nebe constructs $"SL"_2\(29\)$-invariant even unimodular lattices $L_(56\,2)\(M\)$ and $L_(56\,2)\(tilde(M)\)$ attached to the two conjugacy classes of maximal orders $M\,tilde(M)$ of $cal(Q)$, and reports minimum 6 for both, computed with PARI \[Neb98, Table II\]. To give a proof whose completeness is guaranteed including rounding errors and which does not depend on the identification of §7.2, we verify the minimum of $L_56$ directly from the distributed data (§6.1). The proof of Theorem A does not use the value from \[Neb98\].
 
 For an $"SL"_2\(29\)$-invariant lattice $L$ we write $M' = "End"_("SL"_2\(29\))\(L\)$ for the ring of integer matrices commuting with $"SL"_2\(29\)$ and preserving $L$ ($bb(Z)$-rank 8). Its elements that are isometries of $L$ form the #strong[centralizer] $C = C_("Aut" L)\("SL"_2\(29\)\)$. The adjoint defined by the inner product agrees with the standard quaternion involution, so $u u^*=1$ is equivalent to reduced norm 1. The centralizer $C$ is the finite group of elements of reduced norm 1 of $M'$; it has order 24 for the catalog lattice $L_(56\,2)\(M\)$ and order 12 (6 up to sign) for the lattice $L_56$ used here #calc("C2").
 
@@ -308,7 +308,7 @@ Three implementations are referred to below: implementation 1 constructed $L_112
 
 == 6.1 F1: the minimum of the base lattice
 
-An interval-arithmetic enumeration, which cannot miss vectors, shows that $L_56$ has no nonzero vector of norm $lt.eq 4$. As an independent second route, the question is reduced to a property of Nebe's lattice $L_(56\,2)\(M\)$ together with linear algebra over $bb(F)_2$. Both agree with the three earlier floating-point enumerations.
+The enumeration (a), in interval arithmetic, and the enumeration (a′), in integer arithmetic, cannot miss vectors; either one proves F1 directly from the data file without depending on the minimum reported in the literature (§2.4). Route (b), by contrast, assumes the literature value and is used to check consistency with it; (c) is a supplementary check in floating-point arithmetic.
 
 #strong[(a) Interval enumeration.] #calc("C5")
 
