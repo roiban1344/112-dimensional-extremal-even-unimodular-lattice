@@ -5,9 +5,13 @@ r"""元の計算（公開版では produce/p3 と verify/v4）の「ノルム 8 
 $$\sum_{N(x)=8}(x,a)^{2}=N_8\frac{8\,(a,a)}{56},\quad \sum(x,a)^4=N_8\frac{3\cdot8^2(a,a)^2}{56\cdot58},\quad \sum(x,a)^6=N_8\frac{15\cdot8^3(a,a)^3}{56\cdot58\cdot60}.$$
 左辺を「代表 × 群の元」で計算する: $\sum_{y\in\mathrm{orb}(x)}(y,a)^k=\frac{|\mathrm{orb}|}{|S^*|}\sum_{g\in S^*}(xg,a)^k$。
 重複や欠落があれば、整数の等式が（偶然を除いて）崩れる。群の元は生成元から自分で列挙し、元の計算のコードは読み込まない
-（共有するのはデータ: Gram 行列、生成元、可換子の基底、代表と軌道の大きさ）。
+（共有するのはデータ: Gram 行列、生成元、中心化群の単数（certificates/centralizer.npz）、代表と軌道の大きさ）。
+これは整合性の検査であり、完全性の証明は大きさの和による（verify/v4、check_all.py v4）。
+すべての等式と大きさの和が成り立たなければ終了コード 1 で終わる。
+This is a consistency test (completeness is proved by the size sum: verify/v4, check_all.py v4); the script ends
+with exit code 1 unless every identity and the size sum hold.
 
-実行（リポジトリの根から）: python3 code/crosscheck/second_impl/design_identities.py [a の本数]
+実行（リポジトリの根から）: python3 -I code/crosscheck/second_impl/design_identities.py [a の本数]
 
 公開用の注記: 公開リポジトリ向けに変えたのは入力（data/ の 4 ファイルと
 certificates/ の検証用データを読む。中心化群の元は Sage で求め直さず certificates/centralizer.npz から読む）だけで、検査そのものは変えていない。
@@ -22,6 +26,24 @@ from fractions import Fraction
 import numpy as np
 ROOT = Path(__file__).resolve().parents[3]
 DATA, CERT = ROOT / "data", ROOT / "certificates"
+if not __debug__:
+    sys.exit("run without -O: the exactness guards are assert statements / -O を付けずに実行すること（厳密性の検査は assert で書かれている）")
+FAILS = []
+
+
+def check(name, ok):
+    """Print [ok] or [FAIL]; the script ends with exit code 1 if any check failed (see finish).
+    [ok] か [FAIL] を表示する。一つでも失敗すれば終了コード 1 で終わる（finish を参照）。"""
+    ok = bool(ok)
+    print(f"  [{'ok' if ok else 'FAIL'}] {name}", flush=True)
+    if not ok:
+        FAILS.append(name)
+    return ok
+
+
+def finish():
+    print("RESULT: PASS" if not FAILS else f"RESULT: FAIL ({len(FAILS)} failed: {FAILS})", flush=True)
+    sys.exit(1 if FAILS else 0)
 
 
 def _ints(path):
@@ -45,7 +67,8 @@ assert all((u @ Gn @ u.T == Gn).all() for u in units) and all((h @ Gn @ h.T == G
 # SL_2(29)/±1 を生成元から幅優先で列挙
 def key(g):
     i = np.flatnonzero(g.ravel())[0]
-    return (g if g.ravel()[i] > 0 else -g).astype(np.int8).tobytes()
+    assert np.abs(g).max() < 2 ** 15
+    return (g if g.ravel()[i] > 0 else -g).astype(np.int16).tobytes()   # entries up to 248: int8 would wrap / 成分は最大 248 で int8 では折り返す
 E0 = np.eye(n, dtype=np.int64); seen = {key(E0): E0}; frontier = [E0]
 while frontier:
     new = []
@@ -61,14 +84,15 @@ ukeys = {key(u) for u in units}
 assert all(key(u @ v) in ukeys for u in units for v in units), "単数が ± を除いて群をなさない"
 assert all((u @ h == h @ u).all() for u in units for h in H)
 print(f"|SL_2(29)/±| = {len(S)}, 単数（±の片方）{len(units)} 個  [{round(time.time() - t0)} s]", flush=True)
-assert len(S) == 12180
+check("|SL_2(29)/{±1}| = 12180", len(S) == 12180)
 ord_mod_sign = len(S) * len(units)                  # |S^*/±|（S∩単数 = {±1} を仮定。下で軌道の大きさと照合）
 
 R = _npz("norm8_reps.npz", "reps").astype(np.int64); sizes = [int(s) for s in _npz("norm8_reps.npz", "sizes")]
 N8 = 36957286800                                     # 極値テータ級数の q^4 の係数（code/verify/v2_theta.py）
 assert ((R @ Gn) * R).sum(axis=1).tolist() == [8] * len(R), "ノルム 8 でない代表がある"
 print(f"代表 {len(R)} 個はすべてノルム 8。大きさの合計 {sum(sizes)}（テータ級数の係数 {N8}）: {sum(sizes) == N8}; 最大の軌道 {max(sizes)}（2|G^*/±| = {2 * ord_mod_sign}）", flush=True)
-assert all((2 * ord_mod_sign) % s == 0 for s in sizes)
+check("the orbit sizes sum to N_8 = 36,957,286,800", sum(sizes) == N8)
+check("every orbit size divides 2 |S^*/{±1}|", all((2 * ord_mod_sign) % s == 0 for s in sizes))
 
 rng = np.random.default_rng(20261013)
 for trial in range(NA):
@@ -78,7 +102,10 @@ for trial in range(NA):
     Wf = W.astype(np.float64).T
     tot = {2: 0, 4: 0, 6: 0}
     for i in range(0, len(R), 400):
-        P = np.rint(R[i:i + 400].astype(np.float64) @ Wf).astype(np.int64)     # |値| は小さく、float64 で厳密
+        Rb = R[i:i + 400]
+        assert int(np.abs(Rb).sum(axis=1).max()) * int(np.abs(W).max()) < 2 ** 52   # float64 で厳密 / exact in float64
+        P = np.rint(Rb.astype(np.float64) @ Wf).astype(np.int64)
+        assert int(np.abs(P).max()) ** 6 * P.shape[1] < 2 ** 63                     # int64 で厳密 / exact in int64
         P2 = P * P
         for k, Pk in ((2, P2), (4, P2 * P2), (6, P2 * P2 * P2)):
             sk = Pk.sum(axis=1)
@@ -87,3 +114,5 @@ for trial in range(NA):
     for k in (2, 4, 6):
         lhs = Fraction(tot[k], ord_mod_sign)
         print(f"  a#{trial} (N(a) = {Na}), 次数 {k}: Σ = {lhs}; デザインの値 {exp[k]}; 一致 {lhs == exp[k]}  [{round(time.time() - t0)} s]", flush=True)
+        check(f"design identity of degree {k} for a#{trial}", lhs == exp[k])
+finish()

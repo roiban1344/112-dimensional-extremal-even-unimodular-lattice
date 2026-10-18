@@ -27,6 +27,24 @@ commands:
             default --n 10000 tests each certificate separately and takes more than 8 hours)
   summary   collect the results of all steps into summary.json
 
+Order (each step reads the cache of the earlier ones): theta, v0, v1 (builds the table M/{+-1} used by
+v2, v3*, neg), v2, v3cheap, v4, v3full (or v3sample), neg, summary. v0 needs cypari2 (PARI) to find
+the units. Each step writes OUT/<step>.json and ends with exit code 1 if its verdict is FAIL; v3full
+with --part p exits 0 when the parts done so far pass. summary exits 1 unless every required step
+(all except v3sample) has passed on the current inputs.
+順序（各段は前の段のキャッシュを読む）: theta, v0, v1（v2, v3*, neg が使う表 M/{+-1} を作る）, v2, v3cheap,
+v4, v3full（または v3sample）, neg, summary。v0 は単数を求めるのに cypari2（PARI）が要る。各段は
+OUT/<step>.json を書き、判定が FAIL なら終了コード 1 で終わる。--part p を付けた v3full は、それまでに
+終えた部分が合格なら 0 で終わる。summary は、必須の段（v3sample 以外のすべて）が今の入力で合格して
+いなければ 1 で終わる。
+
+Inputs: the files are checked against data/SHA256SUMS and certificates/SHA256SUMS (with hashlib, no
+shared code), and the caches and resumable states are kept in OUT/state/<digest of the inputs>/, so
+that a changed input never reuses an old intermediate result.
+入力: ファイルは data/SHA256SUMS と certificates/SHA256SUMS に照合する（hashlib だけを使い、コードは
+共有しない）。キャッシュと再開用の状態は OUT/state/<入力のダイジェスト>/ に置くので、入力を差し替えても
+古い途中結果を使うことはない。
+
 Conventions: vectors are integer row vectors, maps act on the right, (x,y) = x G y^T.
 
 Exactness: every product computed in floating point (float32 BLAS) has all partial sums bounded,
@@ -35,12 +53,15 @@ Every int64 product is guarded by a bound < 2^62 (`imul`).
 """
 import sys, os
 
+if not __debug__:
+    sys.exit("run without -O: the exactness guards are assert statements / -O を付けずに実行すること（厳密性の検査は assert で書かれている）")
+
 # BLAS threads: we parallelise with Python threads and single-threaded BLAS calls.
-if "--threads" in sys.argv:
+if any(a == "--threads" or a.startswith("--threads=") for a in sys.argv):
     os.environ["OPENBLAS_NUM_THREADS"] = "1"
     os.environ["OMP_NUM_THREADS"] = "1"
 
-import json, time, pickle, hashlib, platform, argparse, threading
+import json, time, hashlib, platform, argparse
 from fractions import Fraction
 from concurrent.futures import ThreadPoolExecutor
 import numpy as np
@@ -49,7 +70,6 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.a
 D = os.path.join(ROOT, "data")            # the four published input files
 C = os.path.join(ROOT, "certificates")    # the certificate files (certificates/MANIFEST.md)
 OUT = os.path.join(ROOT, "out", "crosscheck_all_data")
-CACHE = os.path.join(OUT, "cache")
 N = 56
 GROUP_ORDER = 24360
 NPAIRS = 1527984
@@ -89,11 +109,55 @@ def atomic_npy(path, arr):
     os.rename(tmp, path)
 
 
+# The input files, each checked against the SHA256SUMS of its directory.
+# 入力ファイル。それぞれ同じディレクトリの SHA256SUMS と照合する。
+INPUTS = [("data", f) for f in ("L56_gram.txt", "tau.txt", "sl2_29_generators.txt")] + \
+         [("certificates", f) for f in ("min_reps.npz", "norm8_reps.npz", "commutant.npz", "odd_bounding.npz",
+                                        "even_bounding.npz", "negative_control_B.npz")]
+_inputs = {}
+
+
+def input_hashes():
+    """SHA-256 of every input file; exit 1 if one differs from the SHA256SUMS of its directory."""
+    if not _inputs:
+        bad = []
+        for d, f in INPUTS:
+            path = os.path.join(ROOT, d, f)
+            h = hashlib.sha256()
+            with open(path, "rb") as fh:
+                for blk in iter(lambda: fh.read(1 << 24), b""):
+                    h.update(blk)
+            sums = {}
+            for line in open(os.path.join(ROOT, d, "SHA256SUMS")):
+                if line.strip():
+                    v, n = line.split()
+                    sums[n.lstrip("*")] = v
+            if sums.get(f) != h.hexdigest():
+                bad.append(f"{d}/{f}")
+            _inputs[f"{d}/{f}"] = h.hexdigest()
+        if bad:
+            sys.exit(f"[FAIL] SHA-256 differs from SHA256SUMS: {bad}")
+    return _inputs
+
+
+def input_digest():
+    """One digest of all inputs (names and SHA-256), which keys the caches and the resumable states."""
+    return hashlib.sha256("".join(f"{k} {v}\n" for k, v in sorted(input_hashes().items())).encode()).hexdigest()
+
+
+def state_dir():
+    """OUT/state/<digest>/: caches (group, units, M/{+-1}) and resumable states of v3full and v4."""
+    path = os.path.join(OUT, "state", input_digest()[:16])
+    os.makedirs(path, exist_ok=True)
+    return path
+
+
 def record(step, result):
     """Write the result of one step to OUT/<step>.json with machine information."""
     os.makedirs(OUT, exist_ok=True)
     result = dict(result)
     result["_step"] = step
+    result["_input_digest"] = input_digest()
     result["_machine"] = {"host": platform.node(), "platform": platform.platform(),
                           "python": platform.python_version(), "numpy": np.__version__,
                           "cpus": os.cpu_count(),
@@ -225,7 +289,11 @@ def m_basis():
 
 
 def odd_certs():
-    # Row j of odd_bounding.npz belongs to representative j, direction tau ("which" = 0).
+    # Row j of odd_bounding.npz belongs to representative j, direction tau ("which" = 0). In the release the
+    # assignment is this fixed one, so the former check "condition 10: rep is a permutation" is always true
+    # and has been dropped from the verdict.
+    # odd_bounding.npz の第 j 行は代表 j、向き tau（"which" = 0）のもの。公開版の対応はこの固定のものなので、
+    # 以前の検査「条件 10: rep が置換」は恒等的に真であり、判定から外した。
     w0 = _npz("odd_bounding.npz", "w0").astype(np.int64)
     return np.arange(len(w0), dtype=np.int64), w0, np.zeros(len(w0), dtype=np.int64)
 
@@ -234,12 +302,6 @@ def even_cert_part(p):
     # The producer ran 6 interleaved parts; part p consisted of the pairs p, p + 6, p + 12, ...,
     # which are the rows p::6 of even_bounding.npz.
     return _npz("even_bounding.npz", "w0")[p::6].astype(np.int64)
-
-
-def even_cert_json(p):
-    # The release has no producer progress log. "done" = number of rows of the part; "unresolved"
-    # is empty because every row is a candidate certificate, which conditions 11-13 then test.
-    return {"done": len(even_cert_part(p)), "unresolved": []}
 
 
 def norms(X, block=200000):
@@ -255,7 +317,7 @@ def norms(X, block=200000):
 
 def build_group():
     """All elements of <g1, g2> by breadth-first search (exact int64)."""
-    path = os.path.join(CACHE, "group.npy")
+    path = os.path.join(state_dir(), "group.npy")
     if os.path.exists(path):
         return np.load(path)
     gens = generators()
@@ -277,7 +339,6 @@ def build_group():
         frontier = nxt
         assert len(elems) <= 10 ** 6
     arr = np.array(elems, dtype=np.int16)
-    os.makedirs(CACHE, exist_ok=True)
     atomic_npy(path, arr)
     return arr
 
@@ -286,7 +347,7 @@ def find_units():
     """Isometries in the order M = Z<B_1..B_8>: enumerate c in Z^8 with
     Q(c) = tr(u G u^T G^{-1}) <= 56 (u = sum c_a B_a; Q is positive definite and Q = 56 on
     isometries) with PARI's qfminim on an integral form, then keep u with u G u^T = G."""
-    path = os.path.join(CACHE, "units.npz")
+    path = os.path.join(state_dir(), "units.npz")
     if os.path.exists(path):
         z = np.load(path)
         return z["units"], z["coeffs"], int(z["nshort"])
@@ -319,7 +380,6 @@ def find_units():
                 coeffs.append(cc)
     units = np.array(units, dtype=np.int64)
     coeffs = np.array(coeffs, dtype=np.int64)
-    os.makedirs(CACHE, exist_ok=True)
     atomic_npz(path, units=units, coeffs=coeffs, nshort=np.int64(nshort))
     return units, coeffs, nshort
 
@@ -405,7 +465,9 @@ class Orbits:
 def min_half():
     """M / {+-1}: every minimal vector up to sign, from the 656 orbit representatives
     (rows with first nonzero coordinate positive). Built in v1."""
-    path = os.path.join(CACHE, "min-half.npy")
+    path = os.path.join(state_dir(), "min-half.npy")
+    if not os.path.exists(path):
+        sys.exit(f"{path} is missing: run the step v1 first / 先に v1 を実行すること")
     return np.load(path, mmap_mode="r")
 
 
@@ -527,9 +589,11 @@ def step_theta(args):
     res = {"theta_coefficients_q^0..q^7": theta,
            "norm6_count": theta[3], "norm8_count": theta[4],
            "expected_norm6": 15590400, "expected_norm8": 36957286800}
-    res["verdict"] = verdict(theta[3] == 15590400 and theta[4] == 36957286800 and theta[1] == theta[2] == 0)
+    ok = theta[3] == 15590400 and theta[4] == 36957286800 and theta[1] == theta[2] == 0
+    res["verdict"] = verdict(ok)
     log(res)
     record("theta", res)
+    return ok
 
 
 def step_v0(args):
@@ -587,6 +651,7 @@ def step_v0(args):
     res["verdict"] = verdict(ok)
     log(json.dumps(res, indent=1))
     record("v0", res)
+    return ok
 
 
 def step_v1(args):
@@ -627,14 +692,14 @@ def step_v1(args):
     del hs
     res["M_half_all_norm_6"] = bool((norms(Mh) == 6).all())
     res["M_half_max_abs_coordinate"] = int(np.abs(Mh).max())
-    os.makedirs(CACHE, exist_ok=True)
-    atomic_npy(os.path.join(CACHE, "min-half.npy"), Mh)
+    atomic_npy(os.path.join(state_dir(), "min-half.npy"), Mh)
     ok = (res["5_all_norm_6"] and ncanon == 656 and res["6_size_sum"] == 15590400
           and res["M_half_rows"] == res["M_half_distinct_rows(lower bound by distinct hashes)"] == 7795200
           and res["M_half_all_norm_6"])
     res["verdict"] = verdict(ok)
     log(json.dumps(res, indent=1))
     record("v1", res)
+    return ok
 
 
 def step_v2(args):
@@ -652,16 +717,16 @@ def step_v2(args):
     res["9_float32_partial_sum_bound"] = bound
     res["9_max_inner_histogram"] = {str(k): int(v) for k, v in zip(*np.unique(mx, return_counts=True))}
     res["9_ok"] = int((mx <= 6).sum())
-    res["10_rep_is_permutation"] = bool(np.array_equal(np.sort(rep), np.arange(656)))
     # cross-check the float32 path by int64 on 50 of them
     sel = np.arange(0, 656, 13)
     mi = inner_max_int64(w0[sel])
     res["9_int64_crosscheck_agree"] = f"{int((mi == mx[sel]).sum())}/{len(sel)}"
-    ok = (res["7_class_ok"] == 656 and res["8_norm_ok"] == 656 and res["9_ok"] == 656
-          and res["10_rep_is_permutation"] and int((mi == mx[sel]).sum()) == len(sel))
+    ok = (res["n"] == 656 and res["7_class_ok"] == 656 and res["8_norm_ok"] == 656 and res["9_ok"] == 656
+          and int((mi == mx[sel]).sum()) == len(sel))
     res["verdict"] = verdict(ok)
     log(json.dumps(res, indent=1))
     record("v2", res)
+    return ok
 
 
 def even_all():
@@ -676,10 +741,11 @@ def step_v3cheap(args):
     t = tau()
     U, Uc = units_mod_sign()
     assert len(U) == 6
-    res = {"n_reps": int(nrep), "n_pairs": int(6 * nrep)}
-    js = [even_cert_json(p) for p in range(6)]
-    res["14_unresolved_total"] = int(sum(len(j["unresolved"]) for j in js))
-    res["14_done_total"] = int(sum(j["done"] for j in js))
+    # Condition 14 (every pair of the producer's log has a certificate) is not checked: the release has no
+    # producer log, and every row of even_bounding.npz is a candidate certificate tested by 11-13.
+    # 条件 14（producer の記録のすべての組に certificate がある）は検査しない。公開版には producer の記録が無く、
+    # even_bounding.npz の各行は 11〜13 で検査される certificate の候補だからである。
+    res = {"n_reps": int(nrep), "n_pairs": int(6 * nrep), "n_certificates": int(W.shape[0] * W.shape[1])}
     # 11: (x u, x u) = 8 for all x, u, and match[p, i, k] = (w0[p,i] - x_i u_k tau in 2L)
     match = np.zeros((6, nrep, 6), dtype=bool)
     xu_norm_ok = True
@@ -715,12 +781,13 @@ def step_v3cheap(args):
     res["12_norm_histogram"] = {str(k): int(v) for k, v in zip(*np.unique(nw, return_counts=True))}
     res["12_norm_ok"] = int(np.isin(nw, [12, 16, 20]).sum())
     res["sizes_sum"] = int(sizes.sum())
-    ok = (res["14_unresolved_total"] == 0 and res["14_done_total"] == NPAIRS and xu_norm_ok
+    ok = (6 * nrep == NPAIRS and res["n_certificates"] == NPAIRS and xu_norm_ok and res["11_reps_norm_8"]
           and res["11_certs_in_some_class"] == NPAIRS and res["11_reps_with_perfect_matching"] == nrep
           and res["12_norm_ok"] == NPAIRS)
-    res["verdict(11,12,14)"] = verdict(ok)
+    res["verdict(11,12)"] = verdict(ok)
     log(json.dumps(res, indent=1))
     record("v3cheap", res)
+    return ok
 
 
 def step_v3sample(args):
@@ -752,13 +819,14 @@ def step_v3sample(args):
     res["verdict(13, sample)"] = verdict(ok)
     log(json.dumps(res, indent=1))
     record("v3sample", res)
+    return ok
 
 
 def step_v3full(args):
     parts = range(6) if args.part == "all" else [int(args.part)]
     im = InnerMax(threads=args.threads)
     for p in parts:
-        st = os.path.join(OUT, f"v3full-part{p}.npz")
+        st = os.path.join(state_dir(), f"v3full-part{p}.npz")
         W = even_cert_part(p)
         n = len(W)
         if os.path.exists(st):
@@ -791,7 +859,7 @@ def step_v3full(args):
     secs = 0.0
     bounds = []
     for p in range(6):
-        st = os.path.join(OUT, f"v3full-part{p}.npz")
+        st = os.path.join(state_dir(), f"v3full-part{p}.npz")
         if not os.path.exists(st):
             alldone = False
             continue
@@ -816,11 +884,16 @@ def step_v3full(args):
     res["13_float32_partial_sum_bound(all certificates)"] = l1 * maxM
     assert l1 * maxM < F32_LIMIT
     if alldone:
-        res["verdict(13, all)"] = verdict(nbad == 0 and sum(tot.values()) == NPAIRS)
+        ok = nbad == 0 and sum(tot.values()) == NPAIRS
+        res["verdict(13, all)"] = verdict(ok)
     else:
-        res["verdict(13, all)"] = "INCOMPLETE"
+        # a partial run (--part p) passes if the parts done so far do; summary still requires all parts
+        # --part p による部分的な実行は、それまでの部分が合格なら合格とする。summary は全部分を要求する
+        ok = nbad == 0 and args.part != "all"
+        res["verdict(13, all)"] = "INCOMPLETE" if nbad == 0 else "FAIL"
     log(json.dumps(res, indent=1))
     record("v3full", res)
+    return ok
 
 
 def step_v4(args):
@@ -828,7 +901,7 @@ def step_v4(args):
     U, _ = units_mod_sign()
     nrep = len(X)
     res = {"15_reps_norm_8": bool((norms(X) == 8).all()), "15_sizes_sum": int(sizes.sum())}
-    st = os.path.join(OUT, "v4-state.npz")
+    st = os.path.join(state_dir(), "v4-state.npz")
     if os.path.exists(st):
         z = np.load(st)
         canon, osz, done = z["canon"].copy(), z["osz"].copy(), int(z["done"])
@@ -880,6 +953,7 @@ def step_v4(args):
     res["verdict"] = verdict(ok)
     log(json.dumps(res, indent=1))
     record("v4", res)
+    return ok
 
 
 def check_even(w, x, U, t, im):
@@ -998,28 +1072,36 @@ def step_neg(args):
     res["verdict(negative controls behave as expected)"] = verdict(ok)
     log(json.dumps(res, indent=1))
     record("neg", res)
+    return ok
 
 
 def step_summary(args):
+    """Collect the verdicts. Passes only if every required step (all but the optional v3sample) has
+    passed on the current inputs (the same input digest)."""
     out = {}
+    passed = True
+    digest = input_digest()
     for s in ["v0", "theta", "v1", "v2", "v3cheap", "v3sample", "v3full", "v4", "neg"]:
         p = os.path.join(OUT, s + ".json")
+        required = s != "v3sample"
         if os.path.exists(p):
             r = json.load(open(p))
             out[s] = {k: v for k, v in r.items() if k.startswith("verdict")}
             out[s]["_finished"] = r.get("_finished")
             out[s]["_wall_seconds"] = r.get("_wall_seconds")
+            out[s]["_same_inputs"] = r.get("_input_digest") == digest
+            ok = out[s]["_same_inputs"] and all(v == "PASS" for k, v in out[s].items() if k.startswith("verdict"))
         else:
             out[s] = "not run"
-    # hashes of the inputs that were verified
-    h = {}
-    for f in [os.path.join(D, x) for x in ["L56_gram.txt", "tau.txt", "sl2_29_generators.txt"]] + \
-             [os.path.join(C, x) for x in ["min_reps.npz", "norm8_reps.npz", "commutant.npz", "odd_bounding.npz",
-                                           "even_bounding.npz", "negative_control_B.npz"]]:
-        h[os.path.relpath(f, ROOT)] = hashlib.sha256(open(f, "rb").read()).hexdigest()
-    out["input_sha256"] = h
+            ok = False
+        if required and not ok:
+            passed = False
+            log(f"[FAIL] step {s}: {out[s]}")
+    out["input_sha256"] = input_hashes()
+    out["passed"] = passed
     log(json.dumps(out, indent=1))
     atomic_json(os.path.join(OUT, "summary.json"), out)
+    return passed
 
 
 def main():
@@ -1031,12 +1113,17 @@ def main():
     ap.add_argument("--part", default="all")
     ap.add_argument("--chunk", type=int, default=2048)  # v4: reps per checkpoint unit
     args = ap.parse_args()
+    steps = {"v0": step_v0, "theta": step_theta, "v1": step_v1, "v2": step_v2, "v3cheap": step_v3cheap,
+             "v3sample": step_v3sample, "v3full": step_v3full, "v4": step_v4, "neg": step_neg,
+             "summary": step_summary}
+    if args.cmd not in steps:
+        ap.error(f"unknown command {args.cmd!r}; choose from {', '.join(steps)}")
     os.makedirs(OUT, exist_ok=True)
     log("start", args.cmd, vars(args), "host", platform.node())
-    {"v0": step_v0, "theta": step_theta, "v1": step_v1, "v2": step_v2, "v3cheap": step_v3cheap,
-     "v3sample": step_v3sample, "v3full": step_v3full, "v4": step_v4, "neg": step_neg,
-     "summary": step_summary}[args.cmd](args)
-    log("done", args.cmd)
+    input_hashes()
+    ok = steps[args.cmd](args)
+    log("done", args.cmd, "PASS" if ok else "FAIL")
+    sys.exit(0 if ok else 1)
 
 
 if __name__ == "__main__":

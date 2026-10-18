@@ -112,13 +112,15 @@ class Setup:
         return half + [-X for X in half]
 
     def outer_automorphism(self):
-        """The automorphism X of L_112 inducing the outer automorphism of SL_2(29), from
-        certificates/outer_automorphism_R.txt (checked: an isometry normalizing S, not in S C_A(S)
-        is checked by the scripts that use it).
-        SL_2(29) の外部自己同型を与える L_112 の自己同型 X（certificates/outer_automorphism_R.txt）。等長変換で S を正規化することを確かめる。"""
+        """The automorphism X of L_112 inducing the outer automorphism of SL_2(29), read from
+        certificates/outer_automorphism_R.txt. This method checks only that X is an isometry of L_112;
+        that X normalizes S and lies outside S C_A(S) is checked by the scripts that use it.
+        SL_2(29) の外部自己同型を与える L_112 の自己同型 X（certificates/outer_automorphism_R.txt から読む）。このメソッドが確かめるのは
+        X が L_112 の等長変換であることだけで、X が S を正規化し S C_A(S) の外にあることは、これを使うスクリプトが確かめる。"""
         from sage.all import ZZ, matrix
         X = matrix(ZZ, certs.load_matrix("outer_automorphism_R.txt", 112, self.cert_dir).tolist())
-        assert X * self.GR * X.transpose() == self.GR
+        if X * self.GR * X.transpose() != self.GR:
+            raise RuntimeError("outer_automorphism_R.txt is not an isometry of L_112")
         Xi = X.inverse()
         return X, Xi
 

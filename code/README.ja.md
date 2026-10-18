@@ -115,6 +115,21 @@ p2 は類 r + 2L の標準形の集合（最小ベクトルではこれが同じ
 書いたファイルを配布したファイルと比べます（同じ、整数が同じ、違う、のいずれかを報告します。`genus_classes.txt` は一致しなければならず、
 ほかのファイルは近傍の歩き方や PARI の列挙順によって違うことがあります）。配布したファイルを置き換えるには `--dest certificates/` を指定します。
 
+## 第 2 の実装と補足の計算
+
+`crosscheck/all_data/check_all.py <段>`（SageMath を含む Python。docstring を参照）は、段 `theta`、`v0`、`v1`（後の段が使う
+最小ベクトルの表を作る）、`v2`、`v3cheap`、`v4`、`v3full`、`neg`、`summary` をこの順に走らせます。各段は判定が FAIL なら
+終了コード 1 で終わります。`summary` は、必須の段がすべて今の入力で合格していなければ終了コード 1 で終わります（入力は
+`SHA256SUMS` と照合し、キャッシュは入力のダイジェストごとに分けて置きます）。`min_L.py 4` と `min_L.py 4 --test e8x7` は F1 と
+その陽性対照を確かめます。`crosscheck/second_impl/` の 3 本（numpy のみ）は、結果を論文の数と比べ、`RESULT: PASS`（終了コード 0）
+か `RESULT: FAIL`（終了コード 1）で終わります。
+
+`bash code/run_supplementary.sh [段名…]` は `supplementary/` の計算を走らせます（既定ではすべて。一覧と収録していないものは
+スクリプトの冒頭にあります）。SageMath を含む Python を `PYTHON` で（既定は `python3`。例えば `environment.yml` の conda 環境の
+もの。SageMath の配布物なら `PYTHON="sage -python"`）、CTblLib を含む GAP を `GAP` で（既定は `gap`）与え、`fetch.sh` で
+データを取得しておきます。段 `gluing_b` には `verify/v4_norm8_orbits.py` が書く `out/K8.npy` が要ります。失敗した段があっても
+残りは続け、最後に失敗した段を一覧にして終了コード 1 で終わります。
+
 ## 経路 T（補遺 §S4、表 D2 の [C20]・[C21]）
 
 `supplementary/route_t/` は、L₁₁₂ のエルミート構造を使う補足の議論（経路 T）の計算です。定理 A の証明には使いません。

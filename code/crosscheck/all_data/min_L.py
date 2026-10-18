@@ -26,9 +26,19 @@ Method (independent of the earlier fplll / qfminim runs):
     vectors of norm 2 and 4 is known (7*240 = 1680 and 7*2160 + 21*240^2 = 1,224,720).
     (r = 6 on L, which would recount the 15,590,400 minimal vectors, needs ~5e12 nodes: not done.)
 
-usage (from the repository root): python3 -I code/crosscheck/all_data/min_L.py <r> [--k 40] [--test e8x7]
+usage (from the repository root, with the Python of a SageMath installation, e.g. `python3` of the
+conda environment of environment.yml):
+    python3 -I code/crosscheck/all_data/min_L.py <r> [--k 40] [--test e8x7]
+  r = 4 (the claim), or r = 4 with --test e8x7 (positive control); r = 6 compares with the table
+  M/{+-1} built by `check_all.py v1`. The script ends with exit code 1 unless the verdict is PASS.
+使い方（リポジトリの根から。SageMath を含む Python、例えば environment.yml の conda 環境の `python3` で）:
+  r = 4（主張）、または r = 4 と --test e8x7（陽性対照）。r = 6 は `check_all.py v1` が作る表 M/{+-1} と比べる。
+  判定が PASS でなければ終了コード 1 で終わる。
 """
 import sys, os, json, time, subprocess, platform, argparse, shutil
+
+if not __debug__:
+    sys.exit("run without -O: the exactness guards are assert statements / -O を付けずに実行すること（厳密性の検査は assert で書かれている）")
 from fractions import Fraction
 import numpy as np
 
@@ -145,6 +155,10 @@ def main():
     ap.add_argument("--maxprint", type=int, default=2000000)
     ap.add_argument("--test", default=None)
     args = ap.parse_args()
+    if args.test not in (None, "e8x7"):
+        ap.error("--test takes only e8x7")
+    if args.r not in (4, 6) or (args.test and args.r != 4):
+        ap.error("r must be 4 or 6 (and 4 with --test e8x7): the verdicts are defined only for these")
     r, k = args.r, args.k
     res = {"radius_norm": r, "k": k, "lattice": args.test or "L"}
     G = test_gram(args.test) if args.test else read_gram()
@@ -153,7 +167,12 @@ def main():
     minors = bareiss_minors(Gp)
     res["reduced_det"] = minors[-1]
     res["reduced_pos_def"] = len(minors) == N and all(m > 0 for m in minors)
-    assert res["reduced_det"] == 1 and res["reduced_pos_def"]  # => det U = +-1, U unimodular
+    # det G' = 1 = det G (both positive definite) => det U = +-1, U unimodular; everything below depends on it
+    # det G' = 1 = det G（どちらも正定値）なら det U = ±1 で U はユニモジュラー。以下はすべてこれに依る
+    unimodular = res["reduced_det"] == 1 and res["reduced_pos_def"]
+    if not unimodular:
+        log("[FAIL] the reduced Gram matrix does not have det 1 / is not positive definite", res)
+        sys.exit(1)
     res["reduced_diag"] = [Gp[i][i] for i in range(N)]
     # float Cholesky, scaled integer factor
     L = np.linalg.cholesky(np.array(Gp, dtype=np.float64))
@@ -209,7 +228,9 @@ def main():
         res["verdict(min L >= 6)"] = "PASS" if ok else "FAIL"
     else:
         # compare with the verifier's table M/{+-1}: map u -> x = u U^{-1} (coordinates in the reduced basis)
-        Mh = np.load(os.path.join(OUT, "cache", "min-half.npy")).astype(np.int64)
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        from check_all import min_half   # the table of check_all.py v1, keyed to the inputs / 入力に結び付いた check_all.py v1 の表
+        Mh = np.asarray(min_half()).astype(np.int64)
         Ui = np.array(exact_inverse(U), dtype=np.int64)
         assert np.abs(Ui).max() * np.abs(Mh).max() * N < 2 ** 62
         h2 = h4 = 0
@@ -225,6 +246,7 @@ def main():
         res["enum_hash2"], res["enum_hash4"] = int(summ["hash2"]), int(summ["hash4"])
         ok = (res["enum_count"] == 2 * len(Mh) == 15590400 and h2 == res["enum_hash2"] and h4 == res["enum_hash4"])
         res["verdict(positive control: all minimal vectors found)"] = "PASS" if ok else "FAIL"
+    ok = ok and unimodular
     res["_machine"] = {"host": platform.node(), "platform": platform.platform()}
     res["_finished"] = time.strftime("%Y-%m-%d %H:%M:%S %Z")
     log(json.dumps({k_: v for k_, v in res.items() if k_ != "reduced_diag"}, indent=1))
@@ -232,6 +254,7 @@ def main():
     with open(path + ".tmp", "w") as f:
         json.dump(res, f, indent=1)
     os.rename(path + ".tmp", path)
+    sys.exit(0 if ok else 1)
 
 
 if __name__ == "__main__":
