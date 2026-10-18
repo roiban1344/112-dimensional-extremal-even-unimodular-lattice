@@ -14,7 +14,7 @@ the 63 dangerous types of classify.py by the same invariant gives the same 58.
 Requires SageMath (for LLL only). Run time: about 1 minute. Output: out/route_t/recount.json.
 Run classify.py first for the comparison.
 SageMath が要る（LLL だけ）。実行時間: 約 1 分。出力: out/route_t/recount.json。突き合わせのため classify.py を先に走らせる。
-Run / 実行:  sage -python code/supplementary/route_t/recount.py
+Run / 実行:  python3 code/supplementary/route_t/recount.py
 
 Method (Japanese) / 方法:
 補遺 §S4.1 の分類を、別の列挙法と整数・有理数の厳密演算だけで数え直す。

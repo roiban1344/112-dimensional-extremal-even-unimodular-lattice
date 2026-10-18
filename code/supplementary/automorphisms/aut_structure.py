@@ -24,7 +24,7 @@ Computed / 求めるもの:
 
 Requires SageMath (GAP). Run time: about 30 minutes. Memory: about 3 GB.
 SageMath（GAP）が要る。実行時間: 約 30 分。メモリ: 約 3 GB。
-Run / 実行:  sage -python code/supplementary/automorphisms/aut_structure.py
+Run / 実行:  python3 code/supplementary/automorphisms/aut_structure.py
 """
 import argparse
 import os

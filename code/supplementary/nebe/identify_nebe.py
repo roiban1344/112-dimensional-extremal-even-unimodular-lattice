@@ -25,7 +25,7 @@ Outputs in out/nebe/: the Gram matrix of L', z', w', the isometry T and tau' = T
 
 Requires SageMath (PARI, GAP). Run time: about 45 minutes. Memory: about 3 GB.
 SageMath（PARI, GAP）が要る。実行時間: 約 45 分。メモリ: 約 3 GB。
-Run / 実行:  sage -python code/supplementary/nebe/identify_nebe.py [--check]
+Run / 実行:  python3 code/supplementary/nebe/identify_nebe.py [--check]
 """
 import argparse
 import os

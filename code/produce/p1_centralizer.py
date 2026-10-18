@@ -12,17 +12,22 @@ P1. 可換環 M' = End_{SL_2(29)}(L) と中心化群 C（論文 §2.4、§4.2）
     then checked one by one.
     C = M' の元で L の等長変換であるもの。M' 上の形式 q(X) = tr(X X*)/56（X* = G X^T G^{-1}）は正定値で整数値。
     X が等長変換 ⟺ X X* = I で、このとき q(X) = 1。よって C は q(X) = 1 となる有限個の X の中から見つかり、1 つずつ確かめる。
-  * Output out/p1_centralizer.npz: basis of M' (8, 56, 56) and the 6 elements of C/{+-1}
-    in the order of PARI's qfminim, sign-normalized as returned. It is compared with
-    certificates/centralizer.npz (as a set up to sign; the order there is the one used when the
-    certificates were produced).
-    出力 out/p1_centralizer.npz: M' の基底 (8, 56, 56) と C/{±1} の 6 元。certificates/centralizer.npz と（符号を除いた集合として）比べる。
-    そちらの並びは、certificate を作ったときのもの。
+  * Output (never certificates/, whose files are fixed by certificates/SHA256SUMS):
+    out/p1/commutant.npz (basis, the Z-basis of M' (8, 56, 56)) and out/p1/centralizer.npz (units, the 6
+    elements of C/{+-1} in the order of PARI's qfminim, sign-normalized as returned). They are compared
+    with the distributed certificates/commutant.npz (the same Z-lattice: equal Hermite normal forms of the
+    8 x 3136 matrices of the two bases) and certificates/centralizer.npz (the same set up to sign; the order
+    there is the one used when the certificates were produced). A difference is a failure (exit code 1).
+    出力（certificates/ には書かない。そこのファイルは certificates/SHA256SUMS で固定されている）: out/p1/commutant.npz（basis。M' の
+    Z-基底 (8, 56, 56)）と out/p1/centralizer.npz（units。C/{±1} の 6 元を PARI の qfminim の順に、返された符号のまま）。配布した
+    certificates/commutant.npz とは同じ Z-格子であること（2 つの基底の 8 × 3136 行列の Hermite 標準形が等しいこと）、certificates/centralizer.npz とは
+    符号を除いた集合として等しいことを確かめる（そちらの並びは、certificate を作ったときのもの）。違えば失敗（終了コード 1）とする。
 
 Requires SageMath (PARI). Run time: about 10 minutes.
 SageMath（PARI）が要る。実行時間: 約 10 分。
 
-Run / 実行:  sage -python code/produce/p1_centralizer.py [--data DIR] [--certificates DIR] [--out DIR]
+Run / 実行:  python3 code/produce/p1_centralizer.py [--data DIR] [--certificates DIR] [--out DIR]
+             (with the python3 of an environment that has SageMath / SageMath の入った環境の python3 で)
 """
 import argparse
 import os
@@ -30,7 +35,9 @@ import sys
 
 import numpy as np
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, ".."))
+sys.path.insert(0, HERE)                     # exact_qfminim (python -I does not add the script's directory) / python -I はスクリプトの置き場所を加えない
 from lib import certs, data, group  # noqa: E402
 from lib.report import Report  # noqa: E402
 
@@ -98,7 +105,7 @@ def elements_of_norm(basis, G, N):
 
 
 def main():
-    from sage.all import ZZ, identity_matrix, matrix
+    from sage.all import ZZ, matrix
     ap = argparse.ArgumentParser(description="P1: commuting ring and centralizer")
     ap.add_argument("--data", default=None)
     ap.add_argument("--certificates", default=None)
@@ -108,24 +115,31 @@ def main():
 
     G = matrix(ZZ, data.gram(a.data).tolist())
     gens = [matrix(ZZ, g.tolist()) for g in data.generators(a.data)]
-    I = identity_matrix(ZZ, 56)
     basis = commutant_basis(gens, 56)
     rep.value("rank of M'", len(basis))
     rep.check("M' has rank 8", len(basis) == 8)
     half = elements_of_norm(basis, G, 1)
-    Ginv = G.inverse()
     rep.check("every X with q(X) = 1 is an isometry (X X* = I)", all(X * G * X.transpose() == G for X in half))
     rep.value("|C| (both signs)", 2 * len(half))
     rep.check("|C| = 12", len(half) == 6)
     rep.check("C commutes with g1, g2", all(X * g == g * X for X in half for g in gens))
     rep.check("C/{+-1} is closed under multiplication (a group)",
               all(any(X * Y == s * Z for Z in half for s in (1, -1)) for X in half for Y in half))
-    assert all(X * G * X.transpose() * Ginv == I for X in half)
 
+    pdir = os.path.join(rep.out_dir, "p1")
+    os.makedirs(pdir, exist_ok=True)
+    Bn = np.array([np.array(X.rows(), dtype=np.int64) for X in basis])
     U = np.array([np.array(X.rows(), dtype=np.int64) for X in half])
-    os.makedirs(rep.out_dir, exist_ok=True)
-    certs.save_npz(os.path.join(rep.out_dir, "p1_centralizer.npz"),
-                   commutant=np.array([np.array(X.rows(), dtype=np.int64) for X in basis]), units=U)
+    certs.save_npz(os.path.join(pdir, "commutant.npz"), basis=Bn)
+    certs.save_npz(os.path.join(pdir, "centralizer.npz"), units=U)
+    rep.log(f"wrote {pdir}/commutant.npz and {pdir}/centralizer.npz")
+
+    # Compare with the distributed data. / 配布データと比べる。
+    old_basis = certs.load("commutant.npz", "basis", a.certificates).astype(np.int64)
+    hnf = lambda M: matrix(ZZ, [[int(v) for v in X.reshape(-1)] for X in M]).echelon_form()   # noqa: E731
+    rep.value("basis identical to certificates/commutant.npz (entry by entry)", bool(np.array_equal(Bn, old_basis)))
+    rep.check("M' spans the same Z-lattice as certificates/commutant.npz (equal Hermite normal forms)",
+              old_basis.shape == Bn.shape and hnf(Bn) == hnf(old_basis))
     old = certs.load("centralizer.npz", "units", a.certificates)
     same = {group.sign_normalize(u).tobytes() for u in U} == {group.sign_normalize(u.astype(np.int64)).tobytes() for u in old}
     rep.check("the same 6 elements up to sign as certificates/centralizer.npz", same)

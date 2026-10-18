@@ -19,7 +19,7 @@ and *_order.txt, *_basis.txt (the maximal order in H and the lattice basis in Q(
 
 Run time: about 15 minutes. Memory: about 2 GB.
 実行時間: 約 15 分。メモリ: 約 2 GB。
-Run / 実行:  sage -python code/supplementary/nebe/lattices.py
+Run / 実行:  python3 code/supplementary/nebe/lattices.py
 """
 import argparse
 import os

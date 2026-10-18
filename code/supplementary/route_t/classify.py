@@ -14,7 +14,7 @@ searches of §S4.1.
 
 Requires SageMath (PARI). Run time: about 2 minutes. Output: out/route_t/classify.json.
 SageMath（PARI）が要る。実行時間: 約 2 分。出力: out/route_t/classify.json。
-Run / 実行:  sage -python code/supplementary/route_t/classify.py
+Run / 実行:  python3 code/supplementary/route_t/classify.py
 
 Method (Japanese) / 方法:
 「危険な台加群」の分類を、非自由な加群も含めて完全にする。
