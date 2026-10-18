@@ -9,6 +9,18 @@ This repository accompanies a paper constructing a 112-dimensional even unimodul
 - **Data:** [matrix conventions](data/README.md) · [verification data formats and hashes](certificates/MANIFEST.md)
 - **Formalization:** [the argument in Lean](lean/README.md)
 
+## Result
+
+Theorem A of the paper: the lattice $L_{112}$ defined by the data in this repository is a positive-definite even unimodular lattice of dimension 112 whose minimum norm is 10. Since 10 is the largest value that the Mallows–Odlyzko–Sloane bound $2\lfloor n/24\rfloor+2$ allows in dimension 112, $L_{112}$ is extremal. Theorem B determines its automorphism group, of order 1,169,280.
+
+The construction glues two copies of a 56-dimensional extremal lattice of Nebe, which carries the symmetry group $\mathrm{SL}_2(29)$, along an endomorphism $\tau$ with $\tau^2=-5$ that commutes with the group; equivalently, $L_{112}$ is a Hermitian tensor product over $\mathbb{Z}[\sqrt{-5}]$. The proof is computer-assisted. Lemmas proved by hand reduce extremality to finitely many lower bounds for cosets modulo $2L_{56}$, and programs check these bounds in integer arithmetic from the distributed data (about 1.2 CPU hours). The deduction from the checked facts to the theorem is formalized in Lean 4.
+
+The paper is a draft and has not been peer reviewed. AI systems did most of the computation, code and writing under human direction (see "Authorship" below).
+
+## Background
+
+An even unimodular lattice is a lattice in $\mathbb{R}^n$ all of whose vectors have even squared length (norm) and whose Gram matrix has determinant 1. Such lattices exist only when $n$ is a multiple of 8. The theory of modular forms bounds their minimum norm by $2\lfloor n/24\rfloor+2$, and a lattice attaining this bound is called extremal: its shortest nonzero vectors are as long as the theory allows, so it is as dense a sphere packing as an even unimodular lattice of that dimension can be. Extremal lattices are rare. The classical examples are $E_8$ ($n=8$) and the Leech lattice ($n=24$). Examples are known in every dimension that is a multiple of 8 up to 80 (dimension 72 since 2010 and dimension 80 since 1998, both by Nebe and coauthors) and in dimension 88 since a 2026 preprint of Sakamoto. Dimensions 96 and 104 are open. $L_{112}$ is the first known example beyond 88, and the first for which the bound is 10. Dimension 112 was chosen over 96 and 104 because a heuristic based on Siegel's mass formula suggests that an extremal lattice is easiest to find there (Supplement §S1).
+
 ## Start here
 
 Run the commands from the repository root. The main verifier needs Python 3.10 or later, NumPy, and a C compiler supporting 128-bit integers, such as GCC or Clang. There are three levels of checking.
