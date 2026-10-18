@@ -100,7 +100,8 @@ The enumeration of F1 uses outward-rounded interval arithmetic (`verify/enum_int
   a C compiler with 128-bit integers (gcc or clang; `$CC` if set, otherwise the first of `cc`, `gcc`, `clang`) for v1, and `curl` for `fetch.sh`. No other package.
 * `produce/`, `supplementary/`, `crosscheck/all_data/`: SageMath 10 (which includes PARI/GP, GAP and
   fpylll); tested with SageMath 10.9. `environment.yml` at the repository root installs it with
-  conda/micromamba.
+  conda/micromamba. Run these scripts with the `python3` of that environment (`python3 -I code/...`);
+  `sage -python` is not available in the conda-forge build of SageMath.
 * Container: the `Dockerfile` at the repository root builds an image with these requirements for `verify/` (and `Dockerfile.sage` one with SageMath); see the root README.
 * `lean/`: Lean 4 and Mathlib (versions pinned in `lean/lean-toolchain` and `lean/lake-manifest.json`).
 
@@ -111,13 +112,20 @@ The enumeration of F1 uses outward-rounded interval arithmetic (`verify/enum_int
 | `produce/p1_centralizer.py` | M′ and the centralizer C (`centralizer.npz`, `commutant.npz`) | 10 min |
 | `produce/p2_minimal_orbits.py` | `min_reps.npz` (closure, §6.2) | 10 min |
 | `produce/p3_norm8_orbits.py` | `norm8_reps.npz` (marked elements (sums of two minimal vectors), §6.4) | 1.2 h |
-| `produce/p4_odd_descent.py` | `odd_bounding.npz` (descent, §6.6) | 3 min |
+| `produce/p4_odd_descent.py` | `odd_bounding.npz` (descent, §6.6) | 6 min |
 | `produce/p5_even_descent.py` | `even_bounding.npz` (descent, §6.7; 6 parts, resumable) | ≈ 190 CPU h |
 | `produce/p6_reduction.py` | `reduction_L.txt`, `reduction_R.txt` | 1 min |
 
-Each producer compares its output with the distributed verification data. p4 and p5 reproduce
-the representative arrays bit for bit; p2 and p3 may choose other representatives, so they are compared by
-the set of canonical forms (the same orbits).
+The producers never write to `certificates/`, whose files are fixed by `certificates/SHA256SUMS`: each
+writes its files under `out/p<k>/` with the names of the distributed files (for example
+`out/p4/odd_bounding.npz`) and then compares them with the distributed verification data; a difference is
+reported as `[FAIL]` with exit code 1. p4, p5 and p6 must reproduce the distributed files bit for bit
+(p6 compares the text files byte for byte). p1 compares the 6 elements of C/{±1} as a set up to sign and the
+basis of M′ by the Z-lattice it spans (equal Hermite normal forms). p2 and p3 may choose other
+representatives: p2 compares the set of canonical forms of the classes r + 2L (for minimal vectors this
+means the same orbits) and the number of representatives; p3 compares the set of canonical forms of the
+classes x u_k + 2L, the number of orbits and the multiset of orbit sizes. Test runs (`p3 --trial`,
+`p5 --limit`) use their own file names and never overwrite the files or checkpoints of a full run.
 
 The data-producing steps of `supplementary/genus/genus.py` (`enum`, `build`, `witness`, `identify`) write to
 `out/genus/` by default, not to `certificates/`, and compare each file with the distributed one (identical, the

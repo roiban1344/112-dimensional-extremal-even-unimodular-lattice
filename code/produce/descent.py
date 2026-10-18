@@ -11,10 +11,11 @@ in the class w + 2L and lowers the norm by 4(<w, u> - 6) > 0, so it terminates. 
 
 The inner products with all minimal vectors are P[s, j] = <r_j s, w> = r_j (s G w^T): first
 t = S (G w^T) (12,180 x 56), then t R^T (12,180 x 656). Both products are done in float64 after
-asserting that all partial sums are integers below 2^52, so they are exact. Ties are broken by
+asserting that all partial sums are integers below 2^52, so they are exact; the same holds for the
+product r_j s that recovers the minimal vector u (bound asserted once in the constructor). Ties are broken by
 the first position in row-major order of P, which makes the result deterministic.
 すべての最小ベクトルとの内積は P[s, j] = <r_j s, w> = r_j (s G w^T)。まず t = S (G w^T)、次に t R^T。どちらの積も、部分和が
-すべて 2^52 未満の整数であることを確かめてから float64 で計算するので厳密。同点は P の行優先で最初の位置を取るので、結果は決定的。
+すべて 2^52 未満の整数であることを確かめてから float64 で計算するので厳密。最小ベクトル u を復元する積 r_j s も同様（上界はコンストラクタで一度だけ確かめる）。同点は P の行優先で最初の位置を取るので、結果は決定的。
 
 Whatever this heuristic outputs is checked independently (verify/v5, verify/v7).
 この発見的な手続きの出力は、独立に確かめる（verify/v5, verify/v7）。
@@ -30,6 +31,7 @@ class Descent:
         self.RT = np.ascontiguousarray(self.R.T.astype(np.float64))
         self.emax = float(np.abs(self.E).max())
         self.rmax = float(np.abs(self.R).max())
+        assert float(np.abs(self.R).sum(axis=1).max()) * self.emax < 2.0 ** 52     # r_j s in descend() is exact / descend() の r_j s は厳密
 
     def inner_products(self, w):
         """P[s, j] = <r_j s, w> for all s, j (float64 holding exact integers).

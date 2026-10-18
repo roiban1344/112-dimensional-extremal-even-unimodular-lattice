@@ -15,7 +15,7 @@ integral matrix in the L_112-basis for some generator g of S. Then the diagonal 
 すると対角の場合は起こらない。
 
 Requires SageMath. Run time: about 1 minute. / SageMath が要る。実行時間: 約 1 分。
-Run / 実行:  sage -python code/supplementary/automorphisms/aut_diagonal.py
+Run / 実行:  python3 code/supplementary/automorphisms/aut_diagonal.py
 """
 import argparse
 import os

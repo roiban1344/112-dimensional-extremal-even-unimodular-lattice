@@ -24,7 +24,7 @@ Hence min L_{56,2}(M) = 6 (proved in tables.py, and reported in [Neb98, Table II
 
 Requires SageMath. Run time: about 1 hour per candidate sublattice (the isometry search). Memory: about 3 GB.
 SageMath が要る。実行時間: 候補の部分格子 1 つにつき約 1 時間（等長写像の探索）。メモリ: 約 3 GB。
-Run / 実行:  sage -python code/supplementary/nebe/reduction_to_nebe.py
+Run / 実行:  python3 code/supplementary/nebe/reduction_to_nebe.py
 """
 import argparse
 import os

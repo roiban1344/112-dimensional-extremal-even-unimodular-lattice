@@ -18,7 +18,7 @@ certificate がある（check.py）。
 
 Requires SageMath (fpylll). Split with --part/--nparts; resumable (saved every 5,000 classes).
 SageMath（fpylll）が要る。--part/--nparts で分割、再開可能（5,000 類ごとに保存）。
-Run / 実行:  sage -python code/supplementary/route_t/float_cvp.py [--part P --nparts Q]
+Run / 実行:  python3 code/supplementary/route_t/float_cvp.py [--part P --nparts Q]
 """
 import argparse
 import json

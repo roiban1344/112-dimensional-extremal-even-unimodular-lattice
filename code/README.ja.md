@@ -87,7 +87,8 @@ F5b は無関係な 2 つの議論（v6 と v7）で確かめます。証明に�
 
 * `verify/`、`crosscheck/second_impl/`: Python 3.10 以上と numpy（Python 3.12、numpy 2.5 で確認）。v1 には 128 ビット整数をもつ C コンパイラ（gcc か clang。`$CC` があればそれ、無ければ `cc`・`gcc`・`clang` の順に探す）。`fetch.sh` には `curl` が必要です。ほかのパッケージは要りません。
 * `produce/`、`supplementary/`、`crosscheck/all_data/`: SageMath 10（PARI/GP、GAP、fpylll を含む）。SageMath 10.9 で確認。リポジトリのルートの
-  `environment.yml` で conda/micromamba から入れられます。
+  `environment.yml` で conda/micromamba から入れられます。これらのスクリプトは、その環境の `python3` で実行します（`python3 -I code/...`）。
+  conda-forge 版の SageMath では `sage -python` は使えません。
 * `lean/`: Lean 4 と Mathlib（版は `lean/lean-toolchain` と `lean/lake-manifest.json` に固定）。
 
 ## 検証用データの生成
@@ -97,12 +98,16 @@ F5b は無関係な 2 つの議論（v6 と v7）で確かめます。証明に�
 | `produce/p1_centralizer.py` | M′ と中心化群 C（`centralizer.npz`、`commutant.npz`） | 10 分 |
 | `produce/p2_minimal_orbits.py` | `min_reps.npz`（閉包、§6.2） | 10 分 |
 | `produce/p3_norm8_orbits.py` | `norm8_reps.npz`（印の付く元、§6.4） | 1.2 時間 |
-| `produce/p4_odd_descent.py` | `odd_bounding.npz`（降下、§6.6） | 3 分 |
+| `produce/p4_odd_descent.py` | `odd_bounding.npz`（降下、§6.6） | 6 分 |
 | `produce/p5_even_descent.py` | `even_bounding.npz`（降下、§6.7。6 分割、再開可能） | 約 190 CPU 時間 |
 | `produce/p6_reduction.py` | `reduction_L.txt`、`reduction_R.txt` | 1 分 |
 
-各生成スクリプトは、出力を配布した検証用データと比べます。p4 と p5 は配布したファイルをビット単位で再現します。p2 と p3 は別の代表を選びうるので、
-標準形の集合（同じ軌道か）で比べます。
+生成スクリプトは `certificates/` には書きません（そこのファイルは `certificates/SHA256SUMS` で固定されています）。各スクリプトは、配布ファイルと
+同じ名前で `out/p<k>/` の下に書き（たとえば `out/p4/odd_bounding.npz`）、そのあと配布した検証用データと比べます。違いがあれば `[FAIL]` と
+終了コード 1 で報告します。p4・p5・p6 は配布ファイルをビット単位で再現しなければなりません（p6 はテキストのファイルをバイト単位で比べます）。
+p1 は C/{±1} の 6 元を符号を除いた集合として、M′ の基底を張る Z-格子（Hermite 標準形の一致）で比べます。p2 と p3 は別の代表を選びうるので、
+p2 は類 r + 2L の標準形の集合（最小ベクトルではこれが同じ軌道を意味します）と代表の個数で、p3 は類 x u_k + 2L の標準形の集合、軌道の個数、
+軌道の大きさの多重集合で比べます。試しの実行（`p3 --trial`、`p5 --limit`）は別の名前のファイルを使い、本番の実行のファイルや途中経過を上書きしません。
 
 `supplementary/genus/genus.py` のデータを作る段（`enum`、`build`、`witness`、`identify`）は、既定では `certificates/` ではなく `out/genus/` に書き、
 書いたファイルを配布したファイルと比べます（同じ、整数が同じ、違う、のいずれかを報告します。`genus_classes.txt` は一致しなければならず、

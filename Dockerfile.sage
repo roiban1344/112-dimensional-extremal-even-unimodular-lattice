@@ -5,7 +5,12 @@
 #   docker build -f Dockerfile.sage -t l112-sage .
 #   docker run --rm l112-sage python3 -I code/supplementary/genus/genus.py check
 #   docker run --rm l112-sage sage -c 'print(version())'
-#   docker run --rm -v "$PWD/out:/work/out" l112-sage bash code/run_supplementary.sh
+#
+# To keep the results on the host, mount out/. Create it first (Docker would otherwise create it
+# owned by root), and run as your own user: the user of the base image (mambauser, uid 57439)
+# cannot write to a directory owned by you.
+#   mkdir -p out
+#   docker run --rm --user "$(id -u):$(id -g)" -v "$PWD/out:/work/out" l112-sage bash code/run_supplementary.sh
 FROM mambaorg/micromamba:2.3.2
 
 USER root

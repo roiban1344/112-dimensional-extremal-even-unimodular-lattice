@@ -46,7 +46,7 @@ SageMath（PARI, fpylll）と C コンパイラが要る。実行時間: 固定�
 時間のほとんどが BKZ-60 で、基底によって変わる: 2026-10-18 に負荷のかかった計算機で計測すると、L_112 の BKZ-60 は 538 秒（BKZ-20〜50 は
 2, 4, 7, 36 秒で 16, 16, 16, 14、BKZ-60 は 10（3 本）で研究時と同じ）。L_B の BKZ-60 は 1,008 秒（BKZ-20〜50 は
 3, 3, 5, 33 秒で 16, 16, 16, 18。BKZ-60 は 10（3 本）で、ノルム 8 のベクトルは見つけない）。--tau B の実行全体は 18 分。メモリ: 約 1 GB。
-Run / 実行:  sage -python code/supplementary/fixed_sublattices.py [--tau B] [--bkz 30,40]
+Run / 実行:  python3 code/supplementary/fixed_sublattices.py [--tau B] [--bkz 30,40]
 """
 import argparse
 import os
