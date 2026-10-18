@@ -5,7 +5,7 @@
 このディレクトリには、軌道代表、剰余類の最小ノルムの下界を保証する代表元（英語では certificate）、基底変換行列、補足計算の入力を収めます。一式を「検証用データ」と呼びます。主検算の入力は `code/verify/` が検査し、補足用の入力は下で区別します。証明では検査した性質と論文の数学的な補題を使い、データを生成したプログラムの正しさには依拠しません。
 
 大きな `.npz` は git に入れず、GitHub Release に添付します。`SHA256SUMS`（git に入っています）が中身を固定し、
-`code/lib/certs.py` の読み込みは使う前にハッシュを照合します。取得は `code/verify/fetch.sh` で行います。
+`code/lib/certs.py` の読み込みは使う前にハッシュを照合します。取得は `bash code/verify/fetch.sh` で行います。引数は Release のタグで、省略すると `certificates-v1` です。Release は <https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1> にあります。
 
 ファイル名には、112 次元格子の以前の呼び名 R が残っています（`outer_automorphism_R.txt`、`reduction_R.txt`、`data/R112_gram_LLL.txt`）。論文では L₁₁₂ と呼びます。
 

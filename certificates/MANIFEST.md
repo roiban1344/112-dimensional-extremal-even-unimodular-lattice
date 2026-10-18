@@ -6,7 +6,7 @@ This directory contains verification data: orbit representatives, coset represen
 
 The large `.npz` files are attached to the GitHub Release, not stored in git. `SHA256SUMS`
 (in git) fixes their content; every reader in `code/lib/certs.py` checks the hash before use.
-Download them with `code/verify/fetch.sh`.
+Download them with `bash code/verify/fetch.sh`; its optional argument is the Release tag (default `certificates-v1`). The Release is at <https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v1>.
 
 File names keep the letter R of an earlier draft for the 112-dimensional lattice (`outer_automorphism_R.txt`, `reduction_R.txt`; also `data/R112_gram_LLL.txt`); the paper calls it L₁₁₂.
 
