@@ -14,7 +14,7 @@
 # https://github.com/.../releases/download/<tag> (e.g. a mirror, or a local server for testing).
 # 環境変数 CERT_BASE_URL で取得元 https://github.com/.../releases/download/<tag> を置き換えられる（ミラーや試験用のローカルのサーバ）。
 set -euo pipefail
-TAG=${1:-certificates-v1}
+TAG=${1:-certificates-v2}
 BASE=${CERT_BASE_URL:-"https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/download/$TAG"}
 cd "$(dirname "${BASH_SOURCE[0]}")/../../certificates"
 if command -v sha256sum >/dev/null; then SHA=(sha256sum); else SHA=(shasum -a 256); fi
