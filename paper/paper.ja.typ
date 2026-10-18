@@ -19,7 +19,7 @@
 
 階数 $n$ の正定値格子とは、ユークリッド空間 $bb(R)^n$ を張る離散部分群 $Lambda = bb(Z) b_1 xor dots.h xor bb(Z) b_n$ である。内積を $chevron.l x,y chevron.r$ と書き、$chevron.l x,x chevron.r$ をベクトル $x$ のノルムと呼ぶ。すべてのノルムが偶数であるとき、格子は偶であるという。整数格子の Gram 行列の行列式が 1 であるとき、格子はユニモジュラーであるという。この条件は、格子が自身の双対と一致することと同値である。偶ユニモジュラー格子が存在する次元は 8 の倍数に限られ、正の 8 の倍数の各次元に実際に例が存在する \[SPLAG, 第 7 章\]。
 
-偶ユニモジュラー格子のテータ級数 $theta_Lambda(q)=sum_(x in Lambda)q^(chevron.l x,x chevron.r/2)$ は、重さ $n/2$ のモジュラー形式である。このことから、Mallows–Odlyzko–Sloane \[MOS75\] の上界
+偶ユニモジュラー格子のテータ級数 $theta_Lambda(q)=sum_(x in Lambda)q^(chevron.l x,x chevron.r\/2)$ は、重さ $n/2$ のモジュラー形式である。このことから、Mallows–Odlyzko–Sloane \[MOS75\] の上界
 #tagged("1.1", $ min Lambda <= mu(n):=2 floor(n/24)+2 $)
 が得られる。ここで $min Lambda$ は非零ベクトルのノルムの最小値、すなわち格子の最小ノルムである。偶ユニモジュラー格子について (1.1) の等号が成り立つとき、その格子は極値であるという。本稿で「極値格子」と略す場合は、別の格子のクラスを明示しない限り、極値偶ユニモジュラー格子を指す。後の数式では上界を $mu(n)$ と略記する。
 
@@ -116,7 +116,7 @@ $K = bb(Q)\(sqrt(- 5)\)$、整数環 $cal(O) = bb(Z)\[sqrt(- 5)\]$（類数 2）
 == 3.1 二つの格子の 2 を法とする貼り合わせ
 
 #thm[
-#strong[定義 3.1（貼り合わせ）.] $L$ を $n$ 次元の偶ユニモジュラー格子、$f$ を $L\/2 L$ 上の可逆で偶奇を保つ線形写像とする。$f$ に沿った二つの $L$ の#strong[貼り合わせ]（gluing）を $ L_f =  {  1 / sqrt(2)\(x\,v\)med : med x\,v in L\,med v + 2 L =\(x + 2 L\)f  } \,#h(2em)  chevron.l  frac(\(x\,v\), sqrt(2))\,frac(\(x\,v\), sqrt(2))  chevron.r  = 1 / 2  (  chevron.l x\,x chevron.r + chevron.l v\,v chevron.r  )  $ で定める。
+#strong[定義 3.1（貼り合わせ）.] $L$ を $n$ 次元の偶ユニモジュラー格子、$f$ を $L\/2 L$ 上の可逆で偶奇を保つ線形写像とする。$f$ に沿った二つの $L$ の#strong[貼り合わせ]（gluing）を $ L_f =  {  1 / sqrt(2)\(x\,v\)med : med x\,v in L\,med v + 2 L =\(x + 2 L\)f  } \,#h(2em)  lr(chevron.l frac(\(x\,v\), sqrt(2))\,frac(\(x\,v\), sqrt(2)) chevron.r)  = 1 / 2  (  chevron.l x\,x chevron.r + chevron.l v\,v chevron.r  )  $ で定める。
 ]
 
 可逆で偶奇を保つ写像 $f$ を貼り方と呼び、その写像から得られる格子 $L_f$ を貼り合わせと呼ぶ。$f$ が $chevron.l x tau\,y tau chevron.r = 5 chevron.l x\,y chevron.r$ を満たす整数行列 $tau$ の還元であるとき、(1.2) の $L_tau$ が得られる。
@@ -349,7 +349,7 @@ BKZ で見つけた数本の最小ベクトルから出発し、次の閉包の�
 
 大きさの和に加えて、殻が球面 7-デザインであることから導かれる厳密な恒等式（$10^18$ 程度の大きさの整数の等式）を、軌道代表の表から計算して確認した。表に重複や欠落があれば、偶然の一致を除いて、これらの恒等式は成り立たない。
 
-すべての $a in bb(R)^56$ について $ sum_(x in L_56(m)) chevron.l x\,a chevron.r^2 =\|L_56(m)\|frac(m chevron.l a\,a chevron.r, 56)\,quad sum_(x in L_56(m)) chevron.l x\,a chevron.r^4 =\|L_56(m)\|frac(3 m^2 chevron.l a\,a chevron.r^2, 56 dot.op 58)\,quad sum_(x in L_56(m)) chevron.l x\,a chevron.r^6 =\|L_56(m)\|frac(15 m^3 chevron.l a\,a chevron.r^3, 56 dot.op 58 dot.op 60) . $ 左辺を、軌道代表の表から（軌道代表 × 群の元 × 中心化群の元として展開し、軌道の大きさで重みづけて）、3 本の整数ベクトル $a$ と $m = 6$、$m = 8$ について計算した。18 本の恒等式がすべて厳密に成り立った #calc("C8")。
+すべての $a in bb(R)^56$ について $ sum_(x in L_56(m)) chevron.l x\,a chevron.r^2 & =\|L_56(m)\|frac(m chevron.l a\,a chevron.r, 56)\, \ sum_(x in L_56(m)) chevron.l x\,a chevron.r^4 & =\|L_56(m)\|frac(3 m^2 chevron.l a\,a chevron.r^2, 56 dot.op 58)\, \ sum_(x in L_56(m)) chevron.l x\,a chevron.r^6 & =\|L_56(m)\|frac(15 m^3 chevron.l a\,a chevron.r^3, 56 dot.op 58 dot.op 60) . $ 左辺を、軌道代表の表から（軌道代表 × 群の元 × 中心化群の元として展開し、軌道の大きさで重みづけて）、3 本の整数ベクトル $a$ と $m = 6$、$m = 8$ について計算した。18 本の恒等式がすべて厳密に成り立った #calc("C8")。
 
 == 6.4 F3: ノルム 8 のベクトルの軌道 — 最小ベクトル 2 本の和に印を付ける
 
@@ -499,7 +499,7 @@ $G_112$ を (3.1) の $L_112$ の Gram 行列とする。
   [(c) 正規性], [$E\("Aut"\(L_112\)\)= S$], [付録 F（証明）], [—],
 )
 
-位数 48 の中心化群は、$L_112=L_56 times.o_(M') Lambda$ と書いたときの階数 2 の $M'$-格子 $Lambda={(a,b) in (M')^2:b equiv a tau med (mod 2M')}/sqrt(2)$ のユニタリ自己同型群に一致する。部分群 $S dot.op C_("Aut"(L_112))(S)$ の位数は $584 thin 640$ であり、外部自己同型を加えると、その 2 倍の位数の群が得られる。外部自己同型を与える行列の一つを #raw("certificates/outer_automorphism_R.txt") として配布する #calc("C24", "C25")。
+位数 48 の中心化群は、$L_112=L_56 times.o_(M') Lambda$ と書いたときの階数 2 の $M'$-格子 $Lambda={(a,b) in (M')^2:b equiv a tau med (mod 2M')}\/sqrt(2)$ のユニタリ自己同型群に一致する。部分群 $S dot.op C_("Aut"(L_112))(S)$ の位数は $584 thin 640$ であり、外部自己同型を加えると、その 2 倍の位数の群が得られる。外部自己同型を与える行列の一つを #raw("certificates/outer_automorphism_R.txt") として配布する #calc("C24", "C25")。
 
 #strong[構造.] 明示的な生成元（$S$ の生成元、$C_("Aut"(L_112))(S)$ の 48 元、外部自己同型を与える元 1 つ）を 3 を法として還元し（この還元は有限な整数行列群の上で単射である）、GAP で計算すると、位数がちょうど $1 thin 169 thin 280$ の群が得られる #calc("C26")。この計算は位数の独立な検算となる。さらに $C_("Aut"(L_112))(S) tilde.equiv "SL"_2(3) circle.small C_4$（SmallGroup(48,33)）、$"Aut"(L_112) \/ S tilde.equiv C_2 times S_4$、$"Aut"(L_112) \/ C_("Aut"(L_112))(S) tilde.equiv "PGL"_2(29)$、$Z("Aut"(L_112)) = {plus.minus 1}$ が成り立ち、指数 2 の部分群 $S dot.op C_("Aut"(L_112))(S)$ による拡大は分裂しない（この部分群の外側の剰余類は対合を含まない） #calc("C26")。以上をまとめると、$"Aut"(L_112) tilde.equiv ("SL"_2(29) circle.small "SL"_2(3) circle.small C_4) . 2$ である（中心積は共通の $-1$ を同一視して取る）。生成元の行列式はすべて 1 であり、$"Aut"(L_112)$ と可換な $L_112$ の自己準同型は環 $ZZ[sqrt(-29)]$ をなす。よって $L_112$ は $ZZ[sqrt(-29)]$ 上の階数 56 のエルミート格子であり、$"Aut"(L_112) subset "U"(56) subset "SO"(112)$ が成り立つ。
 

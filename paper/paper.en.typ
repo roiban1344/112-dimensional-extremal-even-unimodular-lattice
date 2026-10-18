@@ -19,7 +19,7 @@ We construct an explicit positive-definite even unimodular lattice $L_112$ of di
 
 A positive-definite lattice of rank $n$ is a discrete subgroup $Lambda = bb(Z) b_1 xor dots.h xor bb(Z) b_n$ spanning Euclidean space $bb(R)^n$. We write $chevron.l x,y chevron.r$ for the inner product and call $chevron.l x,x chevron.r$ the norm of $x$. The lattice is even if every norm is an even integer. An integral lattice is unimodular if its Gram matrix has determinant 1, or equivalently if it equals its dual. Even unimodular lattices exist only in dimensions divisible by 8, and an example exists in every such positive dimension \[SPLAG, Ch. 7\].
 
-The theta series $theta_Lambda(q)=sum_(x in Lambda)q^(chevron.l x,x chevron.r/2)$ of an even unimodular lattice is a modular form of weight $n/2$. This gives the bound of Mallows–Odlyzko–Sloane \[MOS75\]:
+The theta series $theta_Lambda(q)=sum_(x in Lambda)q^(chevron.l x,x chevron.r\/2)$ of an even unimodular lattice is a modular form of weight $n/2$. This gives the bound of Mallows–Odlyzko–Sloane \[MOS75\]:
 #tagged("1.1", $ min Lambda <= mu(n):=2 floor(n/24)+2. $)
 Here $min Lambda$ is the smallest norm of a nonzero vector. An even unimodular lattice is extremal when equality holds in (1.1). Unless another class of lattices is explicitly specified, “extremal lattice” in this paper means extremal even unimodular lattice. We write $mu(n)$ for this bound.
 
@@ -116,7 +116,7 @@ We glue two copies of a 56-dimensional lattice along a correspondence of cosets 
 == 3.1 Gluing two copies modulo 2
 
 #thm[
-#strong[Definition 3.1 (gluing).] Let $L$ be even unimodular of dimension $n$ and $f$ an invertible parity-preserving linear map on $L\/2 L$. The #strong[gluing] of two copies of $L$ along $f$ is $ L_f =  {  1 / sqrt(2)\(x\,v\)med : med x\,v in L\,med v + 2 L =\(x + 2 L\)f  } \,#h(2em)  chevron.l  frac(\(x\,v\), sqrt(2))\,frac(\(x\,v\), sqrt(2))  chevron.r  = 1 / 2  (  chevron.l x\,x chevron.r + chevron.l v\,v chevron.r  )  . $
+#strong[Definition 3.1 (gluing).] Let $L$ be even unimodular of dimension $n$ and $f$ an invertible parity-preserving linear map on $L\/2 L$. The #strong[gluing] of two copies of $L$ along $f$ is $ L_f =  {  1 / sqrt(2)\(x\,v\)med : med x\,v in L\,med v + 2 L =\(x + 2 L\)f  } \,#h(2em)  lr(chevron.l frac(\(x\,v\), sqrt(2))\,frac(\(x\,v\), sqrt(2)) chevron.r)  = 1 / 2  (  chevron.l x\,x chevron.r + chevron.l v\,v chevron.r  )  . $
 ]
 
 We call $f$ the gluing map and $L_f$ the glued lattice. Taking $L=L_56$, when $f$ is the reduction of an integer matrix $tau$ with $chevron.l x tau\,y tau chevron.r = 5 chevron.l x\,y chevron.r$, we get the lattice $L_tau$ of (1.2).
@@ -347,7 +347,7 @@ Starting from a few minimal vectors found by BKZ, we generated minimal vectors b
 
 In addition to the size sum, we verified exact identities (equalities of integers of size about $10^18$) that follow from the shells being spherical 7-designs, computed from the lists of representatives. Barring coincidence, duplicates or omissions would violate them.
 
-For every $a in bb(R)^56$ $ sum_(x in L_56(m)) chevron.l x\,a chevron.r^2 =\|L_56(m)\|frac(m chevron.l a\,a chevron.r, 56)\,quad sum_(x in L_56(m)) chevron.l x\,a chevron.r^4 =\|L_56(m)\|frac(3 m^2 chevron.l a\,a chevron.r^2, 56 dot.op 58)\,quad sum_(x in L_56(m)) chevron.l x\,a chevron.r^6 =\|L_56(m)\|frac(15 m^3 chevron.l a\,a chevron.r^3, 56 dot.op 58 dot.op 60) . $ The left sides were computed from the representative lists (representative $times$ group element $times$ element of $C$, weighted by orbit sizes) for three integer vectors $a$ and for $m = 6$ and $m = 8$; all 18 identities hold exactly #calc("C8").
+For every $a in bb(R)^56$ $ sum_(x in L_56(m)) chevron.l x\,a chevron.r^2 & =\|L_56(m)\|frac(m chevron.l a\,a chevron.r, 56)\, \ sum_(x in L_56(m)) chevron.l x\,a chevron.r^4 & =\|L_56(m)\|frac(3 m^2 chevron.l a\,a chevron.r^2, 56 dot.op 58)\, \ sum_(x in L_56(m)) chevron.l x\,a chevron.r^6 & =\|L_56(m)\|frac(15 m^3 chevron.l a\,a chevron.r^3, 56 dot.op 58 dot.op 60) . $ The left sides were computed from the representative lists (representative $times$ group element $times$ element of $C$, weighted by orbit sizes) for three integer vectors $a$ and for $m = 6$ and $m = 8$; all 18 identities hold exactly #calc("C8").
 
 == 6.4 F3: orbits of norm-8 vectors via marked sums of two minimal vectors
 
@@ -495,7 +495,7 @@ Let $G_112$ be the Gram matrix (3.1) of $L_112$.
   [(c) normality], [$E\("Aut"\(L_112\)\)= S$], [Appendix F (proof)], [—],
 )
 
-The centralizer of order 48 is the unitary automorphism group of the rank-2 $M'$-lattice $Lambda={(a,b) in (M')^2:b equiv a tau med (mod 2M')}/sqrt(2)$, with $L_112=L_56 times.o_(M') Lambda$. The subgroup $S dot.op C_("Aut"(L_112))(S)$ has order $584 thin 640$; the outer automorphism doubles this order. A matrix inducing the outer automorphism is supplied as #raw("certificates/outer_automorphism_R.txt") #calc("C24", "C25").
+The centralizer of order 48 is the unitary automorphism group of the rank-2 $M'$-lattice $Lambda={(a,b) in (M')^2:b equiv a tau med (mod 2M')}\/sqrt(2)$, with $L_112=L_56 times.o_(M') Lambda$. The subgroup $S dot.op C_("Aut"(L_112))(S)$ has order $584 thin 640$; the outer automorphism doubles this order. A matrix inducing the outer automorphism is supplied as #raw("certificates/outer_automorphism_R.txt") #calc("C24", "C25").
 
 #strong[Structure.] From explicit generators (those of $S$, the 48 elements of $C_("Aut"(L_112))(S)$, and one element inducing the outer automorphism), reduced modulo 3 (which is injective on a finite group of integer matrices), GAP finds a group of order exactly $1 thin 169 thin 280$ #calc("C26"), an independent check of the order. Moreover $C_("Aut"(L_112))(S) tilde.equiv "SL"_2(3) circle.small C_4$ (SmallGroup(48,33)), $"Aut"(L_112) \/ S tilde.equiv C_2 times S_4$, $"Aut"(L_112) \/ C_("Aut"(L_112))(S) tilde.equiv "PGL"_2(29)$, $Z("Aut"(L_112)) = {plus.minus 1}$, and the extension of the index-2 subgroup $S dot.op C_("Aut"(L_112))(S)$ does not split (the outer coset contains no involution) #calc("C26"). In short, $"Aut"(L_112) tilde.equiv ("SL"_2(29) circle.small "SL"_2(3) circle.small C_4) . 2$, central products over the common $-1$. All generators have determinant 1, and the endomorphisms of $L_112$ commuting with $"Aut"(L_112)$ form the ring $ZZ[sqrt(-29)]$; so $L_112$ is a Hermitian $ZZ[sqrt(-29)]$-lattice of rank 56 and $"Aut"(L_112) subset "U"(56) subset "SO"(112)$.
 
