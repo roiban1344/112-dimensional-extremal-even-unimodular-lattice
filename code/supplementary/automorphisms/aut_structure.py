@@ -34,6 +34,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
 from aut_common import Setup, commutant_in_end_S  # noqa: E402
+from lib import certs  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 
@@ -41,7 +42,7 @@ def main():
     from sage.all import GF, QQ, libgap, matrix
     ap = argparse.ArgumentParser(description="S7: structure of Aut(L_112)")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("s7_aut_structure", a.out)

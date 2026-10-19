@@ -47,7 +47,7 @@ def main():
     from p1_centralizer import commutant_basis, elements_of_norm
     ap = argparse.ArgumentParser(description="S20: reduction of F1 to L_{56,2}(M)")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("s20_reduction_to_nebe", a.out)

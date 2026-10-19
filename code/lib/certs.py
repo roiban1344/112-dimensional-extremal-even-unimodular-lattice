@@ -21,12 +21,16 @@
   reduction_R.txt    U     (112 x 112 integers)  basis change from (3.1) to data/R112_gram_LLL.txt
                                                  (3.1) から data/R112_gram_LLL.txt への基底変換
 
-The file certificates/SHA256SUMS lists the hash of every file; `load` checks it.
+The files are checked against the repository's certificates/SHA256SUMS, also when read from another
+directory (--certificates DIR); another list is used only with --hashes FILE (tests on modified data).
 .npz files are read with allow_pickle=False, so loading cannot execute code.
-certificates/SHA256SUMS に各ファイルのハッシュがあり、`load` が照合する。
+ファイルは、別のディレクトリから読む場合（--certificates DIR）もリポジトリの certificates/SHA256SUMS と照合する。
+別の一覧は --hashes FILE を指定したとき（改変したデータでの試験）にだけ使う。
 .npz は allow_pickle=False で読むので、読み込みでコードが実行されることはない。
 """
+import argparse
 import os
+import sys
 
 import numpy as np
 
@@ -40,9 +44,35 @@ DEFAULT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.pa
 K8_INPUTS = ("norm8_reps.npz", "centralizer.npz")
 
 
-def expected_hashes(directory):
-    """Parse SHA256SUMS ("<hash>  <file>" per line). / SHA256SUMS（1 行に「ハッシュ  ファイル名」）を読む。"""
-    path = os.path.join(directory, "SHA256SUMS")
+# The list of hashes the files are checked against; --hashes replaces it for the whole run (a script
+# parses its arguments once). / 照合に使うハッシュの一覧。--hashes はこれを実行全体について差し替える（引数の解析は 1 回）。
+DEFAULT_HASHES = os.path.join(DEFAULT_DIR, "SHA256SUMS")
+HASHES_FILE = DEFAULT_HASHES
+
+
+def _use_hashes(path):
+    global HASHES_FILE
+    if not os.path.isfile(path):
+        raise argparse.ArgumentTypeError(f"{path} is not a file")
+    HASHES_FILE = os.path.abspath(path)
+    print(f"[warning] certificate hashes are read from {HASHES_FILE} (--hashes) / 照合の基準は --hashes の一覧",
+          file=sys.stderr)
+    return HASHES_FILE
+
+
+def add_arguments(ap, help="directory of the certificate files (default: certificates/) / 検証用データの置き場所"):
+    """Add --certificates DIR and --hashes FILE to an argparse parser.
+    argparse のパーサに --certificates DIR と --hashes FILE を加える。"""
+    ap.add_argument("--certificates", default=None, metavar="DIR", help=help)
+    ap.add_argument("--hashes", default=None, metavar="FILE", type=_use_hashes,
+                    help="check the certificate files against FILE instead of certificates/SHA256SUMS "
+                         "(for tests on modified data) / リポジトリの SHA256SUMS の代わりに FILE と照合する（改変したデータでの試験用）")
+
+
+def expected_hashes(path=None):
+    """Parse a SHA256SUMS file ("<hash>  <file>" per line; default: the one in use, see HASHES_FILE).
+    SHA256SUMS（1 行に「ハッシュ  ファイル名」。既定は HASHES_FILE）を読む。"""
+    path = path or HASHES_FILE
     out = {}
     if os.path.exists(path):
         with open(path) as f:
@@ -58,13 +88,13 @@ def path_checked(name, directory=None, require_hash=True):
     SHA256SUMS と SHA-256 を照合したうえで、検証用データのファイルのパスを返す。"""
     directory = directory or DEFAULT_DIR
     path = os.path.join(directory, name)
-    hashes = expected_hashes(directory)
+    hashes = expected_hashes()
     if name in hashes:
         got = sha256_file(path)
         if got != hashes[name]:
-            raise ValueError(f"{path}: SHA-256 {got} differs from SHA256SUMS {hashes[name]}")
+            raise ValueError(f"{path}: SHA-256 {got} differs from {hashes[name]} in {HASHES_FILE}")
     elif require_hash:
-        raise ValueError(f"{name} is not listed in {directory}/SHA256SUMS")
+        raise ValueError(f"{name} is not listed in {HASHES_FILE}")
     return path
 
 

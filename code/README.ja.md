@@ -13,7 +13,9 @@
 
 * `data/` の公開済みの 4 ファイル（L の Gram 行列、SL₂(29) の生成元、τ、L₁₁₂ の簡約 Gram 行列）。SHA-256 は `lib/data.py` に固定してあります。
 * `certificates/` の**検証用データ**（軌道代表、最小ノルムの下界を保証する代表元、基底変換行列。`certificates/MANIFEST.ja.md` を参照）。SHA-256 は
-  `certificates/SHA256SUMS` に固定してあります。
+  `certificates/SHA256SUMS` に固定してあります。`--certificates DIR` を指定するとファイルは `DIR` から読みますが、照合するのは
+  リポジトリの `certificates/SHA256SUMS` のままです。別のハッシュの一覧は `--hashes FILE` で明示したとき（改変したデータでの試験など）
+  にだけ使い、警告を表示して JSON に `certificate_hashes` として記録します。
 
 ここでは配布する補助的な入力の一式を「検証用データ」と呼びます。英語の certificate は、そのうち剰余類の最小ノルムの下界を保証する代表元を指します。`odd_bounding.npz`・`even_bounding.npz` の各行がその代表元です。検算器は、指定した剰余類に属すること、ノルムの条件、最小ベクトルとの内積の条件を検査し、論文の補題から下界を導きます。軌道代表や基底変換行列は、それぞれの具体名で呼びます。
 

@@ -72,7 +72,7 @@ def same_bytes(path, name, directory):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--data", default=None, help="directory of the four input files / 入力ファイルの置き場所")
-    ap.add_argument("--certificates", default=None, help="distributed data to compare with / 比べる配布データの置き場所")
+    certs.add_arguments(ap, help="distributed data to compare with / 比べる配布データの置き場所")
     ap.add_argument("--out", default=None, help="output directory (default out/; the files go to <out>/p6/) / 出力先（既定は out/。ファイルは <out>/p6/ に書く）")
     ap.add_argument("--block", type=int, default=40)
     a = ap.parse_args()

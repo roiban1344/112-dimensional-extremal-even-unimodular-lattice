@@ -191,7 +191,7 @@ def main():
     ap = argparse.ArgumentParser(description="S24: an explicit isometry between gluings A and B")
     ap.add_argument("mode", choices=["find", "check"])
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     (find if a.mode == "find" else check)(a)

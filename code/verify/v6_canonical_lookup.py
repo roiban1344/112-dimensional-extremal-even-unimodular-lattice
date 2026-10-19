@@ -41,7 +41,7 @@ from lib.report import Report, load_output_of  # noqa: E402
 def main():
     ap = argparse.ArgumentParser(description="V6: F5b by canonical forms")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("v6_canonical_lookup", a.out)

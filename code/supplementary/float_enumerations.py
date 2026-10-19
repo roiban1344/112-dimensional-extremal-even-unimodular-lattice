@@ -113,7 +113,7 @@ def main():
     ap.add_argument("--nparts", type=int, default=1)
     ap.add_argument("--tau", choices=("C", "B"), default="C")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     tag = f"s15_{a.mode}" + (f"_part{a.part}of{a.nparts}" if a.mode == "cvp88" else "") + ("_B" if a.tau == "B" else "")

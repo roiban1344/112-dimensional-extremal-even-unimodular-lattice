@@ -34,6 +34,7 @@ sys.path.insert(0, os.path.join(HERE, "..", ".."))
 from aut_common import Setup  # noqa: E402
 from lib import require  # noqa: E402
 from supplementary._shared import word_lifter  # noqa: E402
+from lib import certs  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 ORDER = 1169280
@@ -44,7 +45,7 @@ def main():
     ap = argparse.ArgumentParser(description="S8: classes, character and Molien series of Aut(L_112)")
     ap.add_argument("--kmax", type=int, default=12)
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("s8_aut_character", a.out)

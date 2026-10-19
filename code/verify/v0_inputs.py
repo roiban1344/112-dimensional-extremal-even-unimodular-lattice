@@ -48,7 +48,7 @@ def is_even_symmetric(M):
 def main():
     ap = argparse.ArgumentParser(description="V0: basic facts F0, F4")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("v0_inputs", a.out)

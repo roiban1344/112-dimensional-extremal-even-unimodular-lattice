@@ -26,7 +26,7 @@ from lib.report import Report  # noqa: E402
 def main():
     ap = argparse.ArgumentParser(description="S2: frame stabilizer")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("s2_frame_stabilizer", a.out)

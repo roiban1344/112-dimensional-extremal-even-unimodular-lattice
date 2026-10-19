@@ -108,7 +108,7 @@ def main():
     from sage.all import ZZ, matrix
     ap = argparse.ArgumentParser(description="P1: commuting ring and centralizer")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("p1_centralizer", a.out)

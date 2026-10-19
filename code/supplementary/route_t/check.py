@@ -59,7 +59,7 @@ def main():
     ap.add_argument("--chunk", type=int, default=8192)
     ap.add_argument("--limit", type=int, default=None, help="check only the first N certified classes of search (2)")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("s22_route_t_check_" + a.which + (f"_first{a.limit}" if a.limit else ""), a.out)

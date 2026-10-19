@@ -44,7 +44,7 @@ from lib.report import Report  # noqa: E402
 def main():
     ap = argparse.ArgumentParser(description="P4: odd-class certificates")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("p4_odd_descent", a.out)

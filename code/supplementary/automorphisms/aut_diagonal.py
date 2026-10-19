@@ -25,6 +25,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
 from aut_common import Setup  # noqa: E402
+from lib import certs  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 
@@ -32,7 +33,7 @@ def main():
     from sage.all import QQ, ZZ, identity_matrix
     ap = argparse.ArgumentParser(description="S6: the diagonal case of Appendix F.3")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("s6_aut_diagonal", a.out)

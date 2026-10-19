@@ -49,7 +49,7 @@ N8 = 36957286800
 def main():
     ap = argparse.ArgumentParser(description="S13: the negative control B")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("s13_gluing_b", a.out)

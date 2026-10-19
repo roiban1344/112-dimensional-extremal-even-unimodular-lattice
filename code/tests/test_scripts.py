@@ -33,7 +33,7 @@ def test_data_hashes_pinned_in_code_match_sha256sums():
 def test_certificate_text_files_match_sha256sums():
     # The text files are in git; the .npz files are downloaded (checked by the `data` tests and fetch.sh).
     # テキストのファイルは git にある。.npz は取得するもの（`data` の試験と fetch.sh が確かめる）。
-    sums = certs.expected_hashes(CERTIFICATES)
+    sums = certs.expected_hashes(os.path.join(CERTIFICATES, "SHA256SUMS"))
     texts = [n for n in sums if not n.endswith(".npz")]
     assert texts
     for name in texts:
