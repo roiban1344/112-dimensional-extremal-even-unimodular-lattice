@@ -178,8 +178,8 @@ P = 0, …, Q−1 について `certify.py search2 --missing --part P --nparts Q
 |---|---|
 | [C1] | verify/v2_theta.py |
 | [C2] | verify/v0_inputs.py, supplementary/gluings.py (d), produce/p1_centralizer.py |
-| [C3] | supplementary/gluings.py, supplementary/nebe/gluings_m.py (a), (b) |
-| [C4] | supplementary/gluing_b.py, supplementary/nebe/gluings_m.py (c), (d) |
+| [C3] | supplementary/gluings.py, supplementary/nebe/gluings_m.py (a), (b) (with supplementary/_shared.py) |
+| [C4] | supplementary/gluing_b.py, supplementary/nebe/gluings_m.py (c), (d) (with supplementary/_shared.py) |
 | [C5] | verify/v1_min_L.py + verify/enum_interval.c, produce/p6_reduction.py |
 | [C6] | supplementary/nebe/reduction_to_nebe.py (with nebe/lattices.py, nebe/tables.py) |
 | [C7] | supplementary/float_enumerations.py svp, qfminim |
@@ -199,11 +199,11 @@ P = 0, …, Q−1 について `certify.py search2 --missing --part P --nparts Q
 | [C21] | supplementary/route_t/certify.py, check.py, float_cvp.py (with route_t/common.py) |
 | [C22] | lean/ (EEUL/L112/Chain.lean, check.sh) |
 | [C23] | supplementary/nebe/identify_nebe.py (with nebe/lattices.py, nebe/cycloquat.py) |
-| [C24] | supplementary/automorphisms/aut_normalizer.py |
-| [C25] | supplementary/automorphisms/group_facts.g, out_facts.g, aut_diagonal.py |
-| [C26] | supplementary/automorphisms/aut_structure.py, aut_character.py, endomorphisms.py |
+| [C24] | supplementary/automorphisms/aut_normalizer.py (with automorphisms/aut_common.py, supplementary/_shared.py) |
+| [C25] | supplementary/automorphisms/group_facts.g, out_facts.g, aut_diagonal.py (with automorphisms/aut_common.py, supplementary/_shared.py) |
+| [C26] | supplementary/automorphisms/aut_structure.py, aut_character.py, endomorphisms.py (with automorphisms/aut_common.py, supplementary/_shared.py) |
 | [C27] | crosscheck/all_data/check_all.py, min_L.py, min_L_enum.c |
-| [C28] | supplementary/isometry_ab.py (find, check) |
-| [C29] | supplementary/genus/genus.py local, mass, enum |
-| [C30] | supplementary/genus/genus.py build, frames, witness |
-| [C31] | supplementary/genus/genus.py identify, check |
+| [C28] | supplementary/isometry_ab.py (find, check) (with supplementary/_shared.py) |
+| [C29] | supplementary/genus/genus.py local, mass, enum (with genus/genus_steps.py, genus_lattice.py, genus_data.py) |
+| [C30] | supplementary/genus/genus.py build, frames, witness (with genus/genus_steps.py, genus_lattice.py, genus_data.py) |
+| [C31] | supplementary/genus/genus.py identify, check (with genus/genus_steps.py, genus_lattice.py, genus_check.py, genus_data.py, supplementary/_shared.py) |
