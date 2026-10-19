@@ -153,6 +153,11 @@ class Report:
             "numpy": np.__version__ if np is not None else None,
             "platform": platform.platform(),
         }
+        # Certificate files checked against a list of hashes other than certificates/SHA256SUMS (--hashes).
+        # certificates/SHA256SUMS 以外のハッシュの一覧（--hashes）と照合した場合はそれを記録する。
+        certs = sys.modules.get(__package__ + ".certs")
+        if certs is not None and certs.HASHES_FILE != certs.DEFAULT_HASHES:
+            result["certificate_hashes"] = certs.HASHES_FILE
         path = self.path
         tmp = path + ".tmp"
         with open(tmp, "w") as f:

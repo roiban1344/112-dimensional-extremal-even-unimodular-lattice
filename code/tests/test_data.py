@@ -1,14 +1,16 @@
 """Tests on the large certificate files (marker `data`; skipped unless certificates/*.npz are present).
-About 9 minutes and 3 GB of memory: four runs of about 2 minutes each, mostly spent expanding the
-7,795,200 minimal vectors.
+About 9 minutes and 3 GB of memory: four runs of about 2 minutes each (and one refused at the hash check),
+mostly spent expanding the 7,795,200 minimal vectors.
 大きな検証用データを使う試験（マーカー `data`。certificates/*.npz が無ければ飛ばす）。約 9 分、メモリ 3 GB:
-約 2 分の実行を 4 回行う。時間の大部分は 7,795,200 本の最小ベクトルの展開にかかる。
+約 2 分の実行を 4 回行う（ほかにハッシュの照合で拒否される 1 回）。時間の大部分は 7,795,200 本の最小ベクトルの展開にかかる。
 
   * v5 passes on the published data, and FAILS in (c) on a copy in which one row of odd_bounding.npz is
     replaced by w0 + 2u for a minimal vector u: the new row keeps (a) the parity and (b) an allowed norm,
     but has |<w0 + 2u, u>| = 7 > 6.
     v5 は公開したデータで合格し、odd_bounding.npz の 1 行を最小ベクトル u による w0 + 2u に置き換えた写しでは (c) で不合格になる。
     新しい行は (a) の偶奇と (b) の許されたノルムを保つが、|<w0 + 2u, u>| = 7 > 6 となる。
+    The copy is checked against its own SHA256SUMS only with --hashes; without it, v5 refuses the file.
+    写しは --hashes を付けたときだけそれ自身の SHA256SUMS と照合される。付けなければ v5 はそのファイルを拒否する。
   * v7 --limit 64 passes, and FAILS when a checkpoint made for other inputs is in place.
     v7 --limit 64 は合格し、別の入力のための途中経過が置かれていると不合格になる。
 """
@@ -54,18 +56,37 @@ def mutated_odd_bounding():
     raise AssertionError("no mutation found")
 
 
-def test_v5_fails_on_a_mutated_row(tmp_path):
+@pytest.fixture(scope="module")
+def mutated_dir(tmp_path_factory):
+    """A certificate directory with the mutated odd_bounding.npz and a SHA256SUMS that matches it.
+    改変した odd_bounding.npz と、それに合わせた SHA256SUMS を置いたディレクトリ。"""
     W2, row, new_norm = mutated_odd_bounding()
-    cdir = tmp_path / "certificates"
+    cdir = tmp_path_factory.mktemp("mutated") / "certificates"
     cdir.mkdir()
     os.symlink(os.path.realpath(os.path.join(CERTIFICATES, "min_reps.npz")), cdir / "min_reps.npz")
     np.savez_compressed(cdir / "odd_bounding.npz", w0=W2)
     with open(cdir / "SHA256SUMS", "w") as f:
         for name in ("min_reps.npz", "odd_bounding.npz"):
             f.write(hashlib.sha256((cdir / name).read_bytes()).hexdigest() + "  " + name + "\n")
-    code, res, out = run_step("v5_odd_bounding.py", tmp_path / "out", "--certificates", str(cdir))
+    return cdir, row, new_norm
+
+
+def test_v5_refuses_data_not_matching_the_repository_hashes(tmp_path, mutated_dir):
+    # Without --hashes, the mutated file is checked against certificates/SHA256SUMS and refused.
+    # --hashes が無ければ、改変したファイルは certificates/SHA256SUMS と照合され、拒否される。
+    cdir, _, _ = mutated_dir
+    code, res, out = run_step("v5_odd_bounding.py", tmp_path, "--certificates", str(cdir))
     assert code == 1, out[-2000:]
     assert res["passed"] is False
+    assert "odd_bounding.npz: SHA-256" in res["error"] and "certificates/SHA256SUMS" in res["error"]
+
+
+def test_v5_fails_on_a_mutated_row(tmp_path, mutated_dir):
+    cdir, row, new_norm = mutated_dir
+    code, res, out = run_step("v5_odd_bounding.py", tmp_path / "out", "--certificates", str(cdir),
+                              "--hashes", str(cdir / "SHA256SUMS"))
+    assert code == 1, out[-2000:]
+    assert res["passed"] is False and res["certificate_hashes"] == str(cdir / "SHA256SUMS")
     labels = {c["check"]: c["ok"] for c in res["checks"]}
     assert labels["(a) w0 - r_j tau has even coordinates"] is True
     assert labels["(b) every <w0, w0> is 14 or 18"] is True

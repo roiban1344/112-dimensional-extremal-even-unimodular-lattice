@@ -56,7 +56,7 @@ N8 = shells.N8      # |L_8| = 36957286800 from the extremal theta series (V2) / 
 def main():
     ap = argparse.ArgumentParser(description="V4: F3 (orbits of norm-8 vectors)")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("v4_norm8_orbits", a.out)

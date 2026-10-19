@@ -104,7 +104,7 @@ def main():
                     help=f"block sizes of the progressive BKZ, comma-separated (default {BKZ_DEFAULT}, as in the paper; "
                          "empty: no BKZ)")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     block_sizes = [int(t) for t in a.bkz.split(",") if t.strip()]

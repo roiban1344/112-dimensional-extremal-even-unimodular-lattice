@@ -19,7 +19,9 @@ listed in §7.1. The scripts in **`verify/`** check F0–F5 from two kinds of in
   reduced Gram matrix of L₁₁₂), whose SHA-256 hashes are fixed in `lib/data.py`;
 * the **verification data** in `certificates/` (orbit representatives, coset representatives
   establishing minimum-norm bounds, and change-of-basis matrices; see `certificates/MANIFEST.md`), whose hashes are fixed in
-  `certificates/SHA256SUMS`.
+  `certificates/SHA256SUMS`. A script given `--certificates DIR` reads the files from `DIR` but still checks them
+  against the repository's `certificates/SHA256SUMS`; another list of hashes is used only when named with
+  `--hashes FILE` (as the tests on modified data do), with a warning and a `certificate_hashes` entry in the JSON.
 
 We use **verification data** for the distributed auxiliary inputs as a whole. A **certificate** here is a coset representative that establishes a lower bound on the minimum norm of that coset: each row of `odd_bounding.npz` or `even_bounding.npz` is such a representative. The checker verifies its coset membership, norm and inner-product conditions; the lemmas in the paper then give the bound. Orbit representatives and change-of-basis matrices are named separately.
 

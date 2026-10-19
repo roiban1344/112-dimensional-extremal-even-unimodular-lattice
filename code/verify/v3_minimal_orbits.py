@@ -44,7 +44,7 @@ N6 = shells.N6      # |L_6| = 15590400 from the extremal theta series (V2) / 極
 def main():
     ap = argparse.ArgumentParser(description="V3: F2 (orbits of minimal vectors)")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("v3_minimal_orbits", a.out)

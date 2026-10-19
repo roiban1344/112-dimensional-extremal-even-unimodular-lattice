@@ -141,6 +141,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from genus_check import check  # noqa: E402
+from lib import certs  # noqa: E402
 
 # The code is split into genus_data.py (constants and files; numpy only), genus_check.py (check; numpy only),
 # genus_lattice.py (the class Genus; SageMath) and genus_steps.py (the SageMath steps). check imports no SageMath.
@@ -156,7 +157,7 @@ def main():
     ap.add_argument("--bound", type=int, default=28, help="bound on Tr trd h for the frame search (frames)")
     ap.add_argument("--skip-units", action="store_true", help="identify: skip the recount of |U(Lambda_j)|")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None, help="the distributed certificates (read by check and compared with)")
+    certs.add_arguments(ap, help="the distributed certificates (read by check and compared with)")
     ap.add_argument("--dest", default=None,
                     help="enum, build, witness, identify: directory for the files they write (default out/genus/); "
                          "pass certificates/ to replace the distributed files (then update SHA256SUMS)")

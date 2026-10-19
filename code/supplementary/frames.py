@@ -37,7 +37,7 @@ def main():
     from sage.all import GF, QQ, ZZ, identity_matrix, matrix
     ap = argparse.ArgumentParser(description="S12: frame-change consistency")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("s12_frames", a.out)

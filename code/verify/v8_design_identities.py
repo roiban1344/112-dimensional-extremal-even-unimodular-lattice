@@ -62,7 +62,7 @@ def power_sums(X, weights, B):
 def main():
     ap = argparse.ArgumentParser(description="V8: spherical design identities")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("v8_design_identities", a.out)

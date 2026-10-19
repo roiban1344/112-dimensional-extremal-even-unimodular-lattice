@@ -66,7 +66,7 @@ def main():
     ap = argparse.ArgumentParser(description="V1: F1 (min L = 6)")
     ap.add_argument("--controls-only", action="store_true")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("v1_min_L" + ("_controls" if a.controls_only else ""), a.out)

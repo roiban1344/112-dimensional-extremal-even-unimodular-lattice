@@ -38,7 +38,7 @@ def main():
     from sage.all import GF, QQ, ZZ, lcm, libgap, matrix
     ap = argparse.ArgumentParser(description="S5: normalizer of SL_2(29) in Aut(L_112)")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("s5_aut_normalizer", a.out)

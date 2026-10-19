@@ -58,7 +58,7 @@ def main():
     ap.add_argument("--limit", type=int, default=None, help="only the first N pairs of this part / この部分の先頭 N 組だけ")
     ap.add_argument("--merge", action="store_true")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     if a.merge:

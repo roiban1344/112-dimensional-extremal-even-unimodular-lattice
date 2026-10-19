@@ -29,6 +29,7 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
 from aut_common import Setup, commutant_in_end_S  # noqa: E402
 from lib import require  # noqa: E402
+from lib import certs  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 
@@ -53,7 +54,7 @@ def main():
     from sage.all import QQ, ZZ, NumberField, PolynomialRing, identity_matrix, lcm, matrix, pari
     ap = argparse.ArgumentParser(description="S9: Hermitian and O_K-structures on L_112")
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("s9_endomorphisms", a.out)

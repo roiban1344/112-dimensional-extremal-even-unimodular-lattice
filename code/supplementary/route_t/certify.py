@@ -182,7 +182,7 @@ def main():
     ap.add_argument("--base", action="store_true")
     ap.add_argument("--from", dest="src", default=None)
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     tag = "s21_route_t_" + a.mode + (f"_part{a.part}of{a.nparts}" if a.mode == "search2" else "")

@@ -361,7 +361,7 @@ def main():
     ap = argparse.ArgumentParser(description="P3: orbits of norm-8 vectors by marked elements (sums of two minimal vectors)")
     ap.add_argument("--trial", type=int, default=None)
     ap.add_argument("--data", default=None)
-    ap.add_argument("--certificates", default=None)
+    certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("p3_norm8_orbits" + (f"_trial{a.trial}" if a.trial else ""), a.out)
