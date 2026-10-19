@@ -22,8 +22,10 @@ S20. F1 の Nebe の格子への帰着: 「min L_{56,2}(M) = 6 ならば min L =
 Hence min L_{56,2}(M) = 6 (proved in tables.py, and reported in [Neb98, Table II]) implies min L = 6.
 よって min L_{56,2}(M) = 6（tables.py で証明。[Neb98, Table II] にも報告がある）ならば min L = 6。
 
-Requires SageMath. Run time: about 1 hour per candidate sublattice (the isometry search). Memory: about 3 GB.
-SageMath が要る。実行時間: 候補の部分格子 1 つにつき約 1 時間（等長写像の探索）。メモリ: 約 3 GB。
+Requires SageMath. Run time: about 30 minutes, mostly the isometry search (about 15 minutes per candidate
+sublattice; the search stops at the second of the 5 candidates). Memory: about 3 GB.
+SageMath が要る。実行時間: 約 30 分。大半は等長写像の探索（候補の部分格子 1 つにつき約 15 分。5 個の候補のうち 2 個目で見つかって止まる）。
+メモリ: 約 3 GB。
 Run / 実行:  python3 code/supplementary/nebe/reduction_to_nebe.py
 """
 import argparse

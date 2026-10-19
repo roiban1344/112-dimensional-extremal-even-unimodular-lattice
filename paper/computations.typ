@@ -21,7 +21,7 @@
    ja: [F1: 有理数の厳密な $L D L^sans(T)$ 分解と外向きに丸めた区間演算による Fincke–Pohst 列挙で $min L = 6$（BKZ-40 基底、8 454 837 756 節点）。対照 $E_8$、Leech、Leech $perp$ Leech $perp E_8$], time: [34 min]),
   (id: "C6", files: ("code/supplementary/nebe/reduction_to_nebe.py", "code/supplementary/nebe/lattices.py", "code/supplementary/nebe/tables.py"),
    en: [F1 by reduction to $L_(56,2)(M)$: no class of a norm-8 vector of $L_(56,2)(M)$ lies in the invariant subspace $W$ (linear algebra over $FF_2$); positive control],
-   ja: [F1 の $L_(56,2)(M)$ への帰着: $L_(56,2)(M)$ のノルム 8 のベクトルの類は不変部分空間 $W$ に入らない（$FF_2$ 上の線形代数）。陽性対照], time: [27 s]),
+   ja: [F1 の $L_(56,2)(M)$ への帰着: $L_(56,2)(M)$ のノルム 8 のベクトルの類は不変部分空間 $W$ に入らない（$FF_2$ 上の線形代数）。陽性対照], time: [31 min]),
   (id: "C7", files: ("code/supplementary/float_enumerations.py",),
    en: [F1 by floating-point enumeration (fplll on two bases, PARI `qfminim`); supplementary],
    ja: [F1 の浮動小数点の列挙（fplll の 2 基底、PARI の `qfminim`）。補助], time: [51 min–2.3 h]),
