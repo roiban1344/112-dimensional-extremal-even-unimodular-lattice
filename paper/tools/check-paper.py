@@ -10,9 +10,16 @@ It reads the files of the repository that contains this script, never another tr
 """
 from pathlib import Path
 import re
+import sys
 
 ROOT = Path(__file__).resolve().parent.parent.parent  # paper/tools/check-paper.py -> repository root
 PAPER = ROOT / 'paper'
+
+
+def require(cond, msg):
+    """A check that also runs under python -O (unlike assert). / python -O でも実行される検査（assert と違う）。"""
+    if not cond:
+        sys.exit(f'FAIL: {msg}')
 
 
 def citations_removed(text):
@@ -34,15 +41,15 @@ def check_d2_correspondence(calc_ids):
     for name in ('README.md', 'README.ja.md'):
         rows = re.findall(r'^\| \[(C\d+)\] \| (.*) \|\s*$', (ROOT / 'code' / name).read_text(), re.M)
         ids = [r[0] for r in rows]
-        assert len(ids) == len(set(ids)), f'code/{name}: duplicate Table D2 rows: {sorted(i for i in set(ids) if ids.count(i) > 1)}'
-        assert set(ids) == calc_ids, f'code/{name}: Table D2 rows differ from computations.typ: {set(ids) ^ calc_ids}'
+        require(len(ids) == len(set(ids)), f'code/{name}: duplicate Table D2 rows: {sorted(i for i in set(ids) if ids.count(i) > 1)}')
+        require(set(ids) == calc_ids, f'code/{name}: Table D2 rows differ from computations.typ: {set(ids) ^ calc_ids}')
         for calc_id, cell in rows:
             for token in re.findall(r'[\w./-]+\.(?:py|c|g|lean)\b|\blean/', cell):
                 if token == 'lean/':
-                    assert (ROOT / 'lean').is_dir(), f'code/{name}: {calc_id}: lean/ is absent'
+                    require((ROOT / 'lean').is_dir(), f'code/{name}: {calc_id}: lean/ is absent')
                     continue
-                assert any(f == token or f.endswith('/' + token) for f in code_files), \
-                    f'code/{name}: {calc_id}: absent path {token}'
+                require(any(f == token or f.endswith('/' + token) for f in code_files),
+                        f'code/{name}: {calc_id}: absent path {token}')
 
 
 def main():
@@ -51,23 +58,23 @@ def main():
     for kind in ('paper', 'supplement'):
         ja = identifiers(sources[kind, 'ja'])
         en = identifiers(sources[kind, 'en'])
-        assert ja == en, f'Japanese/English identifiers differ in {kind}: {ja!r} != {en!r}'
+        require(ja == en, f'Japanese/English identifiers differ in {kind}: {ja!r} != {en!r}')
         for category in ja:
-            assert len(set(category)) == len(category), f'duplicate identifiers in {kind}: {category}'
+            require(len(set(category)) == len(category), f'duplicate identifiers in {kind}: {category}')
     ledger = (PAPER / 'computations.typ').read_text()
     blocks = re.findall(r'\(id: "C\d+".*?(?=\n  \(id:|\n\))', ledger, re.S)
     calc_ids = {re.search(r'id: "(C\d+)"', b)[1] for b in blocks}
-    assert calc_ids == {f'C{i}' for i in range(1, 1 + len(blocks))}
+    require(calc_ids == {f'C{i}' for i in range(1, 1 + len(blocks))}, f'computations.typ: ids are not C1-C{len(blocks)}')
     unpublished = []
     for block in blocks:
         calc_id = re.search(r'id: "(C\d+)"', block)[1]
         if 'published: false' in block:
             unpublished.append(calc_id)
-            assert '未公開' in block and 'not distributed' in block
+            require('未公開' in block and 'not distributed' in block, f'{calc_id}: unpublished entry not marked as such')
             continue
         for file in re.findall(r'"((?:code|lean)/[^"\n]+)"', block):
             path = ROOT / file
-            assert path.is_file(), f'{calc_id}: absent distribution path {file}'
+            require(path.is_file(), f'{calc_id}: absent distribution path {file}')
 
     check_d2_correspondence(calc_ids)
 
@@ -80,22 +87,22 @@ def main():
         tables = set(identifiers(main_text)[2] + identifiers(supplement)[2] + ['D2'])
         refs = citations_removed(all_text)
         for section in re.findall(r'§+\s*([A-GS]?\d+(?:\.\d+)?|[A-G]\.\d+)', refs):
-            assert section in headings, f'{lang}: unknown section {section}'
+            require(section in headings, f'{lang}: unknown section {section}')
         for table in re.findall(r'(?:(?<!代)表\s*|Tables? )([A-GS]?\d+)(?!\d)', refs):
-            assert table in tables, f'{lang}: unknown table {table}'
+            require(table in tables, f'{lang}: unknown table {table}')
         for theorem in re.findall(r'(?:補題|命題|系|定義|検査|Lemma|Proposition|Corollary|Definition|Check)\s+(\d+\.\d+)', refs):
-            assert theorem in statements, f'{lang}: unknown statement {theorem}'
+            require(theorem in statements, f'{lang}: unknown statement {theorem}')
         cited = {c for call in re.findall(r'#calc\((.*?)\)', all_text)
                  for c in re.findall(r'"(C\d+)"', call)}
-        assert cited == calc_ids, f'{lang}: uncited or undefined computations: {cited ^ calc_ids}'
+        require(cited == calc_ids, f'{lang}: uncited or undefined computations: {cited ^ calc_ids}')
         for forbidden in ('G^(*)', 'G_R', 'VERIFICATION-ROUTES.md', 'extremal norm', '極値ノルム', 'MathComp', 'critical_p_stab_Aut', '系 S2', 'Corollary S2', 'cosetes'):
-            assert forbidden not in all_text, f'{lang}: residual {forbidden!r}'
-        assert '#pending[' not in main_text, f'{lang}: main paper has a pending assertion'
-        assert '#pending[' not in supplement, f'{lang}: supplement has a pending assertion'
+            require(forbidden not in all_text, f'{lang}: residual {forbidden!r}')
+        require('#pending[' not in main_text, f'{lang}: main paper has a pending assertion')
+        require('#pending[' not in supplement, f'{lang}: supplement has a pending assertion')
         status = '経路 T は未完了' if lang == 'ja' else 'Route T is incomplete'
-        assert status in supplement, f'{lang}: route T incompleteness must remain explicit'
-        assert 'Schreier' in main_text and 'Schreier conjecture is not used' not in main_text
-        assert 'lean/EEUL/L112/Chain.lean' in main_text
+        require(status in supplement, f'{lang}: route T incompleteness must remain explicit')
+        require('Schreier' in main_text and 'Schreier conjecture is not used' not in main_text, f'{lang}: Schreier wording')
+        require('lean/EEUL/L112/Chain.lean' in main_text, f'{lang}: lean/EEUL/L112/Chain.lean is not cited')
     if unpublished:
         print('Unpublished supplementary code:', ', '.join(unpublished))
     print(f'PASS: bilingual headings, statements, tables, references, C1-C{len(calc_ids)} and distributed paths')
