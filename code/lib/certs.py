@@ -21,14 +21,11 @@
   reduction_R.txt    U     (112 x 112 integers)  basis change from (3.1) to data/R112_gram_LLL.txt
                                                  (3.1) から data/R112_gram_LLL.txt への基底変換
 
-The file certificates/SHA256SUMS of the repository lists the hash of every file; `load` checks it. The files
-may be read from another directory (--certificates DIR), but they are still checked against the repository's
-SHA256SUMS; another list of hashes is used only when named explicitly (--hashes FILE, e.g. for tests on
-modified data).
+The files are checked against the repository's certificates/SHA256SUMS, also when read from another
+directory (--certificates DIR); another list is used only with --hashes FILE (tests on modified data).
 .npz files are read with allow_pickle=False, so loading cannot execute code.
-リポジトリの certificates/SHA256SUMS に各ファイルのハッシュがあり、`load` が照合する。ファイルは別のディレクトリから読める
-（--certificates DIR）が、照合するのは常にリポジトリの SHA256SUMS である。別のハッシュの一覧は、明示したとき（--hashes FILE。
-改変したデータでの試験など）にだけ使う。
+ファイルは、別のディレクトリから読む場合（--certificates DIR）もリポジトリの certificates/SHA256SUMS と照合する。
+別の一覧は --hashes FILE を指定したとき（改変したデータでの試験）にだけ使う。
 .npz は allow_pickle=False で読むので、読み込みでコードが実行されることはない。
 """
 import argparse
@@ -47,31 +44,27 @@ DEFAULT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.pa
 K8_INPUTS = ("norm8_reps.npz", "centralizer.npz")
 
 
-# The list of hashes the files are checked against: the repository's, unless --hashes names another.
-# ファイルを照合するハッシュの一覧。--hashes で別のものを指定しない限りリポジトリのもの。
+# The list of hashes the files are checked against; --hashes replaces it for the whole run (a script
+# parses its arguments once). / 照合に使うハッシュの一覧。--hashes はこれを実行全体について差し替える（引数の解析は 1 回）。
 DEFAULT_HASHES = os.path.join(DEFAULT_DIR, "SHA256SUMS")
 HASHES_FILE = DEFAULT_HASHES
 
 
-class _HashesAction(argparse.Action):
-    """--hashes FILE: check the certificate files against FILE instead of the repository's SHA256SUMS.
-    --hashes FILE: リポジトリの SHA256SUMS の代わりに FILE と照合する。"""
-
-    def __call__(self, parser, namespace, values, option_string=None):
-        global HASHES_FILE
-        if not os.path.isfile(values):
-            parser.error(f"--hashes: {values} is not a file")
-        HASHES_FILE = os.path.abspath(values)
-        print(f"[warning] certificate hashes are read from {HASHES_FILE}, not from certificates/SHA256SUMS "
-              f"of the repository / 照合の基準はリポジトリの SHA256SUMS ではない", file=sys.stderr)
-        setattr(namespace, self.dest, HASHES_FILE)
+def _use_hashes(path):
+    global HASHES_FILE
+    if not os.path.isfile(path):
+        raise argparse.ArgumentTypeError(f"{path} is not a file")
+    HASHES_FILE = os.path.abspath(path)
+    print(f"[warning] certificate hashes are read from {HASHES_FILE} (--hashes) / 照合の基準は --hashes の一覧",
+          file=sys.stderr)
+    return HASHES_FILE
 
 
 def add_arguments(ap, help="directory of the certificate files (default: certificates/) / 検証用データの置き場所"):
     """Add --certificates DIR and --hashes FILE to an argparse parser.
     argparse のパーサに --certificates DIR と --hashes FILE を加える。"""
     ap.add_argument("--certificates", default=None, metavar="DIR", help=help)
-    ap.add_argument("--hashes", default=None, metavar="FILE", action=_HashesAction,
+    ap.add_argument("--hashes", default=None, metavar="FILE", type=_use_hashes,
                     help="check the certificate files against FILE instead of certificates/SHA256SUMS "
                          "(for tests on modified data) / リポジトリの SHA256SUMS の代わりに FILE と照合する（改変したデータでの試験用）")
 
@@ -99,7 +92,7 @@ def path_checked(name, directory=None, require_hash=True):
     if name in hashes:
         got = sha256_file(path)
         if got != hashes[name]:
-            raise ValueError(f"{path}: SHA-256 {got} differs from {HASHES_FILE}: {hashes[name]}")
+            raise ValueError(f"{path}: SHA-256 {got} differs from {hashes[name]} in {HASHES_FILE}")
     elif require_hash:
         raise ValueError(f"{name} is not listed in {HASHES_FILE}")
     return path
