@@ -99,8 +99,10 @@ def main():
             require(forbidden not in all_text, f'{lang}: residual {forbidden!r}')
         require('#pending[' not in main_text, f'{lang}: main paper has a pending assertion')
         require('#pending[' not in supplement, f'{lang}: supplement has a pending assertion')
-        status = '経路 T は未完了' if lang == 'ja' else 'Route T is incomplete'
-        require(status in supplement, f'{lang}: route T incompleteness must remain explicit')
+        # Route T shares the computations F5a and F5b with the main proof; the supplement must say so.
+        # 経路 T は計算 F5a・F5b を主証明と共有する。補遺はそれを明記すること。
+        shared = '主証明と同じ計算 F5a・F5b' if lang == 'ja' else 'the same computations F5a and F5b as the main proof'
+        require(shared in supplement, f'{lang}: route T must state that it shares F5a and F5b with the main proof')
         require('Schreier' in main_text and 'Schreier conjecture is not used' not in main_text, f'{lang}: Schreier wording')
         require('lean/EEUL/L112/Chain.lean' in main_text, f'{lang}: lean/EEUL/L112/Chain.lean is not cited')
     if unpublished:

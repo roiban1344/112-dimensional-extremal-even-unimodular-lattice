@@ -3,7 +3,7 @@
 [日本語版](README.ja.md)
 
 This directory contains every computation used in the paper. Table D2 of the paper lists them
-as [C1]–[C31]; the last section of this file maps each row to the scripts here.
+as [C1]–[C32]; the last section of this file maps each row to the scripts here.
 
 ## What is proved, and what it relies on
 
@@ -184,20 +184,23 @@ data downloaded by `fetch.sh`, and, for the step `gluing_b`, the file `out/K8.np
 listed and the exit code is 1. Functions shared by several of these scripts (the classes of parity-preserving
 maps, the search for equivariant isometries, …) are in `supplementary/_shared.py`.
 
-## Route T (supplement §S4, Table D2 [C20], [C21])
+## Route T (supplement §S4, Table D2 [C20], [C21], [C32])
 
 `supplementary/route_t/` contains the computations of the supplementary argument using the hermitian
-structure of L₁₁₂ (route T). They are not used in the proof of Theorem A.
+structure of L₁₁₂ (route T). They are not used in the proof of Theorem A. Route T (supplement,
+Theorem S4.1) reduces, by a further finite check (`exclusion.py`, [C32]), to the same computations
+F5a and F5b as the main proof. The classification by invariants and the three searches are cross-checks.
 
 | script | content | time |
 |---|---|---|
-| `classify.py`, `recount.py` | [C20] classification of the rank-2 support modules (two independent counts: 97 types, 63 dangerous; 58 types at the level of a coarser invariant, identical) | 1–2 min each (SageMath) |
+| `exclusion.py` | [C32] final step of route T: every dangerous support module in the range of Proposition S4.2 contains a configuration excluded by F5a or F5b (`check`: Python standard library only, own enumeration; `make`: produces the witnesses) | check about 8 min, make about 1 min (SageMath) |
+| `classify.py`, `recount.py` | [C20] cross-check: classification of the rank-2 support modules (two independent counts: 97 types, 63 dangerous; 58 types at the level of a coarser invariant, identical) | 1–2 min each (SageMath) |
 | `certify.py` | [C21] producing the certificates of searches (2) and (3) (split, resumable) | search (3) about 25 min, search (2) about 13 CPU days |
 | `check.py` | [C21] checking the certificates in integer arithmetic (numpy only) | search (3) about 2 min, search (2) about 7 CPU hours (estimate from a single-thread trial; batch A: 4.7 h elapsed with 2 threads on a shared machine) |
 | `float_cvp.py` | [C21] search (2) by floating-point closest-vector enumeration (supplementary) | about 3 × 13 hours (SageMath) |
 
 **State of this release**: the certificates of both searches are complete: all 3,936 classes of
-search (3) and all 763,992 classes of search (2), and `check.py` passes on all of them. The file
+search (3) and all 763,992 classes of search (2), and `check.py` passes on all of them. `check.py search2` was also run once on the published tag `certificates-v2` with the Release assets, in a container without network access and with the source mounted read-only, and passed on all 763,992 classes (a reproducibility check of the published package, not an independent proof). The file
 `certificates/route_t_search2.npz` of the first Release `certificates-v1` covered 610,664 classes of
 search (2); it was replaced in `certificates-v2` (the rows present before are unchanged), and
 `fetch.sh` downloads the new file in place of an old copy. To regenerate missing rows of a partial
@@ -229,6 +232,7 @@ file, run `certify.py search2 --missing --part P --nparts Q` for P = 0, …, Q�
 | [C19] | supplementary/anatomy_b.py |
 | [C20] | supplementary/route_t/classify.py, recount.py (with route_t/hermitian.py) |
 | [C21] | supplementary/route_t/certify.py, check.py, float_cvp.py (with route_t/common.py) |
+| [C32] | supplementary/route_t/exclusion.py (certificates/route_t_exclusion.json) |
 | [C22] | lean/ (EEUL/L112/Chain.lean, check.sh) |
 | [C23] | supplementary/nebe/identify_nebe.py (with nebe/lattices.py, nebe/cycloquat.py) |
 | [C24] | supplementary/automorphisms/aut_normalizer.py (with automorphisms/aut_common.py, supplementary/_shared.py) |

@@ -62,11 +62,11 @@
    en: [Support modules of the norm-8 vectors of B (Supplement Table S9)],
    ja: [B のノルム 8 のベクトルの台加群（補遺の表 S9）], time: [2 s]),
   (id: "C20", files: ("code/supplementary/route_t/classify.py", "code/supplementary/route_t/recount.py", "code/supplementary/route_t/hermitian.py"),
-   en: [Supplement §S4: rank-2 support modules (free and non-free), grouped into 97 invariant types, 63 dangerous. Both enumerations agree on 58 dangerous types after regrouping by the same coarser invariant],
-   ja: [補遺 §S4: 階数 2 の台加群（自由・非自由）の不変量による分類。97 型、うち危険 63 型。同じ粗い不変量でまとめ直すと両列挙で危険 58 型が一致する], time: [1–2 min each]),
+   en: [Supplement §S4.1, cross-check: rank-2 support modules (free and non-free), grouped into 97 invariant types, 63 dangerous (first enumeration with $a <= 32$). Both enumerations agree on 58 dangerous types after regrouping by the same coarser invariant],
+   ja: [補遺 §S4.1、照合: 階数 2 の台加群（自由・非自由）の不変量による分類。97 型、うち危険 63 型（1 通り目は $a <= 32$）。同じ粗い不変量でまとめ直すと両列挙で危険 58 型が一致する], time: [1–2 min each]),
   (id: "C21", files: ("code/supplementary/route_t/certify.py", "code/supplementary/route_t/check.py", "code/supplementary/route_t/float_cvp.py", "code/supplementary/route_t/common.py"),
-   en: [Supplement §S4: three searches modulo 2. All 3 936 certificates for test (3) checked in integers. Test (2): all 763 992 representatives generated, none unresolved; all checked in integers (class membership, norm 12, 16 or 20, inner-product bound 6 against every minimal vector). Complete data: `certificates/route_t_search2.npz`],
-   ja: [補遺 §S4: 2 を法とする三つの探索。(3) の代表元 3,936 個は整数で全数検査済み。(2) は 763,992 類すべての代表元を生成、未解決 0。類への所属、ノルム 12・16・20、全最小ベクトルとの内積の絶対値 6 以下を整数で全数検算済み。完成データ: `certificates/route_t_search2.npz`], time: [(2): generation#linebreak() ≈ 13 CPU days (est.)#linebreak() check ≈ 7 CPU h (est.)#linebreak() (3): generation 25 min]),
+   en: [Supplement §S4.1, cross-check (not needed for route T): three searches modulo 2. All 3 936 certificates for test (3) checked in integers. Test (2): all 763 992 representatives generated, none unresolved; all checked in integers (class membership, norm 12, 16 or 20, inner-product bound 6 against every minimal vector). Complete data: `certificates/route_t_search2.npz`],
+   ja: [補遺 §S4.1、照合（経路 T には不要）: 2 を法とする三つの探索。(3) の代表元 3,936 個は整数で全数検査済み。(2) は 763,992 類すべての代表元を生成、未解決 0。類への所属、ノルム 12・16・20、全最小ベクトルとの内積の絶対値 6 以下を整数で全数検算済み。完成データ: `certificates/route_t_search2.npz`], time: [(2): generation#linebreak() ≈ 13 CPU days (est.)#linebreak() check ≈ 7 CPU h (est.)#linebreak() (3): generation 25 min]),
   (id: "C22", files: ("lean/EEUL/L112/Chain.lean", "lean/CheckAxioms.lean", "lean/check.sh", "lean/expected-axioms.txt"),
    en: [Lean formalization of the deduction from F1–F5 to Theorem A (F5b by certificates or by canonical forms), and its check: build, no forbidden keyword, axioms as in `expected-axioms.txt` (standard only)],
    ja: [F1〜F5 から定理 A を導く論理の Lean による形式化（F5b は証明書・標準形のどちらでも）と、その検査: ビルド、禁止語なし、公理が `expected-axioms.txt` のとおり（標準のみ）], time: [min]),
@@ -97,6 +97,9 @@
   (id: "C31", files: ("code/supplementary/genus/genus.py", "code/supplementary/genus/genus_steps.py", "code/supplementary/genus/genus_lattice.py", "code/supplementary/genus/genus_check.py", "code/supplementary/genus/genus_data.py", "code/supplementary/_shared.py"),
    en: [Explicit $"SL"_2(29)$-equivariant isometries class 7 → $L_112$ and class 3 → gluing A, and a recount of $|U(Lambda_j)|$ as equivariant automorphisms (`identify`); integer-arithmetic check, numpy only (`check`): each $G_X$ even with determinant 1, $g_1, g_2$ act on $X_j$, the vectors of norm 8, the isometries ($det T = plus.minus 1$), and $sum_j 1\/|U(Lambda_j)| = 157\/640$],
    ja: [明示的な $"SL"_2(29)$ 同変な等長写像 類 7 → $L_112$、類 3 → 貼り方 A と、同変な自己同型としての $|U(Lambda_j)|$ の数え直し（`identify`）。numpy だけの整数演算の検算（`check`）: 各 $G_X$ が偶で行列式 1、$g_1, g_2$ が $X_j$ に働く、ノルム 8 のベクトル、等長写像（$det T = plus.minus 1$）、$sum_j 1\/|U(Lambda_j)| = 157\/640$], time: [identify 13 min; check 80 s]),
+  (id: "C32", files: ("code/supplementary/route_t/exclusion.py", "certificates/route_t_exclusion.json"),
+   en: [Supplement §S4.1, Proposition S4.3 (route T, final step): the range of Proposition S4.2 enumerated by the checker itself (63 996 parameter tuples, 1 171 valid modules, 631 dangerous); for each dangerous module a witness contradicting F5b (541) or F5a (90), checked in integers by an enumeration independent of the producer (`check`, Python standard library only); `make` reproduces the witnesses],
+   ja: [補遺 §S4.1 の命題 S4.3（経路 T の最後の段）: 命題 S4.2 の範囲を検算器が自分で回す（パラメータ 63,996 組、有効な加群 1,171、危険 631）。危険な加群それぞれに F5b に反する証拠（541）か F5a に反する証拠（90）を付け、作成側と独立な列挙で整数により検算する（`check`、Python の標準ライブラリだけ）。`make` は証拠を作り直す], time: [check 8 min#linebreak() make 1 min]),
 )
 
 #let _calc-ids = calcs.map(c => c.id)

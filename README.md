@@ -65,7 +65,7 @@ Releases are tagged by date; this release is `v2026-10-19.1` (a second release o
 
 To cite this work, use GitHub's "Cite this repository", which reads [CITATION.cff](CITATION.cff).
 
-Release `certificates-v2` contains integer certificates for all 763,992 classes of search (2) and all 3,936 classes of search (3) in Supplement §S4, all checked in integer arithmetic. Completing route T as a separate proof still requires confirmation of the completeness of the support-module parameter ranges and the reduction to the three searches. Theorem A does not depend on route T.
+Release `certificates-v2` contains integer certificates for all 763,992 classes of search (2) and all 3,936 classes of search (3) in Supplement §S4, all checked in integer arithmetic. These searches are cross-checks: route T (Supplement §S4.1) reduces, by a different argument and a further finite check, to the same computations F5a and F5b as the main proof. Theorem A does not depend on route T.
 
 The main verification pipeline uses Python, NumPy, and C. Verification-data generation and supplementary computations use SageMath; see [environment.yml](environment.yml). The Lean formalization checks the deductions from stated hypotheses, rather than executing the lattice computations.
 

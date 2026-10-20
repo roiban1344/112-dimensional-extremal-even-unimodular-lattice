@@ -41,11 +41,13 @@ Data for cross-checks and supplementary computations:
 | `genus_isometry_7_L112.txt` | 112 × 112 integers | T with T G_R Tᵀ = G_X (class 7), det T = ±1, G_R = (3.1): class 7 is L₁₁₂ | supplementary/genus/genus.py ([C31]) |
 | `genus_isometry_3_A.txt` | 112 × 112 integers | T with T G_A Tᵀ = G_X (class 3), det T = ±1: class 3 is gluing A | supplementary/genus/genus.py ([C31]) |
 
-Route T (supplement §S4.1, [C21]; not used in the proof of Theorem A):
+Route T (supplement §S4.1, [C21], [C32]; not used in the proof of Theorem A):
 
 | file | arrays | content | checked by | produced by |
 |---|---|---|---|---|
 | `route_t_search3.npz` | `w0` int16 (3936, 56) | certificates for the 3,936 classes r u_k μ + 2L of search (3), order in `code/supplementary/route_t/common.py` | route_t/check.py | route_t/certify.py |
 | `route_t_search2.npz` | `w0` int16 (763992, 56), `done` bool (763992) | certificates for all 763,992 classes x_i u_k (1+τ) + 2L of search (2), order in `code/supplementary/route_t/common.py`; `done` is True on every row (kept so that a partial file can be completed with `certify.py search2 --missing`) | route_t/check.py | route_t/certify.py |
+
+`route_t_exclusion.json` (in git, 45 kB; [C32]): for each of the 631 dangerous support modules of Proposition S4.2, the key `[A, B, a, b, p, q]` (`A`, `B` are `"O"` for 𝒪 or `"P"` for 𝔭₂⁻¹; c = h(x, y) = p/2 − (q/10)√−5) and a witness `x`, `w` of form `s1` (contradicts F5b) or `s3tau` (contradicts F5a) in the coordinates of the Z-basis (α₁x, α₂x, β₁y, β₂y). The JSON object also has `description` and `types` (the counts of the two forms). Checked by `route_t/exclusion.py check`, produced by `route_t/exclusion.py make`.
 
 `route_t_search2.npz` is complete from Release `certificates-v2` on (all 763,992 classes; `certificates-v1` had 610,664). The rows present in `certificates-v1` are unchanged. `check.py` checks every row.

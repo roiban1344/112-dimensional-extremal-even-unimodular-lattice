@@ -2,7 +2,7 @@
 
 [English](README.md)
 
-このディレクトリには、論文で使った計算がすべて入っています。論文の表 D2 はそれを [C1]〜[C31] として並べており、
+このディレクトリには、論文で使った計算がすべて入っています。論文の表 D2 はそれを [C1]〜[C32] として並べており、
 このファイルの最後の節で、各行とここのスクリプトを対応させます。
 
 ## 何が示され、何に依拠するか
@@ -158,18 +158,19 @@ p2 は類 r + 2L の標準形の集合（最小ベクトルではこれが同じ
 残りは続け、最後に失敗した段を一覧にして終了コード 1 で終わります。いくつかのスクリプトが共有する関数（偶奇を保つ写像の類、
 同変な等長写像の探索など）は `supplementary/_shared.py` にあります。
 
-## 経路 T（補遺 §S4、表 D2 の [C20]・[C21]）
+## 経路 T（補遺 §S4、表 D2 の [C20]・[C21]・[C32]）
 
-`supplementary/route_t/` は、L₁₁₂ のエルミート構造を使う補足の議論（経路 T）の計算です。定理 A の証明には使いません。
+`supplementary/route_t/` は、L₁₁₂ のエルミート構造を使う補足の議論（経路 T）の計算です。定理 A の証明には使いません。経路 T（補遺の定理 S4.1）は、追加の有限の検査（`exclusion.py`、[C32]）によって、主証明と同じ計算 F5a・F5b に帰着します。不変量による分類と三つの探索は照合のための計算です。
 
 | スクリプト | 内容 | 時間 |
 |---|---|---|
-| `classify.py`, `recount.py` | [C20] 階数 2 の台加群の分類（2 通りの独立な数え上げ。97 型・危険 63 型と、粗い不変量で 58 型の一致） | 各 1〜2 分（SageMath） |
+| `exclusion.py` | [C32] 経路 T の最後の段: 命題 S4.2 の範囲の危険な台加群はどれも F5a か F5b に反する配置を含む（`check`: Python の標準ライブラリだけ、自前の列挙。`make`: 証拠を作る） | check 約 8 分、make 約 1 分（SageMath） |
+| `classify.py`, `recount.py` | [C20] 照合: 階数 2 の台加群の分類（2 通りの独立な数え上げ。97 型・危険 63 型と、粗い不変量で 58 型の一致） | 各 1〜2 分（SageMath） |
 | `certify.py` | [C21] 探索 (2)・(3) の代表元の生成（分割・再開可能） | 探索 (3) 約 25 分、探索 (2) 約 13 CPU 日 |
 | `check.py` | [C21] 代表元の整数演算による検算（numpy だけ） | 探索 (3) 約 2 分、探索 (2) 約 7 CPU 時間（単一スレッド試験からの見積もり。分割 A の実測: 共用機で 2 スレッド、経過 4.7 時間） |
 | `float_cvp.py` | [C21] 探索 (2) の浮動小数点の最近ベクトル列挙（補助） | 約 3 × 13 時間（SageMath） |
 
-**この版の状態**: 両方の探索の代表元がそろっています。探索 (3) の 3,936 類と探索 (2) の 763,992 類すべてで、`check.py` の検算が通ります。
+**この版の状態**: 両方の探索の代表元がそろっています。探索 (3) の 3,936 類と探索 (2) の 763,992 類すべてで、`check.py` の検算が通ります。公開タグ `certificates-v2` と Release の添付ファイルを使い、ネットワークを遮断しソースを読み取り専用にしたコンテナでも `check.py search2` を一度流し、763,992 類すべてで通りました（公開パッケージの再現性の確認であり、独立な証明ではありません）。
 最初の Release `certificates-v1` の `certificates/route_t_search2.npz` は探索 (2) の 610,664 類分でした。`certificates-v2` で差し替えました
 （以前からある行は変わっていません）。`fetch.sh` は古い複製の代わりに新しいファイルを取得します。途中のファイルの欠けた行を作り直すには、
 P = 0, …, Q−1 について `certify.py search2 --missing --part P --nparts Q`（再開可能）を実行し、`certify.py collect --base` のあと、もう一度 `check.py` を実行します。
@@ -199,6 +200,7 @@ P = 0, …, Q−1 について `certify.py search2 --missing --part P --nparts Q
 | [C19] | supplementary/anatomy_b.py |
 | [C20] | supplementary/route_t/classify.py, recount.py (with route_t/hermitian.py) |
 | [C21] | supplementary/route_t/certify.py, check.py, float_cvp.py (with route_t/common.py) |
+| [C32] | supplementary/route_t/exclusion.py (certificates/route_t_exclusion.json) |
 | [C22] | lean/ (EEUL/L112/Chain.lean, check.sh) |
 | [C23] | supplementary/nebe/identify_nebe.py (with nebe/lattices.py, nebe/cycloquat.py) |
 | [C24] | supplementary/automorphisms/aut_normalizer.py (with automorphisms/aut_common.py, supplementary/_shared.py) |

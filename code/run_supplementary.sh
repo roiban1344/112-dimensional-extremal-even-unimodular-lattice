@@ -35,7 +35,7 @@ mkdir -p "$LOG"
 ORDER=(gluings frame_stabilizer node_estimate sample_check frames gluing_b anatomy_b fixed_sublattices fixed_sublattices_B
        float_svp float_qfminim float_cvp610 aut_normalizer aut_diagonal aut_structure aut_character endomorphisms
        group_facts out_facts nebe_lattices identify_nebe nebe_tables nebe_gluings reduction_to_nebe route_t_classify
-       route_t_recount route_t_check3 isometry_ab genus_check)
+       route_t_recount route_t_check3 route_t_exclusion isometry_ab genus_check)
 
 step() {   # run step $1 / 段 $1 を実行する
   case "$1" in
@@ -66,6 +66,7 @@ step() {   # run step $1 / 段 $1 を実行する
     route_t_classify)    $PY "$S/route_t/classify.py" ;;
     route_t_recount)     $PY "$S/route_t/recount.py" ;;
     route_t_check3)      $PY "$S/route_t/check.py" search3 ;;
+    route_t_exclusion)   $PY "$S/route_t/exclusion.py" check ;;
     isometry_ab)         $PY "$S/isometry_ab.py" check ;;
     genus_check)         $PY "$S/genus/genus.py" check ;;
     *)                   return 127 ;;
