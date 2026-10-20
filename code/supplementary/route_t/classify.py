@@ -20,7 +20,7 @@ out/route_t/classify.json (read by recount.py).
 
 Requires SageMath (PARI). Run time: about 2 minutes.
 SageMath（PARI）が要る。実行時間: 約 2 分。
-Run / 実行:  python3 -I code/supplementary/route_t/classify.py [--amax 24] [--out DIR]   (Python with SageMath / SageMath を含む Python)
+Run / 実行:  python3 -I code/supplementary/route_t/classify.py [--amax 32] [--out DIR]   (Python with SageMath / SageMath を含む Python)
 
 Method (Japanese) / 方法:
 「危険な台加群」の分類を、非自由な加群も含めて完全にする。
@@ -33,7 +33,11 @@ Method (Japanese) / 方法:
     F は最小 ≥ 6、det_h F = det_h N·[N:F] ≤ 8（エルミート格子では指数は 1 乗で効く。補遺 §S4.1）。
   * 自由な F は、第 1 基底ベクトル x（h(x) = a）と y で、h(x,y) = c を aO を法として簡約: c = p/2 − (q/10)√-5, p ∈ (−a, a], q ∈ (−5a, 5a]。
     N(c) ≤ 1.5a² なので b = h(y) ≤ (8 + 1.5a²)/a。x は「基底に延長できるベクトルのうち最短」（真の最短とは限らない:
-    F ∩ Kx0 = 𝔭2^{-1}x0 のとき）。x0 + (1+√-5)w が基底ベクトルで h ≤ a0 + 6·8/a0 ≤ 8 + 16 なので a ≤ 24（--amax の既定値）。
+    F ∩ Kx0 = 𝔭2^{-1}x0 のとき）。F' = 𝔭2^{-1}x0 ⊕ 𝔭2·w の直和は直交とは限らない。交差項 c' = h(x0, w) を (a0/2)O を法として簡約すると
+    |c'|² ≤ 3a0²/8、h(w) ≤ (8 + 3a0²/8)/a0。x0 + βw（β = ±(1+√-5) の良い方）が基底ベクトルで
+    a ≤ a0 + 6h(w) ≤ 13a0/4 + 48/a0 ≤ 32（3 ≤ a0 ≤ 8）。よって a ≤ 32（--amax の既定値）。
+    （公開の初版までは w ⊥ x0 を仮定した a ≤ 24 だった。32 で数え直しても型は 97、危険 63 で同じ。）
+    経路 T の論証は exclusion.py（真の最短ベクトルから入る範囲、補遺の命題 S4.2）に依り、この 1 通り目は照合用。
   * N は F 自身か、F の τ-安定な指数 2 の上格子 F + Z·v/2（v ∈ F/2F で vτ ≡ 0 か v mod 2）。
 各 N について: H ⊗ N（実 8 次元、hermitian.HermTensor。自由でなくてよい）の最小とノルム 6・8 の本数、
 N がノルム 6 のベクトルを含むか、ノルム 8 の K-独立な組で x' ≡ μx (mod 2N), μ ∈ {τ, 1+τ} となるものがあるか、を調べる。
@@ -134,14 +138,14 @@ def index2_bases(T):
 
 def main():
     ap = argparse.ArgumentParser(description="S26: route T, classification of the rank-2 support modules")
-    ap.add_argument("--amax", type=int, default=24, help="upper bound for a = h(x) (24 is the proved bound)")
+    ap.add_argument("--amax", type=int, default=32, help="upper bound for a = h(x) (32 is the proved bound; see the docstring)")
     ap.add_argument("--out", default=None)
     a_ = ap.parse_args()
     rep = Report("s26_route_t_classify", a_.out)
     out_dir = os.path.join(rep.out_dir, "route_t")
     os.makedirs(out_dir, exist_ok=True)
     # 第 1 基底ベクトル x は「基底に延長できるベクトルのうち最短」（真の最短とは限らない: F' ∩ Kx0 = 𝔭2^{-1}x0 のとき）。
-    # det_h F' ≤ 8（[N:F'] ≤ 2）。上界 a ≤ 24（x0 + (1+√-5)w が基底ベクトルで h ≤ a0 + 6·8/a0 ≤ 8 + 16）。
+    # det_h F' ≤ 8（[N:F'] ≤ 2）。上界 a ≤ 32（docstring: 直和 F' = 𝔭2^{-1}x0 ⊕ 𝔭2·w の交差項を簡約して a ≤ 13a0/4 + 48/a0）。
     DMAX = 8; AMAX = a_.amax
     frees = []
     for a in range(3, AMAX + 1):
@@ -205,6 +209,8 @@ def main():
                         ALL["min8_without_pair"] += 1
     rep.value("all candidate N (before identification)", ALL)
     rep.value("candidates dropped by a failed internal check", dropped)
+    if AMAX == 32:
+        rep.check("3,390 candidates with the default bound a <= 32 (supplement §S4.1)", ALL["n"] == 3390)
     rep.check("no candidate dropped by a failed internal check", not dropped)
     rep.check("every dangerous candidate is covered by one of the searches (1)-(3) (none uncovered with minimum 6 or 8)",
               ALL["min6_uncovered"] == 0 and ALL["min8_without_pair"] == 0)

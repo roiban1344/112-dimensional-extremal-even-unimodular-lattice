@@ -55,7 +55,7 @@ Because the group $S$ preserves norms and commutes with $tau$, each bound need o
 
 The lower bounds are then verified as follows. For each norm-6 representative, we supply a vector in its prescribed coset whose norm and inner products with all minimal vectors of $L_56$ imply the bound 14. The implication follows from the midpoint lemma and Corollary 5.2; the supplied vector and its conditions are checked in §6.6. For the norm-8 test vectors, there are two alternatives. One uses canonical forms to test whether the prescribed coset contains a norm-8 vector (§6.5). The other checks coset representatives whose norm and inner products imply the bound 12 (Corollary 5.3 and §6.7). Either alternative, together with the common norm-6 bounds and completeness checks, proves the required absence of short vectors. The upper bound (1.1) then gives $min L_112=10$.
 
-Thus the two even-coset tests are alternative ways of completing the same proof, and their shared inputs are part of the verification. Separately written implementations check these inputs and computations. Spherical-design identities, changes of frame and tests on the second gluing provide further consistency checks. Floating-point closest-vector searches and random samples are also reported, but are not substituted for the rigorous checks in the proof. Supplement §S4 describes a further route through support modules. It is not used in the proof; nor is it independent of the proof, since it relies on the same exclusion of type $(8,8)$ (F5b) as the main argument. The Lean formalization checks the deduction from the stated computational hypotheses (§7.1).
+Thus the two even-coset tests are alternative ways of completing the same proof, and their shared inputs are part of the verification. Separately written implementations check these inputs and computations. Spherical-design identities, changes of frame and tests on the second gluing provide further consistency checks. Floating-point closest-vector searches and random samples are also reported, but are not substituted for the rigorous checks in the proof. Supplement §S4 describes a further route through support modules. It replaces the reduction of §4 by Coulangeon's inequality and an enumeration of support modules, but it is not independent of the proof, since its last step uses the same computations F5a and F5b (together with a further finite check, Supplement [C32]). The Lean formalization checks the deduction from the stated computational hypotheses (§7.1).
 
 
 == 1.4 Relation to previous constructions and the choice of dimension
@@ -303,7 +303,7 @@ Three implementations are referred to below: implementation 1 constructed $L_112
   [F3], [marked sums of two minimal vectors, size sum], [recount from $K_8$, design identities; implementation 3], [integer],
   [F4], [matrix identities], [two implementations], [integer],
   [F5a], [656 odd-coset certificates], [the checker of implementation 2; CVP on two bases; canonical forms], [integer],
-  [F5b], [canonical forms (two implementations)], [exhaustive CVP; implementation 3; even-coset certificates (all pairs); support-module route (Supplement §S4.1)], [integer (CVP: floating point)],
+  [F5b], [canonical forms (two implementations)], [exhaustive CVP; implementation 3; even-coset certificates (all pairs)], [integer (CVP: floating point)],
 )
 
 == 6.1 F1: the minimum of the base lattice

@@ -39,11 +39,13 @@
 | `genus_isometry_7_L112.txt` | 112 × 112 整数 | T G_R Tᵀ = G_X（類 7）、det T = ±1、G_R は (3.1) を満たす T。類 7 は L₁₁₂ である | supplementary/genus/genus.py（[C31]） |
 | `genus_isometry_3_A.txt` | 112 × 112 整数 | T G_A Tᵀ = G_X（類 3）、det T = ±1 を満たす T。類 3 は貼り方 A である | supplementary/genus/genus.py（[C31]） |
 
-経路 T（補遺 §S4.1、[C21]。定理 A の証明には使わない）:
+経路 T（補遺 §S4.1、[C21]・[C32]。定理 A の証明には使わない）:
 
 | ファイル | 配列 | 中身 | 検算 | 作成 |
 |---|---|---|---|---|
 | `route_t_search3.npz` | `w0` int16 (3936, 56) | 探索 (3) の 3,936 類 r u_k μ + 2L の下界を保証する代表元（順序は `code/supplementary/route_t/common.py`） | route_t/check.py | route_t/certify.py |
 | `route_t_search2.npz` | `w0` int16 (763992, 56), `done` bool (763992) | 探索 (2) の 763,992 類 x_i u_k (1+τ) + 2L すべての下界を保証する代表元（順序は `code/supplementary/route_t/common.py`）。`done` はすべての行で True（途中のファイルを `certify.py search2 --missing` で完成させるための配列として残す） | route_t/check.py | route_t/certify.py |
+
+`route_t_exclusion.json`（git 管理、45 kB。[C32]）: 命題 S4.2 の危険な台加群 631 個それぞれについて、キー `[A, B, a, b, p, q]`（`A`, `B` は 𝒪 なら `"O"`、𝔭₂⁻¹ なら `"P"`。c = h(x, y) = p/2 − (q/10)√−5）と、Z-基底 (α₁x, α₂x, β₁y, β₂y) の座標で書いた証拠 `x`, `w`。形は `s1`（F5b に反する）か `s3tau`（F5a に反する）。JSON の最上位には `description` と `types`（二つの形の数）もあります。`route_t/exclusion.py check` で検算し、`route_t/exclusion.py make` で作ります。
 
 `route_t_search2.npz` は Release `certificates-v2` から完全です（763,992 類すべて。`certificates-v1` では 610,664 類）。`certificates-v1` にあった行は変わっていません。`check.py` はすべての行を検算します。
