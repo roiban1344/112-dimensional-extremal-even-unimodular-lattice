@@ -61,7 +61,7 @@ The `Dockerfile` builds a light image (Debian 13, Python 3, NumPy in a virtual e
 
 ## Versions and reproducibility
 
-Releases are tagged by date; this release is `v2026-10-19.1` (a second release on the same day gets a suffix). Take the paper, the code, and the verification-data hashes from the same tag. Large verification data archives are distributed as assets of the [Release `certificates-v2`](https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v2); their hashes are recorded in `certificates/SHA256SUMS`. Programs check these hashes before using the data. Generated results are written to `out/`.
+Releases are tagged by date; this release is `v2026-10-25` (a second release on the same day gets a suffix). Take the paper, the code, and the verification-data hashes from the same tag. Large verification data archives are distributed as assets of the [Release `certificates-v2`](https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v2); their hashes are recorded in `certificates/SHA256SUMS`. Programs check these hashes before using the data. Generated results are written to `out/`.
 
 To cite this work, use GitHub's "Cite this repository", which reads [CITATION.cff](CITATION.cff).
 
