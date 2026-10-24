@@ -535,7 +535,7 @@ $G_112$ を (3.1) の $L_112$ の Gram 行列とする。
   [#strong[\[SSP99\]] R. Scharlau, R. Schulze-Pillot, Extremal lattices, in: B. H. Matzat, G.-M. Greuel, G. Hiss (eds.), Algorithmic Algebra and Number Theory (Heidelberg, 1997), Springer 1999, 139–170.],
   [#strong[\[SW10\]] D. Stehlé, M. Watkins, On the extremality of an 80-dimensional lattice, ANTS-IX, LNCS 6197 (2010) 340–356.],
   [#strong[\[Wat12\]] M. Watkins, Another 80-dimensional extremal lattice, J. Théor. Nombres Bordeaux 24 (2012).],
-  [#strong[\[Repo\]] roiban1344, #emph[112-dimensional extremal even unimodular lattice]（データ、検算と検証用データの生成のコード、検証用データ、Lean による形式化）, #link("https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice")[公開リポジトリ]（タグ #raw("v2026-10-19.1")）.],
+  [#strong[\[Repo\]] roiban1344, #emph[112-dimensional extremal even unimodular lattice]（データ、検算と検証用データの生成のコード、検証用データ、Lean による形式化）, #link("https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice")[公開リポジトリ]（タグ #raw("v2026-10-25")）.],
 )
 
 = 付録 A. 用語集 <appA>
