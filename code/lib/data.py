@@ -7,7 +7,7 @@
                              SL_2(29) を生成する L の等長変換 g1, g2
   data/tau.txt               the endomorphism tau of L with tau^2 = -5
                              tau^2 = -5 を満たす L の自己準同型 tau
-  data/R112_gram_LLL.txt     an LLL-reduced Gram matrix of L_112 (112 x 112)
+  data/L112_gram_LLL.txt     an LLL-reduced Gram matrix of L_112 (112 x 112)
                              L_112 の LLL 簡約された Gram 行列
 
 Every reader checks the SHA-256 hash of the file before parsing it, so that all
@@ -24,15 +24,17 @@ import numpy as np
 DEFAULT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "data")
 
 # SHA-256 of the published files. L56_gram.txt and sl2_29_generators.txt are unchanged since the first
-# release (14 October 2026); the header comments of tau.txt and R112_gram_LLL.txt were revised on
-# 18 October 2026 (numerical content unchanged).
+# release (14 October 2026); the header comments of tau.txt and L112_gram_LLL.txt were revised on
+# 18 October 2026, and L112_gram_LLL.txt was renamed and its header revised again on 25 October 2026
+# (numerical content unchanged).
 # 公開したファイルの SHA-256。L56_gram.txt と sl2_29_generators.txt は初版（2026 年 10 月 14 日）から不変。
-# tau.txt と R112_gram_LLL.txt は 2026 年 10 月 18 日に先頭のコメント行だけを改めた（数値は不変）。
+# tau.txt と L112_gram_LLL.txt は 2026 年 10 月 18 日に先頭のコメント行だけを改め、L112_gram_LLL.txt は
+# 2026 年 10 月 25 日に改名して先頭のコメント行を再び改めた（数値は不変）。
 SHA256 = {
     "L56_gram.txt": "4d13bd51fcf3cb8c5706bde45828713d7eeb4d18a37e8e9d84fb2700f4bef2f0",
     "sl2_29_generators.txt": "97f88443de1fd1fdeb010ecb668dbbb03a8e0e989a18c0ad85a751687012ad90",
     "tau.txt": "30b6fa54f7abc2938a8f5ce29237bb92a4224f5418d3cae85183c0a89803a0f1",
-    "R112_gram_LLL.txt": "106ce481d60fac9bbbe211da1ba15c68610cd8dbcbee1fe0e110435f9a50083d",
+    "L112_gram_LLL.txt": "104764e3c8add14d124c9e4ffd011e35d4d4659f4b6216651d278d76003bbfce",
 }
 
 N = 56
@@ -85,12 +87,12 @@ def tau(directory=None):
     return _matrices("tau.txt", N, 1, directory)[0]
 
 
-def gram_R_reduced(directory=None):
+def gram_112_reduced(directory=None):
     """The distributed reduced Gram matrix of L_112, int64 (112, 112). / 配布した L_112 の簡約 Gram 行列。"""
-    return _matrices("R112_gram_LLL.txt", 2 * N, 1, directory)[0]
+    return _matrices("L112_gram_LLL.txt", 2 * N, 1, directory)[0]
 
 
-def gram_R(G, t):
+def gram_112(G, t):
     """Gram matrix (3.1) of L_112 in the basis (e_i, e_i tau)/sqrt2, (0, 2 e_i)/sqrt2:
         [[3G, tau G], [(tau G)^T, 2G]].
     基底 (e_i, e_i tau)/√2, (0, 2e_i)/√2 に関する L_112 の Gram 行列 (3.1)。

@@ -14,8 +14,8 @@ S5. Aut(L_112) における S = SL_2(29) の正規化群（論文 §3.4、§8。
 That S is normal in Aut(L_112), so that this normalizer is all of Aut(L_112), is proved in Appendix F.
 S が Aut(L_112) の正規部分群であり、したがってこの正規化群が Aut(L_112) 全体であることは付録 F で証明する。
 
-The automorphism found in (2) is compared with certificates/outer_automorphism_R.txt.
-(2) で見つけた自己同型は certificates/outer_automorphism_R.txt と比べる。
+The automorphism found in (2) is compared with certificates/outer_automorphism_L112.txt.
+(2) で見つけた自己同型は certificates/outer_automorphism_L112.txt と比べる。
 
 Requires SageMath (PARI, GAP). Run time: about 15 minutes. Memory: about 3 GB.
 SageMath（PARI, GAP）が要る。実行時間: 約 15 分。メモリ: 約 3 GB。
@@ -81,14 +81,14 @@ def main():
     # The distributed X may differ from those found here by an element of S (GAP may choose another
     # representative of the outer class). Check directly that X normalizes S and is not in S C_A(S).
     # 配布した X は、ここで見つけたものと S の元だけ違いうる（GAP が外部類の別の代表を選びうる）。X が S を正規化し、S C_A(S) に入らないことを直接確かめる。
-    X = matrix(ZZ, certs.load_matrix("outer_automorphism_R.txt", 112, a.certificates).tolist())
+    X = matrix(ZZ, certs.load_matrix("outer_automorphism_L112.txt", 112, a.certificates).tolist())
     Xi = X.inverse()
-    S3 = libgap.Group([libgap(h.change_ring(F3)) for h in st.sR])
+    S3 = libgap.Group([libgap(h.change_ring(F3)) for h in st.s112])
     cent = half + [-Y for Y in half]
     SC3 = libgap.ClosureGroup(S3, libgap.Group([libgap(Y.change_ring(F3)) for Y in cent]))
-    normalizes = all(bool(libgap.IN(libgap((Xi * h * X).change_ring(F3)), S3)) and all(c in ZZ for c in (Xi * h * X).list()) for h in st.sR)
-    rep.check("certificates/outer_automorphism_R.txt: an isometry of L_112 normalizing S", X * st.GR * X.transpose() == st.GR and normalizes)
-    rep.check("certificates/outer_automorphism_R.txt is not in S C_A(S) (it induces the outer automorphism)",
+    normalizes = all(bool(libgap.IN(libgap((Xi * h * X).change_ring(F3)), S3)) and all(c in ZZ for c in (Xi * h * X).list()) for h in st.s112)
+    rep.check("certificates/outer_automorphism_L112.txt: an isometry of L_112 normalizing S", X * st.G112 * X.transpose() == st.G112 and normalizes)
+    rep.check("certificates/outer_automorphism_L112.txt is not in S C_A(S) (it induces the outer automorphism)",
               not bool(libgap.IN(libgap(X.change_ring(F3)), SC3)))
     rep.check("the elements found here also lie outside S C_A(S)", all(not bool(libgap.IN(libgap(Y.change_ring(F3)), SC3)) for Y in found))
     rep.finish()

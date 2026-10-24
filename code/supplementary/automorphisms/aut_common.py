@@ -3,12 +3,12 @@ Aut(L_112) の計算（論文 §8、付録 F）の共通の準備。SageMath が
 
 L_112 sits in V = (L tensor Q) + (L tensor Q) with row vectors (x, v) and inner product
 (1/2)(<x, x'> + <v, v'>). Its basis matrix is B = [[I, tau], [0, 2I]] (rows (e_i, e_i tau), (0, 2e_i);
-the factor 1/sqrt2 is absorbed in the form), and its Gram matrix is G_R = (3.1). A matrix X on V
+the factor 1/sqrt2 is absorbed in the form), and its Gram matrix is G_112 = (3.1). A matrix X on V
 (acting on ambient row vectors) preserves L_112 iff B X B^{-1} is integral; in the L_112-basis it is
-X_R = B X B^{-1}, and it is an isometry iff X_R G_R X_R^T = G_R.
+X_112 = B X B^{-1}, and it is an isometry iff X_112 G_112 X_112^T = G_112.
 L_112 は V = (L⊗Q) ⊕ (L⊗Q)（行ベクトル (x, v)、内積 (1/2)(<x,x'> + <v,v'>)）の中にある。基底行列は B = [[I, tau], [0, 2I]]、
-Gram 行列は G_R = (3.1)。V 上の行列 X が L_112 を保つ ⟺ B X B^{-1} が整数。L_112 の基底では X_R = B X B^{-1} で、
-X_R G_R X_R^T = G_R なら等長変換。
+Gram 行列は G_112 = (3.1)。V 上の行列 X が L_112 を保つ ⟺ B X B^{-1} が整数。L_112 の基底では X_112 = B X B^{-1} で、
+X_112 G_112 X_112^T = G_112 なら等長変換。
 
 SL_2(29) acts diagonally, g -> diag(g, g). The endomorphisms of V commuting with it are the block
 matrices [[a, b], [c, d]] with a, b, c, d in M' tensor Q (a 32-dimensional space, M' = commutant.npz).
@@ -41,16 +41,16 @@ class Setup:
         I, Z = identity_matrix(ZZ, n), zero_matrix(ZZ, n, n)
         self.B = block_matrix(ZZ, [[I, self.tau], [Z, 2 * I]], subdivide=False).change_ring(QQ)
         self.Bi = self.B.inverse()
-        GR = self.B * block_matrix(QQ, [[self.G, 0], [0, self.G]], subdivide=False) / 2 * self.B.transpose()
-        require(all(x in ZZ for x in GR.list()), "all(x in ZZ for x in GR.list())")
-        self.GR = GR.change_ring(ZZ)
-        require(self.GR.det() == 1, "self.GR.det() == 1")
-        self.GRi = self.GR.inverse().change_ring(ZZ)
+        G112 = self.B * block_matrix(QQ, [[self.G, 0], [0, self.G]], subdivide=False) / 2 * self.B.transpose()
+        require(all(x in ZZ for x in G112.list()), "all(x in ZZ for x in G112.list())")
+        self.G112 = G112.change_ring(ZZ)
+        require(self.G112.det() == 1, "self.G112.det() == 1")
+        self.G112i = self.G112.inverse().change_ring(ZZ)
         # The generators of SL_2(29) acting on L_112, in the L_112-basis. / L_112 に作用する SL_2(29) の生成元（L_112 の基底で）。
-        self.sR = [self.in_R(block_matrix(QQ, [[g, 0], [0, g]], subdivide=False)) for g in (self.g1, self.g2)]
+        self.s112 = [self.in_112(block_matrix(QQ, [[g, 0], [0, g]], subdivide=False)) for g in (self.g1, self.g2)]
         self.cert_dir = cert_dir
 
-    def in_R(self, X):
+    def in_112(self, X):
         """Ambient matrix X -> matrix in the L_112-basis (checked integral). / 周囲の行列 X → L_112 の基底での行列（整数であることを確かめる）。"""
         from sage.all import ZZ
         Y = self.B * X * self.Bi
@@ -72,12 +72,12 @@ class Setup:
 
     def isometries_from(self, Ts):
         """All isometries of L_112 (up to sign) in the Z-lattice H = { sum y_k X_k integral } spanned by the 32
-        block matrices built from Ts. On H, Q(X) = tr(G_R^{-1} X G_R X^T) is positive definite and equals
+        block matrices built from Ts. On H, Q(X) = tr(G_112^{-1} X G_112 X^T) is positive definite and equals
         112 on isometries, so they are among the finitely many X with Q(X) <= 112 (PARI qfminim, checked complete against the
         exact enumerator by produce/exact_qfminim.py). The search is supplementary/_shared.equivariant_isometries.
         Ts から作る 32 個のブロック行列の Z-格子 H = { Σ y_k X_k が整数 } の中の、L_112 の等長変換すべて（符号を除く）。H 上の
-        Q(X) = tr(G_R^{-1} X G_R X^T) は正定値で等長変換では 112 なので、Q(X) ≤ 112 の有限個の中にある（PARI の qfminim。produce/exact_qfminim.py で厳密な列挙と照合して完全性を確かめる）。探索は supplementary/_shared.py の equivariant_isometries。"""
-        return equivariant_isometries(self.B, self.GR, self.B, self.GR, Ts)
+        Q(X) = tr(G_112^{-1} X G_112 X^T) は正定値で等長変換では 112 なので、Q(X) ≤ 112 の有限個の中にある（PARI の qfminim。produce/exact_qfminim.py で厳密な列挙と照合して完全性を確かめる）。探索は supplementary/_shared.py の equivariant_isometries。"""
+        return equivariant_isometries(self.B, self.G112, self.B, self.G112, Ts)
 
     def centralizer(self):
         """C_A(S): the 48 automorphisms of L_112 commuting with SL_2(29) (both signs).
@@ -87,14 +87,14 @@ class Setup:
 
     def outer_automorphism(self):
         """The automorphism X of L_112 inducing the outer automorphism of SL_2(29), read from
-        certificates/outer_automorphism_R.txt. This method checks only that X is an isometry of L_112;
+        certificates/outer_automorphism_L112.txt. This method checks only that X is an isometry of L_112;
         that X normalizes S and lies outside S C_A(S) is checked by the scripts that use it.
-        SL_2(29) の外部自己同型を与える L_112 の自己同型 X（certificates/outer_automorphism_R.txt から読む）。このメソッドが確かめるのは
+        SL_2(29) の外部自己同型を与える L_112 の自己同型 X（certificates/outer_automorphism_L112.txt から読む）。このメソッドが確かめるのは
         X が L_112 の等長変換であることだけで、X が S を正規化し S C_A(S) の外にあることは、これを使うスクリプトが確かめる。"""
         from sage.all import ZZ, matrix
-        X = matrix(ZZ, certs.load_matrix("outer_automorphism_R.txt", 112, self.cert_dir).tolist())
-        if X * self.GR * X.transpose() != self.GR:
-            raise RuntimeError("outer_automorphism_R.txt is not an isometry of L_112")
+        X = matrix(ZZ, certs.load_matrix("outer_automorphism_L112.txt", 112, self.cert_dir).tolist())
+        if X * self.G112 * X.transpose() != self.G112:
+            raise RuntimeError("outer_automorphism_L112.txt is not an isometry of L_112")
         Xi = X.inverse()
         return X, Xi
 

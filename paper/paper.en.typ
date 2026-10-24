@@ -495,7 +495,7 @@ Let $G_112$ be the Gram matrix (3.1) of $L_112$.
   [(c) normality], [$E\("Aut"\(L_112\)\)= S$], [Appendix F (proof)], [—],
 )
 
-The centralizer of order 48 is the unitary automorphism group of the rank-2 $M'$-lattice $Lambda={(a,b) in (M')^2:b equiv a tau med (mod 2M')}\/sqrt(2)$, with $L_112=L_56 times.o_(M') Lambda$. The subgroup $S dot.op C_("Aut"(L_112))(S)$ has order $584 thin 640$; the outer automorphism doubles this order. A matrix inducing the outer automorphism is supplied as #raw("certificates/outer_automorphism_R.txt") #calc("C24", "C25").
+The centralizer of order 48 is the unitary automorphism group of the rank-2 $M'$-lattice $Lambda={(a,b) in (M')^2:b equiv a tau med (mod 2M')}\/sqrt(2)$, with $L_112=L_56 times.o_(M') Lambda$. The subgroup $S dot.op C_("Aut"(L_112))(S)$ has order $584 thin 640$; the outer automorphism doubles this order. A matrix inducing the outer automorphism is supplied as #raw("certificates/outer_automorphism_L112.txt") #calc("C24", "C25").
 
 #strong[Structure.] From explicit generators (those of $S$, the 48 elements of $C_("Aut"(L_112))(S)$, and one element inducing the outer automorphism), reduced modulo 3 (which is injective on a finite group of integer matrices), GAP finds a group of order exactly $1 thin 169 thin 280$ #calc("C26"), an independent check of the order. Moreover $C_("Aut"(L_112))(S) tilde.equiv "SL"_2(3) circle.small C_4$ (SmallGroup(48,33)), $"Aut"(L_112) \/ S tilde.equiv C_2 times S_4$, $"Aut"(L_112) \/ C_("Aut"(L_112))(S) tilde.equiv "PGL"_2(29)$, $Z("Aut"(L_112)) = {plus.minus 1}$, and the extension of the index-2 subgroup $S dot.op C_("Aut"(L_112))(S)$ does not split (the outer coset contains no involution) #calc("C26"). In short, $"Aut"(L_112) tilde.equiv ("SL"_2(29) circle.small "SL"_2(3) circle.small C_4) . 2$, central products over the common $-1$. All generators have determinant 1, and the endomorphisms of $L_112$ commuting with $"Aut"(L_112)$ form the ring $ZZ[sqrt(-29)]$; so $L_112$ is a Hermitian $ZZ[sqrt(-29)]$-lattice of rank 56 and $"Aut"(L_112) subset "U"(56) subset "SO"(112)$.
 
@@ -588,12 +588,12 @@ $632 dot.op 24 thin 360 + 24 dot.op 8 thin 120 = 15 thin 395 thin 520 + 194 thin
   [#raw("L56_gram.txt")], [Gram matrix $G$ of $L_56$ (56×56)], [#raw("4d13bd51…")],
   [#raw("sl2_29_generators.txt")], [$g_1\,g_2$ (orders 5, 7) generating $"SL"_2\(29\)$], [#raw("97f88443…")],
   [#raw("tau.txt")], [$tau$ (56×56), $tau^2 = - 5$], [#raw("30b6fa54…")],
-  [#raw("R112_gram_LLL.txt")], [LLL-reduced Gram matrix of $L_112$ (112×112)], [#raw("106ce481…")],
+  [#raw("L112_gram_LLL.txt")], [LLL-reduced Gram matrix of $L_112$ (112×112)], [#raw("104764e3…")],
 )
 
-#block(text(size: 0.85em, {set par(justify: false); [Full SHA-256 hashes:]; linebreak(); raw("4d13bd51fcf3cb8c5706bde45828713d7eeb4d18a37e8e9d84fb2700f4bef2f0"); linebreak(); raw("97f88443de1fd1fdeb010ecb668dbbb03a8e0e989a18c0ad85a751687012ad90"); linebreak(); raw("30b6fa54f7abc2938a8f5ce29237bb92a4224f5418d3cae85183c0a89803a0f1"); linebreak(); raw("106ce481d60fac9bbbe211da1ba15c68610cd8dbcbee1fe0e110435f9a50083d")}))
+#block(text(size: 0.85em, {set par(justify: false); [Full SHA-256 hashes:]; linebreak(); raw("4d13bd51fcf3cb8c5706bde45828713d7eeb4d18a37e8e9d84fb2700f4bef2f0"); linebreak(); raw("97f88443de1fd1fdeb010ecb668dbbb03a8e0e989a18c0ad85a751687012ad90"); linebreak(); raw("30b6fa54f7abc2938a8f5ce29237bb92a4224f5418d3cae85183c0a89803a0f1"); linebreak(); raw("104764e3c8add14d124c9e4ffd011e35d4d4659f4b6216651d278d76003bbfce")}))
 
-#strong[Conventions.] Row vectors; a matrix $g$ acts by $x mapsto x g$; isometries satisfy $g G g^(sans(T)) = G$; $tau G tau^(sans(T)) = 5 G$. The file #raw("R112_gram_LLL.txt") is PARI's #raw("qflllgram") reduction of (3.1).
+#strong[Conventions.] Row vectors; a matrix $g$ acts by $x mapsto x g$; isometries satisfy $g G g^(sans(T)) = G$; $tau G tau^(sans(T)) = 5 G$. The file #raw("L112_gram_LLL.txt") is PARI's #raw("qflllgram") reduction of (3.1).
 
 #strong[Specification without the files.] The defining matrices (56×56 and 112×112) are not printed in this paper; they are the files of Table D1. By §7.2, $L_56$ is $"SL"_2(29)$-equivariantly isometric to $L_(56,2)(tilde(M))$ of \[Neb98\], and in those coordinates $tau$ is right multiplication by an element of $tilde(M)$ of reduced norm 5 and reduced trace 0, given in §7.2. Together with (1.2), this specifies $L_112$ up to isometry independently of the data files. The files remain the reference: every verification program reads them and checks their hashes.
 
@@ -603,7 +603,7 @@ $632 dot.op 24 thin 360 + 24 dot.op 8 thin 120 = 15 thin 395 thin 520 + 194 thin
 
 #strong[Code.] Every computation used in this paper is listed in Table D2 with the code that performs it; except for supplementary computations explicitly marked unpublished, the paths in Table D2 are those of the public repository \[Repo\]. The text refers to the rows of Table D2 as \[C1\], \[C2\], ….
 
-Checking the computational facts from the supplied data takes about 1.2 CPU hours by the fastest route (route A of Supplement Table S7; the script #raw("code/verify/proof.sh")). Alternative routes and additional tests are described in Supplement §S3. The identifier R112 in filenames is an earlier name for $L_112$.
+Checking the computational facts from the supplied data takes about 1.2 CPU hours by the fastest route (route A of Supplement Table S7; the script #raw("code/verify/proof.sh")). Alternative routes and additional tests are described in Supplement §S3.
 
 #calc-table(lang: "en")
 

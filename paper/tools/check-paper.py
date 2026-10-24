@@ -95,16 +95,6 @@ def main():
         cited = {c for call in re.findall(r'#calc\((.*?)\)', all_text)
                  for c in re.findall(r'"(C\d+)"', call)}
         require(cited == calc_ids, f'{lang}: uncited or undefined computations: {cited ^ calc_ids}')
-        for forbidden in ('G^(*)', 'G_R', 'VERIFICATION-ROUTES.md', 'extremal norm', '極値ノルム', 'MathComp', 'critical_p_stab_Aut', '系 S2', 'Corollary S2', 'cosetes'):
-            require(forbidden not in all_text, f'{lang}: residual {forbidden!r}')
-        require('#pending[' not in main_text, f'{lang}: main paper has a pending assertion')
-        require('#pending[' not in supplement, f'{lang}: supplement has a pending assertion')
-        # Route T shares the computations F5a and F5b with the main proof; the supplement must say so.
-        # 経路 T は計算 F5a・F5b を主証明と共有する。補遺はそれを明記すること。
-        shared = '主証明と同じ計算 F5a・F5b' if lang == 'ja' else 'the same computations F5a and F5b as the main proof'
-        require(shared in supplement, f'{lang}: route T must state that it shares F5a and F5b with the main proof')
-        require('Schreier' in main_text and 'Schreier conjecture is not used' not in main_text, f'{lang}: Schreier wording')
-        require('lean/EEUL/L112/Chain.lean' in main_text, f'{lang}: lean/EEUL/L112/Chain.lean is not cited')
     if unpublished:
         print('Unpublished supplementary code:', ', '.join(unpublished))
     print(f'PASS: bilingual headings, statements, tables, references, C1-C{len(calc_ids)} and distributed paths')

@@ -2,8 +2,8 @@
 S9. L_112 のエルミート構造と O_K-構造（論文 §8。表 D2 の [C26]）。定理 A の証明には使わない。
 
   (1) End_A(V) (A = Aut(L_112)) is 2-dimensional; it contains J with J^2 = -29, J integral on L_112 and
-      skew-adjoint (J G_R = -(J G_R)^T); End_A(L_112) = End_A(V) ∩ End(L_112) = Z[J] = Z[sqrt -29].
-      End_A(V) は 2 次元で、J^2 = -29、L_112 上で整数、反随伴（J G_R = -(J G_R)^T）な J を含む。End_A(L_112) = Z[J] = Z[√-29]。
+      skew-adjoint (J G_112 = -(J G_112)^T); End_A(L_112) = End_A(V) ∩ End(L_112) = Z[J] = Z[sqrt -29].
+      End_A(V) は 2 次元で、J^2 = -29、L_112 上で整数、反随伴（J G_112 = -(J G_112)^T）な J を含む。End_A(L_112) = Z[J] = Z[√-29]。
   (2) The centre of C_A(S) contains i with i^2 = -1. The ring End(L_112) ∩ Q<1, i, J, iJ> is the maximal
       order O_K of K = Q(i, sqrt 29) (index 1; K has class number 3), so O_K acts on L_112.
       C_A(S) の中心は i^2 = -1 の i を含む。End(L_112) ∩ Q<1, i, J, iJ> は K = Q(i, √29) の極大整環 O_K（指数 1。K の類数は 3）で、
@@ -72,7 +72,7 @@ def main():
     require(J * J == (J * J)[0, 0] * I2, "J * J == (J * J)[0, 0] * I2")
     J = J * (QQ(-29) / (J * J)[0, 0]).sqrt()
     rep.check("(1) J^2 = -29 and J is integral on L_112", J * J == -29 * I2 and all(x in ZZ for x in J.list()))
-    rep.check("(1) J is skew-adjoint: J G_R = -(J G_R)^T", J * st.GR == -(J * st.GR).transpose())
+    rep.check("(1) J is skew-adjoint: J G_112 = -(J G_112)^T", J * st.G112 == -(J * st.G112).transpose())
     _, H = integral_part([I2, J])
     rep.value("(1) Z-basis of End_A(L_112) in coordinates (1, J)", [list(r) for r in H.rows()])
     rep.check("(1) End_A(L_112) = Z[J] = Z[sqrt -29]", abs(H.det()) == 1)
@@ -110,7 +110,7 @@ def main():
     rep.value("(3) |det of the reduced-trace form on Lambda|, |d_K|^4", [int(abs(T.det())), int(dK ** 4)])
     rep.check("(3) Lambda is a maximal order of M_2(K) (discriminant |d_K|^4)",
               all(c in ZZ for c in T.list()) and abs(T.det()) == dK ** 4)
-    Q = matrix(QQ, 16, 16, lambda p, q: (Lam[p] * st.GR * Lam[q].transpose() * st.GRi).trace())
+    Q = matrix(QQ, 16, 16, lambda p, q: (Lam[p] * st.G112 * Lam[q].transpose() * st.G112i).trace())
     Q = (Q + Q.transpose()) / 2
     scale = lcm([c.denominator() for c in Q.list()])
     vecs = pari((Q * scale).change_ring(ZZ)).qfminim(56 * scale, 200000, 0)

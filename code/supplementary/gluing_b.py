@@ -63,8 +63,8 @@ def main():
     # (a)
     rep.check("(a) tau_B^2 = -5 I and tau_B G tau_B^T = 5 G", (mm(tB, tB) == -5 * I).all() and (mm(mm(tB, G), tB.T) == 5 * G).all())
     rep.check("(a) tau_B commutes with g1, g2", all((mm(g, tB) == mm(tB, g)).all() for g in gens))
-    GR = data.gram_R(G, tB)
-    rep.check("(a) L_B: even, det 1", (np.diag(GR) % 2 == 0).all() and exact.det_bareiss(GR) == 1)
+    GB = data.gram_112(G, tB)
+    rep.check("(a) L_B: even, det 1", (np.diag(GB) % 2 == 0).all() and exact.det_bareiss(GB) == 1)
     rep.check("(a) tau_B^2 = 1 (mod 2), so the types (6,10) and (10,6) coincide", ((mm(tB, tB) - I) % 2 == 0).all())
 
     S = group.sl2_29_mod_sign(gens)
@@ -125,7 +125,7 @@ def main():
         if ok:
             yv = (v - mm(x, tB)) // 2
             zc = np.concatenate([x, yv])                                 # coordinates in the basis (3.1)
-            ok = int(zc @ GR @ zc) == 8
+            ok = int(zc @ GB @ zc) == 8
         partners_ok &= ok
         partners.append(v)
     rep.check("(c) every colliding pair has an explicit partner v of norm 8, and (x, v)/sqrt2 has norm 8 in L_B",

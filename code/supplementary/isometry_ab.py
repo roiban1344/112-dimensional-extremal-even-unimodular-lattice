@@ -172,7 +172,7 @@ def check(a):
     rep.check("tau_B^2 = -5 I, tau_B G tau_B^T = 5 G, tau_B commutes with g1, g2",
               (mm(tB, tB) == -5 * I).all() and (mm(mm(tB, G), tB.T) == 5 * G).all()
               and all((mm(g, tB) == mm(tB, g)).all() for g in gens))
-    GB = data.gram_R(G, tB)
+    GB = data.gram_112(G, tB)
     rep.check("G_B = [[3G, tau_B G], [(tau_B G)^T, 2G]] is symmetric, even, of determinant 1",
               (GB == GB.T).all() and (np.diag(GB) % 2 == 0).all() and exact.det_bareiss(GB) == 1)
     GA = certs.load_matrix(GA_FILE, n2, a.certificates)

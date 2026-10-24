@@ -452,17 +452,17 @@ def cmd_identify(a):
         d, D = read_basis(j, None, produced(basis_file(j), a, rep))
         BX[j] = matrix(ZZ, D.tolist()).change_ring(QQ) / d
     # class 7 -> L_112, basis (3.1) / 類 7 -> L_112（基底 (3.1)）
-    BR = block_matrix(ZZ, [[I, tau], [Z, 2 * I]], subdivide=False).change_ring(QQ)
-    GR = matrix(ZZ, data.gram_R(data.gram(a.data), data.tau(a.data)).tolist())
-    isos = equivariant_isometries(BX[7], GX[7], BR, GR, commL, rep, "class 7 -> L_112")
+    B112 = block_matrix(ZZ, [[I, tau], [Z, 2 * I]], subdivide=False).change_ring(QQ)
+    G112 = matrix(ZZ, data.gram_112(data.gram(a.data), data.tau(a.data)).tolist())
+    isos = equivariant_isometries(BX[7], GX[7], B112, G112, commL, rep, "class 7 -> L_112")
     rep.check("class 7 is S-equivariantly isometric to L_112", len(isos) > 0)
     T7 = min(isos, key=lambda T: (max(abs(x) for x in T.list()), sum(abs(x) for x in T.list())))
-    rep.check("T G_R T^T = G_7 and det T = +-1", T7 * GR * T7.transpose() == GX[7] and abs(T7.det()) == 1)
+    rep.check("T G_112 T^T = G_7 and det T = +-1", T7 * G112 * T7.transpose() == GX[7] and abs(T7.det()) == 1)
     certs.save_matrix(os.path.join(odir, ISO7_FILE), np.array(T7.rows(), dtype=np.int64),
-                      "T (112 x 112): T G_R T^T = G_X, det T = +-1, G_X = certificates/genus_class_7.txt, G_R = (3.1) from data/\n"
+                      "T (112 x 112): T G_112 T^T = G_X, det T = +-1, G_X = certificates/genus_class_7.txt, G_112 = (3.1) from data/\n"
                       "([[3G, tau G], [(tau G)^T, 2G]]); rows: the basis of X_7 in the basis (3.1) of L_112. T commutes with the\n"
                       "action of SL_2(29) (diag(g, g) on (3.1)). Found by code/supplementary/genus/genus.py identify.\n"
-                      "T（112 × 112）: 類 7 から L_112（基底 (3.1)）への SL_2(29) 同変な等長写像。T G_R T^T = G_X、det T = ±1。")
+                      "T（112 × 112）: 類 7 から L_112（基底 (3.1)）への SL_2(29) 同変な等長写像。T G_112 T^T = G_X、det T = ±1。")
     # class 3 -> gluing A, in the reduced coordinates of L_{56,2}(M) / 類 3 -> 貼り方 A（L_{56,2}(M) の簡約座標）
     S = Genus(rep.out_dir)
     Gs, gens_s = load_nebe("M", rep.out_dir, reduce=True)

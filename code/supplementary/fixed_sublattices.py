@@ -66,14 +66,14 @@ BKZ_DEFAULT = "20,30,40,50,60"
 BKZ_TOURS = 6
 
 
-def bkz_stages(GR, block_sizes, rep, label):
-    """Progressive BKZ on the Gram matrix GR (as in the research computation): LLL in mpfr, then for each block
+def bkz_stages(G112, block_sizes, rep, label):
+    """Progressive BKZ on the Gram matrix G112 (as in the research computation): LLL in mpfr, then for each block
     size LLL and BKZ in long double from the previous basis. Records the shortest norm of each reduced basis,
-    computed exactly as the diagonal of T GR T^T. / Gram 行列 GR への段階的な BKZ（研究時の計算と同じ）。"""
+    computed exactly as the diagonal of T G112 T^T. / Gram 行列 G112 への段階的な BKZ（研究時の計算と同じ）。"""
     from fpylll import BKZ, GSO, LLL, IntegerMatrix
     from fpylll.algorithms.bkz2 import BKZReduction
     from sage.all import ZZ, matrix
-    n = GR.nrows()
+    n = G112.nrows()
 
     def reduce(G, float_type, bs):
         A = IntegerMatrix.from_matrix([[int(c) for c in r] for r in G.rows()])
@@ -87,7 +87,7 @@ def bkz_stages(GR, block_sizes, rep, label):
         require(abs(T.det()) == 1, "abs(T.det()) == 1")
         return T * G * T.transpose()                       # exact; floating point only steers the reduction
 
-    cur = reduce(GR, "mpfr", 0)
+    cur = reduce(G112, "mpfr", 0)
     for bs in block_sizes:
         t0 = time.time()
         cur = reduce(cur, "ld", bs)
@@ -116,8 +116,8 @@ def main():
     X = matrix(ZZ, (data.tau(a.data) if a.tau == "C" else certs.load("negative_control_B.npz", "tau_class_B", a.certificates)).tolist())
     I = identity_matrix(ZZ, n)
     B = block_matrix(ZZ, [[I, X], [0 * I, 2 * I]], subdivide=False)
-    GR = (B * block_matrix(ZZ, [[G, 0], [0, G]], subdivide=False) * B.transpose() / 2).change_ring(ZZ)
-    rep.check(f"Gram matrix of {name}: even, det 1", all(GR[i, i] % 2 == 0 for i in range(112)) and GR.det() == 1)
+    G112 = (B * block_matrix(ZZ, [[G, 0], [0, G]], subdivide=False) * B.transpose() / 2).change_ring(ZZ)
+    rep.check(f"Gram matrix of {name}: even, det 1", all(G112[i, i] % 2 == 0 for i in range(112)) and G112.det() == 1)
     rep.check(f"g1, g2 commute with tau ({a.tau}), so diag(h, h) acts on {name}", all(g * X == X * g for g in (g1, g2)))
     if a.tau == "B":
         rep.value("min L_B (not computed here; proved by supplementary/gluing_b.py [C4])", 8)
@@ -136,7 +136,7 @@ def main():
         hh = block_matrix(ZZ, [[h, 0 * h], [0 * h, h]], subdivide=False)
         Kc = (B * hh * Binv - 1).change_ring(QQ).left_kernel().basis_matrix()       # L_112-coordinates fixed by h
         Kc = (Kc * Kc.denominator()).change_ring(ZZ).saturation()
-        Gs = Kc * GR * Kc.transpose()
+        Gs = Kc * G112 * Kc.transpose()
         dim, det = Kc.nrows(), Gs.det()
         U = pari(Gs).qflllgram().sage().transpose()
         require(abs(U.det()) == 1, "abs(U.det()) == 1")
@@ -153,7 +153,7 @@ def main():
         rep.check(f"order {p}: dimension {e_dim}, determinant {p}^{e_dim}, minimum {e_min} as in the paper",
                   (dim, int(det), m) == (e_dim, e_det, e_min))
     if block_sizes:
-        bkz_stages(GR, block_sizes, rep, name)
+        bkz_stages(G112, block_sizes, rep, name)
     rep.finish()
 
 

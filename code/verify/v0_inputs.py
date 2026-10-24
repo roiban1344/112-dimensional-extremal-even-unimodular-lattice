@@ -14,9 +14,9 @@ Checks / 確かめること:
        is integral and equals (3.1) = [[3G, tau G], [(tau G)^T, 2G]]; it is even, has
        determinant 1 and is positive definite (Lemma 3.2).
        B diag(G, G) B^T / 2 は整数で (3.1) に等しく、偶・行列式 1・正定値（補題 3.2）。
-  data certificates/reduction_R.txt is an integer matrix U with det U = +-1 and
-       U (3.1) U^T = data/R112_gram_LLL.txt, so the distributed Gram matrix describes the same lattice.
-       certificates/reduction_R.txt は det U = ±1 の整数行列 U で U (3.1) U^T = data/R112_gram_LLL.txt。
+  data certificates/reduction_L112.txt is an integer matrix U with det U = +-1 and
+       U (3.1) U^T = data/L112_gram_LLL.txt, so the distributed Gram matrix describes the same lattice.
+       certificates/reduction_L112.txt は det U = ±1 の整数行列 U で U (3.1) U^T = data/L112_gram_LLL.txt。
        配布した Gram 行列は同じ格子を表す。
   sym  the diagonal action of g1, g2 preserves L_112 (so SL_2(29) acts on L_112; not needed for Theorem A).
        g1, g2 の対角作用は L_112 を保つ（SL_2(29) が L_112 に作用する。定理 A には不要）。
@@ -88,16 +88,16 @@ def main():
     B = np.block([[I, t], [Z, 2 * I]])
     B2 = mm(mm(B, np.block([[G, Z], [Z, G]])), B.T)
     rep.check("B diag(G, G) B^T has even entries", (B2 % 2 == 0).all())
-    GR = B2 // 2
-    rep.check("B diag(G, G) B^T / 2 equals (3.1) = [[3G, tau G], [(tau G)^T, 2G]]", (GR == data.gram_R(G, t)).all())
-    rep.check("(3.1) is symmetric with even diagonal", is_even_symmetric(GR))
-    rep.check("det (3.1) = 1", exact.det_bareiss(GR) == 1)
-    rep.check("(3.1) is positive definite (exact rational LDL decomposition)", exact.is_positive_definite(GR))
+    G112 = B2 // 2
+    rep.check("B diag(G, G) B^T / 2 equals (3.1) = [[3G, tau G], [(tau G)^T, 2G]]", (G112 == data.gram_112(G, t)).all())
+    rep.check("(3.1) is symmetric with even diagonal", is_even_symmetric(G112))
+    rep.check("det (3.1) = 1", exact.det_bareiss(G112) == 1)
+    rep.check("(3.1) is positive definite (exact rational LDL decomposition)", exact.is_positive_definite(G112))
 
     # --- the distributed reduced Gram matrix ---
-    U = certs.load_matrix("reduction_R.txt", 112, a.certificates)
-    rep.check("reduction_R.txt: det U = +-1", abs(exact.det_bareiss(U)) == 1)
-    rep.check("U (3.1) U^T = data/R112_gram_LLL.txt", (mm(mm(U, GR), U.T) == data.gram_R_reduced(a.data)).all())
+    U = certs.load_matrix("reduction_L112.txt", 112, a.certificates)
+    rep.check("reduction_L112.txt: det U = +-1", abs(exact.det_bareiss(U)) == 1)
+    rep.check("U (3.1) U^T = data/L112_gram_LLL.txt", (mm(mm(U, G112), U.T) == data.gram_112_reduced(a.data)).all())
 
     # --- the diagonal action on L_112 (rows of B are a basis of sqrt2 L_112 in L + L) ---
     # g acts on L_112 iff M = B diag(g, g) B^{-1} is integral; then M (3.1) M^T = (3.1) says it is an isometry.
@@ -108,7 +108,7 @@ def main():
         Dg = np.block([[g, Z], [Z, g]])
         Binv2 = np.block([[2 * I, -t], [Z, I]])                    # 2 B^{-1}
         M2 = mm(mm(B, Dg), Binv2)
-        ok = (M2 % 2 == 0).all() and (mm(mm(M2 // 2, GR), (M2 // 2).T) == GR).all()
+        ok = (M2 % 2 == 0).all() and (mm(mm(M2 // 2, G112), (M2 // 2).T) == G112).all()
         rep.check(f"diag({name}, {name}) preserves L_112 and its Gram matrix", ok)
     rep.finish()
 

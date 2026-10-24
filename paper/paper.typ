@@ -2,7 +2,7 @@
 // 使い方: #import "paper.typ": *  ;  #show: paper.with(lang: "en" | "ja", title: [...], ...)
 #import "style/eeul.typ": *
 
-#let _lang = state("r112-lang", "en")
+#let _lang = state("l112-lang", "en")
 
 #let paper(lang: "en", title: none, subtitle: none, authors: none, date: none, body) = {
   show: doc.with(title: title, subtitle: subtitle, meta: none)
