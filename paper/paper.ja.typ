@@ -499,7 +499,7 @@ $G_112$ を (3.1) の $L_112$ の Gram 行列とする。
   [(c) 正規性], [$E\("Aut"\(L_112\)\)= S$], [付録 F（証明）], [—],
 )
 
-位数 48 の中心化群は、$L_112=L_56 times.o_(M') Lambda$ と書いたときの階数 2 の $M'$-格子 $Lambda={(a,b) in (M')^2:b equiv a tau med (mod 2M')}\/sqrt(2)$ のユニタリ自己同型群に一致する。部分群 $S dot.op C_("Aut"(L_112))(S)$ の位数は $584 thin 640$ であり、外部自己同型を加えると、その 2 倍の位数の群が得られる。外部自己同型を与える行列の一つを #raw("certificates/outer_automorphism_R.txt") として配布する #calc("C24", "C25")。
+位数 48 の中心化群は、$L_112=L_56 times.o_(M') Lambda$ と書いたときの階数 2 の $M'$-格子 $Lambda={(a,b) in (M')^2:b equiv a tau med (mod 2M')}\/sqrt(2)$ のユニタリ自己同型群に一致する。部分群 $S dot.op C_("Aut"(L_112))(S)$ の位数は $584 thin 640$ であり、外部自己同型を加えると、その 2 倍の位数の群が得られる。外部自己同型を与える行列の一つを #raw("certificates/outer_automorphism_L112.txt") として配布する #calc("C24", "C25")。
 
 #strong[構造.] 明示的な生成元（$S$ の生成元、$C_("Aut"(L_112))(S)$ の 48 元、外部自己同型を与える元 1 つ）を 3 を法として還元し（この還元は有限な整数行列群の上で単射である）、GAP で計算すると、位数がちょうど $1 thin 169 thin 280$ の群が得られる #calc("C26")。この計算は位数の独立な検算となる。さらに $C_("Aut"(L_112))(S) tilde.equiv "SL"_2(3) circle.small C_4$（SmallGroup(48,33)）、$"Aut"(L_112) \/ S tilde.equiv C_2 times S_4$、$"Aut"(L_112) \/ C_("Aut"(L_112))(S) tilde.equiv "PGL"_2(29)$、$Z("Aut"(L_112)) = {plus.minus 1}$ が成り立ち、指数 2 の部分群 $S dot.op C_("Aut"(L_112))(S)$ による拡大は分裂しない（この部分群の外側の剰余類は対合を含まない） #calc("C26")。以上をまとめると、$"Aut"(L_112) tilde.equiv ("SL"_2(29) circle.small "SL"_2(3) circle.small C_4) . 2$ である（中心積は共通の $-1$ を同一視して取る）。生成元の行列式はすべて 1 であり、$"Aut"(L_112)$ と可換な $L_112$ の自己準同型は環 $ZZ[sqrt(-29)]$ をなす。よって $L_112$ は $ZZ[sqrt(-29)]$ 上の階数 56 のエルミート格子であり、$"Aut"(L_112) subset "U"(56) subset "SO"(112)$ が成り立つ。
 
@@ -592,12 +592,12 @@ $632 dot.op 24 thin 360 + 24 dot.op 8 thin 120 = 15 thin 395 thin 520 + 194 thin
   [#raw("L56_gram.txt")], [$L_56$ の Gram 行列 $G$（56×56）], [#raw("4d13bd51…")],
   [#raw("sl2_29_generators.txt")], [$"SL"_2\(29\)$ を生成する $g_1\,g_2$（位数 5, 7）], [#raw("97f88443…")],
   [#raw("tau.txt")], [$tau$（56×56）、$tau^2 = - 5$], [#raw("30b6fa54…")],
-  [#raw("R112_gram_LLL.txt")], [$L_112$ の LLL 簡約した Gram 行列（112×112）], [#raw("106ce481…")],
+  [#raw("L112_gram_LLL.txt")], [$L_112$ の LLL 簡約した Gram 行列（112×112）], [#raw("104764e3…")],
 )
 
-#block(text(size: 0.85em, {set par(justify: false); [SHA-256 の全桁:]; linebreak(); raw("4d13bd51fcf3cb8c5706bde45828713d7eeb4d18a37e8e9d84fb2700f4bef2f0"); linebreak(); raw("97f88443de1fd1fdeb010ecb668dbbb03a8e0e989a18c0ad85a751687012ad90"); linebreak(); raw("30b6fa54f7abc2938a8f5ce29237bb92a4224f5418d3cae85183c0a89803a0f1"); linebreak(); raw("106ce481d60fac9bbbe211da1ba15c68610cd8dbcbee1fe0e110435f9a50083d")}))
+#block(text(size: 0.85em, {set par(justify: false); [SHA-256 の全桁:]; linebreak(); raw("4d13bd51fcf3cb8c5706bde45828713d7eeb4d18a37e8e9d84fb2700f4bef2f0"); linebreak(); raw("97f88443de1fd1fdeb010ecb668dbbb03a8e0e989a18c0ad85a751687012ad90"); linebreak(); raw("30b6fa54f7abc2938a8f5ce29237bb92a4224f5418d3cae85183c0a89803a0f1"); linebreak(); raw("104764e3c8add14d124c9e4ffd011e35d4d4659f4b6216651d278d76003bbfce")}))
 
-#strong[規約.] ベクトルは行ベクトルで表す。行列 $g$ は $x mapsto x g$ で作用し、等長写像の条件は $g G g^(sans(T)) = G$、自己準同型の条件は $tau G tau^(sans(T)) = 5 G$ である。#raw("R112_gram_LLL.txt") は (3.1) を PARI の #raw("qflllgram") で簡約したものである。
+#strong[規約.] ベクトルは行ベクトルで表す。行列 $g$ は $x mapsto x g$ で作用し、等長写像の条件は $g G g^(sans(T)) = G$、自己準同型の条件は $tau G tau^(sans(T)) = 5 G$ である。#raw("L112_gram_LLL.txt") は (3.1) を PARI の #raw("qflllgram") で簡約したものである。
 
 #strong[データファイルによらない指定.] 定義行列（56×56 と 112×112）は本稿に印刷せず、表 D1 のファイルとして配布する。§7.2 により、$L_56$ は \[Neb98\] の $L_(56,2)(tilde(M))$ と $"SL"_2(29)$ 同変に等長同型であり、その座標では $tau$ は $tilde(M)$ の被約ノルム 5・被約トレース 0 の元の右乗法である（その元は §7.2 に記す）。これと (1.2) により、$L_112$ はデータファイルによらず等長同型を除いて指定される。ただし、基準とするのはデータファイルである。すべての検算プログラムはファイルを読み、そのハッシュを照合する。
 
@@ -607,7 +607,7 @@ $632 dot.op 24 thin 360 + 24 dot.op 8 thin 120 = 15 thin 395 thin 520 + 194 thin
 
 #strong[コード.] 本稿で用いた計算は、それを実行するコードとともにすべて表 D2 に掲載する。表 D2 のパスは、未公開と明示した補足計算を除き、公開リポジトリ \[Repo\] 内のパスである。本文の \[C1\], \[C2\], … は表 D2 の行を指す。
 
-配布データから計算事実を検算する最短の経路（補遺 表 S7 の経路 A。スクリプト #raw("code/verify/proof.sh")）の所要時間は約 1.2 CPU 時間である。代替経路と追加検査は補遺 §S3 にまとめる。ファイル名の R112 は $L_112$ の旧称に由来する。
+配布データから計算事実を検算する最短の経路（補遺 表 S7 の経路 A。スクリプト #raw("code/verify/proof.sh")）の所要時間は約 1.2 CPU 時間である。代替経路と追加検査は補遺 §S3 にまとめる。
 
 #calc-table(lang: "ja")
 

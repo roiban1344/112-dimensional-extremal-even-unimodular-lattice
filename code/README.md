@@ -146,7 +146,7 @@ Not covered: these tests are not a verification of the theorem and do not replac
 | `produce/p3_norm8_orbits.py` | `norm8_reps.npz` (marked elements (sums of two minimal vectors), §6.4) | 1.2 h |
 | `produce/p4_odd_descent.py` | `odd_bounding.npz` (descent, §6.6) | 6 min |
 | `produce/p5_even_descent.py` | `even_bounding.npz` (descent, §6.7; 6 parts, resumable) | ≈ 190 CPU h |
-| `produce/p6_reduction.py` | `reduction_L.txt`, `reduction_R.txt` | 1 min |
+| `produce/p6_reduction.py` | `reduction_L.txt`, `reduction_L112.txt` | 1 min |
 
 The producers never write to `certificates/`, whose files are fixed by `certificates/SHA256SUMS`: each
 writes its files under `out/p<k>/` with the names of the distributed files (for example

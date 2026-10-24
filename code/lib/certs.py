@@ -18,8 +18,8 @@
                                                  x_i u_k tau + 2L の偶の類の certificate（第 6i+k 行）（F5b）
   reduction_L.txt    U     (56 x 56 integers)    BKZ-40 basis change of L used by the enumeration (F1)
                                                  列挙（F1）に使う L の BKZ-40 の基底変換
-  reduction_R.txt    U     (112 x 112 integers)  basis change from (3.1) to data/R112_gram_LLL.txt
-                                                 (3.1) から data/R112_gram_LLL.txt への基底変換
+  reduction_L112.txt U     (112 x 112 integers)  basis change from (3.1) to data/L112_gram_LLL.txt
+                                                 (3.1) から data/L112_gram_LLL.txt への基底変換
 
 The files are checked against the repository's certificates/SHA256SUMS, also when read from another
 directory (--certificates DIR); another list is used only with --hashes FILE (tests on modified data).

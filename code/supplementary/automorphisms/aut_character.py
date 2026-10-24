@@ -58,7 +58,7 @@ def main():
     Cg = libgap.Group([libgap(M.change_ring(Fp)) for M in cent])
     ckeys = {tuple(M.change_ring(Fp).list()): M for M in cent}
     cint = [ckeys[tuple(matrix(Fp, c.sage()).list())] for c in libgap.SmallGeneratingSet(Cg)]
-    intgens = st.sR + cint + [X]
+    intgens = st.s112 + cint + [X]
     gens = [libgap(M.change_ring(Fp)) for M in intgens]
     A = libgap.Group(gens)
     rep.check("|A| = 1169280", int(A.Size()) == ORDER)

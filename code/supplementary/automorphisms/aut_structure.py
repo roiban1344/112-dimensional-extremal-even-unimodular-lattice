@@ -3,11 +3,11 @@ Not used in the proof of Theorem A.
 S7. 明示的な生成元からの Aut(L_112) の構造（論文 §8、定理 B。表 D2 の [C26]）。定理 A の証明には使わない。
 
 Generators, as 112 x 112 integer matrices in the basis (3.1): the two generators of S = SL_2(29),
-the 48 elements of C_A(S) (recomputed), and the automorphism X of certificates/outer_automorphism_R.txt.
+the 48 elements of C_A(S) (recomputed), and the automorphism X of certificates/outer_automorphism_L112.txt.
 The reduction modulo 3 is injective on a finite group of integer matrices (Minkowski), so the group is
 studied as a matrix group over GF(3) in GAP.
 生成元（基底 (3.1) に関する 112 × 112 の整数行列）: S = SL_2(29) の 2 つの生成元、C_A(S) の 48 元（計算し直す）、
-certificates/outer_automorphism_R.txt の自己同型 X。整数行列の有限群では 3 を法とした還元は単射（Minkowski）なので、GF(3) 上の行列群として GAP で調べる。
+certificates/outer_automorphism_L112.txt の自己同型 X。整数行列の有限群では 3 を法とした還元は単射（Minkowski）なので、GF(3) 上の行列群として GAP で調べる。
 
 Computed / 求めるもの:
   (1) |A| = |<S, C_A(S), X>| = 1,169,280;  (2) the structure of C_A(S) and of A/S;
@@ -49,13 +49,13 @@ def main():
     st = Setup(a.data, a.certificates)
     cent = st.centralizer()
     X, _ = st.outer_automorphism()
-    rep.check("all generators are isometries of L_112", all(M * st.GR * M.transpose() == st.GR for M in cent + st.sR + [X]))
-    rep.value("(5) determinants: S, C_A(S), X", [sorted({int(M.det()) for M in st.sR}), sorted({int(M.det()) for M in cent}), int(X.det())])
-    rep.check("(5) all generators have determinant 1 (A in SO(112))", all(M.det() == 1 for M in st.sR + cent + [X]))
+    rep.check("all generators are isometries of L_112", all(M * st.G112 * M.transpose() == st.G112 for M in cent + st.s112 + [X]))
+    rep.value("(5) determinants: S, C_A(S), X", [sorted({int(M.det()) for M in st.s112}), sorted({int(M.det()) for M in cent}), int(X.det())])
+    rep.check("(5) all generators have determinant 1 (A in SO(112))", all(M.det() == 1 for M in st.s112 + cent + [X]))
 
     F3 = GF(3)
     gp = lambda Ms: libgap.Group([libgap(M.change_ring(F3)) for M in Ms])   # noqa: E731
-    S, C, A, K = gp(st.sR), gp(cent), gp(st.sR + cent + [X]), gp(cent + [X])
+    S, C, A, K = gp(st.s112), gp(cent), gp(st.s112 + cent + [X]), gp(cent + [X])
     rep.value("|S|, |C_A(S)|, |<C_A(S), X>|", [int(S.Size()), int(C.Size()), int(K.Size())])
     rep.check("|S| = 24360 and |C_A(S)| = 48", [int(S.Size()), int(C.Size())] == [24360, 48])
     rep.check("(1) |A| = 1169280", int(A.Size()) == 1169280)

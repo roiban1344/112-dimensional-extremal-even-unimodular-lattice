@@ -50,10 +50,10 @@ def main():
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rep = Report("s3_node_estimate", a.out)
-    GR = matrix(ZZ, data.gram_R(data.gram(a.data), data.tau(a.data)).tolist())
-    rep.check("det (3.1) = 1", GR.det() == 1)
+    G112 = matrix(ZZ, data.gram_112(data.gram(a.data), data.tau(a.data)).tolist())
+    rep.check("det (3.1) = 1", G112.det() == 1)
     scale = 2 ** 40
-    C = GR.change_ring(RealField(200)).cholesky()             # GR = C C^T, C lower triangular
+    C = G112.change_ring(RealField(200)).cholesky()           # G112 = C C^T, C lower triangular
     rows = [[int((x * scale).round()) for x in row] for row in C.rows()]
     for name, block in (("LLL", None), ("BKZ-20", 20), ("BKZ-30", 30)):
         A = IntegerMatrix.from_matrix(rows)

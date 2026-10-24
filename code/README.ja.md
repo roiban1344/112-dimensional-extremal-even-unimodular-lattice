@@ -129,7 +129,7 @@ CI は pull request ごとに `-m "not data"` を実行し、`data` の試験は
 | `produce/p3_norm8_orbits.py` | `norm8_reps.npz`（印の付く元（2 本の最小ベクトルの和）、§6.4） | 1.2 時間 |
 | `produce/p4_odd_descent.py` | `odd_bounding.npz`（降下、§6.6） | 6 分 |
 | `produce/p5_even_descent.py` | `even_bounding.npz`（降下、§6.7。6 分割、再開可能） | 約 190 CPU 時間 |
-| `produce/p6_reduction.py` | `reduction_L.txt`、`reduction_R.txt` | 1 分 |
+| `produce/p6_reduction.py` | `reduction_L.txt`、`reduction_L112.txt` | 1 分 |
 
 生成スクリプトは `certificates/` には書きません（そこのファイルは `certificates/SHA256SUMS` で固定されています）。各スクリプトは、配布ファイルと
 同じ名前で `out/p<k>/` の下に書き（たとえば `out/p4/odd_bounding.npz`）、そのあと配布した検証用データと比べます。違いがあれば `[FAIL]` と

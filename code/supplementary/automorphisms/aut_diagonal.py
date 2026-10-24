@@ -40,7 +40,7 @@ def main():
     st = Setup(a.data, a.certificates)
     cent = st.centralizer()
     rep.check("C_A(S) has 48 elements, all commuting with the generators of S",
-              len(cent) == 48 and all(X * h == h * X for X in cent for h in st.sR))
+              len(cent) == 48 and all(X * h == h * X for X in cent for h in st.s112))
     I2 = identity_matrix(ZZ, 112)
     invs = [X for X in cent if X * X == I2 and X != I2 and X != -I2]
     rep.value("involutions other than +-1 in C_A(S), with their traces", sorted(int(X.trace()) for X in invs))
@@ -48,7 +48,7 @@ def main():
     for c in invs:
         Pm = (I2 - c).change_ring(QQ) / 2
         Pp = (I2 + c).change_ring(QQ) / 2
-        survivors += all(all(x in ZZ for x in (Pm * h + Pp).list()) for h in st.sR)
+        survivors += all(all(x in ZZ for x in (Pm * h + Pp).list()) for h in st.s112)
     rep.value("involutions c for which g -> P_- g + P_+ preserves L_112 for both generators", survivors)
     rep.check("none: the diagonal case is excluded", survivors == 0)
     rep.finish()

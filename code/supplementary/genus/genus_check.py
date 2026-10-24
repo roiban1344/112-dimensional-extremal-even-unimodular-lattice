@@ -76,9 +76,9 @@ def check(a):
     rep.check("witnesses for classes 3, 4, 5", set(WITNESS_CLASSES) <= set(have))
     rep.value("status of the minimum norm per class (as in Table S10; [witness]: a norm-8 vector checked above)", {j: STATUS[j] + (" [witness]" if j in have else "") for j in range(NCLASS)})
     # isometries / 等長写像
-    GR = data.gram_R(G, tau)
+    G112 = data.gram_112(G, tau)
     T7 = certs.load_matrix(ISO7_FILE, NX, cdir).astype(np.int64)
-    rep.check("class 7 -> L_112: T G_R T^T = G_7 (G_R = (3.1) from data/)", (mm(mm(T7, GR), T7.T) == GX[7]).all())
+    rep.check("class 7 -> L_112: T G_112 T^T = G_7 (G_112 = (3.1) from data/)", (mm(mm(T7, G112), T7.T) == GX[7]).all())
     d7 = exact.det_bareiss(T7)
     rep.check(f"class 7 -> L_112: det T = +-1 ({d7})", abs(d7) == 1)
     ok = all((mm(s, T7) == mm(T7, g)).all() for s, g in zip(SX[7], gg))
