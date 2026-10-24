@@ -443,7 +443,7 @@ The setting is abstract: $L_56$ is an additive group with an integer-valued symm
   [#raw("theoremA_canonical")], [§4.3, derivation of Theorem A with F5b checked by canonical forms (§6.5)], [the same conclusion, with F5b in the form “the coset of each norm-8 representative contains no vector of norm 8”],
 )
 
-Check: the package builds, contains no forbidden keyword such as #raw("sorry") outside comments, and each theorem depends only on the standard axioms #raw("propext"), #raw("Classical.choice"), #raw("Quot.sound"). The script #raw("lean/check.sh") runs the three checks and compares the axioms with #raw("lean/expected-axioms.txt") #calc("C22").
+Check: the package builds without warnings (a #raw("sorry") anywhere would give one), each theorem depends only on the standard axioms #raw("propext"), #raw("Classical.choice"), #raw("Quot.sound"), and the kernel accepts every declaration again when #raw("leanchecker") replays them. The script #raw("lean/check.sh") runs the three checks and compares the axioms with #raw("lean/expected-axioms.txt") #calc("C22").
 
 Not formalized (outside the Lean statements):
 - the computational facts themselves: F0 (unimodularity, an integer determinant), the matrix identities of F4, and the individual numbers in F1–F5 (§6);

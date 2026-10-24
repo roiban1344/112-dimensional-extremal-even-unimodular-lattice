@@ -288,7 +288,7 @@ theorem no_inner_shell_ne8
   · -- v = 0: then x ∈ 2L and x ≠ 0, of norm ≥ 24 / v = 0 のとき x ∈ 2L、x ≠ 0 でノルム 24 以上
     have hxe := S.two_dvd_of_tau x y hv
     have hw : S.τ y - 2 • x ≠ 0 := by
-      intro h; rw [h] at hxe; simp at hxe; exact hx hxe
+      intro h; rw [h, nsmul_zero] at hxe; exact hx hxe
     have := S.N_two_ge _ hw
     rw [← hxe] at this
     rw [hv]
@@ -302,7 +302,9 @@ theorem no_inner_shell_ne8
   unfold N at hlt
   -- the sum is 12 or 16 (a multiple of 4 below 20); the four types of Lemma 4.2
   -- 和は 12 か 16（20 未満の 4 の倍数）。補題 4.2 の四つの型に分ける
-  have hcases : (S.B x x = 6 ∧ (S.B (S.τ x + 2 • y) (S.τ x + 2 • y) = 6 ∨ S.B (S.τ x + 2 • y) (S.τ x + 2 • y) = 10))
+  have hcases :
+      (S.B x x = 6 ∧
+        (S.B (S.τ x + 2 • y) (S.τ x + 2 • y) = 6 ∨ S.B (S.τ x + 2 • y) (S.τ x + 2 • y) = 10))
       ∨ (S.B x x = 8 ∧ S.B (S.τ x + 2 • y) (S.τ x + 2 • y) = 8)
       ∨ (S.B x x = 10 ∧ S.B (S.τ x + 2 • y) (S.τ x + 2 • y) = 6) := by omega
   rcases hcases with ⟨h1, h2⟩ | ⟨h1, h2⟩ | ⟨h1, h2⟩
@@ -372,7 +374,8 @@ theorem midpoint_lemma (w' y : L) (h1 : w' + 2 • y ≠ w') (h2 : w' + 2 • y 
     exact eq_neg_of_add_eq_zero_right h
   have m1 := S.N_two_ge y hy
   have m2 := S.N_two_ge (w' + y) hwy
-  -- N (w - w') = N (2y) and N (w + w') = N (2 (w' + y)) / N (w - w') = N (2y)、N (w + w') = N (2 (w' + y))
+  -- N (w - w') = N (2y) and N (w + w') = N (2 (w' + y))
+  -- N (w - w') = N (2y)、N (w + w') = N (2 (w' + y))
   have e1 : S.N (w' + 2 • y) + S.N w' - 2 * S.B (w' + 2 • y) w' = S.N (2 • y) := by
     rw [← N_sub]; congr 1; abel
   have e2 : S.N (w' + 2 • y) + S.N w' + 2 * S.B (w' + 2 • y) w' = S.N (2 • (w' + y)) := by
@@ -411,7 +414,8 @@ theorem cert_bound (w0 : L) (hlo : 12 ≤ S.N w0) (hhi : S.N w0 ≤ 20) (hip : S
   have m1 := S.min6 y hy
   have m2 := S.min6 (w0 + y) hwy
   unfold N at *
-  -- a midpoint of norm 6 is a minimal vector, so its inner product with w0 is at most 6 in absolute value
+  -- a midpoint of norm 6 is a minimal vector, so its inner product with w0 is at most 6 in
+  -- absolute value
   -- ノルム 6 の中点は最小ベクトルなので、w0 との内積の絶対値は 6 以下
   by_cases c1 : S.B y y = 6
   · have := hip (-y) (by unfold N; rw [B_neg_left, B_neg_right, neg_neg]; exact c1)
@@ -465,9 +469,11 @@ structure Data (S : Setting L) where
   the centralizer), as in the paper. / ノルム 8 のベクトルの代表（F3）: 論文どおり
   (軌道代表) × (中心化群の元) の全体。 -/
   reps8 : Set L
-  /-- **F4**: elements of the symmetry group are isometries and commute with `τ`.
-  **F4**: 対称性の元は等長で、`τ` と可換。 -/
+  /-- **F4**: elements of the symmetry group are isometries.
+  **F4**: 対称性の元は等長。 -/
   sym_iso : ∀ g ∈ Sym, ∀ a b, S.B (g a) (g b) = S.B a b
+  /-- **F4**: elements of the symmetry group commute with `τ`.
+  **F4**: 対称性の元は `τ` と可換。 -/
   sym_tau : ∀ g ∈ Sym, ∀ a, S.τ (g a) = g (S.τ a)
   /-- **F2**: every vector of norm 6 is the image of a representative.
   **F2**: ノルム 6 のベクトルは代表の像。 -/
@@ -485,7 +491,8 @@ structure Data (S : Setting L) where
 structure DataCert (S : Setting L) extends Data S where
   /-- **F5b (certificates)**: the coset `τ r + 2L` of each representative `r ∈ reps8` has an even
   certificate. / **F5b（証明書）**: 各代表 `r ∈ reps8` の類 `τ r + 2L` に偶の証明書がある。 -/
-  bound8 : ∀ r ∈ reps8, ∃ w0 y0, w0 = S.τ r + 2 • y0 ∧ (S.N w0 = 12 ∨ S.N w0 = 16 ∨ S.N w0 = 20) ∧ SmallIP S w0
+  bound8 : ∀ r ∈ reps8, ∃ w0 y0, w0 = S.τ r + 2 • y0 ∧ (S.N w0 = 12 ∨ S.N w0 = 16 ∨ S.N w0 = 20) ∧
+    SmallIP S w0
 
 /-- `Data` together with F5b checked by canonical forms (§6.5, `v6_canonical_lookup.py`). The
 program checks `can(τ r + 2L) ∉ K₈`; Proposition 6.3 turns this into the statement below.

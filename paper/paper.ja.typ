@@ -445,7 +445,7 @@ $\(8\,8\)$ 型の検査では、各組について $x_i u tau$ の類とその�
   [#raw("theoremA_canonical")], [§4.3、F5b を標準形で確かめた場合（§6.5）の定理 A の導出], [同じ結論。F5b は「ノルム 8 の各代表の類はノルム 8 のベクトルを含まない」の形],
 )
 
-検査の結果、パッケージはビルドでき、コメントの外に #raw("sorry") などの禁止語を含まず、各定理が依存する公理は標準の #raw("propext"), #raw("Classical.choice"), #raw("Quot.sound") だけであることを確認した。スクリプト #raw("lean/check.sh") がこの三つの検査を行い、公理を #raw("lean/expected-axioms.txt") と比較する #calc("C22")。
+検査の結果、パッケージは警告なしでビルドでき（#raw("sorry") がどこかにあれば警告が出る）、各定理が依存する公理は標準の #raw("propext"), #raw("Classical.choice"), #raw("Quot.sound") だけであり、#raw("leanchecker") が宣言を再検査してもカーネルはすべて受理することを確認した。スクリプト #raw("lean/check.sh") がこの三つの検査を行い、公理を #raw("lean/expected-axioms.txt") と比較する #calc("C22")。
 
 形式化していないもの（Lean の主張の外にあるもの）:
 - 計算事実そのもの。F0（ユニモジュラー性、整数行列の行列式）、F4 の行列の恒等式、F1〜F5 の個々の数値（§6）。

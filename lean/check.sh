@@ -1,45 +1,39 @@
 #!/usr/bin/env bash
-# Check of the Lean package (ledger entry C22 of the paper):
-#   1. `lake build` succeeds (the Lean kernel has checked every proof);
-#   2. the sources contain no forbidden keyword outside comments
-#      (sorry, admit, axiom, native_decide, ofReduceBool, ofReduceNat, trustCompiler, unsafe,
-#      implemented_by, extern, csimp, and the kernel bypasses debug.skipKernelTC and addDeclWithoutChecking,
-#      which `#print axioms` in step 3 would not show);
-#   3. the axioms each theorem depends on (`lake env lean CheckAxioms.lean`) equal expected-axioms.txt
-#      (subsets of propext, Classical.choice, Quot.sound).
-# Needs the toolchain of lean-toolchain and python3; run `lake exe cache get` once before.
-# Lean パッケージの検査（論文の C22）: 1. ビルドが通る、2. コメントの外に禁止語が無い、
-# 3. 各定理が依存する公理が expected-axioms.txt と一致する。事前に一度 `lake exe cache get`。
-# 2. の禁止語には、手順 3 の `#print axioms` に現れないカーネルの迂回（debug.skipKernelTC、
-# addDeclWithoutChecking）も含める。
+# Check of the Lean package (ledger entry C22 of the paper), following the steps of the Lean reference
+# manual (https://lean-lang.org/doc/reference/latest/ValidatingProofs/):
+#   1. `lake build --wfail` succeeds: the Lean kernel has checked every proof, and there is no warning.
+#      A `sorry` anywhere gives the warning "declaration uses 'sorry'", so it fails here, as do the
+#      warnings of Mathlib's standard linters enabled in lakefile.toml;
+#   2. the axioms each theorem depends on (`lake env lean CheckAxioms.lean`) equal expected-axioms.txt
+#      (subsets of propext, Classical.choice, Quot.sound). `sorry`, `native_decide` and any `axiom` the
+#      proofs use would appear here as further axioms (sorryAx, ...);
+#   3. `leanchecker` replays the declarations of EEUL.L112.Chain in the kernel, which also catches
+#      declarations that bypassed the kernel (debug.skipKernelTC, addDeclWithoutChecking).
+#      `./check.sh --fresh` replays the imported Mathlib modules as well (about 3 minutes).
+# Needs the toolchain of lean-toolchain; run `lake exe cache get` once before.
+# Lean パッケージの検査（論文の C22）。Lean リファレンスの手順に従う:
+#   1. `lake build --wfail` が通る（カーネルがすべての証明を検査し、警告も無い）。`sorry` はどこにあっても
+#      警告 "declaration uses 'sorry'" になるのでここで落ちる。lakefile.toml で有効にした Mathlib の
+#      標準 linter の警告も同じ;
+#   2. 各定理が依存する公理が expected-axioms.txt と一致する。証明が使う `sorry`・`native_decide`・`axiom`
+#      はここに別の公理（sorryAx など）として現れる;
+#   3. `leanchecker` が EEUL.L112.Chain の宣言をカーネルで検査し直す。カーネルを迂回した宣言
+#      （debug.skipKernelTC、addDeclWithoutChecking）もここで捕まる。`./check.sh --fresh` は読み込む
+#      Mathlib のモジュールも検査し直す（約 3 分）。
+# 事前に一度 `lake exe cache get`。
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-echo "== 1. lake build"
-lake build
+echo "== 1. lake build --wfail"
+lake build --wfail
 
-echo "== 2. forbidden keywords outside comments"
-python3 -I - <<'PY'
-import pathlib, re, sys
-bad = re.compile(r"\b(sorry|admit|axiom|native_decide|ofReduceBool|ofReduceNat|trustCompiler|unsafe|implemented_by|extern|csimp"
-                 r"|skipKernelTC|addDeclWithoutChecking)\b")
-hit = False
-for p in sorted(pathlib.Path("EEUL").rglob("*.lean")) + [pathlib.Path("EEUL.lean"), pathlib.Path("CheckAxioms.lean")]:
-    s = p.read_text(encoding="utf-8")
-    s = re.sub(r"/-.*?-/", lambda m: "\n" * m.group(0).count("\n"), s, flags=re.S)  # block comments and docstrings
-    for i, line in enumerate(s.split("\n"), 1):
-        line = line.split("--")[0]  # line comments
-        if bad.search(line):
-            print(f"{p}:{i}: {line.strip()}")
-            hit = True
-sys.exit(1 if hit else 0)
-PY
-echo "none"
-
-echo "== 3. axioms"
+echo "== 2. axioms"
 actual="$(mktemp)"
 trap 'rm -f "$actual"' EXIT
 lake env lean CheckAxioms.lean > "$actual"
 diff -u expected-axioms.txt "$actual"
 
-echo "PASS: build, no forbidden keywords, axioms as in expected-axioms.txt"
+echo "== 3. leanchecker $*"
+lake env leanchecker "$@" EEUL.L112.Chain
+
+echo "PASS: build without warnings, axioms as in expected-axioms.txt, kernel replay"
