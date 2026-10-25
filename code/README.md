@@ -55,10 +55,10 @@ The proof does **not** rely on the correctness of the code that produced the ver
 | `lib/mod2.py` | classes modulo 2L as 56-bit integers and their canonical forms (§6.5) |
 | `lib/shells.py` | the minimal vectors of L and inner products with them (§5), with checkpoints |
 | `lib/report.py` | `[ok]`/`[FAIL]` output and `out/<step>.json` |
-| `verify/v0_inputs.py` … `v8_design_identities.py`, `enum_interval.c` | the steps of the next section |
+| `verify/v0_inputs.py` … `v8_design_identities.py`, `enum_interval.c` | the verification scripts v0–v8 and the enumeration program used by v1 (see the next section) |
 | `verify/fetch.sh`, `proof.sh`, `full.sh`, `quick.sh` | download of the verification data and the three levels of checking |
-| `verify/controls/leech.txt` | Gram matrix of the Leech lattice, a positive control of v1 |
-| `produce/p1_centralizer.py` … `p6_reduction.py`, `descent.py` | the producers of the verification data (section [Producing the verification data](#producing-the-verification-data)); `descent.py` is their shared descent search |
+| `verify/controls/leech.txt` | Gram matrix of the Leech lattice, a positive control for the verification script v1 |
+| `produce/p1_centralizer.py` … `p6_reduction.py`, `descent.py` | the producers of the verification data (section [Producing the verification data](#producing-the-verification-data)); `descent.py` is the search for certificates shared by p4 and p5 (starting from an element w of the class, replace w by w − 2u while some minimal vector u has ⟨w, u⟩ ≥ 7; the norm decreases, so the search stops, and w is a certificate if it meets the conditions of §5) |
 | `produce/exact_qfminim.py` | PARI's `qfminim` followed by a completeness check with the interval enumeration (used by `p1` and `supplementary/`) |
 | `crosscheck/second_impl/odd_classes.py`, `even_classes.py`, `design_identities.py` | second implementations of F5a, F5b and the design identities (numpy only) |
 | `crosscheck/all_data/`, `supplementary/` | see the sections [Second implementations](#second-implementations-and-supplementary-computations), [Route T](#route-t-supplement-s4-table-d2-c20-c21-c32) and [Correspondence with Table D2](#correspondence-with-table-d2-of-the-paper); `supplementary/nebe/isometry.py` finds SL₂(29)-equivariant isometries for `identify_nebe.py` and `reduction_to_nebe.py` |
@@ -209,7 +209,7 @@ maps, the search for equivariant isometries, …) are in `supplementary/_shared.
 
 ## Route T (supplement §S4, Table D2 [C20], [C21], [C32])
 
-`supplementary/route_t/` contains the computations of the supplementary argument using the hermitian
+`supplementary/route_t/` contains the computations of a second proof of extremality that uses the Hermitian
 structure of L₁₁₂ (route T). They are not used in the proof of Theorem A. Route T (supplement,
 Theorem S4.1) reduces, by a further finite check (`exclusion.py`, [C32]), to the same computations
 F5a and F5b as the main proof. The classification by invariants and the three searches are cross-checks.

@@ -23,17 +23,17 @@
 
 ## リポジトリの中身
 
-追跡しているファイルはすべて、下の表からたどれるいずれかの README で説明しています（`code/tests/test_docs.py` がこれを確かめます）。
+このリポジトリで管理されているファイルはすべて、下表からたどれるいずれかの README で説明されています。`code/tests/test_docs.py` が CI でそれを保証します。
 
 | 場所 | 中身 | 定理 A の検算に要るか |
 |---|---|---|
-| [`paper/`](paper/README.ja.md) | 論文と補遺（Typst のソースと PDF）、図 1 の原本、ソースの整合性の検査 | 読む |
+| [`paper/`](paper/README.ja.md) | 論文と補遺（Typst のソースと PDF）、図 1 の原本、ソースの整合性の検査 | － |
 | [`data/`](data/README.ja.md) | 格子を定義する 4 つの行列 | 要る |
 | [`certificates/`](certificates/MANIFEST.ja.md) | 検証用データ。小さいファイルは git に、大きい `.npz` は Release の添付ファイルに置き、すべて `SHA256SUMS` で固定する | `verify/` が確かめるファイルは要る |
 | [`code/verify/`](code/README.ja.md#検算の各段)・[`code/lib/`](code/README.ja.md#ファイル) | F0〜F5 の検算（`proof.sh`・`full.sh`・`quick.sh`・`fetch.sh`）とその共有ライブラリ（NumPy を使う Python と C のプログラム 1 本） | 要る |
 | [`code/produce/`](code/README.ja.md#検証用データの生成) | 検証用データを生成したプログラム（SageMath） | 要らない。証明が使う性質はすべて `verify/` が確かめ直す |
 | [`code/crosscheck/`](code/README.ja.md#第-2-の実装と補足の計算) | 検算の第 2 の実装 | 要らない（照合） |
-| [`code/supplementary/`](code/README.ja.md#論文の表-d2-との対応) | 定理 A 以外の主張の計算（貼り方、自己同型群、経路 T、補遺 §S6 の種など） | 要らない |
+| [`code/supplementary/`](code/README.ja.md#論文の表-d2-との対応) | 定理 A 以外の主張の計算（貼り方、自己同型群、極値性の別証明である証明経路 T、補遺 §S6 の種など） | 要らない |
 | [`code/tests/`](code/README.ja.md#試験) | 小さな例による試験（pytest） | 要らない |
 | [`lean/`](lean/README.ja.md) | F1〜F5 からノルム 10 未満のベクトルが無いことを導く論証の Lean 4 による形式化 | 要らない（論証の独立な検査） |
 | `Dockerfile`・`.devcontainer/devcontainer.json`・`requirements-verify.txt` | 下の水準 (i)〜(iii) のための軽量なコンテナイメージ、それを使う開発コンテナ、NumPy の版の固定 | 任意 |
@@ -85,7 +85,7 @@ bash code/verify/full.sh 3
 
 引用には、GitHub の「Cite this repository」を使ってください。[CITATION.cff](CITATION.cff) を読みます。
 
-Release `certificates-v2` には、補遺 §S4 の探索 (2) の 763,992 類と探索 (3) の 3,936 類すべてについて、整数演算で検算済みの代表元を収めています。これらの探索は照合のための計算です。経路 T（補遺 §S4.1）は、別の論証と追加の有限の検査によって、主証明と同じ計算 F5a・F5b に帰着します。定理 A は経路 T に依存しません。
+Release `certificates-v2` には、補遺 §S4 の探索 (2) の 763,992 類と探索 (3) の 3,936 類すべてについて、整数演算で検算済みの代表元を収めています。これらの探索は照合のための計算です。証明経路 T（補遺 §S4.1。L₁₁₂ のエルミート構造を使う極値性の別証明）は、別の論証と追加の有限の検査によって、主証明と同じ計算 F5a・F5b に帰着します。定理 A は証明経路 T に依存しません。
 
 主検算は Python・NumPy・C を使います。検証用データの生成と補足計算には SageMath を使います（[environment.yml](environment.yml)）。Lean の形式化は、明示した仮定からの論理的な導出を検査するもので、格子の計算そのものを実行するものではありません。
 

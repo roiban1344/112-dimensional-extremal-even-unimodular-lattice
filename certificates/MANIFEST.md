@@ -39,7 +39,7 @@ Data for cross-checks and supplementary computations:
 | `genus_isometry_7_L112.txt` | 112 × 112 integers | T with T G_112 Tᵀ = G_X (class 7), det T = ±1, G_112 = (3.1): class 7 is L₁₁₂ | supplementary/genus/genus.py ([C31]) |
 | `genus_isometry_3_A.txt` | 112 × 112 integers | T with T G_A Tᵀ = G_X (class 3), det T = ±1: class 3 is gluing A | supplementary/genus/genus.py ([C31]) |
 
-Route T (supplement §S4.1, [C21], [C32]; not used in the proof of Theorem A):
+Route T (a second proof of extremality that uses the Hermitian structure of L₁₁₂; supplement §S4.1, [C21], [C32]; not used in the proof of Theorem A):
 
 | file | arrays | content | checked by | produced by |
 |---|---|---|---|---|
