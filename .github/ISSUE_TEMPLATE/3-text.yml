@@ -1,0 +1,17 @@
+name: Text, references or documentation / 文章・文献・説明
+description: Unclear wording, a wrong reference or citation, a missing explanation, or a difference between the English and Japanese versions.
+labels: [documentation]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Location / 箇所
+      description: File, section or page, and the version.
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description / 内容
+    validations:
+      required: true

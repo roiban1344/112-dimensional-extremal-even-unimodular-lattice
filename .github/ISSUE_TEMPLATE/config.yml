@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: How to report an error / 誤りの報告の仕方
+    url: https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/blob/main/CONTRIBUTING.md
+    about: What to include, and what happens after a report. / 書いてほしいことと、報告の後の流れ。

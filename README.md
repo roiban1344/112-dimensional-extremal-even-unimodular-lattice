@@ -8,6 +8,7 @@ This repository accompanies a paper constructing a 112-dimensional even unimodul
 - **Verification:** [instructions and correspondence with the paper](code/README.md)
 - **Data:** [matrix conventions](data/README.md) · [verification data formats and hashes](certificates/MANIFEST.md)
 - **Formalization:** [the argument in Lean](lean/README.md)
+- **Changes and errors:** [changes between releases](CHANGELOG.md) · [how to report an error](CONTRIBUTING.md)
 
 ## Result
 
@@ -73,4 +74,4 @@ The main verification pipeline uses Python, NumPy, and C. Verification-data gene
 
 roiban1344 directed the work and is responsible for publication. AI systems, including Claude (Anthropic) and OpenAI Codex, contributed to the research, code, checking, and writing; the paper describes their roles.
 
-Code is distributed under the MIT license; text and data under CC BY 4.0. See [LICENSE](LICENSE).
+The code (`code/`, `lean/`, `paper/tools/`, `.github/`, the Dockerfiles and the other scripts) is distributed under the MIT license ([LICENSE](LICENSE)). The text and the data (the README files, `paper/` apart from `paper/tools/`, `data/` and `certificates/`, including the Release assets) are distributed under CC BY 4.0 ([LICENSE-CC-BY-4.0](LICENSE-CC-BY-4.0)). Third-party dependencies keep their own licenses and are not bundled.
