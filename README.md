@@ -8,6 +8,7 @@ This repository accompanies a paper constructing a 112-dimensional even unimodul
 - **Verification:** [instructions and correspondence with the paper](code/README.md)
 - **Data:** [matrix conventions](data/README.md) · [verification data formats and hashes](certificates/MANIFEST.md)
 - **Formalization:** [the argument in Lean](lean/README.md)
+- **Changes and errors:** [changes between releases](CHANGELOG.md) · [how to report an error](CONTRIBUTING.md)
 
 ## Result
 
@@ -39,7 +40,8 @@ Every file in this repository is described in one of the README files reachable 
 | `Dockerfile`, `.devcontainer/devcontainer.json`, `requirements-verify.txt` | the light container image for levels (i)–(iii) below, the dev container that uses it, and the pinned NumPy | optional |
 | `Dockerfile.sage`, `environment.yml` | the SageMath environment for `produce/`, `crosscheck/all_data/` and `supplementary/` | no |
 | `.github/` | CI: `checks.yml` (inputs, tests, container, Typst, Lean on every pull request; PDFs attached to each Release, built by `actions/build-pdfs/action.yml`) and `data-tests.yml` (weekly tests on the large data files) | no |
-| `CITATION.cff`, `LICENSE`, `.gitattributes`, `.gitignore`, `.dockerignore` | citation metadata, licenses, and git and Docker settings | no |
+| `CHANGELOG.md`, `CONTRIBUTING.md`, `.github/ISSUE_TEMPLATE/*.yml` | changes between releases, how to report an error, and the issue templates | no |
+| `CITATION.cff`, `LICENSE`, `LICENSE-CC-BY-4.0`, `.gitattributes`, `.gitignore`, `.dockerignore` | citation metadata, licenses, and git and Docker settings | no |
 
 ## Start here
 
@@ -93,4 +95,4 @@ The main verification pipeline uses Python, NumPy, and C. Verification-data gene
 
 roiban1344 directed the work and is responsible for publication. AI systems, including Claude (Anthropic) and OpenAI Codex, contributed to the research, code, checking, and writing; the paper describes their roles.
 
-Code is distributed under the MIT license; text and data under CC BY 4.0. See [LICENSE](LICENSE).
+The code (`code/`, `lean/`, `paper/tools/`, `.github/`, the Dockerfiles and the other scripts) is distributed under the MIT license ([LICENSE](LICENSE)). The text and the data (the README files, `paper/` apart from `paper/tools/`, `data/` and `certificates/`, including the Release assets) are distributed under CC BY 4.0 ([LICENSE-CC-BY-4.0](LICENSE-CC-BY-4.0)). Third-party software used by this repository (NumPy, SageMath, Mathlib, …) keeps its own license and is not included here.

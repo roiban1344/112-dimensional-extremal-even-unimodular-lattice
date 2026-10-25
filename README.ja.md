@@ -8,6 +8,7 @@
 - **検算：** [実行手順と論文との対応](code/README.ja.md)
 - **データ：** [行列の約束](data/README.ja.md)・[検証用データの形式とハッシュ](certificates/MANIFEST.ja.md)
 - **形式化：** [論証の Lean による検査](lean/README.ja.md)
+- **変更と誤り：** [バージョンごとの変更](CHANGELOG.ja.md)・[誤りの報告の仕方](CONTRIBUTING.ja.md)
 
 ## 結果
 
@@ -39,7 +40,8 @@
 | `Dockerfile`・`.devcontainer/devcontainer.json`・`requirements-verify.txt` | 下の水準 (i)〜(iii) のための軽量なコンテナイメージ、それを使う開発コンテナ、NumPy の版の固定 | 任意 |
 | `Dockerfile.sage`・`environment.yml` | `produce/`・`crosscheck/all_data/`・`supplementary/` のための SageMath の環境 | 要らない |
 | `.github/` | CI。`checks.yml`（プルリクエストごとに入力・試験・コンテナ・Typst・Lean を検査し、Release ごとに PDF を添付する。PDF は `actions/build-pdfs/action.yml` が作る）と `data-tests.yml`（大きなデータを使う試験を毎週実行する） | 要らない |
-| `CITATION.cff`・`LICENSE`・`.gitattributes`・`.gitignore`・`.dockerignore` | 引用のためのメタデータ、ライセンス、git と Docker の設定 | 要らない |
+| `CHANGELOG.ja.md`・`CONTRIBUTING.ja.md`・`.github/ISSUE_TEMPLATE/*.yml` | バージョンごとの変更、誤りの報告の仕方、issue のテンプレート | 要らない |
+| `CITATION.cff`・`LICENSE`・`LICENSE-CC-BY-4.0`・`.gitattributes`・`.gitignore`・`.dockerignore` | 引用のためのメタデータ、ライセンス、git と Docker の設定 | 要らない |
 
 ## 最初に実行すること
 
@@ -93,4 +95,4 @@ Release `certificates-v2` には、補遺 §S4 の探索 (2) の 763,992 類と�
 
 roiban1344 が作業を指揮し、公開に責任を持ちます。研究・コード・検算・執筆には Claude（Anthropic）と OpenAI Codex を含む AI システムが関与しています。役割の詳細は論文に記します。
 
-コードは MIT、文章・データは CC BY 4.0 で配布します。[LICENSE](LICENSE) を参照してください。
+コード（`code/`、`lean/`、`paper/tools/`、`.github/`、Dockerfile とその他のスクリプト）は MIT ライセンス（[LICENSE](LICENSE)）で配布します。文章とデータ（README、`paper/tools/` を除く `paper/`、`data/`、Release の添付ファイルを含む `certificates/`）は CC BY 4.0（[LICENSE-CC-BY-4.0](LICENSE-CC-BY-4.0)）で配布します。このリポジトリが利用する外部のソフトウェア（NumPy、SageMath、Mathlib など）はそれぞれのライセンスに従い、このリポジトリには含めていません。

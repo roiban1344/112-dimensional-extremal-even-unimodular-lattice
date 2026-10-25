@@ -1,0 +1,43 @@
+name: Mathematical error / 数学的な誤り
+description: A gap or an error in a proof, a statement or a computation of the paper or the supplement.
+title: "[math] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for checking the argument. Reports in English or Japanese are welcome. / 英語でも日本語でも構いません。
+  - type: input
+    id: version
+    attributes:
+      label: Version / 版
+      description: The tag of the paper you read (for example v2026-10-25), or the commit.
+      placeholder: v2026-10-25
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: Location / 箇所
+      description: Section, statement, equation or table (for example "Lemma 4.2", "§6.5", "Table S10").
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong / 何が誤りか
+      description: The claim, why it fails or what is missing, and if possible a counterexample or the missing case.
+    validations:
+      required: true
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Effect on the main results / 主結果への影響
+      description: Your assessment; it does not need to be certain.
+      options:
+        - Affects Theorem A (extremality) / 定理 A に影響する
+        - Affects Theorem B or the supplement / 定理 B か補遺に影響する
+        - A gap that can probably be filled / 埋められそうな穴
+        - Not sure / 分からない
+    validations:
+      required: true
