@@ -1,5 +1,6 @@
 #import "paper.typ": *
 #import "computations.typ": *
+#import "figures/proof-dependencies.typ": proof-dependencies
 #show: paper.with(
   lang: "en",
   title: [An extremal even unimodular lattice in dimension 112],
@@ -245,8 +246,8 @@ Since $L_112$ is even unimodular of dimension 112, (1.1) gives $min L_112<=10$. 
 ]
 
 #figure(
-  image("figures/proof-dependencies.en.svg", width: 80%),
-  caption: [Figure 1. Dependencies in the proof of Theorem A. Solid arrows indicate results used in a deduction. The dashed arrows join two alternative even-coset tests: either one suffices, while the remaining joins use all incoming results. The orbit-completeness and equivariance checks are shared. The canonical-form box includes Proposition 6.3. The figure shows the main proof, not the order in which computations were run; supplementary arguments and consistency tests are described separately. Blue: finite computations. Green: mathematical deductions.],
+  proof-dependencies(lang: "en"),
+  caption: [Figure 1. Dependencies in the proof of Theorem A. Blue boxes are the finite computations F0–F5 of §4.3, each labelled with the section that describes its algorithm and its row in Table D2; F4 appears twice, once for its identities about $tau$ and once for those about $S$. Green boxes are statements proved in the text. An arrow from one box to another means that the second uses the first. F5b is established by two methods (§§6.5 and 6.7), either of which suffices ($or$). Consistency tests and supplementary arguments are not shown.],
   kind: image, numbering: none,
 )
 

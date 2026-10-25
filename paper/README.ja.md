@@ -16,7 +16,7 @@ typst compile --root . paper/supplement.en.typ paper/supplement.en.pdf
 typst compile --root . paper/supplement.ja.typ paper/supplement.ja.pdf
 ```
 
-同じ組版には New Computer Modern・IPAex 明朝／ゴシック・DejaVu の各書体を用います。書式と計算参照の定義も同梱しており、このディレクトリだけで組版できます。
+同じ組版には New Computer Modern・IPAex 明朝／ゴシック・DejaVu の各書体を用います。書式と計算参照の定義、図 1 の原本（`figures/proof-dependencies.typ`）も同梱しています。図 1 は Typst のパッケージ `@preview/fletcher:0.5.8` で描きます。このパッケージは最初の組版のときに Typst Universe から自動で取得されて保存され、2 回目以降はネットワークを使いません。
 
 PDF・ソース・コード・検証用データのハッシュは同じ版のものを使ってください。表 D2 の計算参照は、その版に同梱されたパスに対応します。 プルリクエストではソースだけを変更します。コミット済みの PDF は版ごとに 1 回、タグを打つ直前のコミットで再生成します。本文の小さな修正にバイナリの差分が付かないようにするためで、版と版の間は PDF がソースより古いことがあります。各 GitHub Release に添付された PDF は、`release-pdfs` ワークフローがタグのソースから作ったもので、配布物はこちらです。
 
