@@ -37,7 +37,7 @@
 | `genus_isometry_7_L112.txt` | 112 × 112 整数 | T G_112 Tᵀ = G_X（類 7）、det T = ±1、G_112 は (3.1) を満たす T。類 7 は L₁₁₂ である | supplementary/genus/genus.py（[C31]） |
 | `genus_isometry_3_A.txt` | 112 × 112 整数 | T G_A Tᵀ = G_X（類 3）、det T = ±1 を満たす T。類 3 は貼り方 A である | supplementary/genus/genus.py（[C31]） |
 
-経路 T（補遺 §S4.1、[C21]・[C32]。定理 A の証明には使わない）:
+証明経路 T（L₁₁₂ のエルミート構造を使う極値性の別証明。補遺 §S4.1、[C21]・[C32]。定理 A の証明には使わない）:
 
 | ファイル | 配列 | 中身 | 検算 | 作成 |
 |---|---|---|---|---|

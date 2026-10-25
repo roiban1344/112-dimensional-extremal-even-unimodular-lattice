@@ -7,6 +7,8 @@
 - [英語補遺](supplement.en.pdf)・[ソース](supplement.en.typ)
 - [日本語補遺](supplement.ja.pdf)・[ソース](supplement.ja.typ)
 
+`figures/` には図 1（`proof-dependencies.*`）を、`tools/check-paper.py` にはこのページの最後で説明する整合性の検査を置きます。`style/eeul.typ` と `paper.typ` は書式を、`computations.typ` は表 D2 の元になる計算の台帳を定義します。
+
 リポジトリのルートから Typst 0.14.2 で組版します。
 
 ```bash

@@ -7,6 +7,8 @@
 - [English supplement](supplement.en.pdf) · [source](supplement.en.typ)
 - [Japanese supplement](supplement.ja.pdf) · [source](supplement.ja.typ)
 
+`figures/` holds Figure 1 (`proof-dependencies.*`), and `tools/check-paper.py` is the consistency check described at the end of this page. `style/eeul.typ` and `paper.typ` define the layout, and `computations.typ` the ledger of computations behind Table D2.
+
 Build from the repository root with Typst 0.14.2:
 
 ```bash
