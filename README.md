@@ -40,7 +40,8 @@ Every file in this repository is described in one of the README files reachable 
 | `Dockerfile`, `.devcontainer/devcontainer.json`, `requirements-verify.txt` | the light container image for levels (i)–(iii) below, the dev container that uses it, and the pinned NumPy | optional |
 | `Dockerfile.sage`, `environment.yml` | the SageMath environment for `produce/`, `crosscheck/all_data/` and `supplementary/` | no |
 | `.github/` | CI: `checks.yml` (inputs, tests, container, Typst, Lean on every pull request; PDFs attached to each Release, built by `actions/build-pdfs/action.yml`) and `data-tests.yml` (weekly tests on the large data files) | no |
-| `CITATION.cff`, `LICENSE`, `.gitattributes`, `.gitignore`, `.dockerignore` | citation metadata, licenses, and git and Docker settings | no |
+| `CHANGELOG.md`, `CONTRIBUTING.md`, `.github/ISSUE_TEMPLATE/*.yml` | changes between releases, how to report an error, and the issue templates | no |
+| `CITATION.cff`, `LICENSE`, `LICENSE-CC-BY-4.0`, `.gitattributes`, `.gitignore`, `.dockerignore` | citation metadata, licenses, and git and Docker settings | no |
 
 ## Start here
 
