@@ -22,6 +22,12 @@ lake exe cache get   # Mathlib cache, once (several hundred MB)
 ./check.sh
 ```
 
-`check.sh` follows the steps of the Lean reference manual ([Validating Proofs](https://lean-lang.org/doc/reference/latest/ValidatingProofs/)): it builds the package with warnings treated as errors (a `sorry` anywhere gives a warning, as do Mathlib's standard linters), compares the axioms each theorem depends on (`lake env lean CheckAxioms.lean`) with `expected-axioms.txt` (only `propext`, `Classical.choice` and `Quot.sound`; `sorry`, `native_decide` or an added `axiom` would show up here), and replays the declarations in the kernel with `leanchecker`, which catches declarations that bypassed the kernel. The computational hypotheses remain hypotheses. The individual commands are `lake build --wfail`, `lake env lean CheckAxioms.lean` and `lake env leanchecker EEUL.L112.Chain`. `./check.sh --fresh` also replays the imported Mathlib modules (about 3 minutes); CI runs it on every pull request.
+`check.sh` follows the steps of the Lean reference manual ([Validating Proofs](https://lean-lang.org/doc/reference/latest/ValidatingProofs/)) and does three things.
+
+1. It builds the package with warnings treated as errors (`lake build --wfail`). A `sorry` anywhere gives a warning, as do Mathlib's standard linters.
+2. It compares the axioms each theorem depends on (`lake env lean CheckAxioms.lean`) with `expected-axioms.txt`. The axioms are only `propext`, `Classical.choice` and `Quot.sound`; a `sorry`, `native_decide` or an added `axiom` would show up here.
+3. It replays the declarations in the kernel with `leanchecker` (`lake env leanchecker EEUL.L112.Chain`), which also catches declarations that bypassed the kernel.
+
+The computational hypotheses remain hypotheses. `./check.sh --fresh` also replays the imported Mathlib modules (about 3 minutes). CI runs it on every pull request.
 
 Once the Mathlib cache is present, the build takes about a minute and 2 GB of memory (measured with Lean 4.34.1: 52 s, 1.7 GB). To cap memory, use a cgroup (for example `systemd-run --user -p MemoryMax=5G`) rather than `ulimit -v`, under which Lean fails to create threads.

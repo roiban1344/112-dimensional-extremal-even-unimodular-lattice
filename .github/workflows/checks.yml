@@ -97,7 +97,7 @@ jobs:
           build: false
           use-mathlib-cache: true
           use-github-cache: false
-      - name: lean/check.sh --fresh (about 5 min)
+      - name: lean/check.sh --fresh (about 3 min)
         run: ./lean/check.sh --fresh
 
   typst-build:
