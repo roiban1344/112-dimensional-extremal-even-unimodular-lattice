@@ -12,7 +12,7 @@ Statements: unchanged.
 
 ## v2026-10-25 (2026-10-25)
 
-Statements: route T (Supplement §S4) is now a complete argument (Theorem S4.1). Theorem A, its proof and the input data are unchanged.
+Statements: route T (Supplement §S4), a second proof of extremality that uses the Hermitian structure of L₁₁₂, is now a complete argument (Theorem S4.1). Theorem A, its proof and the input data are unchanged.
 
 - Supplement §S4.1: Theorem S4.1 with proof. Route T reduces, by a further finite check (Proposition S4.3, [C32]), to the same computations F5a and F5b as the main proof; search (2) and the other searches of §S4 become cross-checks (#31). A bound in the first enumeration of route T was corrected from a ≤ 24 to a ≤ 32; the resulting types are unchanged.
 - Files of the earlier name R renamed to L112: `data/R112_gram_LLL.txt` → `data/L112_gram_LLL.txt`, `certificates/reduction_R.txt` → `reduction_L112.txt`, `certificates/outer_automorphism_R.txt` → `outer_automorphism_L112.txt`. Header comments changed, matrix entries did not; the hashes in `SHA256SUMS` and `code/lib/data.py` were updated (#32).

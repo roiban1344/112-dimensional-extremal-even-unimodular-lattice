@@ -8,7 +8,7 @@
 - **検算：** [実行手順と論文との対応](code/README.ja.md)
 - **データ：** [行列の約束](data/README.ja.md)・[検証用データの形式とハッシュ](certificates/MANIFEST.ja.md)
 - **形式化：** [論証の Lean による検査](lean/README.ja.md)
-- **変更と誤り：** [版ごとの変更](CHANGELOG.ja.md)・[誤りの報告の仕方](CONTRIBUTING.ja.md)
+- **変更と誤り：** [バージョンごとの変更](CHANGELOG.ja.md)・[誤りの報告の仕方](CONTRIBUTING.ja.md)
 
 ## 結果
 
@@ -74,4 +74,4 @@ Release `certificates-v2` には、補遺 §S4 の探索 (2) の763,992類と探
 
 roiban1344 が作業を指揮し、公開に責任を持ちます。研究・コード・検算・執筆には Claude（Anthropic）と OpenAI Codex を含む AI システムが関与しています。役割の詳細は論文に記します。
 
-コード（`code/`、`lean/`、`paper/tools/`、`.github/`、Dockerfile とその他のスクリプト）は MIT ライセンス（[LICENSE](LICENSE)）で配布します。文章とデータ（README、`paper/tools/` を除く `paper/`、`data/`、Release の添付ファイルを含む `certificates/`）は CC BY 4.0（[LICENSE-CC-BY-4.0](LICENSE-CC-BY-4.0)）で配布します。第三者の依存物はそれぞれのライセンスに従い、同梱していません。
+コード（`code/`、`lean/`、`paper/tools/`、`.github/`、Dockerfile とその他のスクリプト）は MIT ライセンス（[LICENSE](LICENSE)）で配布します。文章とデータ（README、`paper/tools/` を除く `paper/`、`data/`、Release の添付ファイルを含む `certificates/`）は CC BY 4.0（[LICENSE-CC-BY-4.0](LICENSE-CC-BY-4.0)）で配布します。このリポジトリが利用する外部のソフトウェア（NumPy、SageMath、Mathlib など）はそれぞれのライセンスに従い、このリポジトリには含めていません。
