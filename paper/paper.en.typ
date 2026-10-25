@@ -1,5 +1,6 @@
 #import "paper.typ": *
 #import "computations.typ": *
+#import "figures/proof-dependencies.typ": proof-dependencies
 #show: paper.with(
   lang: "en",
   title: [An extremal even unimodular lattice in dimension 112],
@@ -168,7 +169,7 @@ This realizes $L_112$ in the Hermitian tensor-product framework of \[CN13, Sak26
 
 = 4. Reduction to collisions <s4>
 
-We show that an inner-shell vector of $L_112$ corresponds to a pair $\(x\,v\)$, with $x in L_56$ and $v$ in the coset $x tau + 2 L_56$, whose norms are $\(6\,6\)$, $\(6\,10\)$, $\(10\,6\)$ or $\(8\,8\)$ (§4.1). The absence of such “collisions” can be expressed in terms of coset minima (Corollary 4.3), and the $"SL"_2\(29\)$-symmetry reduces it to finitely many cases (§4.2, Table 3). We then state the computational facts F0–F5 on which the rest of the proof rests and derive Theorem A from them (§4.3).
+We show that an inner-shell vector of $L_112$ corresponds to a pair $\(x\,v\)$, with $x in L_56$ and $v$ in the coset $x tau + 2 L_56$, whose norms are $\(6\,6\)$, $\(6\,10\)$, $\(10\,6\)$ or $\(8\,8\)$ (§4.1). The absence of such “collisions” can be expressed in terms of coset minima (Corollary 4.3), and the $"SL"_2\(29\)$-symmetry reduces it to finitely many cases (§4.2, Table 3). We then state the computational facts F0–F5 on which the rest of the proof rests and derive Theorem A from them (§4.3); Figure 1 at the end of §4.3 shows how these facts and the lemmas combine.
 
 == 4.1 Four types
 
@@ -245,8 +246,8 @@ Since $L_112$ is even unimodular of dimension 112, (1.1) gives $min L_112<=10$. 
 ]
 
 #figure(
-  image("figures/proof-dependencies.en.svg", width: 80%),
-  caption: [Figure 1. Dependencies in the proof of Theorem A. Solid arrows indicate results used in a deduction. The dashed arrows join two alternative even-coset tests: either one suffices, while the remaining joins use all incoming results. The orbit-completeness and equivariance checks are shared. The canonical-form box includes Proposition 6.3. The figure shows the main proof, not the order in which computations were run; supplementary arguments and consistency tests are described separately. Blue: finite computations. Green: mathematical deductions.],
+  proof-dependencies(lang: "en"),
+  caption: [Figure 1. Dependencies in the proof of Theorem A. Blue boxes are the finite computations F0–F5 of §4.3, each labelled with the section that describes its algorithm and its row in Table D2; F4 appears twice, once for its identities about $tau$ and once for those about $S$. Green boxes are statements proved in the text. An arrow from one box to another means that the second uses the first. F5b is established by two methods (§§6.5 and 6.7), either of which suffices ($or$). Consistency tests and supplementary arguments are not shown.],
   kind: image, numbering: none,
 )
 
