@@ -4,6 +4,14 @@ defaultTargets = ["EEUL"]
 
 [leanOptions]
 autoImplicit = false
+relaxedAutoImplicit = false
+maxSynthPendingDepth = 3
+# Mathlib's standard linters, as in the template of `lake new <name> math`; the copyright-header
+# linter is for files of Mathlib itself (the license is in ../LICENSE).
+# Mathlib の標準 linter（`lake new <名前> math` の雛形と同じ）。著作権ヘッダーの linter は Mathlib 本体の
+# ファイル向けなので切る（ライセンスは ../LICENSE）。
+weak.linter.mathlibStandardSet = true
+weak.linter.style.header = false
 
 [[require]]
 name = "mathlib"

@@ -22,6 +22,12 @@ lake exe cache get   # Mathlib のキャッシュ（初回のみ。数百 MB）
 ./check.sh
 ```
 
-`check.sh` は、パッケージをビルドし、ソースのコメントの外に禁止語（`sorry`・`admit`・`axiom`・`native_decide`・`unsafe` など）が無いことを確かめ、各定理が依存する公理（`lake env lean CheckAxioms.lean`）を `expected-axioms.txt` と比較します。公理は `propext`・`Classical.choice`・`Quot.sound` だけです。計算事実についての仮定は仮定のまま残ります。個別のコマンドは `lake build` と `lake env lean CheckAxioms.lean` です。
+`check.sh` は Lean のリファレンスの手順（[Validating Proofs](https://lean-lang.org/doc/reference/latest/ValidatingProofs/)）に従い、次の三つを行います。
+
+1. 警告をエラーとしてビルドする（`lake build --wfail`）。`sorry` はどこにあっても警告になる。Mathlib の標準 linter の警告も同じ。
+2. 各定理が依存する公理（`lake env lean CheckAxioms.lean`）を `expected-axioms.txt` と比較する。公理は `propext`・`Classical.choice`・`Quot.sound` だけで、`sorry`・`native_decide`・追加の `axiom` はここに現れる。
+3. `leanchecker` で宣言をカーネルに検査し直させる（`lake env leanchecker EEUL.L112.Chain`）。カーネルを迂回した宣言もここで捕まる。
+
+計算事実についての仮定は仮定のまま残ります。`./check.sh --fresh` は読み込む Mathlib のモジュールも検査し直します（約 3 分）。CI はこれをプルリクエストごとに実行します。
 
 Mathlib のキャッシュがあれば、ビルドは 1 分程度、メモリは 2 GB 程度です（Lean 4.34.1 で実測 52 秒、1.7 GB）。メモリを制限するなら cgroup（例: `systemd-run --user -p MemoryMax=5G`）を使ってください。`ulimit -v` では Lean がスレッドを作れずに落ちます。

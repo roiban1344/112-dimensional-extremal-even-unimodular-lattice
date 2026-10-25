@@ -78,6 +78,28 @@ jobs:
           python-version: '3.12'
       - run: python3 -I paper/tools/check-paper.py
 
+  # Lean package (C22): lean-action installs the toolchain of lean/lean-toolchain and fetches the
+  # Mathlib cache; check.sh then builds, compares the axioms and replays everything in the kernel.
+  # Lean パッケージ（C22）: lean-action がツールチェインを入れ Mathlib のキャッシュを取得し、check.sh が
+  # ビルド・公理の比較・カーネルによる再検査（Mathlib 部分を含む）を行う。
+  lean:
+    if: github.ref_type == 'branch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@f061402b660e0c34644504b324e830f2991d4865 # v1.6.1
+        with:
+          lake-package-directory: lean
+          auto-config: false
+          build: false
+          use-mathlib-cache: true
+          use-github-cache: false
+      - name: lean/check.sh --fresh (about 3 min)
+        run: ./lean/check.sh --fresh
+
   typst-build:
     if: github.ref_type == 'branch'
     runs-on: ubuntu-24.04
