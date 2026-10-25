@@ -33,6 +33,29 @@
 | `supplementary/` | 論文の主張のうち、定理 A の証明には使わないものの計算（貼り方の分類、自己同型群など） |
 | `tests/` | 小さな例による試験（pytest。[試験](#試験)を参照）。`proof.sh` の代わりにはならない |
 
+### ファイル
+
+| ファイル | 中身 |
+|---|---|
+| `lib/__init__.py` | `require`（`assert` の代わりに例外を投げる検査）、`CheckError`、整数の厳密な線形代数 |
+| `lib/data.py` | `data/` の 4 つのファイルの読み込みと SHA-256 の照合 |
+| `lib/certs.py` | `certificates/` の検証用データの読み込みと `certificates/SHA256SUMS` との照合 |
+| `lib/exact.py` | 整数行列の浮動小数点による積が厳密であることを保証する検査 |
+| `lib/enumerate.py` | 区間演算による列挙 `verify/enum_interval.c` の呼び出し |
+| `lib/group.py` | g₁, g₂ が生成する群と、±1 を法とした元 |
+| `lib/mod2.py` | 2L を法とする類の 56 ビット整数による表現と標準形（§6.5） |
+| `lib/shells.py` | L の最小ベクトルと、それとの内積（§5）。途中経過の保存を含む |
+| `lib/report.py` | `[ok]`/`[FAIL]` の表示と `out/<step>.json` |
+| `verify/v0_inputs.py` 〜 `v8_design_identities.py`、`enum_interval.c` | 次の節の各段 |
+| `verify/fetch.sh`・`proof.sh`・`full.sh`・`quick.sh` | 検証用データの取得と 3 つの水準の検算 |
+| `verify/controls/leech.txt` | Leech 格子の Gram 行列。v1 の陽性対照 |
+| `produce/p1_centralizer.py` 〜 `p6_reduction.py`、`descent.py` | 検証用データの生成（[検証用データの生成](#検証用データの生成)の節）。`descent.py` はそれらが共有する降下の探索 |
+| `produce/exact_qfminim.py` | PARI の `qfminim` の結果を区間演算の列挙で網羅性まで確かめる関数（`p1` と `supplementary/` が使う） |
+| `crosscheck/second_impl/odd_classes.py`・`even_classes.py`・`design_identities.py` | F5a、F5b、デザインの恒等式の第 2 の実装（numpy のみ） |
+| `crosscheck/all_data/`・`supplementary/` | [第 2 の実装](#第-2-の実装と補足の計算)・[経路 T](#経路-t補遺-s4表-d2-の-c20c21c32)・[表 D2 との対応](#論文の表-d2-との対応)の節を参照。`supplementary/nebe/isometry.py` は `identify_nebe.py` と `reduction_to_nebe.py` のために SL₂(29) 同変な等長写像を求める |
+| `run_supplementary.sh` | `supplementary/` の計算をまとめて実行する |
+| `tests/conftest.py`・`tests/test_*.py` | [試験](#試験)の節の試験。`test_exact`（厳密さの検査）、`test_enumerate`（列挙）、`test_group_mod2`（群と標準形）、`test_report_checkpoint`（報告と途中経過）、`test_certs`（検証用データのハッシュ）、`test_scripts`（v0、v1 の対照、v2、シェルの構文）、`test_data`（マーカー `data`）、`test_route_t_exclusion`（[C32] の数行）、`test_check_paper`（`paper/tools/check-paper.py`）、`test_docs`（追跡しているファイルがすべて README で説明されていること） |
+
 ## 検算の実行
 
 [動作環境](#動作環境)を準備し、以下はリポジトリのルートで実行します。Python 環境の準備手順は[ルートの README](../README.ja.md#最初に実行すること)を参照してください。検査は 3 段あります。
