@@ -169,7 +169,7 @@ This realizes $L_112$ in the Hermitian tensor-product framework of \[CN13, Sak26
 
 = 4. Reduction to collisions <s4>
 
-We show that an inner-shell vector of $L_112$ corresponds to a pair $\(x\,v\)$, with $x in L_56$ and $v$ in the coset $x tau + 2 L_56$, whose norms are $\(6\,6\)$, $\(6\,10\)$, $\(10\,6\)$ or $\(8\,8\)$ (§4.1). The absence of such “collisions” can be expressed in terms of coset minima (Corollary 4.3), and the $"SL"_2\(29\)$-symmetry reduces it to finitely many cases (§4.2, Table 3). We then state the computational facts F0–F5 on which the rest of the proof rests and derive Theorem A from them (§4.3).
+We show that an inner-shell vector of $L_112$ corresponds to a pair $\(x\,v\)$, with $x in L_56$ and $v$ in the coset $x tau + 2 L_56$, whose norms are $\(6\,6\)$, $\(6\,10\)$, $\(10\,6\)$ or $\(8\,8\)$ (§4.1). The absence of such “collisions” can be expressed in terms of coset minima (Corollary 4.3), and the $"SL"_2\(29\)$-symmetry reduces it to finitely many cases (§4.2, Table 3). We then state the computational facts F0–F5 on which the rest of the proof rests and derive Theorem A from them (§4.3); Figure 1 at the end of §4.3 shows how these facts and the lemmas combine.
 
 == 4.1 Four types
 
