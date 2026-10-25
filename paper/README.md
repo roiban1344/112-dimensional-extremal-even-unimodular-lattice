@@ -7,6 +7,8 @@
 - [English supplement](supplement.en.pdf) · [source](supplement.en.typ)
 - [Japanese supplement](supplement.ja.pdf) · [source](supplement.ja.typ)
 
+`figures/` holds Figure 1 (`proof-dependencies.*`), and `tools/check-paper.py` is the consistency check described at the end of this page. `style/eeul.typ` and `paper.typ` define the layout, and `computations.typ` the ledger of computations behind Table D2.
+
 Build from the repository root with Typst 0.14.2:
 
 ```bash
@@ -16,7 +18,7 @@ typst compile --root . paper/supplement.en.typ paper/supplement.en.pdf
 typst compile --root . paper/supplement.ja.typ paper/supplement.ja.pdf
 ```
 
-The styles use New Computer Modern, IPAexMincho, IPAexGothic and DejaVu fonts. Install these for matching typography. `style/eeul.typ`, `paper.typ` and `computations.typ` are included, so the sources are self-contained.
+The styles use New Computer Modern, IPAexMincho, IPAexGothic and DejaVu fonts. Install these for matching typography. `style/eeul.typ`, `paper.typ`, `computations.typ` and `figures/proof-dependencies.typ` (Figure 1) are included. Figure 1 is drawn with the Typst package `@preview/fletcher:0.5.8`, which Typst downloads from Typst Universe on the first compilation and caches; after that, compilation needs no network access.
 
 The PDFs, sources, code and verification-data hashes belong to the same release; the paths in Table D2 are those of that release. Pull requests change only the sources. The committed PDFs are regenerated once per release, in the commit just before the tag, so that small changes to the text do not carry binary differences; between releases they may lag behind the sources. The PDFs attached to each GitHub Release are built by the `release-pdfs` workflow from the tagged sources and are the distributed copies.
 

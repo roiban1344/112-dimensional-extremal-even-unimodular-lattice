@@ -6,6 +6,18 @@
 
 `EEUL/L112/Chain.lean` proves, in Lean 4 with Mathlib, the deduction from the computational facts F1–F5 of the paper to the conclusion that L₁₁₂ has no vector of norm less than 10. The facts are hypotheses: they are the fields of the structures `Setting`, `Data`, `DataCert` and `DataCanonical`, and the file neither reads the matrices nor runs the certificate checkers. §7.1 of the paper (Table 9) lists the formalized statements and what stays outside Lean.
 
+## Files
+
+| file | content |
+|---|---|
+| `EEUL/L112/Chain.lean` | the formalization: hypotheses F1–F5 and the theorems of Table 9 |
+| `EEUL.lean` | the root module of the library; it imports `EEUL.L112.Chain` |
+| `CheckAxioms.lean` | `#print axioms` for every theorem of Table 9 |
+| `expected-axioms.txt` | the expected output of `CheckAxioms.lean` |
+| `check.sh` | the three checks of the section [How to check](#how-to-check) |
+| `lakefile.toml` | the Lake package: name, Lean options, the Mathlib dependency and its linters |
+| `lean-toolchain`, `lake-manifest.json` | the pinned versions of Lean and Mathlib |
+
 ## How to read Chain.lean
 
 - Start with the module comment at the top: what is proved, the reading order, the hypotheses, the notation. Then read the statements of `theoremA` (F5b checked by certificates) and `theoremA_canonical` (F5b checked by canonical forms), together with the fields of `Setting` and `Data` that they assume. Everything else is proof.

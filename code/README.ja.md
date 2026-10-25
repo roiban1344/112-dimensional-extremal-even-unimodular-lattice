@@ -33,6 +33,29 @@
 | `supplementary/` | 論文の主張のうち、定理 A の証明には使わないものの計算（貼り方の分類、自己同型群など） |
 | `tests/` | 小さな例による試験（pytest。[試験](#試験)を参照）。`proof.sh` の代わりにはならない |
 
+### ファイル
+
+| ファイル | 中身 |
+|---|---|
+| `lib/__init__.py` | `require`（`assert` の代わりに例外を投げる検査）、`CheckError`、整数の厳密な線形代数 |
+| `lib/data.py` | `data/` の 4 つのファイルの読み込みと SHA-256 の照合 |
+| `lib/certs.py` | `certificates/` の検証用データの読み込みと `certificates/SHA256SUMS` との照合 |
+| `lib/exact.py` | 整数行列の浮動小数点による積が厳密であることを保証する検査 |
+| `lib/enumerate.py` | 区間演算による列挙 `verify/enum_interval.c` の呼び出し |
+| `lib/group.py` | g₁, g₂ が生成する群と、±1 を法とした元 |
+| `lib/mod2.py` | 2L を法とする類の 56 ビット整数による表現と標準形（§6.5） |
+| `lib/shells.py` | L の最小ベクトルと、それとの内積（§5）。途中経過の保存を含む |
+| `lib/report.py` | `[ok]`/`[FAIL]` の表示と `out/<step>.json` |
+| `verify/v0_inputs.py` 〜 `v8_design_identities.py`、`enum_interval.c` | 検算スクリプト v0〜v8 と、v1 が使う列挙のプログラム（各スクリプトの内容は次の節） |
+| `verify/fetch.sh`・`proof.sh`・`full.sh`・`quick.sh` | 検証用データの取得と 3 つの水準の検算 |
+| `verify/controls/leech.txt` | Leech 格子の Gram 行列。検算スクリプト v1 の陽性対照 |
+| `produce/p1_centralizer.py` 〜 `p6_reduction.py`、`descent.py` | 検証用データの生成（[検証用データの生成](#検証用データの生成)の節）。`descent.py` は p4 と p5 が共有する代表元の探索（類の元 w から始め、内積 ⟨w, u⟩ ≥ 7 となる最小ベクトル u がある限り w を w − 2u に置き換える。ノルムが必ず下がるので止まり、§5 の条件を満たせば w が代表元になる） |
+| `produce/exact_qfminim.py` | PARI の `qfminim` の結果を区間演算の列挙で網羅性まで確かめる関数（`p1` と `supplementary/` が使う） |
+| `crosscheck/second_impl/odd_classes.py`・`even_classes.py`・`design_identities.py` | F5a、F5b、デザインの恒等式の第 2 の実装（numpy のみ） |
+| `crosscheck/all_data/`・`supplementary/` | [第 2 の実装](#第-2-の実装と補足の計算)・[証明経路 T](#証明経路-t補遺-s4表-d2-の-c20c21c32)・[表 D2 との対応](#論文の表-d2-との対応)の節を参照。`supplementary/nebe/isometry.py` は `identify_nebe.py` と `reduction_to_nebe.py` のために SL₂(29) 同変な等長写像を求める |
+| `run_supplementary.sh` | `supplementary/` の計算をまとめて実行する |
+| `tests/conftest.py`・`tests/test_*.py` | [試験](#試験)の節の試験。`test_exact`（厳密さの検査）、`test_enumerate`（列挙）、`test_group_mod2`（群と標準形）、`test_report_checkpoint`（報告と途中経過）、`test_certs`（検証用データのハッシュ）、`test_scripts`（v0、v1 の対照、v2、シェルの構文）、`test_data`（マーカー `data`）、`test_route_t_exclusion`（[C32] の数行）、`test_check_paper`（`paper/tools/check-paper.py`）、`test_docs`（追跡しているファイルがすべて README で説明されていること） |
+
 ## 検算の実行
 
 [動作環境](#動作環境)を準備し、以下はリポジトリのルートで実行します。Python 環境の準備手順は[ルートの README](../README.ja.md#最初に実行すること)を参照してください。検査は 3 段あります。
@@ -158,13 +181,13 @@ p2 は類 r + 2L の標準形の集合（最小ベクトルではこれが同じ
 残りは続け、最後に失敗した段を一覧にして終了コード 1 で終わります。いくつかのスクリプトが共有する関数（偶奇を保つ写像の類、
 同変な等長写像の探索など）は `supplementary/_shared.py` にあります。
 
-## 経路 T（補遺 §S4、表 D2 の [C20]・[C21]・[C32]）
+## 証明経路 T（補遺 §S4、表 D2 の [C20]・[C21]・[C32]）
 
-`supplementary/route_t/` は、L₁₁₂ のエルミート構造を使う補足の議論（経路 T）の計算です。定理 A の証明には使いません。経路 T（補遺の定理 S4.1）は、追加の有限の検査（`exclusion.py`、[C32]）によって、主証明と同じ計算 F5a・F5b に帰着します。不変量による分類と三つの探索は照合のための計算です。
+`supplementary/route_t/` は、L₁₁₂ のエルミート構造を使う極値性の別証明（証明経路 T）の計算です。定理 A の証明には使いません。証明経路 T（補遺の定理 S4.1）は、追加の有限の検査（`exclusion.py`、[C32]）によって、主証明と同じ計算 F5a・F5b に帰着します。不変量による分類と三つの探索は照合のための計算です。
 
 | スクリプト | 内容 | 時間 |
 |---|---|---|
-| `exclusion.py` | [C32] 経路 T の最後の段: 命題 S4.2 の範囲の危険な台加群はどれも F5a か F5b に反する配置を含む（`check`: Python の標準ライブラリだけ、自前の列挙。`make`: 証拠を作る） | check 約 8 分、make 約 1 分（SageMath） |
+| `exclusion.py` | [C32] 証明経路 T の最後の検査: 命題 S4.2 の範囲の危険な台加群はどれも F5a か F5b に反する配置を含む（`check`: Python の標準ライブラリだけ、自前の列挙。`make`: 証拠を作る） | check 約 8 分、make 約 1 分（SageMath） |
 | `classify.py`, `recount.py` | [C20] 照合: 階数 2 の台加群の分類（2 通りの独立な数え上げ。97 型・危険 63 型と、粗い不変量で 58 型の一致） | 各 1〜2 分（SageMath） |
 | `certify.py` | [C21] 探索 (2)・(3) の代表元の生成（分割・再開可能） | 探索 (3) 約 25 分、探索 (2) 約 13 CPU 日 |
 | `check.py` | [C21] 代表元の整数演算による検算（numpy だけ） | 探索 (3) 約 2 分、探索 (2) 約 7 CPU 時間（単一スレッド試験からの見積もり。分割 A の実測: 共用機で 2 スレッド、経過 4.7 時間） |

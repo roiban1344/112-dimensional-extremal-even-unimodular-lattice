@@ -22,6 +22,26 @@
 
 偶ユニモジュラー格子とは、ℝⁿ の格子で、すべてのベクトルの長さの二乗（ノルム）が偶数であり、Gram 行列の行列式が 1 のものをいう。このような格子は n が 8 の倍数のときにしか存在しない。モジュラー形式の理論から最小ノルムには上界 2⌊n/24⌋+2 があり、この上界に達する格子を極値格子と呼ぶ。極値格子では、0 でない最短のベクトルが理論の許す限り長い。すなわち、その次元の偶ユニモジュラー格子として可能な限り密な球充填を与える。極値格子は稀である。古典的な例は E₈（n = 8）と Leech 格子（n = 24）で、80 次元までの 8 の倍数の各次元には例が知られている（80 次元は 1998 年に Bachoc と Nebe が、72 次元は 2010 年に Nebe が構成した）。88 次元は 2026 年の坂本のプレプリントで構成された。96 次元と 104 次元は未解決である。L₁₁₂ は 88 次元より先で知られている最初の例であり、上界が 10 となる次元での最初の例でもある。96・104 ではなく 112 次元を選んだのは、Siegel の質量公式に基づく目安から、極値格子が最も見つけやすい次元だと見込まれたためである（補遺 §S1）。
 
+## リポジトリの中身
+
+このリポジトリで管理されているファイルはすべて、下表からたどれるいずれかの README で説明されています。`code/tests/test_docs.py` が CI でそれを保証します。
+
+| 場所 | 中身 | 定理 A の検算に要るか |
+|---|---|---|
+| [`paper/`](paper/README.ja.md) | 論文と補遺（Typst のソースと PDF）、図 1 の原本、ソースの整合性の検査 | － |
+| [`data/`](data/README.ja.md) | 格子を定義する 4 つの行列 | 要る |
+| [`certificates/`](certificates/MANIFEST.ja.md) | 検証用データ。小さいファイルは git に、大きい `.npz` は Release の添付ファイルに置き、すべて `SHA256SUMS` で固定する | `verify/` が確かめるファイルは要る |
+| [`code/verify/`](code/README.ja.md#検算の各段)・[`code/lib/`](code/README.ja.md#ファイル) | F0〜F5 の検算（`proof.sh`・`full.sh`・`quick.sh`・`fetch.sh`）とその共有ライブラリ（NumPy を使う Python と C のプログラム 1 本） | 要る |
+| [`code/produce/`](code/README.ja.md#検証用データの生成) | 検証用データを生成したプログラム（SageMath） | 要らない。証明が使う性質はすべて `verify/` が確かめ直す |
+| [`code/crosscheck/`](code/README.ja.md#第-2-の実装と補足の計算) | 検算の第 2 の実装 | 要らない（照合） |
+| [`code/supplementary/`](code/README.ja.md#論文の表-d2-との対応) | 定理 A 以外の主張の計算（貼り方、自己同型群、極値性の別証明である証明経路 T、補遺 §S6 の種など） | 要らない |
+| [`code/tests/`](code/README.ja.md#試験) | 小さな例による試験（pytest） | 要らない |
+| [`lean/`](lean/README.ja.md) | F1〜F5 からノルム 10 未満のベクトルが無いことを導く論証の Lean 4 による形式化 | 要らない（論証の独立な検査） |
+| `Dockerfile`・`.devcontainer/devcontainer.json`・`requirements-verify.txt` | 下の水準 (i)〜(iii) のための軽量なコンテナイメージ、それを使う開発コンテナ、NumPy の版の固定 | 任意 |
+| `Dockerfile.sage`・`environment.yml` | `produce/`・`crosscheck/all_data/`・`supplementary/` のための SageMath の環境 | 要らない |
+| `.github/` | CI。`checks.yml`（プルリクエストごとに入力・試験・コンテナ・Typst・Lean を検査し、Release ごとに PDF を添付する。PDF は `actions/build-pdfs/action.yml` が作る）と `data-tests.yml`（大きなデータを使う試験を毎週実行する） | 要らない |
+| `CITATION.cff`・`LICENSE`・`.gitattributes`・`.gitignore`・`.dockerignore` | 引用のためのメタデータ、ライセンス、git と Docker の設定 | 要らない |
+
 ## 最初に実行すること
 
 リポジトリのルートで実行してください。主検算には Python 3.10 以降、NumPy、128 ビット整数に対応した GCC・Clang などの C コンパイラが必要です。検査は 3 段あります。
@@ -66,7 +86,7 @@ bash code/verify/full.sh 3
 
 引用には、GitHub の「Cite this repository」を使ってください。[CITATION.cff](CITATION.cff) を読みます。
 
-Release `certificates-v2` には、補遺 §S4 の探索 (2) の763,992類と探索 (3) の3,936類すべてについて、整数演算で検算済みの代表元を収めています。これらの探索は照合のための計算です。経路 T（補遺 §S4.1）は、別の論証と追加の有限の検査によって、主証明と同じ計算 F5a・F5b に帰着します。定理 A は経路 T に依存しません。
+Release `certificates-v2` には、補遺 §S4 の探索 (2) の 763,992 類と探索 (3) の 3,936 類すべてについて、整数演算で検算済みの代表元を収めています。これらの探索は照合のための計算です。証明経路 T（補遺 §S4.1。L₁₁₂ のエルミート構造を使う極値性の別証明）は、別の論証と追加の有限の検査によって、主証明と同じ計算 F5a・F5b に帰着します。定理 A は証明経路 T に依存しません。
 
 主検算は Python・NumPy・C を使います。検証用データの生成と補足計算には SageMath を使います（[environment.yml](environment.yml)）。Lean の形式化は、明示した仮定からの論理的な導出を検査するもので、格子の計算そのものを実行するものではありません。
 

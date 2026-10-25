@@ -22,6 +22,26 @@ The paper is a draft and has not been peer reviewed. AI systems did most of the 
 
 An even unimodular lattice is a lattice in ℝⁿ all of whose vectors have even squared length (norm) and whose Gram matrix has determinant 1. Such lattices exist only when n is a multiple of 8. The theory of modular forms bounds their minimum norm by 2⌊n/24⌋+2, and a lattice attaining this bound is called extremal: its shortest nonzero vectors are as long as the theory allows, so it is as dense a sphere packing as an even unimodular lattice of that dimension can be. Extremal lattices are rare. The classical examples are E₈ (n = 8) and the Leech lattice (n = 24). Examples are known in every dimension that is a multiple of 8 up to 80 (dimension 80 since 1998, by Bachoc and Nebe; dimension 72 since 2010, by Nebe) and in dimension 88 since a 2026 preprint of Sakamoto. Dimensions 96 and 104 are open. L₁₁₂ is the first known example beyond 88, and the first for which the bound is 10. Dimension 112 was chosen over 96 and 104 because a heuristic based on Siegel's mass formula suggests that an extremal lattice is easiest to find there (Supplement §S1).
 
+## What is in this repository
+
+Every file in this repository is described in one of the README files reachable from the table below; `code/tests/test_docs.py` checks this in CI.
+
+| path | contents | needed to check Theorem A |
+|---|---|---|
+| [`paper/`](paper/README.md) | the paper and its supplement (Typst sources and PDFs), the source of Figure 1, and a consistency check of the sources | — |
+| [`data/`](data/README.md) | the four defining matrices | yes |
+| [`certificates/`](certificates/MANIFEST.md) | verification data: the small files in git, the large `.npz` files as Release assets, all fixed by `SHA256SUMS` | the files checked by `verify/` |
+| [`code/verify/`](code/README.md#the-verification-steps), [`code/lib/`](code/README.md#files) | the checks of F0–F5 (`proof.sh`, `full.sh`, `quick.sh`, `fetch.sh`) and their shared library (Python with NumPy, one C program) | yes |
+| [`code/produce/`](code/README.md#producing-the-verification-data) | the programs that produced the verification data (SageMath) | no: everything the proof uses is re-checked by `verify/` |
+| [`code/crosscheck/`](code/README.md#second-implementations-and-supplementary-computations) | second implementations of the checks | no (cross-checks) |
+| [`code/supplementary/`](code/README.md#correspondence-with-table-d2-of-the-paper) | computations for the statements other than Theorem A (gluings, automorphism group, route T (a second proof of extremality), the genus of Supplement §S6, …) | no |
+| [`code/tests/`](code/README.md#tests) | smoke tests on small examples (pytest) | no |
+| [`lean/`](lean/README.md) | the deduction from F1–F5 to the absence of vectors of norm below 10, in Lean 4 | no (an independent check of the deduction) |
+| `Dockerfile`, `.devcontainer/devcontainer.json`, `requirements-verify.txt` | the light container image for levels (i)–(iii) below, the dev container that uses it, and the pinned NumPy | optional |
+| `Dockerfile.sage`, `environment.yml` | the SageMath environment for `produce/`, `crosscheck/all_data/` and `supplementary/` | no |
+| `.github/` | CI: `checks.yml` (inputs, tests, container, Typst, Lean on every pull request; PDFs attached to each Release, built by `actions/build-pdfs/action.yml`) and `data-tests.yml` (weekly tests on the large data files) | no |
+| `CITATION.cff`, `LICENSE`, `.gitattributes`, `.gitignore`, `.dockerignore` | citation metadata, licenses, and git and Docker settings | no |
+
 ## Start here
 
 Run the commands from the repository root. The main verifier needs Python 3.10 or later, NumPy, and a C compiler supporting 128-bit integers, such as GCC or Clang. There are three levels of checking.
@@ -66,7 +86,7 @@ Releases are tagged by date; this release is `v2026-10-25` (a second release on 
 
 To cite this work, use GitHub's "Cite this repository", which reads [CITATION.cff](CITATION.cff).
 
-Release `certificates-v2` contains integer certificates for all 763,992 classes of search (2) and all 3,936 classes of search (3) in Supplement §S4, all checked in integer arithmetic. These searches are cross-checks: route T (Supplement §S4.1) reduces, by a different argument and a further finite check, to the same computations F5a and F5b as the main proof. Theorem A does not depend on route T.
+Release `certificates-v2` contains integer certificates for all 763,992 classes of search (2) and all 3,936 classes of search (3) in Supplement §S4, all checked in integer arithmetic. These searches are cross-checks: route T (Supplement §S4.1), a second proof of extremality that uses the Hermitian structure of L₁₁₂, reduces, by a different argument and a further finite check, to the same computations F5a and F5b as the main proof. Theorem A does not depend on route T.
 
 The main verification pipeline uses Python, NumPy, and C. Verification-data generation and supplementary computations use SageMath; see [environment.yml](environment.yml). The Lean formalization checks the deductions from stated hypotheses, rather than executing the lattice computations.
 
