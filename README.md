@@ -16,7 +16,7 @@ Theorem A of the paper: the lattice L₁₁₂ defined by the data in this repos
 
 The construction glues two copies of a 56-dimensional extremal lattice of Nebe, which carries the symmetry group SL₂(29), along an endomorphism τ with τ² = −5 that commutes with the group; equivalently, L₁₁₂ is a Hermitian tensor product over ℤ[√−5]. The proof is computer-assisted. Lemmas proved by hand reduce extremality to finitely many lower bounds for cosets modulo 2L₅₆, and programs check these bounds in integer arithmetic from the distributed data (about 1.2 CPU hours). The deduction from the checked facts to the theorem is formalized in Lean 4.
 
-The paper is a draft and has not been peer reviewed. AI systems did most of the computation, code and writing under human direction (see "Authorship" below).
+The paper is a draft and has not been peer reviewed. AI systems did most of the computation, code and writing under human direction (see "Use of AI and license" below).
 
 ## Background
 
@@ -91,8 +91,8 @@ Release `certificates-v2` contains integer certificates for all 763,992 classes 
 
 The main verification pipeline uses Python, NumPy, and C. Verification-data generation and supplementary computations use SageMath; see [environment.yml](environment.yml). The Lean formalization checks the deductions from stated hypotheses, rather than executing the lattice computations.
 
-## Authorship and license
+## Use of AI and license
 
-roiban1344 directed the work and is responsible for publication. AI systems, including Claude (Anthropic) and OpenAI Codex, contributed to the research, code, checking, and writing; the paper describes their roles.
+roiban1344 directed the work and takes full responsibility for it. AI systems (Claude by Anthropic and OpenAI Codex) did most of the search, code, computation and writing; the separately written implementations used as cross-checks are also the work of separate AI sessions. Correctness rests on the written proofs, the Lean check of the deduction and the published verification programs in integer or interval arithmetic, not on trust in the AI tools. The paper ("Use of AI tools") names the models and describes their roles.
 
 The code (`code/`, `lean/`, `paper/tools/`, `.github/`, the Dockerfiles and the other scripts) is distributed under the MIT license ([LICENSE](LICENSE)). The text and the data (the README files, `paper/` apart from `paper/tools/`, `data/` and `certificates/`, including the Release assets) are distributed under CC BY 4.0 ([LICENSE-CC-BY-4.0](LICENSE-CC-BY-4.0)). Third-party software used by this repository (NumPy, SageMath, Mathlib, …) keeps its own license and is not included here.
