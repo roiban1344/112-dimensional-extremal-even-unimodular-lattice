@@ -122,7 +122,7 @@ Times were measured on the machine used for the paper (8 cores, 15 GB, shared wi
 | step | paper | what is checked | time | memory |
 |---|---|---|---|---|
 | `v0_inputs.py` | F0, F4, Lemma 3.2 | L even unimodular; g₁, g₂ preserve G, generate a group of order 24,360 containing −I, commute with τ; τ² = −5, τGτᵀ = 5G; (3.1) even unimodular; the distributed Gram matrix of L₁₁₂ is the same lattice | 20 s | < 1 GB |
-| `v1_min_L.py` + `enum_interval.c` | F1, §6.1 (a), Table 5 | min L = 6 by an interval-arithmetic enumeration that cannot miss vectors; positive controls E₈, Leech, Leech ⊥ Leech ⊥ E₈ | 34 min | < 1 GB |
+| `v1_min_L.py` + `enum_interval.c` | F1, §6.1 (a), Table 5 | min L = 6 by an interval-arithmetic enumeration that cannot miss vectors; positive controls E₈, Leech, Leech ⊥ Leech ⊥ E₈, E₈ in 5 skewed bases (detects an enumerator without outward rounding) and 60 random positive definite forms against exhaustive search (checks vectors of norm equal to the radius and the sign rule) | 34 min | < 1 GB |
 | `v2_theta.py` | §2.3, App. B; supplement §S1, §S2 | extremal theta series (\|L₆\|, \|L₈\|), Siegel means, Tables B1, S1, S2, S4, S5 | 1 s | — |
 | `v3_minimal_orbits.py` | F2, §6.2 | the 656 orbits cover the 15,590,400 minimal vectors (by expansion and by canonical forms) | 3 min | 2 GB |
 | `v4_norm8_orbits.py` | F3, §6.4 | the 1,527,984 vectors x_i u_k give 1,517,130 distinct regular orbits covering \|L₈\| | 9 min | 2 GB |
@@ -146,14 +146,38 @@ The enumeration of F1 uses outward-rounded interval arithmetic (`verify/enum_int
 
 ## Requirements
 
-* `verify/`, `crosscheck/second_impl/` (except `coset_enumeration.py`): Python ≥ 3.10 with numpy (tested with Python 3.12, numpy 2.5),
+* `verify/`, `crosscheck/second_impl/` (except `coset_enumeration.py`): Python ≥ 3.10 with numpy ≥ 2.2 (`requirements-verify.txt`; the proof was
+  run with Python 3.12 and numpy 2.5.4, and CI tests Python 3.10 with numpy 2.2.6 and Python 3.12 and 3.13 with numpy 2.5.4),
   a C compiler with 128-bit integers (gcc or clang; `$CC` if set, otherwise the first of `cc`, `gcc`, `clang`) for v1, and `curl` for `fetch.sh`. No other package.
 * `produce/`, `supplementary/`, `crosscheck/all_data/`, `crosscheck/second_impl/coset_enumeration.py`: SageMath 10 (which includes PARI/GP, GAP and
   fpylll); tested with SageMath 10.9. `environment.yml` at the repository root installs it with
-  conda/micromamba. Run these scripts with the `python3` of that environment (`python3 -I code/...`);
+  conda/micromamba; `environment-linux-64.lock` lists the exact conda packages of the environment in which
+  these computations were run. Run these scripts with the `python3` of that environment (`python3 -I code/...`);
   `sage -python` is not available in the conda-forge build of SageMath.
 * Container: the `Dockerfile` at the repository root builds an image with these requirements for `verify/` (and `Dockerfile.sage` one with SageMath); see the root README.
 * `lean/`: Lean 4 and Mathlib (versions pinned in `lean/lean-toolchain` and `lean/lake-manifest.json`).
+
+Versions are pinned (numpy in `requirements-verify-lock.txt` with the SHA-256 of its files, the base images of
+the Dockerfiles by digest, the GitHub Actions by commit, `lean/lean-toolchain` and `lean/lake-manifest.json`) and
+updated only between releases; an update is accepted when `proof.sh` passes with it. Dependabot proposes the
+updates monthly (`.github/dependabot.yml`).
+
+## What CI checks
+
+| workflow, job | when | what |
+|---|---|---|
+| `checks`: `verify-inputs`, `docker-verify` | every pull request and push to `main` | v0 and the genus certificates (`genus.py check`); the light image is built and runs v0 |
+| `checks`: `tests` | same | `pytest -m "not data"` (see [Tests](#tests)) with Python 3.10, 3.12 and 3.13 on Linux and Python 3.12 on macOS (arm64, clang, Accelerate) |
+| `checks`: `lint` | same | ruff (rules in `ruff.toml`), shellcheck, actionlint, the two C programs with `-Wall -Wextra -Werror` |
+| `checks`: `paper-consistency`, `typst-build`, `lean` | same | `paper/tools/check-paper.py`; the four PDFs; `lean/check.sh --fresh` |
+| `checks`: `release-pdfs` | a tag `v*` | builds the PDFs and attaches them to the Release |
+| `data-tests` | weekly, on demand | downloads the verification data; `pytest -m data`; v3, v4, v6; the three scripts of `crosscheck/second_impl/` |
+| `proof` | monthly, on demand, a tag `v*` | `fetch.sh` and `proof.sh`; the JSON records are kept, and attached to the Release of a tag |
+
+CI does not run `full.sh` (v7 in full, v8), `crosscheck/all_data/`, `supplementary/` (except `genus.py check`),
+`produce/`, `Dockerfile.sage` or the GAP scripts, and the checks above do not run when only a tag is pushed
+(except `release-pdfs` and `proof`). The verification of Theorem A is a run of `proof.sh` as described above,
+on the reader's machine or in the `proof` workflow; the other jobs only guard against regressions.
 
 ## Tests
 

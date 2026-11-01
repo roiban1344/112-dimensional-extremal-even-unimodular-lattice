@@ -110,7 +110,7 @@ bash code/verify/full.sh 3
 | 段 | 論文 | 確かめること | 時間 | メモリ |
 |---|---|---|---|---|
 | `v0_inputs.py` | F0, F4, 補題 3.2 | L は偶ユニモジュラー。g₁, g₂ は G を保ち、−I を含む位数 24,360 の群を生成し、τ と可換。τ² = −5、τGτᵀ = 5G。(3.1) は偶ユニモジュラー。配布した L₁₁₂ の Gram 行列は同じ格子 | 20 秒 | 1 GB 未満 |
-| `v1_min_L.py` + `enum_interval.c` | F1、§6.1 (a)、表 5 | 取りこぼしの無い区間演算の列挙で min L = 6。陽性対照 E₈、Leech、Leech ⊥ Leech ⊥ E₈ | 34 分 | 1 GB 未満 |
+| `v1_min_L.py` + `enum_interval.c` | F1、§6.1 (a)、表 5 | 取りこぼしの無い区間演算の列挙で min L = 6。陽性対照 E₈、Leech、Leech ⊥ Leech ⊥ E₈、歪めた 5 個の基底での E₈（外向きの丸めの無い列挙器を検出する）、総当たりと比べる無作為に生成した正定値二次形式 60 個（ノルムが半径に等しいベクトルと符号の規則を確かめる） | 34 分 | 1 GB 未満 |
 | `v2_theta.py` | §2.3、付録 B、補遺 §S1・§S2 | 極値テータ級数（\|L₆\|, \|L₈\|）、Siegel 平均、表 B1, S1, S2, S4, S5 | 1 秒 | — |
 | `v3_minimal_orbits.py` | F2、§6.2 | 656 軌道が 15,590,400 本の最小ベクトルを覆う（展開と標準形の 2 通り） | 3 分 | 2 GB |
 | `v4_norm8_orbits.py` | F3、§6.4 | 1,527,984 本の x_i u_k が、\|L₈\| を覆う相異なる 1,517,130 個の正則な軌道を与える | 9 分 | 2 GB |
@@ -131,12 +131,34 @@ F1 の列挙は外向きに丸める区間演算を使います（`verify/enum_i
 
 ## 動作環境
 
-* `verify/`、`crosscheck/second_impl/`（`coset_enumeration.py` を除く）: Python 3.10 以上と numpy（Python 3.12、numpy 2.5 で確認）。v1 には 128 ビット整数をもつ C コンパイラ（gcc か clang。`$CC` があればそれ、無ければ `cc`・`gcc`・`clang` の順に探す）。`fetch.sh` には `curl` が必要です。ほかのパッケージは要りません。
+* `verify/`、`crosscheck/second_impl/`（`coset_enumeration.py` を除く）: Python 3.10 以上と numpy 2.2 以上（`requirements-verify.txt`。証明の検算は Python 3.12、numpy 2.5.4 で
+  走らせ、CI は Python 3.10 と numpy 2.2.6、Python 3.12・3.13 と numpy 2.5.4 で試験する）。v1 には 128 ビット整数をもつ C コンパイラ（gcc か clang。`$CC` があればそれ、無ければ `cc`・`gcc`・`clang` の順に探す）。`fetch.sh` には `curl` が必要です。ほかのパッケージは要りません。
 * `produce/`、`supplementary/`、`crosscheck/all_data/`、`crosscheck/second_impl/coset_enumeration.py`: SageMath 10（PARI/GP、GAP、fpylll を含む）。SageMath 10.9 で確認。リポジトリのルートの
-  `environment.yml` で conda/micromamba から入れられます。これらのスクリプトは、その環境の `python3` で実行します（`python3 -I code/...`）。
+  `environment.yml` で conda/micromamba から入れられます。`environment-linux-64.lock` は、これらの計算を走らせた環境の conda のパッケージを
+  正確に並べたものである。これらのスクリプトは、その環境の `python3` で実行します（`python3 -I code/...`）。
   conda-forge 版の SageMath では `sage -python` は使えません。
 * コンテナ: リポジトリのルートの `Dockerfile` は、`verify/` のためにこれらを備えたイメージを作ります（SageMath 入りのイメージは `Dockerfile.sage`）。ルートの README を参照してください。
 * `lean/`: Lean 4 と Mathlib（版は `lean/lean-toolchain` と `lean/lake-manifest.json` に固定）。
+
+バージョンは固定する（numpy は `requirements-verify-lock.txt` でファイルの SHA-256 とともに、Dockerfile の基底イメージはダイジェストで、
+GitHub Actions はコミットで、Lean は `lean/lean-toolchain` と `lean/lake-manifest.json` で）。更新は版と版の間だけに行い、`proof.sh` が
+それで通ることを確かめてから取り込む。更新の提案は Dependabot が月に 1 回出す（`.github/dependabot.yml`）。
+
+## CI が確かめること
+
+| ワークフロー、job | いつ | 何を |
+|---|---|---|
+| `checks`: `verify-inputs`、`docker-verify` | pull request と `main` への push のたび | v0 と種の検証用データ（`genus.py check`）。軽量のイメージを作り、その中で v0 |
+| `checks`: `tests` | 同上 | `pytest -m "not data"`（[試験](#試験)を参照）を、Linux の Python 3.10・3.12・3.13 と macOS（arm64、clang、Accelerate）の Python 3.12 で |
+| `checks`: `lint` | 同上 | ruff（規則は `ruff.toml`）、shellcheck、actionlint、2 本の C のプログラムを `-Wall -Wextra -Werror` で |
+| `checks`: `paper-consistency`、`typst-build`、`lean` | 同上 | `paper/tools/check-paper.py`、4 つの PDF、`lean/check.sh --fresh` |
+| `checks`: `release-pdfs` | タグ `v*` | PDF を作り、Release に添付する |
+| `data-tests` | 週に 1 回、手動 | 検証用データを取得し、`pytest -m data`、v3・v4・v6、`crosscheck/second_impl/` の 3 本 |
+| `proof` | 月に 1 回、手動、タグ `v*` | `fetch.sh` と `proof.sh`。JSON の記録を残し、タグでは Release に添付する |
+
+CI は `full.sh`（v7 の全体、v8）、`crosscheck/all_data/`、`supplementary/`（`genus.py check` を除く）、`produce/`、`Dockerfile.sage`、GAP の
+スクリプトを走らせない。タグだけを push したときは、`release-pdfs` と `proof` のほかは走らない。定理 A の検算とは、上で述べた `proof.sh` の
+実行（読者の計算機か、ワークフロー `proof`）であり、ほかの job は後退を防ぐためのものである。
 
 ## 試験
 

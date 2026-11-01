@@ -1,0 +1,19 @@
+# Proposals to update the pinned versions (GitHub Actions by commit SHA, numpy in requirements-verify*.txt, the
+# base images of the Dockerfiles), monthly. They are merged only between releases, after proof.sh has passed with
+# them (code/README.md, "Requirements").
+# 固定した版（コミット SHA の GitHub Actions、requirements-verify*.txt の numpy、Dockerfile の基底イメージ）の更新の提案（月に 1 回）。
+# 版と版の間に、proof.sh がそれで通ったあとでだけ取り込む（code/README.ja.md の「動作環境」）。
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: monthly
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: monthly

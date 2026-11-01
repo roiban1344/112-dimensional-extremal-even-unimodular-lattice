@@ -1,0 +1,76 @@
+name: proof
+
+# The computational part of the proof of Theorem A (bash code/verify/proof.sh, v0-v6, about 1.2 CPU hours) on a
+# GitHub runner: monthly, on demand, and for every release tag v*. The JSON records out/*.json are kept as an
+# artifact; for a release tag they are also attached to the Release (as proof-<tag>.tar.gz), so that a run of
+# proof.sh on a machine other than the authors' is recorded for each version.
+# 定理 A の証明の計算部分（bash code/verify/proof.sh、v0〜v6、約 1.2 CPU 時間）を GitHub のランナーで走らせる: 月に 1 回、手動、
+# 版のタグ v* ごと。JSON の記録 out/*.json を artifact として残し、版のタグでは Release にも添付する（proof-<タグ>.tar.gz）。
+# 著者以外の機械で proof.sh を通した記録が版ごとに残る。
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 3 7 * *'
+  push:
+    tags: ['v*']
+
+# Every `run:` step uses bash with -e and -o pipefail (GitHub's `shell: bash`), so that a failure inside a pipeline
+# such as `proof.sh | tee` fails the step. Without `shell:`, the default is `bash -e` without pipefail.
+# すべての run: を bash の -e と -o pipefail で実行する（GitHub の shell: bash）。`proof.sh | tee` のような
+# パイプラインの途中の失敗も段の失敗になる。shell: を書かない既定は pipefail の無い bash -e である。
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - run: pip install --require-hashes -r requirements-verify-lock.txt
+      - name: Download the certificate files (150 MB) and check them against certificates/SHA256SUMS
+        run: bash code/verify/fetch.sh
+      - name: bash code/verify/proof.sh
+        run: |
+          mkdir -p out
+          bash code/verify/proof.sh 2>&1 | tee out/proof.log
+      - name: Keep the JSON records
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: proof-out
+          path: |
+            out/*.json
+            out/proof.log
+          if-no-files-found: ignore
+
+  attach:
+    needs: proof
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: proof-out
+          path: proof-out
+      - name: Pack the records
+        env:
+          TAG: ${{ github.ref_name }}
+        run: tar -czf "proof-$TAG.tar.gz" -C proof-out .
+      - name: Attach them to the release of this tag (created if absent; notes untouched)
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        with:
+          files: proof-*.tar.gz

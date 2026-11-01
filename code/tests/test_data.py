@@ -17,7 +17,6 @@ mostly spent expanding the 7,795,200 minimal vectors.
 import hashlib
 import json
 import os
-import shutil
 
 import numpy as np
 import pytest
