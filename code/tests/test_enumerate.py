@@ -99,3 +99,30 @@ def test_untabulated_leaves_are_reported(enum_exe):
     with pytest.raises(CheckError, match="outside the table"):
         en.run_enumerator(enum_exe, [[2]], 5000)
     assert counts(enum_exe, [[2]], 4095) == {2 * k * k: 2 for k in range(1, 46)}
+
+
+def test_rounding_controls_of_v1_detect_missing_outward_rounding(enum_exe, tmp_path):
+    # v1 runs E8 in 5 skewed bases and 60 random forms against exhaustive search (lib.enumerate). The lattice
+    # controls in a reduced basis (E8, Leech, Leech + Leech + E8) pass even when dn and up are the identity; the
+    # skewed bases must then fail, and both controls must pass for the real enumerator.
+    # v1 は歪めた 5 個の基底での E8 と、無作為に生成した正定値二次形式 60 個での総当たりとの比較を走らせる。簡約基底での格子の対照は dn と up を
+    # 恒等写像にしても通るが、そのとき歪めた基底の対照は落ち、本物の列挙器では両方とも通らなければならない。
+    import subprocess
+    assert en.skewed_basis_mismatches(enum_exe, E8, 4, {2: 240, 4: 2160}) == 0
+    assert en.random_forms_mismatches(enum_exe)[0] == 0
+    with open(en._SRC) as f:
+        src = f.read()
+    for name in ("dn", "up"):
+        line = next(l for l in src.splitlines() if l.startswith(f"static inline double {name}(double a)"))
+        src = src.replace(line, f"static inline double {name}(double a) {{ return a; }}")
+    path = tmp_path / "mutant.c"
+    path.write_text(src)
+    exe = str(tmp_path / "mutant")
+    subprocess.run([en.c_compiler()] + en._FLAGS + ["-o", exe, str(path), "-lm"], check=True)
+    assert counts(exe, E8, 4) == {2: 240, 4: 2160}                 # the reduced-basis control does not see it
+    assert en.skewed_basis_mismatches(exe, E8, 4, {2: 240, 4: 2160}) > 0
+
+
+def test_exhaustive_search_on_root_lattices():
+    assert [q for _, q in en.exhaustive_short_vectors(A2, 8)].count(2) == 3
+    assert sorted(q for _, q in en.exhaustive_short_vectors(D4, 4)) == [2] * 12 + [4] * 12
