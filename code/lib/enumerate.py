@@ -31,6 +31,12 @@ from . import exact, require
 _SRC = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "verify", "enum_interval.c")
 _FLAGS = ["-O2", "-std=c11", "-fno-fast-math", "-ffp-contract=off"]
 
+# The compiler used by compile_enumerator in this run, with the SHA-256 of the compiled source and of the executable
+# (recorded by report.Report as "compiler"), or None.
+# この実行で compile_enumerator が使ったコンパイラと、コンパイルしたソース・実行ファイルの SHA-256（report.Report が "compiler"
+# として記録する）。無ければ None。
+COMPILED = None
+
 
 def interval(q):
     """[nextbelow(f), nextabove(f)] for f = float(q) (nearest rounding), containing the rational q.
@@ -54,22 +60,43 @@ def c_compiler():
 
 def compile_enumerator(build_dir, force=False):
     """Compile verify/enum_interval.c into build_dir and return the executable. The file name contains a
-    hash of the source, the compiler (resolved path) and the flags, so a cached executable is reused only
-    for exactly the same source and compiler; `force` recompiles anyway.
-    verify/enum_interval.c を build_dir にコンパイルし、実行ファイルを返す。ファイル名にソース・コンパイラ（解決したパス）・
-    オプションのハッシュを含めるので、キャッシュした実行ファイルを再利用するのは、まったく同じソースとコンパイラのときだけ。
+    hash of the source, the compiler (resolved path and version) and the flags, so a cached executable is reused
+    only for exactly the same source and compiler, and the recorded compiler is the one that built it; `force`
+    recompiles anyway.
+    verify/enum_interval.c を build_dir にコンパイルし、実行ファイルを返す。ファイル名にソース・コンパイラ（解決したパスと版）・
+    オプションのハッシュを含めるので、キャッシュした実行ファイルを再利用するのは、まったく同じソースとコンパイラのときだけで、記録するコンパイラは実際に作ったものになる。
     `force` なら常にコンパイルし直す。"""
+    global COMPILED
     cc = c_compiler()
-    h = hashlib.sha256()
+    try:
+        version = subprocess.run([cc, "--version"], capture_output=True, text=True, timeout=60).stdout.splitlines()[0]
+    except (OSError, subprocess.SubprocessError, IndexError):
+        version = None
+    COMPILED = {"command": cc, "path": shutil.which(cc), "version": version, "flags": _FLAGS}
+    # Compile a copy of exactly the bytes that are hashed, so that the recorded hash is that of the compiled source.
+    # ハッシュを取ったバイト列そのものの写しをコンパイルする。記録するハッシュがコンパイルしたソースのものになる。
     with open(_SRC, "rb") as f:
-        h.update(f.read())
-    h.update("\0".join([shutil.which(cc) or cc] + _FLAGS).encode())
+        src = f.read()
+    src_sha = hashlib.sha256(src).hexdigest()
+    h = hashlib.sha256(src)
+    resolved = shutil.which(cc) or cc
+    h.update("\0".join([resolved, os.path.realpath(resolved), version or ""] + _FLAGS).encode())
     exe = os.path.join(build_dir, "enum_interval-" + h.hexdigest()[:16])
     os.makedirs(build_dir, exist_ok=True)
     if force or not os.path.exists(exe):
         tmp = f"{exe}.{os.getpid()}.tmp"
-        subprocess.run([cc] + _FLAGS + ["-o", tmp, _SRC, "-lm"], check=True)
+        src_copy = tmp + ".c"
+        with open(src_copy, "wb") as f:
+            f.write(src)
+        try:
+            subprocess.run([cc] + _FLAGS + ["-o", tmp, src_copy, "-lm"], check=True)
+        finally:
+            os.remove(src_copy)
         os.replace(tmp, exe)
+    with open(exe, "rb") as f:
+        exe_sha = hashlib.sha256(f.read()).hexdigest()
+    COMPILED.update({"source": os.path.relpath(_SRC, os.path.dirname(os.path.dirname(os.path.dirname(_SRC)))),
+                     "source_sha256": src_sha, "executable_sha256": exe_sha})
     return exe
 
 
@@ -84,11 +111,11 @@ def enumerator_input(G, bound):
     lines += [" ".join(str(v) for v in row) for row in G]
     for d in D:
         lo, hi = interval(d)
-        lines.append(f"{lo!r} {hi!r}")
+        lines.append(f"{lo.hex()} {hi.hex()}")      # exact in C (scanf "%lf" reads hexadecimal floats) / C で厳密に読める
     for i in range(n):
         for j in range(i + 1, n):
             lo, hi = interval(V[i][j])
-            lines.append(f"{lo!r} {hi!r}")
+            lines.append(f"{lo.hex()} {hi.hex()}")
     return "\n".join(lines) + "\n"
 
 

@@ -13,7 +13,9 @@ r"""(8,8) 型の衝突の全数検査を、別実装でやり直す（考え方�
   - 表引き（バイト表）による c·s が、素朴な行列積と一致すること。
   - (6,6) 型: 最小ベクトルの代表 656 個で同じ検査。貼り合わせが恒等写像なら全部衝突するはず（陽性対照）。
 
-実行（リポジトリの根から）: python3 -I code/crosscheck/second_impl/even_classes.py [C] [B]
+実行（リポジトリの根から）: python3 -I code/crosscheck/second_impl/even_classes.py [C] [B]   （--help で説明）
+Every input file is checked against data/SHA256SUMS or certificates/SHA256SUMS, and the hashes are printed at the end.
+入力ファイルはすべて data/SHA256SUMS か certificates/SHA256SUMS と照合し、最後にハッシュを表示する。
   C = 本論文の tau（data/tau.txt）、B = 陰性対照の貼り方 B（certificates/negative_control_B.npz）
 期待値: K8 は 1,517,130 種、K6 は 656 種、陽性対照は 656 / 656。C ではどちらの向きでも (6,6)・(6,8)・(8,8) 型の衝突が 0。
 B では (8,8) 型の衝突がある（陰性対照）。一つでも外れれば終了コード 1 で終わる。
@@ -27,9 +29,15 @@ certificate files of certificates/ are read; the centralizer elements are read f
 certificates/centralizer.npz instead of being recomputed with Sage). The checks are unchanged.
 Shares no code with code/lib or code/verify. Needs only numpy.
 """
-import sys, time
+import argparse, hashlib, sys, time
 from pathlib import Path
 import numpy as np
+_ap = argparse.ArgumentParser(description="Second implementation of the check of F5b by canonical forms (type (8,8) "
+                              "collisions), with the negative control B.")
+_ap.add_argument("gluings", nargs="*", choices=["C", "B"], default=["C"], metavar="{C,B}",
+                 help="C: the gluing of the paper (data/tau.txt, the default); B: the negative control "
+                      "(certificates/negative_control_B.npz)")
+ARGS = _ap.parse_args()
 ROOT = Path(__file__).resolve().parents[3]
 DATA, CERT = ROOT / "data", ROOT / "certificates"
 if not __debug__:
@@ -48,24 +56,46 @@ def check(name, ok):
 
 
 def finish():
+    for k, v in sorted(INPUTS.items()):
+        print(f"  input {k}: SHA-256 {v}", flush=True)
     print("RESULT: PASS" if not FAILS else f"RESULT: FAIL ({len(FAILS)} failed: {FAILS})", flush=True)
     sys.exit(1 if FAILS else 0)
 
+INPUTS = {}
+
+
+def _checked(path):
+    """`path`, after checking its SHA-256 against the SHA256SUMS of its directory (data/ or certificates/), with
+    hashlib only (no code shared with code/lib). A missing or different file ends the run (exit code 1).
+    `path` を、そのディレクトリ（data/ か certificates/）の SHA256SUMS と SHA-256 を照合してから返す（hashlib だけを使い、
+    code/lib とコードを共有しない）。無いか違うファイルなら、そこで終わる（終了コード 1）。"""
+    sums = {}
+    with open(path.parent / "SHA256SUMS") as f:
+        for line in f:
+            if line.strip():
+                h, name = line.split()
+                sums[name.lstrip("*")] = h
+    h = hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
+    label = f"{path.parent.name}/{path.name}"
+    INPUTS[label] = h
+    if not check(f"{label} has the SHA-256 listed in {path.parent.name}/SHA256SUMS", h is not None and h == sums.get(path.name)):
+        print("  (bash code/verify/fetch.sh downloads the published certificate files)", flush=True)
+        finish()
+    return path
+
 
 def _ints(path):
-    return np.array([int(t) for l in open(path) if not l.startswith("#") for t in l.split()], dtype=np.int64)
+    return np.array([int(t) for l in open(_checked(path)) if not l.startswith("#") for t in l.split()], dtype=np.int64)
 
 
 def _npz(name, key):
-    with np.load(CERT / name, allow_pickle=False) as z:
+    with np.load(_checked(CERT / name), allow_pickle=False) as z:
         return z[key]
 
 
 g_ = _ints(DATA / "L56_gram.txt")
 h_ = _ints(DATA / "sl2_29_generators.txt").reshape(2, -1)
-classes = sys.argv[1:] or ["C"]
-if not set(classes) <= {"C", "B"}:
-    sys.exit(f"unknown gluing {classes}: use C and/or B / 貼り方は C か B")
+classes = ARGS.gluings
 n = 56; t0 = time.time()
 Gn = np.array(g_, dtype=np.int64).reshape(n, n)
 H = [np.array(h, dtype=np.int64).reshape(n, n) for h in h_]

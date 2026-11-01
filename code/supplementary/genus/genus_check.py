@@ -23,7 +23,7 @@ def mm(A, B):
 
 
 def check(a):
-    rep = Report("s25_genus_check", a.out)
+    rep = Report("genus_check", a.out)
     cdir = a.certificates
     G = data.gram(a.data).astype(np.int64)
     gens = data.generators(a.data).astype(np.int64)

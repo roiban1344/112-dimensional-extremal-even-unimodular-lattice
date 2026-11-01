@@ -1,6 +1,6 @@
-"""S20. Reduction of F1 to Nebe's lattice: "min L_{56,2}(M) = 6 implies min L = 6" (paper §6.1 (b);
+"""Reduction of F1 to Nebe's lattice: "min L_{56,2}(M) = 6 implies min L = 6" (paper §6.1 (b);
 Table D2 [C6]). A second route to F1, not used in the proof of Theorem A (which uses verify/v1).
-S20. F1 の Nebe の格子への帰着: 「min L_{56,2}(M) = 6 ならば min L = 6」（論文 §6.1 (b)。表 D2 の [C6]）。F1 への 2 本目の道で、定理 A の証明
+F1 の Nebe の格子への帰着: 「min L_{56,2}(M) = 6 ならば min L = 6」（論文 §6.1 (b)。表 D2 の [C6]）。F1 への 2 本目の道で、定理 A の証明
 （verify/v1 を使う）には使わない。
 
   1. For the elements X of M'(L_{56,2}(M)) whose reduction modulo 2 has rank 28 (found among the elements
@@ -47,12 +47,12 @@ def main():
     from isometry import equivariant_isometries
     from lattices import load, write_mats
     from p1_centralizer import commutant_basis, elements_of_norm
-    ap = argparse.ArgumentParser(description="S20: reduction of F1 to L_{56,2}(M)")
+    ap = argparse.ArgumentParser(description="reduction of F1 to L_{56,2}(M)")
     ap.add_argument("--data", default=None)
     certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report("s20_reduction_to_nebe", a.out)
+    rep = Report("reduction_to_nebe", a.out)
     out = os.path.join(rep.out_dir, "nebe")
     n = 56
     F2 = GF(2)

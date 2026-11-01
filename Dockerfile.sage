@@ -6,12 +6,19 @@
 #   docker run --rm l112-sage python3 -I code/supplementary/genus/genus.py check
 #   docker run --rm l112-sage sage -c 'print(version())'
 #
-# To keep the results on the host, mount out/. Create it first (Docker would otherwise create it
-# owned by root), and run as your own user: the user of the base image (mambauser, uid 57439)
-# cannot write to a directory owned by you.
+# The supplementary computations read the verification data (.npz files, not in the image: they are
+# downloaded by fetch.sh) and, for gluing_b, the output of verify/v4. Mount certificates/ and out/ of
+# a clone of this repository, as for the light image, so that the download and the results stay on
+# the host. Create out/ first (Docker would otherwise create it owned by root), and run as your own
+# user: the user of the base image (mambauser, uid 57439) cannot write to a directory owned by you.
+# All 30 steps take about 6 hours on one core (code/run_supplementary.sh, header); name steps to run
+# only some of them, e.g. `bash code/run_supplementary.sh genus_check frames`.
 #   mkdir -p out
-#   docker run --rm --user "$(id -u):$(id -g)" -v "$PWD/out:/work/out" l112-sage bash code/run_supplementary.sh
-FROM mambaorg/micromamba:2.3.2
+#   docker run --rm --user "$(id -u):$(id -g)" -v "$PWD/certificates:/work/certificates" -v "$PWD/out:/work/out" \
+#       l112-sage bash -c 'bash code/verify/fetch.sh && python3 -I code/verify/v4_norm8_orbits.py && bash code/run_supplementary.sh'
+# The base image is pinned by digest (mambaorg/micromamba:2.3.2); environment.yml fixes the versions of SageMath,
+# Python and numpy. / 基底イメージはダイジェストで固定する。environment.yml は SageMath・Python・numpy の版を固定する。
+FROM mambaorg/micromamba:2.3.2@sha256:ce2026639d612fbe837a35ca9d513292a8d776a24a5e6c82cccf9dddf45ad3d2
 
 USER root
 RUN apt-get update \

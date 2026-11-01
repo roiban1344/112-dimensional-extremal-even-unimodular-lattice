@@ -101,6 +101,26 @@ def test_untabulated_leaves_are_reported(enum_exe):
     assert counts(enum_exe, [[2]], 4095) == {2 * k * k: 2 for k in range(1, 46)}
 
 
+def test_input_of_the_enumerator_for_L():
+    # The path of v1 on L up to the enumeration itself (which takes 34 minutes, and more than 10^8 nodes even at
+    # radius 2): reduction_L.txt is unimodular, G' = U G U^T is even with det 1, and the intervals written for the
+    # enumerator (hexadecimal floats, read exactly by C) contain the exact rationals D_i and V_ij of G' = V^T diag(D) V.
+    # L に対する v1 の経路のうち、列挙そのもの（34 分。半径 2 でも 10^8 節点を超える）の手前まで: reduction_L.txt はユニモジュラー、
+    # G' = U G U^T は偶で det 1、列挙器に書く区間（C が厳密に読む 16 進の浮動小数点）は G' = V^T diag(D) V の厳密な有理数 D_i, V_ij を含む。
+    from lib import certs, data, exact
+    U = certs.load_matrix("reduction_L.txt", 56)
+    assert abs(exact.det_bareiss(U)) == 1
+    Gr = exact.i64_matmul(exact.i64_matmul(U, data.gram()), U.T)
+    assert (Gr == Gr.T).all() and (np.diag(Gr) % 2 == 0).all() and exact.det_bareiss(Gr) == 1
+    lines = en.enumerator_input(Gr, 4).splitlines()
+    assert lines[0] == "56 4" and len(lines) == 1 + 56 + 56 + 56 * 55 // 2
+    D, V = exact.ldl_exact(Gr)
+    exact_values = list(D) + [V[i][j] for i in range(56) for j in range(i + 1, 56)]
+    for line, q in zip(lines[57:], exact_values):
+        lo, hi = (float.fromhex(t) for t in line.split())
+        assert lo <= q <= hi and lo < hi
+
+
 def test_rounding_controls_of_v1_detect_missing_outward_rounding(enum_exe, tmp_path):
     # v1 runs E8 in 5 skewed bases and 60 random forms against exhaustive search (lib.enumerate). The lattice
     # controls in a reduced basis (E8, Leech, Leech + Leech + E8) pass even when dn and up are the identity; the

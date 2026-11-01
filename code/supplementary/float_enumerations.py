@@ -1,7 +1,7 @@
-"""S15. Floating-point enumerations (paper §6.1 (c), §6.6, §6.7 "CVP"; Table D2 [C7], [C12]). These are
+"""Floating-point enumerations (paper §6.1 (c), §6.6, §6.7 "CVP"; Table D2 [C7], [C12]). These are
 supplementary: fplll and PARI use floating-point Gram-Schmidt data and do not guarantee completeness, so
 the results are not part of the proof (which uses verify/v1, v5, v6, v7).
-S15. 浮動小数点の列挙（論文 §6.1 (c)、§6.6、§6.7 の CVP。表 D2 の [C7], [C12]）。補助: fplll と PARI は浮動小数点の Gram-Schmidt を使い完全性を
+浮動小数点の列挙（論文 §6.1 (c)、§6.6、§6.7 の CVP。表 D2 の [C7], [C12]）。補助: fplll と PARI は浮動小数点の Gram-Schmidt を使い完全性を
 保証しないので、結果は証明の一部ではない（証明は verify/v1, v5, v6, v7）。
 
 Modes / モード:
@@ -107,7 +107,7 @@ class CosetMinimum:
 def main():
     from fpylll import Enumeration, EnumerationError, GSO, IntegerMatrix
     from sage.all import ZZ, identity_matrix, matrix, pari
-    ap = argparse.ArgumentParser(description="S15: floating-point enumerations")
+    ap = argparse.ArgumentParser(description="floating-point enumerations")
     ap.add_argument("mode", choices=("svp", "qfminim", "cvp610", "cvp88"))
     ap.add_argument("--part", type=int, default=0)
     ap.add_argument("--nparts", type=int, default=1)
@@ -116,7 +116,7 @@ def main():
     certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    tag = f"s15_{a.mode}" + (f"_part{a.part}of{a.nparts}" if a.mode == "cvp88" else "") + ("_B" if a.tau == "B" else "")
+    tag = f"float_{a.mode}" + (f"_part{a.part}of{a.nparts}" if a.mode == "cvp88" else "") + ("_B" if a.tau == "B" else "")
     rep = Report(tag, a.out)
     n = 56
     G = matrix(ZZ, data.gram(a.data).tolist())

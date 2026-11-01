@@ -22,13 +22,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
 
-from . import certs, exact, require
+from . import N6, N8, certs, exact, require  # noqa: F401  (N6, N8: see lib/__init__.py; used as shells.N6, shells.N8)
 from .data import sha256_file
-
-# |L_6| and |L_8|: coefficients of the extremal theta series in dimension 56, derived in verify/v2_theta.py.
-# |L_6| と |L_8|: 56 次元の極値テータ級数の係数。verify/v2_theta.py で導く。
-N6 = 15590400
-N8 = 36957286800
 
 
 def expand_half_shell(reps, S):
@@ -49,6 +44,8 @@ def expand_half_shell(reps, S):
         first = (Y != 0).argmax(axis=1)
         sgn = np.sign(Y[np.arange(len(Y)), first])
         require((sgn != 0).all(), "zero vector in an orbit")
+        # The rows are stored as int16; larger entries would wrap around silently. / int16 で持つ。超える成分は黙って回り込む。
+        require(int(np.abs(Y).max()) < 2 ** 15, "an entry of r s does not fit in int16")
         parts.append(np.unique((Y * sgn[:, None]).astype(np.int16), axis=0))
     return np.concatenate(parts)
 
@@ -70,10 +67,12 @@ class MinimalVectors:
     """All minimal vectors of L (one of each +-pair) and maximal inner products with them.
     L のすべての最小ベクトル（±の片方ずつ）と、それとの内積の最大。"""
 
-    def __init__(self, G, reps, S):
+    def __init__(self, G, reps, S, expected=N6):
+        """`expected`: the number of minimal vectors (both signs), |L_6| for L; another value only in tests
+        on small lattices. / `expected`: 最小ベクトルの本数（両符号）。L では |L_6|。ほかの値は小さな格子での試験でだけ使う。"""
         self.G = np.asarray(G, dtype=np.int64)
         self.V = expand_half_shell(reps, S)
-        require(2 * len(self.V) == N6, f"{2 * len(self.V)} minimal vectors, expected {N6}")
+        require(2 * len(self.V) == expected, f"{2 * len(self.V)} minimal vectors, expected {expected}")
         require(count_distinct_rows(self.V) == len(self.V), "two orbits overlap")
         # Every expanded vector has norm 6 (checked exactly in int64).
         # 展開したベクトルがすべてノルム 6 であることを int64 で厳密に確かめる。

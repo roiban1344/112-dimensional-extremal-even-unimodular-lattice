@@ -11,12 +11,21 @@ JSON ファイルが古い結果を示すことはない: Report を作る時点
 終わったとき（ハッシュの不一致や保証の検査の失敗などの捕まえられない例外、KeyboardInterrupt、sys.exit）は、終了時に
 "passed": false とエラーを書く。終了コードは変えない（検査の失敗と捕まえられない例外では 1）。合否の正本は終了コードで、
 JSON はその記録である。
+
+Format of out/<step>.json (FORMAT = 2; the keys are described in code/README.md, "The JSON records"):
+out/<段>.json の形式（FORMAT = 2。鍵の説明は code/README.ja.md の「JSON の記録」）:
+  format, step, passed, error, checks [{check, ok}], values {label: value}, seconds, finished, arguments,
+  code {git, files {path: SHA-256 when loaded}}, inputs {path: SHA-256}, python, numpy, blas, platform,
+  compiler (only if the enumerator was compiled; with the SHA-256 of its source and executable),
+  certificate_hashes (only with --hashes). A source file of code/ edited during the run makes the run fail.
 """
 import atexit
 import hashlib
+import importlib.machinery
 import json
 import os
 import platform
+import subprocess
 import sys
 import time
 
@@ -25,7 +34,94 @@ try:  # numpy is optional here (v2_theta.py runs without it) / ここでは nump
 except ImportError:
     np = None
 
-DEFAULT_OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "out")
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+CODE_DIR = os.path.join(ROOT, "code")
+DEFAULT_OUT = os.path.join(ROOT, "out")
+FORMAT = 2          # 1: until 2026-10-25 (without format, arguments, code, inputs, blas, compiler)
+
+
+def _sha256(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for block in iter(lambda: f.read(1 << 20), b""):
+            h.update(block)
+    return h.hexdigest()
+
+
+# SHA-256 of every source file under code/ that this process has loaded, taken when the module is loaded (or, for
+# modules loaded before this file, when this file is imported). finish() records these values, which describe the
+# code that ran, and fails the run if a file has changed since.
+# このプロセスが読み込んだ code/ 以下のソースの SHA-256。モジュールを読み込む時点で取る（この file より先に読み込まれた
+# モジュールは、この file を import する時点で取る）。finish() はこの値を記録し（実行したコードを指す）、その後に
+# ファイルが変わっていれば実行を失敗とする。
+_CODE_HASHES = {}
+
+
+def _note_source(path):
+    path = os.path.abspath(path)
+    if path not in _CODE_HASHES and path.startswith(CODE_DIR + os.sep) and os.path.isfile(path):
+        _CODE_HASHES[path] = _sha256(path)
+
+
+def _note_loaded_modules():
+    for m in list(sys.modules.values()):
+        f = getattr(m, "__file__", None)
+        if f and f.endswith(".py"):
+            _note_source(f)
+
+
+_exec_module = importlib.machinery.SourceFileLoader.exec_module
+
+
+def _exec_module_noting_source(loader, module):
+    # Every later import of a source file passes here: hash the file as it is loaded.
+    # これ以後のソースの import はすべてここを通る。読み込む時点のファイルのハッシュを取る。
+    _note_source(loader.path)
+    return _exec_module(loader, module)
+
+
+importlib.machinery.SourceFileLoader.exec_module = _exec_module_noting_source
+_note_loaded_modules()
+
+
+def code_files():
+    """{path relative to the repository root: SHA-256 when loaded} of the running script and of every module under
+    code/ that it has loaded (lib/ and, for the supplementary computations, produce/ and supplementary/).
+    実行中のスクリプトと、それが読み込んだ code/ 以下のすべてのモジュールの {リポジトリの根からのパス: 読み込んだ時点の SHA-256}。"""
+    _note_loaded_modules()
+    return {os.path.relpath(f, ROOT): h for f, h in sorted(_CODE_HASHES.items())}
+
+
+def changed_code_files():
+    """The loaded source files whose content differs now from when they were loaded (edited during the run).
+    読み込んだ時点と今とで内容が違うソース（実行中に書き換えられたもの）。"""
+    return sorted(os.path.relpath(f, ROOT) for f, h in _CODE_HASHES.items()
+                  if not os.path.isfile(f) or _sha256(f) != h)
+
+
+def git_version():
+    """`git describe --always --dirty` of this repository, or None (no git, no .git as in the container
+    images, or the code is a copy inside another repository).
+    このリポジトリの `git describe --always --dirty`。取れなければ None（git が無い、コンテナのイメージのように .git が無い、
+    別のリポジトリの中の写しである場合）。"""
+    try:
+        top = subprocess.run(["git", "-C", ROOT, "rev-parse", "--show-toplevel"], capture_output=True, text=True, timeout=20)
+        if top.returncode != 0 or os.path.realpath(top.stdout.strip()) != os.path.realpath(ROOT):
+            return None
+        d = subprocess.run(["git", "-C", ROOT, "describe", "--always", "--dirty"], capture_output=True, text=True, timeout=20)
+        return (d.stdout.strip() or None) if d.returncode == 0 else None
+    except (OSError, subprocess.SubprocessError):
+        return None
+
+
+def blas_info():
+    """Name and version of the BLAS that numpy was built against (numpy.show_config), or None.
+    numpy をビルドしたときの BLAS の名前と版（numpy.show_config）。取れなければ None。"""
+    try:
+        b = np.show_config(mode="dicts")["Build Dependencies"]["blas"]
+        return {k: b.get(k) for k in ("name", "version", "openblas configuration") if k in b}
+    except Exception:  # noqa: BLE001  (numpy without numpy.show_config(mode=...), or another layout)
+        return None
 
 
 def _plain(o):
@@ -69,6 +165,15 @@ def load_output_of(rep, step, name, input_hashes):
                 h.update(block)
     rep.check(f"out/{name} has the SHA-256 recorded by {step}",
               os.path.exists(path) and values.get(f"SHA-256 of out/{name}") == h.hexdigest())
+    # The code that produced the file (the script and the modules it loaded) must be the code of this checkout.
+    # ファイルを作ったコード（スクリプトと、それが読み込んだモジュール）は、この作業ツリーのコードと同じでなければならない。
+    recorded = (res.get("code") or {}).get("files") or {}
+    current = {f: (_sha256(os.path.join(ROOT, f)) if os.path.isfile(os.path.join(ROOT, f)) else None) for f in recorded}
+    for f in sorted(recorded):
+        if current[f] != recorded[f]:
+            rep.log(f"  {f} has changed since {step} was run / {step} の実行後に変わった")
+    rep.check(f"out/{step}.json was made by the same code ({len(recorded)} files, SHA-256)",
+              len(recorded) > 0 and current == recorded)
     return np.load(path, allow_pickle=False)
 
 
@@ -81,6 +186,7 @@ class Report:
         self.values = {}
         self.failed = False
         self.finished = False
+        self._exiting = False
         self.error = None
         # Remove a result of an earlier run, so that a crash cannot leave it in place.
         # 前回の実行の結果を消す。異常終了したときに古い結果が残らないようにする。
@@ -112,6 +218,7 @@ class Report:
         self._previous_hook(typ, value, tb)
 
     def _at_exit(self):
+        self._exiting = True
         if not self.finished:
             self.failed = True
             if self.error is None:
@@ -141,7 +248,20 @@ class Report:
     def finish(self):
         self.finished = True
         os.makedirs(self.out_dir, exist_ok=True)
+        data = sys.modules.get(__package__ + ".data")
+        files = code_files()
+        enum = sys.modules.get(__package__ + ".enumerate")
+        if enum is not None and enum.COMPILED:
+            files[enum.COMPILED["source"]] = enum.COMPILED["source_sha256"]
+        # A source file edited during the run: the record would not describe the code that ran, so the run fails.
+        # 実行中に書き換えられたソース: 記録が実行したコードを指さなくなるので、実行を失敗とする。
+        changed = changed_code_files()
+        if changed:
+            self.failed = True
+            msg = "source files changed during the run: " + ", ".join(changed)
+            self.error = msg if self.error is None else f"{self.error}; {msg}"
         result = {
+            "format": FORMAT,
             "step": self.step,
             "passed": not self.failed,
             "error": self.error,
@@ -149,10 +269,18 @@ class Report:
             "values": self.values,
             "seconds": round(time.time() - self.t0, 1),
             "finished": time.strftime("%Y-%m-%d %H:%M:%S %z"),
+            "arguments": sys.argv[1:],
+            "code": {"git": git_version(), "files": files},
+            "inputs": dict(sorted(data.CHECKED_INPUTS.items())) if data is not None else {},
             "python": platform.python_version(),
             "numpy": np.__version__ if np is not None else None,
+            "blas": blas_info() if np is not None else None,
             "platform": platform.platform(),
         }
+        # The C compiler and the compiled source and executable of the enumerator (v1 and the users of lib.enumerate).
+        # 列挙器の C コンパイラと、コンパイルしたソース・実行ファイル。
+        if enum is not None and enum.COMPILED:
+            result["compiler"] = enum.COMPILED
         # Certificate files checked against a list of hashes other than certificates/SHA256SUMS (--hashes).
         # certificates/SHA256SUMS 以外のハッシュの一覧（--hashes）と照合した場合はそれを記録する。
         certs = sys.modules.get(__package__ + ".certs")
@@ -165,3 +293,6 @@ class Report:
             f.write("\n")
         os.replace(tmp, path)
         self.log(("PASSED" if not self.failed else "FAILED") + f": {self.step} -> {path}")
+        if changed and not self._exiting:
+            # The exit code is the primary verdict, so an edited source fails it too. / 合否の正本は終了コードなので、書き換えも失敗にする。
+            sys.exit(1)

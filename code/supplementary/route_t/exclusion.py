@@ -1,6 +1,6 @@
-r"""S28. Route T, the final step: every dangerous support module contains a configuration excluded by F5a or F5b
+r"""Route T, the final step: every dangerous support module contains a configuration excluded by F5a or F5b
 (supplement §S4.1, Proposition S4.3; Table D2 [C32]). Not used in the proof of Theorem A.
-S28. 経路 T の最後の段: 危険な台加群はどれも F5a か F5b に反する配置を含む（補遺 §S4.1 の命題 S4.3、表 D2 の [C32]）。
+経路 T の最後の段: 危険な台加群はどれも F5a か F5b に反する配置を含む（補遺 §S4.1 の命題 S4.3、表 D2 の [C32]）。
 定理 A の証明には使わない。
 
 The range is that of Proposition S4.2: pseudo-bases N = A x + B y with A, B in {O, p2^-1}, 3 <= a = h(x) <= 6,
@@ -31,7 +31,7 @@ The two enumerations are different code; check does not use anything computed by
 検算（check）は作成（make）の結果を証拠の座標にしか使わない。列挙も別のコード。
 
 Input: certificates/route_t_exclusion.json (checked against certificates/SHA256SUMS).
-Report: out/s28_route_t_exclusion_<check|make>.json; exit code 1 on a mismatch.
+Report: out/route_t_exclusion_<check|make>.json; exit code 1 on a mismatch.
 Run / 実行:  python3 -I code/supplementary/route_t/exclusion.py check [--certificates DIR] [--out DIR]
              python3 -I code/supplementary/route_t/exclusion.py make [--out DIR]   (Python with SageMath / SageMath を含む Python)
 """
@@ -307,12 +307,12 @@ def make(rep):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="S28: route T, the final step (F5a/F5b witnesses)")
+    ap = argparse.ArgumentParser(description="route T, the final step (F5a/F5b witnesses)")
     ap.add_argument("what", choices=("check", "make"))
     ap.add_argument("--certificates", default=os.path.join(ROOT, "certificates"))
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report(f"s28_route_t_exclusion_{a.what}", a.out)
+    rep = Report(f"route_t_exclusion_{a.what}", a.out)
     if a.what == "check":
         check(rep, a.certificates)
     else:

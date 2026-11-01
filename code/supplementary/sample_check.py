@@ -1,7 +1,7 @@
-"""S4. Route S (sampling; NOT a proof): re-check randomly chosen certificates with
+"""Route S (sampling; NOT a proof): re-check randomly chosen certificates with
 plain int64 arithmetic, without the float32 products and the shared library of verify/
 (supplement §S3.2, Table S7). The complete checks are verify/v5 and verify/v7.
-S4. 経路 S（抜き取り。証明では**ない**）: 無作為に選んだ certificate を、verify/ の float32 の積や共有ライブラリを使わず、素朴な int64 の演算で
+経路 S（抜き取り。証明では**ない**）: 無作為に選んだ certificate を、verify/ の float32 の積や共有ライブラリを使わず、素朴な int64 の演算で
 検算する（補遺 §S3.2、表 S7）。全数の検算は verify/v5 と verify/v7。
 
 For each sampled certificate w0 (odd: of r_j tau + 2L; even: of x_i u_k tau + 2L):
@@ -16,10 +16,10 @@ with probability 1 - (1 - p)^k.
 証明にならない理由: 誤りが割合 p あっても、k 個の標本で見つかる確率は 1 - (1 - p)^k にすぎない。
 
 The input files are checked against data/SHA256SUMS and certificates/SHA256SUMS with hashlib (still without
-the shared library). The result is written to out/s4_sample_check.json; the exit code is 1 if a hash differs
+the shared library). The result is written to out/sample_check.json; the exit code is 1 if a hash differs
 or a sampled certificate fails.
 入力ファイルは hashlib で data/SHA256SUMS と certificates/SHA256SUMS に照合する（共有ライブラリは使わない）。結果は
-out/s4_sample_check.json に書き、ハッシュが違うか標本の certificate が一つでも不合格なら終了コード 1 で終わる。
+out/sample_check.json に書き、ハッシュが違うか標本の certificate が一つでも不合格なら終了コード 1 で終わる。
 
 Only numpy. Run time: about 10 minutes for k = 200 + 200. Memory: about 1 GB.
 numpy のみ。実行時間: k = 200 + 200 で約 10 分。メモリ: 約 1 GB。
@@ -96,7 +96,7 @@ def group_mod_sign(gens, G, order):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="S4: sampling check (not a proof)")
+    ap = argparse.ArgumentParser(description="sampling check (not a proof)")
     ap.add_argument("--k", type=int, default=200)
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--out", default=os.path.join(ROOT, "out"))
@@ -147,17 +147,17 @@ def main():
     print("detection probability for a fraction p of wrong entries: " +
           ", ".join(f"p = {p:g}: {1 - (1 - p) ** k_even:.3f}" for p in (1e-2, 1e-3, 1e-4, 10 / 1527984)))
     passed = bad == 0 and bad_odd == 0
-    result = {"step": "s4_sample_check", "passed": passed, "seed": a.seed,
+    result = {"step": "sample_check", "passed": passed, "seed": a.seed,
               "odd": {"sampled": k_odd, "failed": bad_odd}, "even": {"sampled": k_even, "failed": bad, "norm,max_ip": hist},
               "seconds": round(time.time() - t0, 1), "finished": time.strftime("%Y-%m-%d %H:%M:%S %z"),
               "python": platform.python_version(), "numpy": np.__version__, "platform": platform.platform()}
     os.makedirs(a.out, exist_ok=True)
-    path = os.path.join(a.out, "s4_sample_check.json")
+    path = os.path.join(a.out, "sample_check.json")
     with open(path + ".tmp", "w") as f:
         json.dump(result, f, indent=1)
         f.write("\n")
     os.replace(path + ".tmp", path)
-    print(f"{'PASSED' if passed else 'FAILED'}: s4_sample_check -> {path}", flush=True)
+    print(f"{'PASSED' if passed else 'FAILED'}: sample_check -> {path}", flush=True)
     sys.exit(0 if passed else 1)
 
 

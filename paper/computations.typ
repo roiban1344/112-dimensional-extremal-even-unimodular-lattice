@@ -1,7 +1,7 @@
 // 計算の台帳: 本文の [C1], [C2], … と、付録の表「計算とコード」の正本（英日共通）。
 // 本文では #calc("C5") や #calc("C10", "C13") と書く。付録の表は #calc-table() で作る。
 // コードは公開リポジトリからの相対パス。未公開のものがあれば published: false を付けて明示する。
-#let code-base = "https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/tree/main/"
+#let code-base = "https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/tree/v2026-10-25/"
 
 #let calcs = (
   (id: "C1", files: ("code/verify/v2_theta.py",),

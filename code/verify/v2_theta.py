@@ -25,7 +25,7 @@ from fractions import Fraction
 from math import comb
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from lib import require  # noqa: E402
+from lib import N6, N8, require  # noqa: E402
 from lib.report import Report  # noqa: E402
 
 
@@ -119,6 +119,9 @@ def main():
     rep.value("extremal theta series, n = 56, a_0..a_5", t56)
     rep.check("n = 56: |L_6| = 15590400, |L_8| = 36957286800, |L_10| = 15284192071680",
               t56[:6] == [1, 0, 0, 15590400, 36957286800, 15284192071680])
+    # The constants that v3-v8 use as |L_6| and |L_8| (lib.N6, lib.N8) are the coefficients derived here.
+    # v3〜v8 が |L_6|・|L_8| として使う定数（lib.N6, lib.N8）は、ここで導いた係数である。
+    rep.check("the constants lib.N6 and lib.N8 used by v3-v8 are these coefficients", (t56[3], t56[4]) == (N6, N8))
 
     # --- Table B1: the same series as polynomials in A = E_4 and B = theta(Leech) = E_4^3 - 720 Delta ---
     # --- 表 B1: 同じ級数を A = E_4、B = Leech のテータ級数 = E_4^3 - 720Δ の多項式として ---

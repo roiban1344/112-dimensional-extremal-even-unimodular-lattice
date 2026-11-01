@@ -1,7 +1,7 @@
-"""S25. The 112-dimensional even unimodular lattices on which SL_2(29) acts as on L_112: the genus of rank-2
+"""The 112-dimensional even unimodular lattices on which SL_2(29) acts as on L_112: the genus of rank-2
 unimodular Hermitian lattices over the maximal order M (Table D2 [C29]-[C31]). Not used in the proof of
 Theorem A.
-S25. SL_2(29) が L_112 と同じ形で働く 112 次元の偶ユニモジュラー格子: 極大整環 M 上の階数 2 のユニモジュラーなエルミート格子の種
+SL_2(29) が L_112 と同じ形で働く 112 次元の偶ユニモジュラー格子: 極大整環 M 上の階数 2 のユニモジュラーなエルミート格子の種
 （表 D2 の [C29]〜[C31]）。定理 A の証明には使わない。
 
 Setting. L = L_{56,2}(M) is Nebe's lattice for the maximal order M whose centralizer of SL_2(29) has order 24
@@ -150,7 +150,7 @@ from lib import certs  # noqa: E402
 
 
 def main():
-    ap = argparse.ArgumentParser(description="S25: the genus of rank-2 unimodular Hermitian lattices over M (classes of X = L tensor Lambda)")
+    ap = argparse.ArgumentParser(description="the genus of rank-2 unimodular Hermitian lattices over M (classes of X = L tensor Lambda)")
     ap.add_argument("mode", choices=["local", "mass", "enum", "build", "frames", "witness", "identify", "check"])
     ap.add_argument("--seed", type=int, default=1, help="seed of the neighbour walk (enum)")
     ap.add_argument("--max-steps", type=int, default=400, help="maximal number of neighbours (enum)")

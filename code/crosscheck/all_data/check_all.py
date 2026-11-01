@@ -1023,7 +1023,12 @@ def step_neg(args):
     hits = _npz("negative_control_B.npz", "hit_pairs").astype(np.int64)
     x = np.array(wit["x"], dtype=np.int64)
     v = np.array(wit["v"], dtype=np.int64)
-    res["b_tauB_G_tauBT_eq_5G"] = bool(np.array_equal(imul(imul(tb, G), tb.T), 5 * G))
+    # tau_B is only a lift modulo 2 of the gluing B (tau_B G tau_B^T != 5G); the element of M' in its class,
+    # tau_class_B, satisfies tau G tau^T = 5G (certificates/MANIFEST.md). Recorded only; not part of the verdict.
+    # tau_B は貼り方 B の 2 を法とした持ち上げにすぎない（tau_B G tau_B^T != 5G）。その類に入る M' の元 tau_class_B は
+    # tau G tau^T = 5G を満たす（certificates/MANIFEST.md）。記録するだけで、判定には入れない。
+    tcb = _npz("negative_control_B.npz", "tau_class_B").astype(np.int64)
+    res["b_tau_class_B_G_T_eq_5G"] = bool(np.array_equal(imul(imul(tcb, G), tcb.T), 5 * G))
     res["b_x_norm"] = int(norms(x[None])[0])
     res["b_v_norm"] = int(norms(v[None])[0])
     res["b_v_in_class_x_tauB"] = bool((((v - imul(x[None], tb)[0]) % 2) == 0).all())

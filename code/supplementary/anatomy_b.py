@@ -1,6 +1,6 @@
-"""S16. Support modules of the norm-8 vectors of gluing B (supplement §S4.1, Table S9; Table D2 [C19]).
+"""Support modules of the norm-8 vectors of gluing B (supplement §S4.1, Table S9; Table D2 [C19]).
 Not used in the proof of Theorem A.
-S16. 貼り方 B のノルム 8 のベクトルの台加群（補遺 §S4.1、表 S9。表 D2 の [C19]）。定理 A の証明には使わない。
+貼り方 B のノルム 8 のベクトルの台加群（補遺 §S4.1、表 S9。表 D2 の [C19]）。定理 A の証明には使わない。
 
 Input: the 10 colliding pairs (x, v) of gluing B from supplementary/gluing_b.py (out/gluing_b_collisions.npz).
 Each gives two norm-8 vectors of L_B, z = (x, v)/sqrt2 and z' = (v, x)/sqrt2 (the swap preserves L_B because
@@ -40,11 +40,11 @@ from lib.report import Report  # noqa: E402
 
 def main():
     from sage.all import QQ, ZZ, QuadraticField, matrix, sqrt, vector
-    ap = argparse.ArgumentParser(description="S16: support modules of gluing B")
+    ap = argparse.ArgumentParser(description="support modules of gluing B")
     ap.add_argument("--data", default=None)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report("s16_anatomy_b", a.out)
+    rep = Report("anatomy_b", a.out)
     G = matrix(ZZ, data.gram(a.data).tolist())
     with np.load(os.path.join(rep.out_dir, "gluing_b_collisions.npz"), allow_pickle=False) as z:
         X, V, tB = z["x"], z["v"], matrix(ZZ, z["tau_B"].tolist())
