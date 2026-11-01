@@ -3,7 +3,7 @@
 [日本語版](README.ja.md)
 
 This directory contains every computation used in the paper. Table D2 of the paper lists them
-as [C1]–[C32]; the last section of this file maps each row to the scripts here.
+as [C1]–[C33]; the last section of this file maps each row to the scripts here.
 
 ## What is proved, and what it relies on
 
@@ -266,3 +266,4 @@ file, run `certify.py search2 --missing --part P --nparts Q` for P = 0, …, Q�
 | [C29] | supplementary/genus/genus.py local, mass, enum (with genus/genus_steps.py, genus_lattice.py, genus_data.py) |
 | [C30] | supplementary/genus/genus.py build, frames, witness (with genus/genus_steps.py, genus_lattice.py, genus_data.py) |
 | [C31] | supplementary/genus/genus.py identify, check (with genus/genus_steps.py, genus_lattice.py, genus_check.py, genus_data.py, supplementary/_shared.py) |
+| [C33] | supplementary/nebe/tensor_neb98.py (with nebe/cycloquat.py) |

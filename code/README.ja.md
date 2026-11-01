@@ -2,7 +2,7 @@
 
 [English](README.md)
 
-このディレクトリには、論文で使った計算がすべて入っています。論文の表 D2 はそれを [C1]〜[C32] として並べており、
+このディレクトリには、論文で使った計算がすべて入っています。論文の表 D2 はそれを [C1]〜[C33] として並べており、
 このファイルの最後の節で、各行とここのスクリプトを対応させます。
 
 ## 何が示され、何に依拠するか
@@ -234,3 +234,4 @@ P = 0, …, Q−1 について `certify.py search2 --missing --part P --nparts Q
 | [C29] | supplementary/genus/genus.py local, mass, enum (with genus/genus_steps.py, genus_lattice.py, genus_data.py) |
 | [C30] | supplementary/genus/genus.py build, frames, witness (with genus/genus_steps.py, genus_lattice.py, genus_data.py) |
 | [C31] | supplementary/genus/genus.py identify, check (with genus/genus_steps.py, genus_lattice.py, genus_check.py, genus_data.py, supplementary/_shared.py) |
+| [C33] | supplementary/nebe/tensor_neb98.py (with nebe/cycloquat.py) |
