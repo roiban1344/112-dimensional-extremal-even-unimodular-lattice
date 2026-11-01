@@ -9,13 +9,16 @@
 
 `figures/` には図 1（`proof-dependencies.*`）を、`tools/check-paper.py` にはこのページの最後で説明する整合性の検査を置きます。`style/eeul.typ` と `paper.typ` は書式を、`computations.typ` は表 D2 の元になる計算の台帳を定義します。
 
-リポジトリのルートから Typst 0.14.2 で組版します。
+リポジトリのルートから Typst 0.14.2 で組版します。PDF に記録する作成日時は `CITATION.cff` の公開日とする。同じソース・フォント・Typst から
+同じファイルができるようにするためである（`release-pdfs` ワークフローも同じ方法で組版し、コミットした PDF と違えば報告する）。1 行目には GNU の
+`date` が要る。
 
 ```bash
-typst compile --root . paper/paper.en.typ paper/paper.en.pdf
-typst compile --root . paper/paper.ja.typ paper/paper.ja.pdf
-typst compile --root . paper/supplement.en.typ paper/supplement.en.pdf
-typst compile --root . paper/supplement.ja.typ paper/supplement.ja.pdf
+stamp=$(date -u -d "$(awk '/^date-released:/ {gsub(/["\047]/, "", $2); print $2}' CITATION.cff)" +%s)
+typst compile --root . --creation-timestamp "$stamp" paper/paper.en.typ paper/paper.en.pdf
+typst compile --root . --creation-timestamp "$stamp" paper/paper.ja.typ paper/paper.ja.pdf
+typst compile --root . --creation-timestamp "$stamp" paper/supplement.en.typ paper/supplement.en.pdf
+typst compile --root . --creation-timestamp "$stamp" paper/supplement.ja.typ paper/supplement.ja.pdf
 ```
 
 同じ組版には New Computer Modern・IPAex 明朝／ゴシック・DejaVu の各書体を用います。書式と計算参照の定義、図 1 の原本（`figures/proof-dependencies.typ`）も同梱しています。図 1 は Typst のパッケージ `@preview/fletcher:0.5.8` で描きます。このパッケージは最初の組版のときに Typst Universe から自動で取得されて保存され、2 回目以降はネットワークを使いません。

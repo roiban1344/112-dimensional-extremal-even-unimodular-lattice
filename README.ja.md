@@ -37,9 +37,9 @@
 | [`code/supplementary/`](code/README.ja.md#論文の表-d2-との対応) | 定理 A 以外の主張の計算（貼り方、自己同型群、極値性の別証明である証明経路 T、補遺 §S6 の種など） | 要らない |
 | [`code/tests/`](code/README.ja.md#試験) | 小さな例による試験（pytest） | 要らない |
 | [`lean/`](lean/README.ja.md) | F1〜F5 からノルム 10 未満のベクトルが無いことを導く論証の Lean 4 による形式化 | 要らない（論証の独立な検査） |
-| `Dockerfile`・`.devcontainer/devcontainer.json`・`requirements-verify.txt` | 下の水準 (i)〜(iii) のための軽量なコンテナイメージ、それを使う開発コンテナ、NumPy の版の固定 | 任意 |
-| `Dockerfile.sage`・`environment.yml` | `produce/`・`crosscheck/all_data/`・`supplementary/` のための SageMath の環境 | 要らない |
-| `.github/` | CI。`checks.yml`（プルリクエストごとに入力・試験・コンテナ・Typst・Lean を検査し、Release ごとに PDF を添付する。PDF は `actions/build-pdfs/action.yml` が作る）と `data-tests.yml`（大きなデータを使う試験を毎週実行する） | 要らない |
+| `Dockerfile`・`.devcontainer/devcontainer.json`・`requirements-verify.txt`・`requirements-verify-lock.txt` | 下の水準 (i)〜(iii) のための軽量なコンテナイメージ、それを使う開発コンテナ、対応する NumPy の版と、イメージと CI が使う版（ハッシュつき） | 任意 |
+| `Dockerfile.sage`・`environment.yml`・`environment-linux-64.lock` | `produce/`・`crosscheck/all_data/`・`supplementary/` のための SageMath の環境と、そのパッケージの正確な一覧 | 要らない |
+| `.github/`・`ruff.toml` | CI（[CI が確かめること](code/README.ja.md#ci-が確かめること)を参照）。`checks.yml`（プルリクエストごとに入力・試験・`ruff.toml` の規則による lint・コンテナ・Typst・Lean を検査し、Release ごとに PDF を添付する。PDF は `actions/build-pdfs/action.yml` が作る）、`data-tests.yml`（大きなデータを使う検査を毎週実行する）、`proof.yml`（`proof.sh` を月に 1 回と版ごとに実行する）、`dependabot.yml`（更新の提案） | 要らない |
 | `CHANGELOG.ja.md`・`CONTRIBUTING.ja.md`・`.github/ISSUE_TEMPLATE/*.yml` | バージョンごとの変更、誤りの報告の仕方、issue のテンプレート | 要らない |
 | `CITATION.cff`・`LICENSE`・`LICENSE-CC-BY-4.0`・`.gitattributes`・`.gitignore`・`.dockerignore` | 引用のためのメタデータ、ライセンス、git と Docker の設定 | 要らない |
 

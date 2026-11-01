@@ -9,13 +9,16 @@
 
 `figures/` holds Figure 1 (`proof-dependencies.*`), and `tools/check-paper.py` is the consistency check described at the end of this page. `style/eeul.typ` and `paper.typ` define the layout, and `computations.typ` the ledger of computations behind Table D2.
 
-Build from the repository root with Typst 0.14.2:
+Build from the repository root with Typst 0.14.2. The creation date stored in the PDFs is the release date of
+`CITATION.cff`, so that the same sources, fonts and Typst give the same file (the `release-pdfs` workflow
+builds the same way and reports a PDF that differs from the committed one); the first line needs GNU `date`.
 
 ```bash
-typst compile --root . paper/paper.en.typ paper/paper.en.pdf
-typst compile --root . paper/paper.ja.typ paper/paper.ja.pdf
-typst compile --root . paper/supplement.en.typ paper/supplement.en.pdf
-typst compile --root . paper/supplement.ja.typ paper/supplement.ja.pdf
+stamp=$(date -u -d "$(awk '/^date-released:/ {gsub(/["\047]/, "", $2); print $2}' CITATION.cff)" +%s)
+typst compile --root . --creation-timestamp "$stamp" paper/paper.en.typ paper/paper.en.pdf
+typst compile --root . --creation-timestamp "$stamp" paper/paper.ja.typ paper/paper.ja.pdf
+typst compile --root . --creation-timestamp "$stamp" paper/supplement.en.typ paper/supplement.en.pdf
+typst compile --root . --creation-timestamp "$stamp" paper/supplement.ja.typ paper/supplement.ja.pdf
 ```
 
 The styles use New Computer Modern, IPAexMincho, IPAexGothic and DejaVu fonts. Install these for matching typography. `style/eeul.typ`, `paper.typ`, `computations.typ` and `figures/proof-dependencies.typ` (Figure 1) are included. Figure 1 is drawn with the Typst package `@preview/fletcher:0.5.8`, which Typst downloads from Typst Universe on the first compilation and caches; after that, compilation needs no network access.
