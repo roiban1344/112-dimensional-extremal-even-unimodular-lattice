@@ -16,6 +16,10 @@
  *                               （列挙に使うのは lo だけ。hi は lo <= hi の確認のために読む）
  *   n(n-1)/2 lines "lo hi"      intervals containing V_ij (i < j), row by row
  *                               V_ij (i < j) を含む区間（行ごと）
+ * The endpoints are written in hexadecimal floating-point notation (Python's float.hex), which
+ * scanf("%lf") reads exactly (C99), so no decimal rounding happens between Python and C.
+ * 端点は 16 進の浮動小数点表記（Python の float.hex）で書く。scanf("%lf") はこれを厳密に読む（C99）ので、Python と C の間で
+ * 10 進の丸めは起きない。
  *
  * The norm of x is <x, x> = sum_i D_i (x_i + sum_{j>i} V_ij x_j)^2.  Coordinates are fixed
  * from i = n-1 down to 0; at level i the partial norm P_i = sum_{k>=i} D_k (...)^2 must stay
@@ -32,6 +36,12 @@
  * which more than covers the rounding error, so the true value stays inside.
  * 外向きの丸め: 浮動小数点の各演算（最近接丸め。相対誤差 2^-53 以下、非正規化数では絶対誤差 2^-1075 以下）のあと、
  * 結果を上の dn, up で広げる。丸め誤差より十分大きいので、真の値は区間の中に残る。
+ *
+ * The analysis assumes IEEE binary64 doubles, round-to-nearest and no excess precision
+ * (FLT_EVAL_METHOD == 0, as on x86-64 with SSE2 and on arm64); the compilation stops otherwise,
+ * and main() checks the rounding mode at run time.
+ * この解析は、IEEE の binary64、最近接丸め、余分な精度なし（FLT_EVAL_METHOD == 0。SSE2 の x86-64 と arm64 はこれを満たす）を
+ * 仮定する。満たさなければコンパイルを止め、丸めのモードは main() が実行時に確かめる。
  *
  * At a leaf (all coordinates fixed) the norm x G x^T is computed exactly with 128-bit
  * integers, so the reported vectors and counts are exact.
@@ -56,10 +66,19 @@
  *  as the error analysis above assumes.)
  * （-fno-fast-math と -ffp-contract=off で、各演算を個別に丸める IEEE の演算に保つ。上の誤差解析はそれを仮定する。）
  */
+#include <fenv.h>
+#include <float.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#if !defined(FLT_EVAL_METHOD) || FLT_EVAL_METHOD != 0
+#error "the error analysis assumes FLT_EVAL_METHOD == 0 (double operations evaluated in double precision)"
+#endif
+#if DBL_MANT_DIG != 53
+#error "the error analysis assumes IEEE binary64 doubles"
+#endif
 
 #define MAXN 64
 static int n;
@@ -180,6 +199,10 @@ static void rec(int i, double P) {
 }
 
 int main(int argc, char **argv) {
+    if (fegetround() != FE_TONEAREST) {
+        fprintf(stderr, "the rounding mode is not round-to-nearest\n");
+        return 1;
+    }
     if (argc > 1) maxprint = atoll(argv[1]);
     if (scanf("%d %lld", &n, &R) != 2 || n < 1 || n > MAXN) {
         fprintf(stderr, "bad header\n");

@@ -62,7 +62,7 @@ def commutant_dim(gens, p):
 
 def cmd_local(a):
     from sage.all import ZZ
-    rep = Report("s25_genus_local", a.out)
+    rep = Report("genus_local", a.out)
     S = Genus(rep.out_dir)
     Rm = [S.R(m) for m in S.M.rows()]
     rep.check("right multiplications by the Z-basis of M are integral on L and commute with z, w",
@@ -82,7 +82,7 @@ def cmd_local(a):
 def cmd_mass(a):
     from sage.all import QQ, bernoulli, bernoulli_polynomial, kronecker, pari, polygen, sigma
     from lattices import read_mats
-    rep = Report("s25_genus_mass", a.out)
+    rep = Report("genus_mass", a.out)
     x = polygen(QQ)
     f = 29
 
@@ -120,7 +120,7 @@ def cmd_mass(a):
 def cmd_enum(a):
     from lattices import write_mats
     from sage.all import QQ, identity_matrix
-    rep = Report("s25_genus_enum", a.out)
+    rep = Report("genus_enum", a.out)
     S = Genus(rep.out_dir)
     rng = random.Random(a.seed)
     rep.value("seed of the walk", a.seed)
@@ -203,7 +203,7 @@ def embedding_coords(S, out_dir, rep, data_dir=None):
 
 def cmd_build(a):
     from sage.all import QQ, ZZ, block_matrix, lcm, matrix, zero_matrix
-    rep = Report("s25_genus_build", a.out)
+    rep = Report("genus_build", a.out)
     S = Genus(rep.out_dir)
     lams = load_lambdas(rep.out_dir)
     _, _, P = embedding_coords(S, rep.out_dir, rep, a.data)
@@ -257,7 +257,7 @@ def cmd_build(a):
 
 def cmd_frames(a):
     from sage.all import QQ, ZZ, lcm
-    rep = Report("s25_genus_frames", a.out)
+    rep = Report("genus_frames", a.out)
     S = Genus(rep.out_dir)
     lams = load_lambdas(rep.out_dir)
     Fs = S.form(kelt(S.X, 0, 1))
@@ -345,7 +345,7 @@ def pruned_witness(Gs, rep, trials=20):
 
 def cmd_witness(a):
     from sage.all import ZZ, block_matrix, matrix, pari, vector, zero_matrix
-    rep = Report("s25_genus_witness", a.out)
+    rep = Report("genus_witness", a.out)
     S = Genus(rep.out_dir)
     lams = load_lambdas(rep.out_dir)
     two = lambda A: block_matrix(ZZ, [[A, zero_matrix(ZZ, N, N)], [zero_matrix(ZZ, N, N), A]], subdivide=False)   # noqa: E731
@@ -437,7 +437,7 @@ def cmd_identify(a):
     from lattices import load as load_nebe
     from p1_centralizer import commutant_basis
     from sage.all import QQ, ZZ, block_matrix, identity_matrix, matrix, zero_matrix
-    rep = Report("s25_genus_identify", a.out)
+    rep = Report("genus_identify", a.out)
     cdir = a.certificates or certs.DEFAULT_DIR                                # gram_A.txt (isometry_ab.py)
     odir = dest_dir(a, rep)
     g1, g2 = [matrix(ZZ, g.tolist()) for g in data.generators(a.data)]

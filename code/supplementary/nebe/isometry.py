@@ -17,6 +17,12 @@ L'（Gram G'、生成元 z', w'）と L（Gram G、生成元 g1, g2）につい�
   2. 同変写像 T（8 次元の空間）を厳密に求め、その整数の部分 H（飽和）を取る;
   3. H 上の Q(T) = tr(G'^{-1} T G T^T) は正定値で等長写像では 56。Q ≤ 56 の T をすべて列挙し（qfminim。厳密な列挙と照合して完全性を確かめる）、
      T G T^T = G' を整数で確かめる。
+
+Not to be confused with supplementary/_shared.equivariant_isometries, which works on lattices of rank 112 inside
+V + V with a known commutant (the gluings), without GAP. Here the two 56-dimensional lattices come with different
+generators, so the isomorphism of the groups is found first (step 1).
+supplementary/_shared.equivariant_isometries とは別物である。あちらは V + V の中の階数 112 の格子（貼り方）について、可換子環を既知として
+GAP を使わずに求める。ここでは 2 つの 56 次元格子の生成元が違うので、まず群の同型を求める（手順 1）。
 """
 import os
 import sys

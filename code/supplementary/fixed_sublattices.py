@@ -1,7 +1,7 @@
-"""S14. Fixed sublattices of elements of order 3, 5, 7 of SL_2(29) in L_112, and BKZ on L_112 (supplement §S3.5;
+"""Fixed sublattices of elements of order 3, 5, 7 of SL_2(29) in L_112, and BKZ on L_112 (supplement §S3.5;
 Table D2 [C18]). These are consistency tests that are NOT evidence for extremality (they cannot tell
 gluing B from gluing C); they are not used in the proof of Theorem A.
-S14. L_112 における SL_2(29) の位数 3, 5, 7 の元の固定部分格子と、L_112 への BKZ（補遺 §S3.5。表 D2 の [C18]）。極値性の証拠に**ならない**整合性の検査
+L_112 における SL_2(29) の位数 3, 5, 7 の元の固定部分格子と、L_112 への BKZ（補遺 §S3.5。表 D2 の [C18]）。極値性の証拠に**ならない**整合性の検査
 （貼り方 B と C を区別できない）。定理 A の証明には使わない。
 
 For an element h of prime order p, the fixed sublattice L_112^h = { z in L_112 : z diag(h, h) = z } is computed
@@ -98,7 +98,7 @@ def bkz_stages(G112, block_sizes, rep, label):
 
 def main():
     from sage.all import QQ, ZZ, block_matrix, identity_matrix, matrix, pari
-    ap = argparse.ArgumentParser(description="S14: fixed sublattices and BKZ")
+    ap = argparse.ArgumentParser(description="fixed sublattices and BKZ")
     ap.add_argument("--tau", choices=("C", "B"), default="C", help="C: L_112 (default); B: the negative control B")
     ap.add_argument("--bkz", default=BKZ_DEFAULT,
                     help=f"block sizes of the progressive BKZ, comma-separated (default {BKZ_DEFAULT}, as in the paper; "
@@ -109,7 +109,7 @@ def main():
     a = ap.parse_args()
     block_sizes = [int(t) for t in a.bkz.split(",") if t.strip()]
     name = "L_112" if a.tau == "C" else "L_B"
-    rep = Report("s14_fixed_sublattices" + ("_B" if a.tau == "B" else ""), a.out)
+    rep = Report("fixed_sublattices" + ("_B" if a.tau == "B" else ""), a.out)
     n = 56
     G = matrix(ZZ, data.gram(a.data).tolist())
     g1, g2 = [matrix(ZZ, g.tolist()) for g in data.generators(a.data)]

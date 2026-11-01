@@ -1,5 +1,5 @@
-"""S9. The Hermitian and O_K-structures on L_112 (paper §8; Table D2 [C26]). Not used in the proof of Theorem A.
-S9. L_112 のエルミート構造と O_K-構造（論文 §8。表 D2 の [C26]）。定理 A の証明には使わない。
+"""The Hermitian and O_K-structures on L_112 (paper §8; Table D2 [C26]). Not used in the proof of Theorem A.
+L_112 のエルミート構造と O_K-構造（論文 §8。表 D2 の [C26]）。定理 A の証明には使わない。
 
   (1) End_A(V) (A = Aut(L_112)) is 2-dimensional; it contains J with J^2 = -29, J integral on L_112 and
       skew-adjoint (J G_112 = -(J G_112)^T); End_A(L_112) = End_A(V) ∩ End(L_112) = Z[J] = Z[sqrt -29].
@@ -52,12 +52,12 @@ def integral_part(mats):
 
 def main():
     from sage.all import QQ, ZZ, NumberField, PolynomialRing, identity_matrix, lcm, matrix, pari
-    ap = argparse.ArgumentParser(description="S9: Hermitian and O_K-structures on L_112")
+    ap = argparse.ArgumentParser(description="Hermitian and O_K-structures on L_112")
     ap.add_argument("--data", default=None)
     certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report("s9_endomorphisms", a.out)
+    rep = Report("endomorphisms", a.out)
     st = Setup(a.data, a.certificates)
     cent = st.centralizer()
     X, _ = st.outer_automorphism()

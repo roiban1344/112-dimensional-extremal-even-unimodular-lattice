@@ -67,19 +67,27 @@ bash code/verify/proof.sh
 
 `fetch.sh` には `curl` が必要です。引数は Release のタグで、省略すると `certificates-v2` です。`certificates/SHA256SUMS` に載っているすべての `.npz` ファイル（9 個、約 150 MB）を取得し、`full.sh` や補足の検査だけが使うものも含みます。`SHA256SUMS` のハッシュと一致するファイルが既にあれば取得し直しません。無いファイル、途中で切れたファイル、古いファイルは `<file>.part` に取得し、ハッシュを確かめてから置き換えます。`proof.sh` は定理 A の証明で使う計算の検査をすべて行います。F1（素材となる 56 次元格子の最小ノルムが 6）は区間演算の列挙で、F2・F3（軌道代表の網羅性）、F5a（奇の剰余類の下界を保証する代表元）、F5b（標準形）を検査します。結論には論文中の数学的な補題も使います。[各段の所要時間とメモリ](code/README.ja.md#検算の各段)を参照してください。
 
+**通過したときの表示。** 各検査は `[ok]  …`（または `[FAIL] …`）の行を出し、各段は `PASSED: <段> -> …/out/<段>.json` の行で終わる。`proof.sh` は最初の失敗で止まり、0 でない終了コードを返す。最後まで通過すると、最後の行は
+
+```text
+proof verification (v0-v6) passed / 証明に要る検算（v0〜v6）は通過
+```
+
+となり、終了コードは 0 である。このとき `out/` には実行の記録が残る。段ごとの JSON ファイル `v0_inputs.json`、`v1_min_L.json`、`v2_theta.json`、`v3_minimal_orbits.json`、`v4_norm8_orbits.json`、`v5_odd_bounding.json`、`v6_canonical_lookup.json` であり、それぞれに `"passed": true`、検査の一覧、論文に載せた値、実行時間、ソフトウェアとこのリポジトリのバージョンを記録する（形式は [code/README.ja.md](code/README.ja.md#json-の記録) で説明する）。ほかのファイルは途中経過である。`K8.npy` と `K8_first.npy`（それぞれ約 12 MB。v4 が v6・v8 のために書く）と `build/`（v1 がコンパイルした列挙器）がある。あとで記録を確かめるには `grep -L '"passed": true' out/v[0-6]_*.json` を実行する。通過していない段のファイルを一覧にするので、何も表示されなければよい。
+
 **(iii) すべて（約 26 CPU 時間、3 並列で経過時間約 9.5〜10 時間）。**
 
 ```bash
 bash code/verify/full.sh 3
 ```
 
-`proof.sh` の全部に加えて、F5b を偶の剰余類の下界を保証する代表元で確かめる代替の検査（v7、約 24 CPU 時間）と、球面デザインの恒等式の整合性の検査（v8）を行います。
+`proof.sh` の全部に加えて、F5b を偶の剰余類の下界を保証する代表元で確かめる代替の検査（v7、約 24 CPU 時間）と、球面デザインの恒等式の整合性の検査（v8）を行います。最後の行は `full verification passed / 全部の検算は通過` であり、`out/` には `v7_even_bounding.json` と `v8_design_identities.json` も加わる。
 
-`bash code/verify/quick.sh` は約 40〜50 分の短縮した検査です。56 次元格子の列挙は陽性対照だけに対して実行し、v7 と v8 を省くので、**通過しても定理の全検算にはなりません。** 独立な実装と検証用データの生成プログラムは、コードの案内で説明しています。
+`bash code/verify/quick.sh` は約 40〜50 分の短縮した検査です。56 次元格子の列挙は陽性対照だけに対して実行し、v7 と v8 を省くので、**通過しても定理の全検算にはなりません。** 最後の行もそのことを述べる（`quick check passed (F1 itself is in proof.sh; v7 and v8 are in full.sh) / …`）。また、`v1_min_L.json` の代わりに `v1_min_L_controls.json` を書く。 独立な実装と検証用データの生成プログラムは、コードの案内で説明しています。
 
 ### コンテナ
 
-`Dockerfile` から軽量なイメージ（Debian 13、Python 3、仮想環境中の NumPy、GCC、curl。SageMath と Lean は含まない）を作り、3 つの水準をすべて実行できます。`docker build -t l112 .` でイメージを作り、`docker run --rm l112` で水準 (i) を、`mkdir -p out && docker run --rm -v "$PWD/certificates:/work/certificates" -v "$PWD/out:/work/out" l112 bash -c 'bash code/verify/fetch.sh && bash code/verify/proof.sh'` で水準 (ii) を実行します（ダウンロードしたデータと結果はホストに残ります。水準 (iii) では `proof.sh` を `full.sh 3` に替えます。`out/` は例のとおり先に作ってください。無いと Docker が root 所有で作り、コンテナから書き込めません。Linux で uid が 1000 でない場合は `--user "$(id -u):$(id -g)"` を付けます）。開発コンテナ（`.devcontainer/`）も同じイメージを用います。VS Code では「Reopen in Container」を選ぶか、GitHub Codespaces でリポジトリを開いてください。`Dockerfile.sage` は補足計算とデータ生成のための SageMath 入りの別イメージであり、証明には不要です。
+`Dockerfile` から軽量なイメージ（Debian 13、Python 3、仮想環境中の NumPy、GCC、curl。SageMath と Lean は含まない）を作り、3 つの水準をすべて実行できます。`docker build -t l112 .` でイメージを作り、`docker run --rm l112` で水準 (i) を、`mkdir -p out && docker run --rm -v "$PWD/certificates:/work/certificates" -v "$PWD/out:/work/out" l112 bash -c 'bash code/verify/fetch.sh && bash code/verify/proof.sh'` で水準 (ii) を実行します（ダウンロードしたデータと結果はホストに残ります。水準 (iii) では `proof.sh` を `full.sh 3` に替えます。`out/` は例のとおり先に作ってください。無いと Docker が root 所有で作り、コンテナから書き込めません。Linux で uid が 1000 でない場合は `--user "$(id -u):$(id -g)"` を付けます）。開発コンテナ（`.devcontainer/`）も同じイメージを用います。VS Code では「Reopen in Container」を選ぶか、GitHub Codespaces でリポジトリを開いてください。`Dockerfile.sage` は補足計算とデータ生成のための SageMath 入りの別イメージであり、証明には不要です。その冒頭に、上と同じく `certificates/` と `out/` をマウントして補足計算を実行する例がある（補足計算の全部で、1 コアで約 6 時間）。
 
 ## 版と再現性
 

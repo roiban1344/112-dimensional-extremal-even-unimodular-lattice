@@ -29,8 +29,15 @@ representatives may differ). Distinct minimal vectors r, r' with r' != +-r lie i
 certificates/min_reps.npz とは、類 r + 2L の標準形の集合と代表の個数で比べる（並びや代表の選び方は違いうる）。r' ≠ ±r となる最小ベクトルは
 mod 2L でも異なる（N(r - r') < 24 = min 2L）ので、集合が等しければ S-軌道も同じ。違えば失敗（終了コード 1）とする。
 
-Deterministic (fixed random seed). Run time: about 9 minutes. Memory: about 1.5 GB.
-決定的（乱数の種は固定）。実行時間: 約 9 分。メモリ: 約 1.5 GB。
+Deterministic (fixed random seed), but not the program that made the distributed file: that list was found by
+the original computation with the same closure started from a minimal vector chosen at random (a SageMath sampler), so
+this script finds the same 656 orbits with other representatives, in another order. Which representatives are
+used does not matter for the proof (V3 checks the list).
+Run time: about 9 minutes. Memory: about 1.5 GB.
+決定的（乱数の種は固定）だが、配布したファイルを作ったプログラムではない。配布した一覧は、元の計算が同じ閉包で、無作為に選んだ
+最小ベクトル（SageMath の標本抽出）から始めて見つけたものである。このスクリプトは同じ 656 軌道を、別の代表、別の並びで見つける。
+どの代表を使うかは証明に関係しない（一覧は V3 が確かめる）。
+実行時間: 約 9 分。メモリ: 約 1.5 GB。
 
 Run / 実行:  python3 code/produce/p2_minimal_orbits.py [--data DIR] [--certificates DIR] [--out DIR]
 """

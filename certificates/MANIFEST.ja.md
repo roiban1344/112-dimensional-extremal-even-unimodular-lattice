@@ -8,34 +8,41 @@
 `code/lib/certs.py` の読み込みは使う前にハッシュを照合します。取得は `bash code/verify/fetch.sh` で行います。引数は Release のタグで、省略すると `certificates-v2` です。Release は <https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v2> にあります。
 
 `.npz` はすべて Python のオブジェクトを含まない NumPy の書庫で、`numpy.load(..., allow_pickle=False)` で読みます。
-ベクトルは `data/L56_gram.txt` の基底に関する整数の行ベクトルです。
+ベクトルは `data/L56_gram.txt` の基底に関する整数の行ベクトルです。コードと同じく、L は論文の素材の格子 L₅₆、L_m はその殻 L₅₆(m) を指す。
+
+「検算」の列では、最初に挙げた段が、証明が使うファイルの性質を確かめる。括弧の中の段はファイルを読むだけである。「作成」は配布したファイルを
+作ったプログラムを示す。生成スクリプトが何を再現するかは code/README.ja.md の「検証用データの生成」を参照。
 
 | ファイル | 配列 | 中身 | 検算 | 作成 |
 |---|---|---|---|---|
 | `reduction_L112.txt` | 112 × 112 整数 | (3.1) から配布の Gram 行列への基底変換 U（U (3.1) Uᵀ = `data/L112_gram_LLL.txt`） | v0 | p6 |
 | `reduction_L.txt` | 56 × 56 整数 | 列挙に使う L の BKZ-40 基底変換 | v1 | p6 |
-| `min_reps.npz` | `reps` int16 (656, 56) | L₆ の S-軌道の代表 r_j（F2） | v3 | p2 |
-| `centralizer.npz` | `units` int64 (6, 56, 56) | C/{±1} の代表 u_k（§4.2。`even_bounding.npz` の並びで） | v4 | p1 |
-| `norm8_reps.npz` | `reps` int16 (254664, 56) | L₈ の S*-軌道の代表 x_i（F3） | v4 | p3 |
+| `min_reps.npz` | `reps` int16 (656, 56) | L₆ の S-軌道の代表 r_j（F2） | v3（v5〜v8） | 元の計算。p2 は同じ軌道を別の代表で見つける |
+| `centralizer.npz` | `units` int64 (6, 56, 56) | C/{±1} の代表 u_k（§4.2。`even_bounding.npz` の並びで） | 証明には不要: v4、v6〜v8 は u_k を整数行列として使うだけである。C/{±1} の代表であることは p1 が確かめる | p1 |
+| `norm8_reps.npz` | `reps` int16 (254664, 56) | L₈ の S*-軌道の代表 x_i（F3） | v4（v6〜v8） | p3 |
+| | `sizes` int64 (254664) | x_i の S*-軌道の大きさ | `verify/` は読まない（p3 と `crosscheck/` が使う） | p3 |
 | `odd_bounding.npz` | `w0` int16 (656, 56) | 第 j 行: r_j τ + 2L の奇の類の下界を保証する代表元（F5a） | v5 | p4 |
 | `even_bounding.npz` | `w0` int16 (1527984, 56) | 第 6i+k 行: x_i u_k τ + 2L の偶の類の下界を保証する代表元（F5b） | v7 | p5 |
 
 別実装の検算・補足計算用のデータ:
 
-| ファイル | 配列 | 中身 | 使うもの |
-|---|---|---|---|
-| `commutant.npz` | `basis` int64 (8, 56, 56) | M' = End_{SL2(29)}(L) の Z-基底 | crosscheck/all_data, supplementary |
-| `negative_control_B.npz` | `tau_class_B` int64 (56, 56) | τ² = −5 で他方の類（貼り方 B）の M' の元 | supplementary |
-| | `tau_B`, `x`, `v`, `hit_pairs` | 探索で見つけた貼り方 B の写像（2 を法とした持ち上げで、2 乗は −5 ではない）、衝突 (x, v)、衝突する組 | crosscheck/all_data（陰性対照） |
-| `outer_automorphism_L112.txt` | 112 × 112 整数 | SL₂(29) の外部自己同型を与える L₁₁₂ の自己同型 | supplementary/automorphisms |
-| `gram_A.txt` | 112 × 112 整数 | 貼り方 A の Gram 行列 G_A（Nebe の L_{56,2}(M) を、48 個の類の写像の持ち上げで貼り合わせたもの。基底は (3.1)） | supplementary/isometry_ab.py（[C28]） |
-| `isometry_AB.txt` | 112 × 112 整数 | T G_B Tᵀ = G_A、det T = ±1 を満たす基底変換 T（G_B は tau_class_B についての (3.1)）。貼り方 A から B への等長写像 | supplementary/isometry_ab.py（[C28]） |
-| `genus_classes.txt` | 9 個の整数からなる 8 行 | L_{56,2}(M) の極大整環上の階数 2 のユニモジュラー Hermite 格子の種に属する 8 類 Λ_j: 番号 j、\|U(Λ_j)\|（PARI の `qfauto`）、Λ_j の短いベクトルの本数 | supplementary/genus/genus.py（[C29]、[C31]） |
-| `genus_class_<j>.txt`（j = 0, …, 7） | 112 × 112 整数 | X_j = L_{56,2}(M) ⊗ Λ_j の Gram 行列 G_X（LLL 簡約） | supplementary/genus/genus.py（[C30]、[C31]） |
-| `genus_basis_<j>.txt`（j = 0, …, 7） | d と 112 × 112 整数 D | (3.1) と同じ座標（L ⊕ L、形式 diag(G, G)/2）での X_j の基底 D/d: D diag(G, G) Dᵀ = 2d² G_X。g₁, g₂ は X_j に作用する | supplementary/genus/genus.py（[C30]、[C31]） |
-| `genus_witnesses.txt` | 113 個の整数からなる 3 行 | 類 j と、v G_X vᵀ = 8 を満たす X_j のベクトル v（j = 3, 4, 5） | supplementary/genus/genus.py（[C30]、[C31]） |
-| `genus_isometry_7_L112.txt` | 112 × 112 整数 | T G_112 Tᵀ = G_X（類 7）、det T = ±1、G_112 は (3.1) を満たす T。類 7 は L₁₁₂ である | supplementary/genus/genus.py（[C31]） |
-| `genus_isometry_3_A.txt` | 112 × 112 整数 | T G_A Tᵀ = G_X（類 3）、det T = ±1 を満たす T。類 3 は貼り方 A である | supplementary/genus/genus.py（[C31]） |
+| ファイル | 配列 | 中身 | 使うもの | 作成 |
+|---|---|---|---|---|
+| `commutant.npz` | `basis` int64 (8, 56, 56) | M' = End_{SL2(29)}(L) の Z-基底 | crosscheck/all_data, supplementary | p1 |
+| `negative_control_B.npz` | `tau_class_B` int64 (56, 56) | τ² = −5 で他方の類（貼り方 B）の M' の元 | supplementary（`gluing_b.py` の (a) が τ² = −5、τGτᵀ = 5G、SL₂(29) との可換性を確かめる） | 元の計算（そのコードは配布していない） |
+| | `tau_B`, `x`, `v`, `hit_pairs` | 探索で見つけた貼り方 B の写像（2 を法とした持ち上げで、2 乗は −5 ではない）、衝突 (x, v)、衝突する組 | crosscheck/all_data（陰性対照） | 元の計算（`gluing_b.py` は似たデータを `out/gluing_b_collisions.npz` に書く） |
+| `outer_automorphism_L112.txt` | 112 × 112 整数 | SL₂(29) の外部自己同型を与える L₁₁₂ の自己同型 | supplementary/automorphisms | `aut_normalizer.py`（自己同型を見つけ、このファイルと比べる） |
+| `gram_A.txt` | 112 × 112 整数 | 貼り方 A の Gram 行列 G_A（Nebe の L_{56,2}(M) を、48 個の類の写像の持ち上げで貼り合わせたもの。基底は (3.1)） | supplementary/isometry_ab.py（[C28]） | `isometry_ab.py find` |
+| `isometry_AB.txt` | 112 × 112 整数 | T G_B Tᵀ = G_A、det T = ±1 を満たす基底変換 T（G_B は tau_class_B についての (3.1)）。貼り方 A から B への等長写像 | supplementary/isometry_ab.py（[C28]） | `isometry_ab.py find` |
+| `genus_classes.txt` | 9 個の整数からなる 8 行 | L_{56,2}(M) の極大整環上の階数 2 のユニモジュラー Hermite 格子の種に属する 8 類 Λ_j: 番号 j、\|U(Λ_j)\|（PARI の `qfauto`）、Λ_j の短いベクトルの本数 | supplementary/genus/genus.py（[C29]、[C31]） | `genus.py enum` |
+| `genus_class_<j>.txt`（j = 0, …, 7） | 112 × 112 整数 | X_j = L_{56,2}(M) ⊗ Λ_j の Gram 行列 G_X（LLL 簡約） | supplementary/genus/genus.py（[C30]、[C31]） | `genus.py build` |
+| `genus_basis_<j>.txt`（j = 0, …, 7） | d と 112 × 112 整数 D | (3.1) と同じ座標（L ⊕ L、形式 diag(G, G)/2）での X_j の基底 D/d: D diag(G, G) Dᵀ = 2d² G_X。g₁, g₂ は X_j に作用する | supplementary/genus/genus.py（[C30]、[C31]） | `genus.py build` |
+| `genus_witnesses.txt` | 113 個の整数からなる 3 行 | 類 j と、v G_X vᵀ = 8 を満たす X_j のベクトル v（j = 3, 4, 5） | supplementary/genus/genus.py（[C30]、[C31]） | `genus.py witness` |
+| `genus_isometry_7_L112.txt` | 112 × 112 整数 | T G_112 Tᵀ = G_X（類 7）、det T = ±1、G_112 は (3.1) を満たす T。類 7 は L₁₁₂ である | supplementary/genus/genus.py（[C31]） | `genus.py identify` |
+| `genus_isometry_3_A.txt` | 112 × 112 整数 | T G_A Tᵀ = G_X（類 3）、det T = ±1 を満たす T。類 3 は貼り方 A である | supplementary/genus/genus.py（[C31]） | `genus.py identify` |
+
+`genus_basis_<j>.txt` の見出しの「L + L, L = data/L56_gram.txt」は、コードのほかの箇所と同じく L₅₆ ⊕ L₅₆ を指す（補遺 §S6 の記号では
+L̃ ⊕ L̃）。補遺 §S6 の格子 L = L_{56,2}(M) ではない。見出しを直すと配布したファイルのハッシュが変わるので、そのままにしている。
 
 証明経路 T（L₁₁₂ のエルミート構造を使う極値性の別証明。補遺 §S4.1、[C21]・[C32]。定理 A の証明には使わない）:
 

@@ -8,7 +8,7 @@
 #   docker run --rm l112
 #
 # (ii) The computational part of the proof (about 1.2 CPU hours). Mount the host directories
-#      certificates/ and out/ of a clone of this repository, so that the 130 MB download and the
+#      certificates/ and out/ of a clone of this repository, so that the 150 MB download and the
 #      results survive the container. Create out/ first: Docker would otherwise create the missing
 #      host directory owned by root, and the user in the image could not write to it. The user in the
 #      image has uid 1000; on Linux with another uid, add --user "$(id -u):$(id -g)" to the commands

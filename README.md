@@ -67,19 +67,27 @@ bash code/verify/proof.sh
 
 `fetch.sh` needs `curl`; it takes the Release tag as an optional argument (default `certificates-v2`) and downloads every `.npz` file listed in `certificates/SHA256SUMS` (nine files, about 150 MB), including those used only by `full.sh` and the supplementary checks. A file that is already present with the hash in `SHA256SUMS` is not downloaded again; a missing, incomplete or outdated file is downloaded to `<file>.part` and replaces it only after its hash has been checked. `proof.sh` runs every computational check used in the proof of Theorem A: F1 (the 56-dimensional base lattice has minimum 6) by interval enumeration, F2 and F3 (completeness of the orbit representatives), F5a by the odd-coset certificates, and F5b by canonical forms. The final argument also uses the mathematical lemmas in the paper. See the [step-by-step resource requirements](code/README.md#the-verification-steps).
 
+**What a successful run looks like.** Each check prints a line `[ok]  …` (or `[FAIL] …`), and each step ends with a line `PASSED: <step> -> …/out/<step>.json`. `proof.sh` stops at the first failure with a nonzero exit code; after a complete run its last line is
+
+```text
+proof verification (v0-v6) passed / 証明に要る検算（v0〜v6）は通過
+```
+
+and its exit code is 0. `out/` then holds a record of the run: one JSON file per step, `v0_inputs.json`, `v1_min_L.json`, `v2_theta.json`, `v3_minimal_orbits.json`, `v4_norm8_orbits.json`, `v5_odd_bounding.json` and `v6_canonical_lookup.json`, each with `"passed": true`, the list of checks, the values reported in the paper, the running time, and the versions of the software and of this repository (the format is described in [code/README.md](code/README.md#the-json-records)). The other files are intermediate: `K8.npy` and `K8_first.npy` (about 12 MB each, written by v4 for v6 and v8) and `build/` (the enumerator compiled by v1). To check the record later, `grep -L '"passed": true' out/v[0-6]_*.json` lists the files of steps that did not pass; it should print nothing.
+
 **(iii) Everything (about 26 CPU hours, roughly 9.5–10 hours elapsed with three workers).**
 
 ```bash
 bash code/verify/full.sh 3
 ```
 
-This runs everything in `proof.sh`, and adds the alternative check of F5b by the even-coset certificates (v7, about 24 CPU hours) and the consistency test of the spherical-design identities (v8).
+This runs everything in `proof.sh`, and adds the alternative check of F5b by the even-coset certificates (v7, about 24 CPU hours) and the consistency test of the spherical-design identities (v8). Its last line is `full verification passed / 全部の検算は通過`, and `out/` also holds `v7_even_bounding.json` and `v8_design_identities.json`.
 
-`bash code/verify/quick.sh` is a shorter check of about 40–50 minutes. It runs the base-lattice enumerator on positive controls only and omits v7 and v8, so **passing it is not a complete verification of the theorem**. Independent implementations and verification-data generation programs are described in the code documentation.
+`bash code/verify/quick.sh` is a shorter check of about 40–50 minutes. It runs the base-lattice enumerator on positive controls only and omits v7 and v8, so **passing it is not a complete verification of the theorem**; its last line says so (`quick check passed (F1 itself is in proof.sh; v7 and v8 are in full.sh) / …`), and it writes `v1_min_L_controls.json` instead of `v1_min_L.json`. Independent implementations and verification-data generation programs are described in the code documentation.
 
 ### Container
 
-The `Dockerfile` builds a light image (Debian 13, Python 3, NumPy in a virtual environment, GCC, curl; no SageMath or Lean) from which all three levels can be run: `docker build -t l112 .` builds it, `docker run --rm l112` runs level (i), and `mkdir -p out && docker run --rm -v "$PWD/certificates:/work/certificates" -v "$PWD/out:/work/out" l112 bash -c 'bash code/verify/fetch.sh && bash code/verify/proof.sh'` runs level (ii), keeping the downloaded data and the results on the host (replace `proof.sh` by `full.sh 3` for level (iii); create `out/` first as shown, since Docker would otherwise create it owned by root and the container could not write to it; on Linux, add `--user "$(id -u):$(id -g)"` if your uid is not 1000). The same image is used by the dev container (`.devcontainer/`): in VS Code choose "Reopen in Container", or open the repository in GitHub Codespaces. `Dockerfile.sage` builds a separate image with SageMath for the supplementary and data-producing computations only; it is not needed for the proof.
+The `Dockerfile` builds a light image (Debian 13, Python 3, NumPy in a virtual environment, GCC, curl; no SageMath or Lean) from which all three levels can be run: `docker build -t l112 .` builds it, `docker run --rm l112` runs level (i), and `mkdir -p out && docker run --rm -v "$PWD/certificates:/work/certificates" -v "$PWD/out:/work/out" l112 bash -c 'bash code/verify/fetch.sh && bash code/verify/proof.sh'` runs level (ii), keeping the downloaded data and the results on the host (replace `proof.sh` by `full.sh 3` for level (iii); create `out/` first as shown, since Docker would otherwise create it owned by root and the container could not write to it; on Linux, add `--user "$(id -u):$(id -g)"` if your uid is not 1000). The same image is used by the dev container (`.devcontainer/`): in VS Code choose "Reopen in Container", or open the repository in GitHub Codespaces. `Dockerfile.sage` builds a separate image with SageMath for the supplementary and data-producing computations only; it is not needed for the proof. Its header shows how to run them with `certificates/` and `out/` mounted as above (all supplementary computations take about 6 hours on one core).
 
 ## Versions and reproducibility
 

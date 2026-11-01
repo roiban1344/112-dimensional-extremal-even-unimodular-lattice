@@ -5,6 +5,9 @@
 This directory contains every computation used in the paper. Table D2 of the paper lists them
 as [C1]–[C32]; the last section of this file maps each row to the scripts here.
 
+Notation: in the code and in the certificate files, L is the 56-dimensional base lattice L₅₆ of the paper
+and L_m (L_6, L_8) its shell L₅₆(m) of vectors of norm m.
+
 ## What is proved, and what it relies on
 
 Theorem A (L₁₁₂ has minimum 10) follows from the results proved by hand in §§3–6 (Lemmas 3.2,
@@ -42,11 +45,20 @@ The proof does **not** rely on the correctness of the code that produced the ver
 | `supplementary/` | computations behind statements of the paper that are not used in the proof of Theorem A (the classification of gluings, the automorphism group, …) |
 | `tests/` | smoke tests on small examples (pytest; see [Tests](#tests)); not a substitute for `proof.sh` |
 
+Dependencies between the directories: `verify/` imports only `lib/`; `lib/` imports nothing else from
+`code/`; `crosscheck/` imports nothing from `code/` outside its own directory and reads only `data/` and
+`certificates/`; `produce/` imports `lib/` and its own helpers; `supplementary/` imports `lib/`, some functions
+of `produce/` (`p1_centralizer`, `exact_qfminim`, `descent`, and in `nebe/tables.py` also p2, p3 and p6) and
+its own modules, so a change to a producer can break a supplementary computation. `tests/test_layout.py`
+checks these rules. Between steps, files are passed only through `out/`: v4 writes `out/K8.npy` and
+`out/K8_first.npy` for v6, v8 and `supplementary/gluing_b.py`, and v6 and v8 check them against the JSON
+record of v4 (passed, the SHA-256 of the files, of the inputs and of the code).
+
 ### Files
 
 | file | content |
 |---|---|
-| `lib/__init__.py` | `require` (a check that raises instead of `assert`), `CheckError`, exact integer linear algebra |
+| `lib/__init__.py` | `require` (a check that raises instead of `assert`), `CheckError`, the constants \|L₆\| and \|L₈\| (`N6`, `N8`, checked by v2), exact integer linear algebra |
 | `lib/data.py` | reading the four files of `data/` and checking their SHA-256 hashes |
 | `lib/certs.py` | reading the verification data of `certificates/` and checking them against `certificates/SHA256SUMS` |
 | `lib/exact.py` | guards that make floating-point products of integer matrices provably exact |
@@ -56,14 +68,14 @@ The proof does **not** rely on the correctness of the code that produced the ver
 | `lib/shells.py` | the minimal vectors of L and inner products with them (§5), with checkpoints |
 | `lib/report.py` | `[ok]`/`[FAIL]` output and `out/<step>.json` |
 | `verify/v0_inputs.py` … `v8_design_identities.py`, `enum_interval.c` | the verification scripts v0–v8 and the enumeration program used by v1 (see the next section) |
-| `verify/fetch.sh`, `proof.sh`, `full.sh`, `quick.sh` | download of the verification data and the three levels of checking |
+| `verify/fetch.sh`, `proof.sh`, `full.sh`, `quick.sh`, `preflight.sh` | download of the verification data, the three levels of checking, and their check for numpy and the data before the first step |
 | `verify/controls/leech.txt` | Gram matrix of the Leech lattice, a positive control for the verification script v1 |
 | `produce/p1_centralizer.py` … `p6_reduction.py`, `descent.py` | the producers of the verification data (section [Producing the verification data](#producing-the-verification-data)); `descent.py` is the search for certificates shared by p4 and p5 (starting from an element w of the class, replace w by w − 2u while some minimal vector u has ⟨w, u⟩ ≥ 7; the norm decreases, so the search stops, and w is a certificate if it meets the conditions of §5) |
 | `produce/exact_qfminim.py` | PARI's `qfminim` followed by a completeness check with the interval enumeration (used by `p1` and `supplementary/`) |
 | `crosscheck/second_impl/odd_classes.py`, `even_classes.py`, `design_identities.py` | second implementations of F5a, F5b and the design identities (numpy only) |
 | `crosscheck/all_data/`, `supplementary/` | see the sections [Second implementations](#second-implementations-and-supplementary-computations), [Route T](#route-t-supplement-s4-table-d2-c20-c21-c32) and [Correspondence with Table D2](#correspondence-with-table-d2-of-the-paper); `supplementary/nebe/isometry.py` finds SL₂(29)-equivariant isometries for `identify_nebe.py` and `reduction_to_nebe.py` |
 | `run_supplementary.sh` | runs the computations of `supplementary/` |
-| `tests/conftest.py`, `tests/test_*.py` | the tests of the section [Tests](#tests): `test_exact` (exactness guards), `test_enumerate` (enumeration), `test_group_mod2` (group, canonical forms), `test_report_checkpoint` (reports, checkpoints), `test_certs` (hashes of the verification data), `test_scripts` (v0, v1 controls, v2, shell syntax), `test_data` (marker `data`), `test_route_t_exclusion` ([C32] on a few rows), `test_check_paper` (`paper/tools/check-paper.py`), `test_docs` (every tracked file is described in a README) |
+| `tests/conftest.py`, `tests/test_*.py` | the tests of the section [Tests](#tests): `test_exact` (exactness guards), `test_enumerate` (enumeration), `test_group_mod2` (group, canonical forms), `test_report_checkpoint` (reports, checkpoints), `test_certs` (hashes of the verification data), `test_scripts` (v0, v1 controls, v2, shell syntax), `test_data` (marker `data`), `test_route_t_exclusion` ([C32] on a few rows), `test_check_paper` (`paper/tools/check-paper.py`), `test_docs` (every tracked file is described in a README), `test_shells` (inner products with all minimal vectors on a small lattice), `test_layout` (the dependency rules) |
 
 ## Running verification
 
@@ -92,7 +104,31 @@ bash code/verify/full.sh 3
 
 `bash code/verify/quick.sh` (about 40–50 minutes) is an abbreviated check. It runs F1 only on the positive controls and omits v7 and v8, so passing it is not a complete verification of the theorem.
 
-Each step prints `[ok]`/`[FAIL]` for every check and writes `out/<step>.json` with the results, software versions and running time. A step removes its old `out/<step>.json` when it starts, and a step that stops on an error (for example a hash mismatch) writes `"passed": false` with the error, so the file never shows a stale pass; the exit code (nonzero on any failure) is the primary verdict. The shell scripts run Python with `-I` (isolated mode), and the library refuses to run under `python -O`.
+Each step prints `[ok]`/`[FAIL]` for every check and writes `out/<step>.json` with the results, software versions and running time. A step removes its old `out/<step>.json` when it starts, and a step that stops on an error (for example a hash mismatch) writes `"passed": false` with the error, so the file never shows a stale pass; the exit code (nonzero on any failure) is the primary verdict. The shell scripts run Python with `-I` (isolated mode), and the library refuses to run under `python -O`. Before the first step, `proof.sh`, `full.sh` and `quick.sh` check that Python can import numpy and that the certificate files they need are present with the hashes of `certificates/SHA256SUMS` (`verify/preflight.sh`), so a forgotten `fetch.sh` is reported at once, not after the 34 minutes of v1. What a successful run prints, and the files in `out/`, are described in the [root README](../README.md#start-here).
+
+### The JSON records
+
+Every script that uses `lib/report.py` (all of `verify/`, `produce/` and `supplementary/`) writes `out/<step>.json`
+with these keys (format 2):
+
+| key | content |
+|---|---|
+| `format` | 2 (format 1, until v2026-10-25, lacked `format`, `arguments`, `code`, `inputs`, `blas` and `compiler`) |
+| `step`, `passed`, `error` | the name of the step; `true` only if every check passed and the script reached its end; the uncaught error, if any |
+| `checks` | the list of checks `{"check": label, "ok": true/false}` in the order printed |
+| `values` | the computed values `{label: value}`, among them the numbers reported in the paper and the SHA-256 of files written for later steps |
+| `seconds`, `finished` | the running time and the time of the end |
+| `arguments` | the command-line arguments |
+| `code` | `git`: `git describe --always --dirty` of the checkout (`null` without git, as in the container images); `files`: the SHA-256 of the script and of every module of `code/` it loaded, taken when each was loaded, and of the compiled C source; a file edited during the run makes the run fail (exit code 1, `passed: false`) |
+| `inputs` | the SHA-256 of every input file of `data/` and `certificates/` that was read (each checked against `lib/data.py` or `certificates/SHA256SUMS`) |
+| `python`, `numpy`, `blas`, `platform` | the versions of Python and numpy, the BLAS numpy was built with (`numpy.show_config`), and the operating system |
+| `compiler` | only when the enumerator `verify/enum_interval.c` was compiled: the command, its path, the first line of `--version`, the flags, and the SHA-256 of the compiled source (`source_sha256`; the copy compiled is exactly the bytes hashed) and of the executable (`executable_sha256`) |
+| `certificate_hashes` | only with `--hashes FILE`: the list of hashes used instead of `certificates/SHA256SUMS` |
+
+Exit codes, for every script: 0 when all checks passed, 1 when a check failed or an error occurred, 2 for a
+usage error (unknown option or step). The second implementations in `crosscheck/` write their own, different
+records (`out/crosscheck_all_data/<step>.json`, or the printed `RESULT:` line and input hashes), on purpose:
+they share no code with `lib/`.
 
 ## The verification steps
 
@@ -123,6 +159,15 @@ or enumeration), are written as `require(...)`, which raises an error, not as `a
 `python -O` would remove; in addition a step run under `-O` refuses to start (it removes its old `out/<step>.json` and records the refusal there).
 The enumeration of F1 uses outward-rounded interval arithmetic (`verify/enum_interval.c`, header).
 
+These arguments rest on assumptions about the platform, which are not checked by the code except where
+stated. The bound on the partial sums makes a floating-point product exact whatever the order of the
+additions, with or without fused multiply-add; it assumes that the BLAS computes matrix products by IEEE
+floating-point sums of the individual products, as OpenBLAS, MKL, BLIS and Accelerate do, and not by
+Strassen-type or reduced-precision kernels. The interval arithmetic of `enum_interval.c` assumes IEEE binary64
+doubles, round-to-nearest and no excess precision: the compilation stops if `FLT_EVAL_METHOD` is not 0, the
+rounding mode is checked at run time, and the endpoints of the intervals are passed from Python to C in
+hexadecimal notation, which C reads exactly. The JSON records name the BLAS and the C compiler that were used.
+
 ## Requirements
 
 * `verify/`, `crosscheck/second_impl/`: Python ≥ 3.10 with numpy (tested with Python 3.12, numpy 2.5),
@@ -151,14 +196,19 @@ Markers: `slow` (a whole verification script run as a subprocess, more than a fe
 pull request, and the `data` tests weekly and on demand (`.github/workflows/data-tests.yml`).
 
 Covered: exactness guards and linear algebra; enumeration against brute force and known lattices;
-group closure and canonical forms modulo 2; reporting and checkpoint handling; v0, v2 and
-`v1 --controls-only`; published hashes and rejection of modified input; shell syntax in `code/` and
-`lean/`. The `data` tests run v5 on published and mutated certificates, and `v7 --limit 64` with and
-without a checkpoint made for other inputs. See `tests/test_*.py` for the individual cases.
+the input of the enumerator for L (the path of v1 up to the enumeration); group closure and canonical
+forms modulo 2; the maximal inner products with all minimal vectors (`MinimalVectors.max_abs_inner`, used
+by v5 and v7) against brute force on a small lattice with a group; reporting, the JSON format and checkpoint
+handling; the hand-over from v4 to v6 and v8 (`load_output_of`, which must refuse a changed file, other
+inputs or other code); v0, v2 and `v1 --controls-only`; published hashes and rejection of modified input;
+the stop of `proof.sh` before the computation when data are missing (`preflight.sh`); the dependency rules
+between the directories; shell syntax in `code/` and `lean/`. The `data` tests run v5 on published and
+mutated certificates, and `v7 --limit 64` with and without a checkpoint made for other inputs. See
+`tests/test_*.py` for the individual cases.
 
 Not covered: these tests are not a verification of the theorem and do not replace `proof.sh` or
-`full.sh`. They do not run v1 on L, v3, v4, v6, v8 or v7 beyond 64 pairs, nor `produce/`, `crosscheck/`,
-`supplementary/` or `lean/`.
+`full.sh`. They do not run the enumeration of v1 on L, v3, v4, v6, v8 or v7 beyond 64 pairs, nor `produce/`,
+`crosscheck/`, `supplementary/` or `lean/`.
 
 ## Producing the verification data
 
@@ -166,21 +216,36 @@ Not covered: these tests are not a verification of the theorem and do not replac
 |---|---|---|
 | `produce/p1_centralizer.py` | M′ and the centralizer C (`centralizer.npz`, `commutant.npz`) | 10 min |
 | `produce/p2_minimal_orbits.py` | `min_reps.npz` (closure, §6.2) | 10 min |
-| `produce/p3_norm8_orbits.py` | `norm8_reps.npz` (marked elements (sums of two minimal vectors), §6.4) | 1.2 h |
+| `produce/p3_norm8_orbits.py` | `norm8_reps.npz` (marked elements (sums of two minimal vectors), §6.4) | 1.2 h (memory: up to 7.3 GB from the start, about 4.5 GB when resumed) |
 | `produce/p4_odd_descent.py` | `odd_bounding.npz` (descent, §6.6) | 6 min |
 | `produce/p5_even_descent.py` | `even_bounding.npz` (descent, §6.7; 6 parts, resumable) | ≈ 190 CPU h |
 | `produce/p6_reduction.py` | `reduction_L.txt`, `reduction_L112.txt` | 1 min |
 
+`produce/descent.py` (the descent of p4 and p5) and `produce/exact_qfminim.py` (PARI's `qfminim` with a check of
+completeness by the enumerator of `verify/`) are helpers of these scripts and of `supplementary/`.
+
 The producers never write to `certificates/`, whose files are fixed by `certificates/SHA256SUMS`: each
 writes its files under `out/p<k>/` with the names of the distributed files (for example
 `out/p4/odd_bounding.npz`) and then compares them with the distributed verification data; a difference is
-reported as `[FAIL]` with exit code 1. p4, p5 and p6 must reproduce the distributed files bit for bit
-(p6 compares the text files byte for byte). p1 compares the 6 elements of C/{±1} as a set up to sign and the
-basis of M′ by the Z-lattice it spans (equal Hermite normal forms). p2 and p3 may choose other
-representatives: p2 compares the set of canonical forms of the classes r + 2L (for minimal vectors this
-means the same orbits) and the number of representatives; p3 compares the set of canonical forms of the
-classes x u_k + 2L, the number of orbits and the multiset of orbit sizes. Test runs (`p3 --trial`,
-`p5 --limit`) use their own file names and never overwrite the files or checkpoints of a full run.
+reported as `[FAIL]` with exit code 1. p3, p4, p5 and p6 must reproduce the distributed files bit for bit
+(p6 compares the text files byte for byte; p3 first compares the set of canonical forms of the classes
+x u_k + 2L, the number of orbits and the multiset of orbit sizes, then the files). p1 compares the 6 elements
+of C/{±1} as a set up to sign and the basis of M′ by the Z-lattice it spans (equal Hermite normal forms);
+its files are in fact identical to the distributed ones. p2 compares the set of canonical forms of the
+classes r + 2L (for minimal vectors this means the same orbits) and the number of representatives.
+Test runs (`p3 --trial`, `p5 --limit`) use their own file names and never overwrite the files or checkpoints
+of a full run.
+
+What "reproduce" means here: each producer reads the distributed upstream files, not the output of the
+previous producer (p3 and p4 read `certificates/min_reps.npz`, p5 reads `certificates/norm8_reps.npz`, and
+all of them `certificates/centralizer.npz`), so each stage is checked separately. The distributed
+`min_reps.npz` was found in the original computation, before p2 was written in its present form: the same closure,
+but started from a minimal vector chosen at random by a SageMath sampler. p2 finds the same 656 orbits with
+other representatives (none equal to a distributed one up to sign) and cannot regenerate that file; the
+proof does not depend on how the representatives were found (v3 checks them). p3 takes, of each pair
+{g, −g} of SL₂(29), the element found first, as the original computation did, and so reproduces `norm8_reps.npz`
+in the same order (any choice of signs gives the same orbits, but another choice gives other
+representatives in another order).
 
 The data-producing steps of `supplementary/genus/genus.py` (`enum`, `build`, `witness`, `identify`) write to
 `out/genus/` by default, not to `certificates/`, and compare each file with the distributed one (identical, the
@@ -195,16 +260,31 @@ PARI's enumeration order). `--dest certificates/` replaces the distributed files
 FAIL; `summary` ends with exit code 1 unless every required step has passed on the current inputs
 (the inputs are checked against `SHA256SUMS`, and the caches are kept per input digest).
 `min_L.py 4` and `min_L.py 4 --test e8x7` check F1 and its positive control. The three scripts of
-`crosscheck/second_impl/` (numpy only) compare their results with the numbers of the paper and end
-with `RESULT: PASS` (exit code 0) or `RESULT: FAIL` (exit code 1).
+`crosscheck/second_impl/` (numpy only; `--help` describes the arguments) compare their results with the
+numbers of the paper and end with `RESULT: PASS` (exit code 0) or `RESULT: FAIL` (exit code 1):
 
-`bash code/run_supplementary.sh [names…]` runs the computations of `supplementary/` (all of them
-by default; the list and what is left out are in its header). It needs a Python with SageMath as
+```bash
+python3 -I code/crosscheck/second_impl/odd_classes.py           # F5a, Table 7 (minutes, 2 GB)
+python3 -I code/crosscheck/second_impl/even_classes.py C B      # F5b by canonical forms; B is the negative control
+python3 -I code/crosscheck/second_impl/design_identities.py 3   # design identities on norm8_reps.npz (3 test vectors)
+```
+
+All second implementations check their input files against `data/SHA256SUMS` and `certificates/SHA256SUMS`
+with their own code and print or record the hashes.
+
+`bash code/run_supplementary.sh [names…]` runs the computations of `supplementary/` (all 30 by
+default, about 6 hours on one core, of which `float_cvp610` takes about 2.5 hours; the list, the time of
+each step and what is left out are in its header). It needs a Python with SageMath as
 `PYTHON` (default `python3`, for example that of the conda environment of `environment.yml`;
-`PYTHON="sage -python"` for a SageMath distribution), GAP with CTblLib as `GAP` (default `gap`), the
-data downloaded by `fetch.sh`, and, for the step `gluing_b`, the file `out/K8.npy` written by
-`verify/v4_norm8_orbits.py`. A failing step does not stop the others; at the end the failed steps are
-listed and the exit code is 1. Functions shared by several of these scripts (the classes of parity-preserving
+`PYTHON="sage -python"` for a SageMath distribution; it is run with `-I`), GAP with CTblLib as `GAP` (default
+`gap`), the data downloaded by `fetch.sh`, and, for the step `gluing_b`, the file `out/K8.npy` written by
+`verify/v4_norm8_orbits.py`. Some steps read the output of earlier ones (`identify_nebe` and `nebe_tables`
+that of `nebe_lattices`, `nebe_gluings` and `reduction_to_nebe` that of `nebe_tables`, `anatomy_b` that of
+`gluing_b`, `route_t_recount` that of `route_t_classify`); a step whose input is missing is reported as
+failed with the step to run first. A failing step does not stop the others; at the end the failed steps are
+listed and the exit code is 1. Each step writes `out/logs/<step>.log`, and each Python step a JSON record
+named after the step (`out/gluings.json`, …; with the mode for `route_t_check_search3.json`,
+`route_t_exclusion_check.json` and `isometry_ab_check.json`). Functions shared by several of these scripts (the classes of parity-preserving
 maps, the search for equivariant isometries, …) are in `supplementary/_shared.py`.
 
 ## Route T (supplement §S4, Table D2 [C20], [C21], [C32])

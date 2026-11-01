@@ -1,6 +1,6 @@
-"""S7. The structure of Aut(L_112) from explicit generators (paper §8, Theorem B; Table D2 [C26]).
+"""The structure of Aut(L_112) from explicit generators (paper §8, Theorem B; Table D2 [C26]).
 Not used in the proof of Theorem A.
-S7. 明示的な生成元からの Aut(L_112) の構造（論文 §8、定理 B。表 D2 の [C26]）。定理 A の証明には使わない。
+明示的な生成元からの Aut(L_112) の構造（論文 §8、定理 B。表 D2 の [C26]）。定理 A の証明には使わない。
 
 Generators, as 112 x 112 integer matrices in the basis (3.1): the two generators of S = SL_2(29),
 the 48 elements of C_A(S) (recomputed), and the automorphism X of certificates/outer_automorphism_L112.txt.
@@ -40,12 +40,12 @@ from lib.report import Report  # noqa: E402
 
 def main():
     from sage.all import GF, QQ, libgap, matrix
-    ap = argparse.ArgumentParser(description="S7: structure of Aut(L_112)")
+    ap = argparse.ArgumentParser(description="structure of Aut(L_112)")
     ap.add_argument("--data", default=None)
     certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report("s7_aut_structure", a.out)
+    rep = Report("aut_structure", a.out)
     st = Setup(a.data, a.certificates)
     cent = st.centralizer()
     X, _ = st.outer_automorphism()

@@ -1,6 +1,6 @@
-r"""S26. Route T, classification of the rank-2 support modules (supplement §S4.1; Table D2 [C20], first count).
+r"""Route T, classification of the rank-2 support modules (supplement §S4.1; Table D2 [C20], first count).
 Not used in the proof of Theorem A. The second, independent count is recount.py.
-S26. 経路 T、階数 2 の台加群の分類（補遺 §S4.1、表 D2 の [C20] の 1 通り目）。定理 A の証明には使わない。独立な 2 通り目は recount.py。
+経路 T、階数 2 の台加群の分類（補遺 §S4.1、表 D2 の [C20] の 1 通り目）。定理 A の証明には使わない。独立な 2 通り目は recount.py。
 
 Enumerates the hermitian Z[sqrt(-5)]-lattices N of rank 2 with even integral trace form, real minimum
 >= 6 and det_h N <= 4 (free or not), and groups them by invariants (real determinant, theta
@@ -12,10 +12,10 @@ searches of §S4.1.
 （実の行列式、ノルム 16 までのテータ係数、H ⊗ N の最小と短いベクトル）でまとめる。期待: 97 型、うち危険 63（H ⊗ N にノルム 10 未満の
 ベクトル。最小 6 が 30、最小 8 が 33）。危険な候補はすべて（代表だけでなく）§S4.1 の 3 つの探索のどれかが検出する配置を含む。
 
-The expected numbers are checked (Report: out/s26_route_t_classify.json; exit code 1 on a mismatch), as is
+The expected numbers are checked (Report: out/route_t_classify.json; exit code 1 on a mismatch), as is
 that no candidate is dropped by a failed internal check. The table of types is written to
 out/route_t/classify.json (read by recount.py).
-期待する数を検査する（Report: out/s26_route_t_classify.json。食い違えば終了コード 1）。内部の検査に落ちて捨てられた候補が無いことも
+期待する数を検査する（Report: out/route_t_classify.json。食い違えば終了コード 1）。内部の検査に落ちて捨てられた候補が無いことも
 確かめる。型の表は out/route_t/classify.json に書く（recount.py が読む）。
 
 Requires SageMath (PARI). Run time: about 2 minutes.
@@ -137,11 +137,11 @@ def index2_bases(T):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="S26: route T, classification of the rank-2 support modules")
+    ap = argparse.ArgumentParser(description="route T, classification of the rank-2 support modules")
     ap.add_argument("--amax", type=int, default=32, help="upper bound for a = h(x) (32 is the proved bound; see the docstring)")
     ap.add_argument("--out", default=None)
     a_ = ap.parse_args()
-    rep = Report("s26_route_t_classify", a_.out)
+    rep = Report("route_t_classify", a_.out)
     out_dir = os.path.join(rep.out_dir, "route_t")
     os.makedirs(out_dir, exist_ok=True)
     # 第 1 基底ベクトル x は「基底に延長できるベクトルのうち最短」（真の最短とは限らない: F' ∩ Kx0 = 𝔭2^{-1}x0 のとき）。

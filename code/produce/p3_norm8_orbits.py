@@ -45,27 +45,41 @@ Products in float32 are exact: all entries are small integers, and the bound on 
 float32 の積は厳密: 成分はすべて小さな整数で、どの float32 の積でも、掛ける前に部分和の上界（|A| の行和の最大 × |B| の最大）を
 確かめる（下の `require`）。
 
-Checkpoint: out/p3/state.npz every 10 minutes and after each i; rerun the same command to resume.
-The checkpoint records a SHA-256 fingerprint of the inputs (G, the generators, min_reps, centralizer);
-a checkpoint made from other inputs is refused. A --trial run starts afresh and keeps its checkpoint
-in out/p3-trial/, so it never overwrites the checkpoint of the full run.
-途中経過: 10 分ごとと各 i のあとに out/p3/state.npz に保存する。同じコマンドで再開する。途中経過には入力（G、生成元、min_reps、
-centralizer）の SHA-256 による指紋を記録し、別の入力から作られた途中経過は使わない。--trial の実行は新しく始め、途中経過を out/p3-trial/ に
-置くので、本番の途中経過を上書きしない。
+Checkpoint: out/p3/state.npz (about 400 MB) every 10 minutes and after each i; rerun the same command to
+resume. The checkpoint records a SHA-256 fingerprint of the inputs (G, the generators, min_reps, centralizer) and
+of S in the order used, which decides the representatives;
+a checkpoint made from other inputs is refused. It is deleted when the run is complete. A --trial run starts
+afresh and keeps its checkpoint in out/p3-trial/, so it never overwrites the checkpoint of the full run.
+途中経過: 10 分ごとと各 i のあとに out/p3/state.npz（約 400 MB）に保存する。同じコマンドで再開する。途中経過には入力（G、生成元、
+min_reps、centralizer）と、代表を決める S（使う順序のまま）の SHA-256 による指紋を記録し、別の入力から作られた途中経過は使わない。最後まで終えたら消す。--trial の実行は
+新しく始め、途中経過を out/p3-trial/ に置くので、本番の途中経過を上書きしない。
+
+Reproducibility: of each pair {g, -g} of S the element is taken that appears first in the enumeration of
+lib/group.py, without normalizing its sign (`s_mod_sign_first`), as in the original computation that produced the
+distributed certificates/norm8_reps.npz. Any choice of signs gives the same orbits, but the signs decide the
+order in which the candidates of X_i are visited, hence which vector of an orbit becomes its representative.
+With this choice, and the distributed min_reps.npz and centralizer.npz as input, the output is the
+distributed file bit for bit.
+再現性: S の各組 {g, -g} からは、lib/group.py の列挙で先に現れる元を、符号を正規化せずに取る（`s_mod_sign_first`）。配布した
+certificates/norm8_reps.npz を作った元の計算と同じ取り方である。符号の取り方によらず軌道は同じだが、符号は X_i の候補を
+見る順序を決め、したがって軌道のどのベクトルが代表になるかを決める。この取り方で、配布した min_reps.npz と centralizer.npz を
+入力とすれば、出力は配布したファイルとビット単位で一致する。
 
 Output: out/p3/norm8_reps.npz (reps int16 (k, 56), sizes int64 (k,)); never certificates/, whose files
 are fixed by certificates/SHA256SUMS. It is compared with the distributed certificates/norm8_reps.npz by
 (a) the set of canonical forms of the classes x u_k + 2L (k = 0, ..., 5), (b) the number of orbits and
-(c) the multiset of orbit sizes; the order and the choice of representatives may differ. (Equal sets of
-classes mod 2L are weaker than equal orbits on L_8, since two norm-8 vectors with inner product -4 lie
-in the same class mod 2L; (b) and (c), and verify/v4, close the gap.) A difference is a failure (exit code 1).
+(c) the multiset of orbit sizes (equal sets of classes mod 2L are weaker than equal orbits on L_8, since two
+norm-8 vectors with inner product -4 lie in the same class mod 2L; (b) and (c), and verify/v4, close the gap),
+and then (d) bit for bit (see Reproducibility). A difference is a failure (exit code 1).
 出力: out/p3/norm8_reps.npz（certificates/ には書かない。そこのファイルは certificates/SHA256SUMS で固定されている）。配布した
-certificates/norm8_reps.npz とは、(a) 類 x u_k + 2L（k = 0, …, 5）の標準形の集合、(b) 軌道の個数、(c) 軌道の大きさの多重集合で比べる
-（並びと代表の選び方は違いうる）。（mod 2L の類の集合が等しいことは、L_8 上の軌道が等しいことより弱い。内積 -4 のノルム 8 のベクトル 2 本は
-mod 2L で同じ類に入るからである。(b)(c) と verify/v4 がその差を埋める。）違えば失敗（終了コード 1）とする。
+certificates/norm8_reps.npz とは、(a) 類 x u_k + 2L（k = 0, …, 5）の標準形の集合、(b) 軌道の個数、(c) 軌道の大きさの多重集合で比べ
+（mod 2L の類の集合が等しいことは、L_8 上の軌道が等しいことより弱い。内積 -4 のノルム 8 のベクトル 2 本は mod 2L で同じ類に入るからである。
+(b)(c) と verify/v4 がその差を埋める）、そのうえで (d) ビット単位で比べる（「再現性」を参照）。違えば失敗（終了コード 1）とする。
 
-Run time: about 1.2 hours. Memory: up to about 5 GB while saving checkpoints.
-実行時間: 約 1.2 時間。メモリ: チェックポイントの保存中に最大約 5 GB。
+Run time: about 1.2 hours (74 min measured, one core). Memory: up to 7.3 GB (maximum resident set measured
+when run from the start; about 4.5 GB when resumed from a checkpoint), so use a machine with at least 8 GB free.
+実行時間: 約 1.2 時間（1 コアで実測 74 分）。メモリ: 最大 7.3 GB（最初から走らせたときの最大常駐量の実測。途中経過から再開したときは約 4.5 GB）。
+8 GB 以上の空きがある計算機で走らせること。
 
 Run / 実行:  python3 code/produce/p3_norm8_orbits.py [--trial N] [--data DIR] [--certificates DIR] [--out DIR]
              (--trial N stops after N orbits and reports the speed / N 軌道で止めて速さを報告する)
@@ -95,6 +109,23 @@ def fingerprint(*arrays):
         h.update(f"{x.shape} {x.dtype.str};".encode())
         h.update(x.tobytes())
     return h.hexdigest()
+
+
+def s_mod_sign_first(gens):
+    """The 12,180 elements of <g1, g2>/{+-1}, as int64 (12180, 56, 56): of each pair {g, -g} the one that
+    appears first in lib.group.enumerate_group, with its sign as found (see Reproducibility above).
+    <g1, g2>/{±1} の 12,180 元（int64 (12180, 56, 56)）。各組 {g, -g} から lib.group.enumerate_group で先に現れる元を、
+    見つかったときの符号のまま取る（上の「再現性」を参照）。"""
+    E = group.enumerate_group(list(gens))
+    require(len(E) == group.ORDER, f"group order {len(E)}, expected {group.ORDER}")
+    out, taken = [], set()
+    for g in E:
+        k = group.sign_normalize(g).tobytes()
+        if k not in taken:
+            taken.add(k)
+            out.append(g)
+    require(len(out) == group.ORDER_MOD_SIGN, f"{len(out)} elements modulo +-1, expected {group.ORDER_MOD_SIGN}")
+    return np.stack(out).astype(np.int64)
 
 
 def gstar_roots(R6, U, can):
@@ -128,24 +159,24 @@ class State:
         self.cur = None                                 # (i, next index, flags, new orbits) inside X_i
 
     def save(self, path):
-        pend_idx, pend_val = [], []
-        for j, lst in self.pending.items():
-            if lst:
-                v = np.concatenate(lst)
-                self.pending[j] = [v]
-                pend_idx.append(np.full(len(v), j, dtype=np.int32))
-                pend_val.append(v)
+        # The pending hashes are saved as one array per j (pend_<j>), not concatenated into a single array:
+        # a single copy of all of them doubled the memory while saving (the peak of the run).
+        # 保留中のハッシュは j ごとに 1 つの配列（pend_<j>）として保存し、1 つの配列に連結しない。連結した写しは保存の間メモリを
+        # 倍にしていた（実行全体のピーク）。
         arrays = dict(
             inputs=np.array(self.inputs),
             i=np.int64(self.i),
             reps=np.array(self.reps, dtype=np.int16).reshape(-1, 56),
             sizes=np.array(self.sizes, dtype=np.int64),
             nx=np.array(self.nx, dtype=np.int64),
-            pend_idx=np.concatenate(pend_idx) if pend_idx else np.zeros(0, dtype=np.int32),
-            pend_val=np.concatenate(pend_val) if pend_val else np.zeros(0, dtype=np.int64),
             cur=np.array(self.cur[:2] + (self.cur[3],) if self.cur else (-1, -1, -1), dtype=np.int64),
             cur_flags=self.cur[2] if self.cur else np.zeros(0, dtype=bool),
         )
+        for j, lst in self.pending.items():
+            if lst:
+                if len(lst) > 1:
+                    self.pending[j] = [np.concatenate(lst)]
+                arrays[f"pend_{j}"] = self.pending[j][0]
         certs.save_npz(path, **arrays)
 
     @classmethod
@@ -159,9 +190,13 @@ class State:
             st.reps = list(z["reps"])
             st.sizes = [int(v) for v in z["sizes"]]
             st.nx = [int(v) for v in z["nx"]]
-            idx, val = z["pend_idx"], z["pend_val"]
-            for j in np.unique(idx):
-                st.pending[int(j)] = [val[idx == j]]
+            if "pend_idx" in z.files:                   # checkpoints written before 2026-10-26 / 2026-10-26 より前の途中経過
+                idx, val = z["pend_idx"], z["pend_val"]
+                for j in np.unique(idx):
+                    st.pending[int(j)] = [val[idx == j]]
+            for key in z.files:
+                if key.startswith("pend_") and key[5:].isdigit():
+                    st.pending[int(key[5:])] = [z[key]]
             for j in range(st.i):
                 st.pending[j] = None
             c = z["cur"]
@@ -367,17 +402,20 @@ def main():
     rep = Report("p3_norm8_orbits" + (f"_trial{a.trial}" if a.trial else ""), a.out)
     pdir = os.path.join(rep.out_dir, "p3-trial" if a.trial else "p3")
     G = data.gram(a.data)
-    S = group.sl2_29_mod_sign(data.generators(a.data)).astype(np.int64)
+    S = s_mod_sign_first(data.generators(a.data))
     R6 = certs.load("min_reps.npz", "reps", a.certificates).astype(np.int64)
     Un = certs.load("centralizer.npz", "units", a.certificates).astype(np.int64)
     can = mod2.Canonical(S)
-    inputs = fingerprint(G, data.generators(a.data), R6, Un)
+    inputs = fingerprint(G, data.generators(a.data), R6, Un, S)
     reps, sizes = norm8_orbits(G, S, R6, Un, pdir, rep, trial=a.trial, inputs=inputs)
     if reps is None:
         rep.finish()
         return
     certs.save_npz(os.path.join(pdir, "norm8_reps.npz"), reps=reps, sizes=sizes)
     rep.log(f"wrote {pdir}/norm8_reps.npz")
+    ckpt = os.path.join(pdir, "state.npz")
+    if os.path.exists(ckpt):
+        os.remove(ckpt)                              # the run is complete / 実行は完了した
 
     # Compare with the certificate: the same set of S-orbits (canonical forms of x u_k).
     # 配布した代表と比べる: 同じ S-軌道の集合（x u_k の標準形）。
@@ -397,6 +435,9 @@ def main():
     old = forms(old_reps)
     rep.check("same 1517130 classes x u_k + 2L up to S as certificates/norm8_reps.npz (equal sets of canonical forms)",
               mine == old and len(mine) == 1517130)
+    rep.check("identical to certificates/norm8_reps.npz (reps and sizes, bit for bit)",
+              np.array_equal(reps, old_reps) and reps.dtype == old_reps.dtype
+              and np.array_equal(sizes, old_sizes) and sizes.dtype == old_sizes.dtype)
     rep.finish()
 
 

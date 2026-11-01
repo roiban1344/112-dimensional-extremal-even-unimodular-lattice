@@ -1,6 +1,6 @@
-r"""S27. Route T, second count of the rank-2 support modules (supplement §S4.1; Table D2 [C20], second count).
+r"""Route T, second count of the rank-2 support modules (supplement §S4.1; Table D2 [C20], second count).
 Not used in the proof of Theorem A.
-S27. 経路 T、階数 2 の台加群の 2 通り目の数え上げ（補遺 §S4.1、表 D2 の [C20] の 2 通り目）。定理 A の証明には使わない。
+経路 T、階数 2 の台加群の 2 通り目の数え上げ（補遺 §S4.1、表 D2 の [C20] の 2 通り目）。定理 A の証明には使わない。
 
 A different enumeration (from a true shortest vector, with pseudo-bases) in exact rational arithmetic
 (own Fincke-Pohst enumeration; LLL only for basis changes, checked to be unimodular). It groups the
@@ -11,9 +11,9 @@ the 63 dangerous types of classify.py by the same invariant gives the same 58.
 あることを確かめる）。危険な候補をより粗い不変量（実の行列式、ノルム 6・8・10 以下の本数、H ⊗ N の最小）でまとめる。期待: 候補 468、
 危険 296、覆われないもの 0、危険な型 58。classify.py の危険な 63 型を同じ不変量でまとめ直すと同じ 58 になる。
 
-The expected numbers and the agreement with classify.json are checked (Report: out/s27_route_t_recount.json;
+The expected numbers and the agreement with classify.json are checked (Report: out/route_t_recount.json;
 exit code 1 on a mismatch or if classify.json is missing). The candidates are written to out/route_t/recount.json.
-期待する数と classify.json との一致を検査する（Report: out/s27_route_t_recount.json。食い違うか classify.json が無ければ終了コード 1）。
+期待する数と classify.json との一致を検査する（Report: out/route_t_recount.json。食い違うか classify.json が無ければ終了コード 1）。
 候補は out/route_t/recount.json に書く。
 
 Requires SageMath (for LLL only). Run time: about 1 minute. Run classify.py first for the comparison.
@@ -243,10 +243,10 @@ def analyse(Gn, Tn):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="S27: route T, second count of the rank-2 support modules")
+    ap = argparse.ArgumentParser(description="route T, second count of the rank-2 support modules")
     ap.add_argument("--out", default=None)
     a_ = ap.parse_args()
-    rep = Report("s27_route_t_recount", a_.out)
+    rep = Report("route_t_recount", a_.out)
     out_dir = os.path.join(rep.out_dir, "route_t")
     os.makedirs(out_dir, exist_ok=True)
     stats = dict(N=0, dangerous=0, uncovered=0)

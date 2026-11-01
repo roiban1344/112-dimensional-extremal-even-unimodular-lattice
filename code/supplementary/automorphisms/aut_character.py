@@ -1,12 +1,12 @@
-"""S8. Conjugacy classes of Aut(L_112), its character on V = L_112 tensor Q, and the Molien series
+"""Conjugacy classes of Aut(L_112), its character on V = L_112 tensor Q, and the Molien series
 (spherical designs from the group alone) (paper §8; Table D2 [C26]). Not used in the proof of Theorem A.
-S8. Aut(L_112) の共役類、V = L_112⊗Q 上の指標、Molien 級数（群だけから得られる球面デザイン）（論文 §8。表 D2 の [C26]）。
+Aut(L_112) の共役類、V = L_112⊗Q 上の指標、Molien 級数（群だけから得られる球面デザイン）（論文 §8。表 D2 の [C26]）。
 定理 A の証明には使わない。
 
-A = Aut(L_112) is built modulo 3 from its generators (as in S7) and moved to a permutation group
+A = Aut(L_112) is built modulo 3 from its generators (as in aut_structure.py) and moved to a permutation group
 (degree 12,992). Class representatives are written as words in the generators and multiplied out as
 integer matrices, which gives exact traces. Then:
-A を生成元から 3 を法として作り（S7 と同じ）、置換群（次数 12,992）に移す。共役類の代表を生成元の語として取り出し、整数行列として掛けて
+A を生成元から 3 を法として作り（aut_structure.py と同じ）、置換群（次数 12,992）に移す。共役類の代表を生成元の語として取り出し、整数行列として掛けて
 正確なトレースを得る。そのうえで:
   (1) 206 conjugacy classes; <chi_V, chi_V> = 2 (consistent with End_A(V) = Q(sqrt -29));
       共役類は 206 個。<chi_V, chi_V> = 2（End_A(V) = Q(√-29) と整合）。
@@ -42,13 +42,13 @@ ORDER = 1169280
 
 def main():
     from sage.all import GF, QQ, ZZ, identity_matrix, libgap, matrix
-    ap = argparse.ArgumentParser(description="S8: classes, character and Molien series of Aut(L_112)")
+    ap = argparse.ArgumentParser(description="classes, character and Molien series of Aut(L_112)")
     ap.add_argument("--kmax", type=int, default=12)
     ap.add_argument("--data", default=None)
     certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report("s8_aut_character", a.out)
+    rep = Report("aut_character", a.out)
     st = Setup(a.data, a.certificates)
     cent = st.centralizer()
     X, _ = st.outer_automorphism()

@@ -23,14 +23,22 @@ Argument (as in V3 (B)) / 議論（V3 (B) と同じ）:
     相異なる標準形にわたる大きさの和が 36,957,286,800 = |L_8|（V2）で、どの軌道も最大の大きさ 24,360。
     よって並べた軌道で L_8 全体。
 The table K_8 of these canonical forms is written to out/K8.npy for V6, and one index 6 i + k per
-orbit to out/K8_first.npy for V8. Their SHA-256, and that of the two input files, are recorded in
-out/v4_norm8_orbits.json; V6 and V8 check them before use.
+orbit to out/K8_first.npy for V8. Their SHA-256, that of the two input files and that of the code
+(this script and the modules of lib/ it uses, recorded by lib/report.py) are in
+out/v4_norm8_orbits.json; V6 and V8 check all of them before use (lib.report.load_output_of).
 この標準形の表 K_8 を V6 のために out/K8.npy に、軌道ごとの添字 6i+k を 1 つずつ V8 のために out/K8_first.npy に書く。
-その SHA-256 と 2 つの入力ファイルの SHA-256 を out/v4_norm8_orbits.json に記録し、V6・V8 は使う前に照合する。
+その SHA-256、2 つの入力ファイルの SHA-256、コード（このスクリプトと、使う lib/ のモジュール。lib/report.py が記録する）の SHA-256 を
+out/v4_norm8_orbits.json に置き、V6・V8 は使う前にそのすべてを照合する（lib.report.load_output_of）。
 
 Also checked (not needed for F3): each u_k is an isometry of L commuting with g1, g2, and the
 u_k are distinct modulo +-1.
 あわせて確かめる（F3 には不要）: 各 u_k は g1, g2 と可換な L の等長変換で、±1 を法として相異なる。
+Not checked here (not needed for Theorem A, which uses only that the listed orbits cover L_8): that the x_i lie
+in distinct S*-orbits (Table 3: 254,664 S*-orbits) and that the u_k are all of C/{+-1} (|C| = 12). The first is
+checked by crosscheck/all_data/check_all.py v4 [C27], the second by produce/p1_centralizer.py [C2].
+ここでは確かめないこと（定理 A には不要。定理 A が使うのは、並べた軌道が L_8 を覆うことだけ）: x_i が相異なる S*-軌道にあること
+（表 3 の 254,664 個の S*-軌道）と、u_k が C/{±1} のすべてであること（|C| = 12）。前者は crosscheck/all_data/check_all.py v4 [C27]、
+後者は produce/p1_centralizer.py [C2] が確かめる。
 
 Exactness: integer arithmetic only (int64 with overflow guards, uint64 XOR).
 厳密さ: 整数演算のみ（オーバーフローを確かめた int64、uint64 の XOR）。
