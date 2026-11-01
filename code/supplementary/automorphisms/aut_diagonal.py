@@ -1,18 +1,20 @@
 """S6. The finite check excluding the "diagonal case" in the proof that SL_2(29) is normal in Aut(L_112)
-(paper Appendix F.3; Table D2 [C25]). Not used in the proof of Theorem A.
-S6. SL_2(29) が Aut(L_112) の正規部分群であることの証明で「対角の場合」を除く有限の検査（論文 付録 F.3。表 D2 の [C25]）。定理 A の証明には使わない。
+(paper Appendix F.4 (c); Table D2 [C25]). Not used in the proof of Theorem A.
+S6. SL_2(29) が Aut(L_112) の正規部分群であることの証明で「対角の場合」を除く有限の検査（論文 付録 F.4 (c)。表 D2 の [C25]）。定理 A の証明には使わない。
 
-Situation (Appendix F.3): if S = SL_2(29) sat diagonally in two components of E(A), then
+Situation (Appendix F.4 (c)): if S = SL_2(29) sat diagonally in two components of E(A), then
 V = V_1 + V_2 (S-invariant, 56-dimensional each) and s -> (s on V_1, identity on V_2) would be a
 homomorphism from S into A = Aut(L_112). In particular the image c = (-1, +1) of s = -1 is an involution
 of the centralizer C_A(S), and g -> P_- g + P_+ (P_+- = (1 +- c)/2) preserves L_112.
-状況（付録 F.3）: S = SL_2(29) が E(A) の 2 つの成分に対角に入るなら、V = V_1 ⊕ V_2（S-不変、56 次元ずつ）で、
+状況（付録 F.4 (c)）: S = SL_2(29) が E(A) の 2 つの成分に対角に入るなら、V = V_1 ⊕ V_2（S-不変、56 次元ずつ）で、
 s -> (V_1 上で s、V_2 上で恒等) が S から A = Aut(L_112) への準同型になる。とくに s = -1 の像 c = (-1, +1) は C_A(S) の対合で、
 g -> P_- g + P_+（P_± = (1 ± c)/2）は L_112 を保つ。
 Check: for each involution c != +-1 of C_A(S) (48 elements, recomputed here), P_- g + P_+ is not an
-integral matrix in the L_112-basis for some generator g of S. Then the diagonal case cannot occur.
+integral matrix in the L_112-basis for some generator g of S. Since s -> P_- s + P_+ is a homomorphism, it maps S
+into A iff it does so on the two generators g1, g2; so the diagonal case cannot occur (the lemma in Appendix F.4 (c)).
 検査: C_A(S)（48 元、ここで計算し直す）の ±1 以外の各対合 c について、S のある生成元 g で P_- g + P_+ が L_112 の基底で整数行列にならない。
-すると対角の場合は起こらない。
+s -> P_- s + P_+ は準同型なので、S を A に移すのは二つの生成元 g1, g2 を A に移すときであり、そのときに限る。よって対角の場合は起こらない
+（付録 F.4 (c) の補題）。
 
 Requires SageMath. Run time: about 1 minute. / SageMath が要る。実行時間: 約 1 分。
 Run / 実行:  python3 code/supplementary/automorphisms/aut_diagonal.py
@@ -31,7 +33,7 @@ from lib.report import Report  # noqa: E402
 
 def main():
     from sage.all import QQ, ZZ, identity_matrix
-    ap = argparse.ArgumentParser(description="S6: the diagonal case of Appendix F.3")
+    ap = argparse.ArgumentParser(description="S6: the diagonal case of Appendix F.4 (c)")
     ap.add_argument("--data", default=None)
     certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
