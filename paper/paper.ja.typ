@@ -6,7 +6,7 @@
   title: [112 次元の極値偶ユニモジュラー格子],
   subtitle: [$"SL"_2(29)$ の対称性を保つ貼り合わせと計算機援用証明],
   authors: [roiban1344 #linebreak() #small[#link("https://github.com/roiban1344")[github.com/roiban1344]]],
-  date: [草稿、2026 年 10 月 18 日],
+  date: [草稿、バージョン v2026-10-25],
 )
 
 #abstract-box[
@@ -24,17 +24,17 @@
 #tagged("1.1", $ min Lambda <= mu(n):=2 floor(n/24)+2 $)
 が得られる。ここで $min Lambda$ は非零ベクトルのノルムの最小値、すなわち格子の最小ノルムである。偶ユニモジュラー格子について (1.1) の等号が成り立つとき、その格子は極値であるという。本稿で「極値格子」と略す場合は、別の格子のクラスを明示しない限り、極値偶ユニモジュラー格子を指す。後の数式では上界を $mu(n)$ と略記する。
 
-この上界は 56 次元では 6、112 次元では 10 である。したがって、以下の 112 次元格子の構成では、ノルム 2、4、6、8 の非零ベクトルが存在しないことを示す必要がある。低次元の例には $E_8$ と Leech 格子がある。最近では、坂本のプレプリント \[Sak26\] が 88 次元の例を二つ構成している。背景と比較表は付録 G にまとめる。以下の主結果の証明は、その比較には依存しない。
+この上界は 56 次元では 6、112 次元では 10 である。したがって、以下の 112 次元格子の構成では、ノルム 2、4、6、8 の非零ベクトルが存在しないことを示す必要がある。低次元の例には $E_8$ と Leech 格子がある。88 次元は 2026 年まで未解決であった。坂本のプレプリント \[Sak26\] が二つの例を構成し、さらに Gauvin のプレプリント \[Gau26\] による $bb(Q)(zeta_115)$ 上のイデアル格子四つが、現在は Catalogue of Lattices \[NS\] に載っている。背景と比較表は付録 G にまとめる。以下の主結果の証明は、その比較には依存しない。
 
 == 1.2 構成と主結果
 
-付録 D に挙げるファイル #raw("L56_gram.txt") の Gram 行列によって定まる 56 次元格子を $L_56$ と書く（定義行列は本稿に印刷せず、SHA-256 で同定したデータファイルとして配布する。付録 D には、Nebe の構成に基づき、データファイルを用いずに $L_56$ と $tau$ を指定する方法も記す）。$L_56$ は Nebe の格子 $L_(56,2)(tilde(M))$ \[Neb98, 表 II\] と $"SL"_2(29)$ 同変に等長同型である。この同定は §7.2 で示す。ファイル #raw("sl2_29_generators.txt") の二つの行列は $L_56$ の等長写像であり、$"SL"_2(29)$ と同型な群 $S$ を生成する（F4）。ファイル #raw("tau.txt") で与える自己準同型 $tau$ は $S$ と可換であり、
+付録 D に挙げるファイル #raw("L56_gram.txt") の Gram 行列によって定まる 56 次元格子を $L_56$ と書く（定義行列は本稿に印刷せず、SHA-256 で同定したデータファイルとして配布する。付録 D には、Nebe の構成に基づき、データファイルを用いずに $L_56$ と $tau$ を指定する方法も記す）。$L_56$ は Nebe の格子 $L_(56,2)(tilde(M))$ \[Neb98, 定理 2.4\] と $"SL"_2(29)$ 同変に等長同型である。この同定は §7.2 で示す。ファイル #raw("sl2_29_generators.txt") の二つの行列は $L_56$ の等長写像であり、位数 $24 thin 360$ の群 $S$ を生成し（F4）、$S$ は $"SL"_2(29)$ と同型である #calc("C2")。ファイル #raw("tau.txt") で与える自己準同型 $tau$ は $S$ と可換であり、
 $ tau^2=-5 "id", quad chevron.l x tau,y tau chevron.r=5 chevron.l x,y chevron.r quad (x,y in L_56) $
-を満たす。ベクトルは行ベクトルで表し、行列は右から作用させる。これらの等式と定義行列の性質を #calc("C2") で検査する。この $tau$ を用いて
+を満たす。ベクトルは行ベクトルで表し、行列は右から作用させる。これらの等式と定義行列の性質を #calc("C2") で検査する。以下、F0〜F5 は §4.3 に挙げる計算で確かめる事実を指し、\[C2\] のような角括弧のラベルは付録 D の表 D2 の行（各計算を行うコードを示す）を指す。この $tau$ を用いて
 #tagged("1.2", $ L_112 = L_tau := { lr((x,x tau+2 y))/sqrt(2) : x,y in L_56 } subset 1/sqrt(2) (L_56 perp L_56) $)
 と定める。
 #thm[
-#strong[定理 A.] 付録 D のデータファイルと (1.2) で定義する $L_112$ は、最小ノルム 10 の 112 次元偶ユニモジュラー格子である。したがって、$L_112$ は極値である。
+#strong[定理 A.] 付録 D のデータファイル #raw("L56_gram.txt") と #raw("tau.txt") から (1.2) で定義する $L_112$ は、最小ノルム 10 の 112 次元偶ユニモジュラー格子である。したがって、$L_112$ は極値である。
 ]
 
 $S$ の対角作用は $L_112$ を保つ。定理 A の証明の概要を §1.3 で述べ、§6 の有限計算を用いて §4.3 で証明を完結させる。構成を発見するための探索と検算とは分けて記述する。したがって、$tau$ を発見した探索を再実行することなく検算を行うことができる。
@@ -61,7 +61,11 @@ $ min(x tau+2 L_56)>=12 quad "すべての" x in L_56(8) "について". $
 
 == 1.4 既存の構成との関係と次元の選択
 
-本構成では、Nebe の 56 次元格子 \[Neb98\]、格子の 2 倍を法とする剰余類に沿った貼り合わせ \[Que84\]、72 次元と 88 次元の構成で使われるエルミートテンソル積の枠組み \[Neb12, CN13, Sak26\] を用いる。命題 3.4 では、(1.2) を $bb(Z)[sqrt(-5)]$ 上のエルミートテンソル積として表す。本稿の結果は、配布する自己準同型から得られる格子が極値であるという主張と、その証明に必要な具体的なデータおよび検算の提示からなる。
+本構成は既知の材料を用いる。土台の格子は Nebe の 56 次元格子の一つである \[Neb98, 定理 2.4\]。格子のいくつかの複製を $L\/p L$ の双曲的な分解に沿って貼り合わせる構成は Quebbemann \[Que84\] にさかのぼる。この構成にエルミート構造から来る $L\/2 L$ の偏極を用いると、80 次元の極値格子 \[BN98\] と $Gamma_72$ \[Neb12, 定義 2.6, 注意 2.7\] が得られる。後者は、Leech 格子から作る 72 次元格子についての Griess の解析 \[Gri10\] に従ったものである（\[Gri99\] も参照）。本稿の貼り合わせ（定義 3.1）はこれとは種類が異なり、同じ格子の 2 枚の複製の間の、$L\/2 L$ の等長写像のグラフを用いる。エルミートテンソル積の枠組み \[Cou00, CN13\] は、48 次元（$P_(48 n)$ \[Neb98\]、\[CN13, §4\]）、72 次元 \[Neb12, CN13\]、80 次元 \[BN98; Cou00, §4.2\]、88 次元 \[Sak26\] の極値格子の基礎にある。命題 3.4 では、(1.2) を $bb(Z)[sqrt(-5)]$ 上のエルミートテンソル積 $H times.o P$ として表す。ここで $H$ は階数 2 のユニモジュラーなエルミート格子であり、\[CN13, §4\] の $P_(48 n)$ と同じ形である。ただし、そこで用いられる基礎環と異なり $bb(Z)[sqrt(-5)]$ の類数は 2 なので、$P$ の $cal(O)$-部分加群は自由とは限らない。補遺 §S4 ではそれらを擬基底（pseudo-basis）によって扱う。本稿の結果は、配布する自己準同型から得られる格子が極値であるという主張と、その証明に必要な具体的なデータおよび検算の提示からなる。
+
+112 次元に最も近い先行構成は Nebe 自身のものである。\[Neb98, §5\] は $L_(2(p-1),2)$ どうしを自己準同型環の四元数部分環の上でテンソルし、$(p, q) = (5, 13)$ で 48 次元の極値格子 $L_48$ \[Neb98, 定理 5.3\] を、$(5, 17)$ で 64 次元の格子（脚注で極値性が示されている）を得ている。$(p, q) = (5, 29)$ とすれば次元は $8 dot 56 \/ 4 = 112$ になるが、この場合は \[Neb98\] に現れない。実際、$cal(Q)_(infinity,2)$ と $cal(Q)_(infinity,3)$ の極大整環の上のテンソル積（2 つの埋め込みをどう選んでも）は、$bb(Q)(sqrt(5), sqrt(29))$ の分数イデアルを掛けて取り替えても、どの不変形式についてもユニモジュラーにならない。障害は次のとおりである。$Lambda$ をこのテンソル積、$frak(a)$ を $Lambda^\# = Lambda frak(a)$ となるイデアルとすると、このような取り替えでユニモジュラーになるのは、$frak(a)$ の狭義イデアル類が平方のときに限る。$(5, 29)$ では $bb(Q)(sqrt(5), sqrt(29))$ の類群と狭義類群の位数は 2 なので平方の類は自明であり、$frak(a)$ は単項でない。$(5, 13)$、$(5, 17)$ で対応する体の類群は、狭義の意味でも自明である #calc("C33")。本稿の $L_112$ はこの構成とは別の道、すなわち同じ $L_(56,2)(tilde(M))$ の 2 枚の複製を $L_56 \/ 2 L_56$ に沿って貼り合わせる道で得られる。その Gram 行列 (3.1) は、3-モジュラー格子 2 枚と被約ノルム 2 の自己準同型 $1 + i$ から $L_48$ を作る Nebe の「簡単な構成」\[Neb98, p. 497\] と同じ形をしている。
+
+極値性を $2 L$ を法とする剰余類の有限の計算に帰着する方法は古典的である。中点補題（補題 5.1）は $L\/2 L$ の類に含まれる短いベクトルを抑える標準的な論法で、Leech 格子については \[Neb12, 補題 3.1\] で使われている。Nebe による $Gamma_72$ の最小ノルムが 8 であることの証明は、Leech 格子の最小ベクトルについての計算に帰着しており \[Neb12\]、Nebe と Parker は、Griess の構成から得られる極値格子が $Gamma_72$ だけであることを計算機による探索で示した \[NP14\]。Kominers \[Kom09\] は、56・72・96 次元の極値偶ユニモジュラー格子が最小ベクトルで生成されることを示した。本稿で計算の面で新しいのは、帰着の規模（奇の類 656 個と偶の類 $1 thin 527 thin 984$ 個）、各剰余類の下界をいくつかの整数の検査に変える系 5.2・5.3 の代表元の形、および $L_56 \/ 2 L_56$ 上の標準形による検査であり、いずれも配布データから別に書いたプログラムで検算している。類 C が最小ノルム 10 を与え、類 B が 8 を与える理由について、概念的な説明は得られていない（どちらも $tau^2 = -5$ を満たす元 $tau$ に持ち上がり、違いは $2 M'$ を法とする部分だけである）。補遺 §S4 はエルミート構造による部分的な説明を与える。$L_tau$ のノルム 8 のベクトルからは、行列式が 4 以下の $tau$ で安定な階数 2 の $cal(O)$-部分加群が得られ（Coulangeon の不等式）、貼り合わせ B のノルム 8 のベクトルは、そのような部分加群の 2 つの型から来る。そのうち一方は Coulangeon の上界に達する（補遺の表 S9）。
 
 112 次元を選んだ動機は、極値上界が同じ 10 となる 96 次元・104 次元との比較にある。ノルム 10 未満の非零ベクトルの本数の Siegel 重みつき平均は、この三つの次元でそれぞれ約 $15 thin 732 thin 086$、$1 thin 046 thin 569$、$51 thin 014$ である #calc("C1")。112 次元においてこの平均本数が小さいことが、探索の方向を選ぶ手掛かりとなった。ただし、この値は種（genus）にわたる平均であり、極値性を証明するための計算時間の見積もりではない。また、$L_56$ に作用する $"SL"_2(29)$ の対称性によって、検査を軌道代表へ帰着できる。数値の比較と探索の動機は補遺 §S1 にまとめる。
 
@@ -98,17 +102,17 @@ $ min(x tau+2 L_56)>=12 quad "すべての" x in L_56(8) "について". $
 
 == 2.3 極値テータ級数と $L$ の殻
 
-$L$ が 56 次元の極値格子ならば、そのテータ級数は $ theta_L = 1 + 15 thin 590 thin 400 thin q^3 + 36 thin 957 thin 286 thin 800 thin q^4 + 15 thin 284 thin 192 thin 071 thin 680 thin q^5 + dots.h.c $ である #calc("C1")（\[Ser73, 第 VII 章\] により重さ 28 のモジュラー形式の空間は 3 次元であるから、定数項が 1 で $q$ と $q^2$ の係数が 0 であるという条件によって形式が一意に定まる。付録 B を参照）。よって $\|L(6)\|= 15 thin 590 thin 400$、$\|L(8)\|= 36 thin 957 thin 286 thin 800$、$\|L(10)\|= 15 thin 284 thin 192 thin 071 thin 680$ である。さらに、$24 k + 8$ 次元の極値格子の空でない殻はすべて球面 7-デザインである（Venkov \[BV01\]）。この事実は整合性の検査（§6.3）にのみ用いる。
+$L$ が 56 次元の極値格子ならば、そのテータ級数は $ theta_L = 1 + 15 thin 590 thin 400 thin q^3 + 36 thin 957 thin 286 thin 800 thin q^4 + 15 thin 284 thin 192 thin 071 thin 680 thin q^5 + dots.h.c $ である #calc("C1")（\[Ser73, 第 VII 章\] により重さ 28 のモジュラー形式の空間は 3 次元であるから、定数項が 1 で $q$ と $q^2$ の係数が 0 であるという条件によって形式が一意に定まる。付録 B を参照）。よって $\|L(6)\|= 15 thin 590 thin 400$、$\|L(8)\|= 36 thin 957 thin 286 thin 800$、$\|L(10)\|= 15 thin 284 thin 192 thin 071 thin 680$ である。さらに、$24 k + 8$ 次元の極値格子の空でない殻はすべて球面 7-デザインである（Venkov \[Ven84\]。\[BV01\] も参照）。この事実は整合性の検査（§6.3）にのみ用いる。
 
 == 2.4 $"SL"_2\(29\)$ をもつ Nebe の格子と中心化群
 
-$"SL"_2\(29\)$ には次数 14 の忠実な既約表現があり、その指標体は $bb(Q)\(sqrt(29)\)$、$bb(Q)$ 上の Schur 指数は 2 である。有理表現としては 56 次元であり、その自己準同型代数は $bb(Q)\(sqrt(29)\)$ 上の総定値四元数環 $cal(Q)$（二つの無限素点でのみ分岐する）である \[Neb98\]。Nebe は $cal(Q)$ の極大整環の 2 つの共役類 $M\,tilde(M)$ に対応して、$"SL"_2\(29\)$ 不変な 56 次元の偶ユニモジュラー格子 $L_(56\,2)\(M\)$, $L_(56\,2)\(tilde(M)\)$ を構成し、その最小ノルムがどちらも 6 であることを PARI による計算で示した \[Neb98, 表 II\]。本稿では、列挙の完全性を丸め誤差も含めて保証し、§7.2 の同型の確認にも依存しない証明を与えるため、配布データから $L_56$ の最小ノルムを直接検証する（§6.1）。定理 A の証明には \[Neb98\] の値を用いない。
+$"SL"_2\(29\)$ には次数 14 の忠実な既約表現があり、その指標体は $bb(Q)\(sqrt(29)\)$、$bb(Q)$ 上の Schur 指数は 2 である。有理表現（Nebe の $Delta_2$）としては 56 次元であり、その自己準同型代数は $bb(Q)\(sqrt(29)\)$ 上の総定値四元数環 $cal(Q) = cal(Q)_(sqrt(29),infinity,infinity)$（二つの無限素点でのみ分岐する）である \[Neb98, 補題 2.2(i)\]。Nebe は $cal(Q)$ の極大整環の 2 つの共役類 $M\,tilde(M)$ に対応して、$"SL"_2\(29\)$ 不変な 56 次元の偶ユニモジュラー格子 $L_(56\,2)\(M\)$, $L_(56\,2)\(tilde(M)\)$ を構成した \[Neb98, 定理 2.4\]（Nebe の $frak(M), tilde(frak(M))$ を本稿では $M, tilde(M)$ と書く）。\[Neb98, p. 483\] に従い、2 と $infinity$ で分岐する $bb(Q)$ 上の四元数環 $cal(Q)_(infinity,2)$ の極大整環（Hurwitz 整環）を含む類を $M$、$cal(Q)_(infinity,3)$ の極大整環を含む類を $tilde(M)$ とする。これは、被約ノルム 1 の単数のなす群の位数が $M$ では 24、$tilde(M)$ では 12 であることと同値である #calc("C33")。Nebe は両方の格子の最小ノルムを 6 と記している \[Neb98, 表 II\]。$L_(56\,2)\(M\)$ については表に最小ベクトルの本数 $15 thin 590 thin 400$ も載っており、これは Napias によるユークリッド整域上の LLL 簡約で得た基底から列挙されたものである \[Neb98, p. 483\]。$L_(56\,2)\(tilde(M)\)$ については、表には最小ノルムだけが記されている。Catalogue of Lattices \[NS\] は両方について最小ノルム 6 と接吻数 $15 thin 590 thin 400$ を載せている。本稿では、列挙の完全性を丸め誤差も含めて保証し、これらの値にも §7.2 の同型の確認にも依存しない証明を与えるため、配布データから $L_56$ の最小ノルムを直接検証する（§6.1）。定理 A の証明には \[Neb98\] の値を用いない。
 
-$"SL"_2\(29\)$ 不変な格子 $L$ について、$"SL"_2\(29\)$ と可換で $L$ を保つ整数行列全体の環を $M' = "End"_("SL"_2\(29\))\(L\)$ と書く（この環は $bb(Z)$ 上の階数 8 である）。その中で $L$ の等長写像になっているもの全体は、$"Aut"\(L\)$ における $"SL"_2\(29\)$ の#strong[中心化群]（centralizer）$C = C_("Aut" L)\("SL"_2\(29\)\)$ である。内積による随伴は $cal(Q)$ の標準的対合に一致するため、$u u^*=1$ は被約ノルムが 1 であることと同値である。$C$ は $M'$ の被約ノルム 1 の元全体のなす群と一致する有限群である。その位数は、カタログの格子 $L_(56\,2)\(M\)$ では 24、本稿の $L_56$ では 12（符号を除いて 6）である #calc("C2")。
+$"SL"_2\(29\)$ 不変な格子 $L$ について、$"SL"_2\(29\)$ と可換で $L$ を保つ整数行列全体の環を $M' = "End"_("SL"_2\(29\))\(L\)$ と書く（この環は $bb(Z)$ 上の階数 8 である）。その中で $L$ の等長写像になっているもの全体は、$"Aut"\(L\)$ における $"SL"_2\(29\)$ の#strong[中心化群]（centralizer）$C = C_("Aut" L)\("SL"_2\(29\)\)$ である。内積による随伴は $cal(Q)$ の標準的対合に一致するため、$u u^*=1$ は被約ノルムが 1 であることと同値である。$C$ は $M'$ の被約ノルム 1 の元全体のなす群と一致する有限群である。その位数は、$L_(56\,2)\(M\)$ では 24、本稿の $L_56$ では 12（符号を除いて 6）である #calc("C2")。
 
 == 2.5 エルミート格子とトレース形式
 
-$K = bb(Q)\(sqrt(- 5)\)$、整数環 $cal(O) = bb(Z)\[sqrt(- 5)\]$（類数 2）とする。格子 $L$ の自己準同型 $tau$ が $tau^2 = - 5$, $chevron.l x tau\,y tau chevron.r = 5 chevron.l x\,y chevron.r$ を満たせば、$sqrt(- 5) dot.op x := x tau$ によって $L$ は $cal(O)$-加群 $P_tau$ となる。さらに、 $ h\(x\,y\)= chevron.l x\,y chevron.r + frac(chevron.l x tau\,y chevron.r, sqrt(- 5)) $ は（第 1 変数について線形な）エルミート形式であり、$"Re" h = chevron.l dot.op\,dot.op chevron.r$ を満たす（付録 C.1）。エルミート $cal(O)$-格子 $A\,B$ のテンソル積 $A times.o_(cal(O)) B$ には実の形式 $"Re"\(h_A times.o h_B\)$ が定まる。このテンソル積が \[CN13\] のエルミートテンソル積である。
+$K = bb(Q)\(sqrt(- 5)\)$、整数環 $cal(O) = bb(Z)\[sqrt(- 5)\]$（類数 2）とする。格子 $L$ の自己準同型 $tau$ が $tau^2 = - 5$, $chevron.l x tau\,y tau chevron.r = 5 chevron.l x\,y chevron.r$ を満たせば、$sqrt(- 5) dot.op x := x tau$ によって $L$ は $cal(O)$-加群 $P_tau$ となる。さらに、 $ h\(x\,y\)= chevron.l x\,y chevron.r + frac(chevron.l x tau\,y chevron.r, sqrt(- 5)) $ は（第 1 変数について線形な）エルミート形式であり、$"Re" h = chevron.l dot.op\,dot.op chevron.r$ を満たす（付録 C.1）。エルミート $cal(O)$-格子 $A\,B$ のテンソル積 $A times.o_(cal(O)) B$ には実の形式 $"Re"\(h_A times.o h_B\)$ が定まる。このテンソル積が \[Cou00, CN13\] のエルミートテンソル積である。
 
 = 3. 構成 <s3>
 
@@ -167,7 +171,7 @@ $L_56$ 上の B・C の両類は $tau^2=-5$ を満たす $tau in M'$ に持ち�
 #strong[命題 3.4.] $H$ を基底 $e_1\,e_2$、Gram 行列 $mat(delim: "(", 3, sqrt(- 5); - sqrt(- 5), 2)$ の自由なエルミート $cal(O)$-格子（$det H = 6 - 5 = 1$）、$P = P_tau$ を $L_56$ から §2.5 に従って得られるエルミート格子とする。このとき $ phi : med H times.o_(cal(O)) P arrow.r L_tau\,#h(2em) e_1 times.o x + e_2 times.o y med mapsto med 1 / sqrt(2)  (  x\,thick x tau + 2 y  )  $ は実の形式 $"Re"\(h_H times.o h_P\)$ について等長写像である（付録 C.2）。
 ]
 
-この表示により、$L_112$ はエルミートテンソル積による構成の枠組み \[CN13, Sak26\] に含まれる。全自己同型群は §8 で決定する。
+この表示により、$L_112$ はエルミートテンソル積による構成の枠組み \[Cou00, CN13, Sak26\] に含まれる。全自己同型群は §8 で決定する。
 
 = 4. 衝突への帰着 <s4>
 
@@ -330,13 +334,13 @@ F4 により、$S$ の等長作用は $tau$ と可換である。したがって
   table.header([格子], [次元], [半径], [節点], [見つかった 0 でないベクトル], [理論値]),
   [$E_8$（対照）], [8], [2], [248], [ノルム 2 が 240], [240],
   [Leech 格子（対照）], [24], [4], [$2 thin 019 thin 561$], [ノルム 4 が $196 thin 560$、ノルム 2 は 0], [同じ],
-  [$Lambda_24 perp Lambda_24 perp E_8$（対照）], [56], [4], [$11 thin 081 thin 124$], [ノルム 2 が 240、ノルム 4 が $395 thin 280$], [同じ],
+  [$Lambda_24 perp Lambda_24 perp E_8$（対照）], [56], [4], [$14 thin 101 thin 914$], [ノルム 2 が 240、ノルム 4 が $395 thin 280$], [同じ],
   [#strong[$L_56$]], [56], [4], [$8 thin 454 thin 837 thin 756$], [#strong[なし]], [—],
 )
 
 #strong[(a′) 方式の異なる 2 本目の厳密な列挙.] (a) のコードを参照せずに別に作成したプログラムを用い、区間演算の代わりにすべての判定を整数演算で行った。$G'$（BKZ-40 基底。$U$ は (a) と同じく厳密に確かめる）の近似 Cholesky 因子を $2^(40)$ 倍して丸めた整数の上三角行列を $R$ とする。このとき $Q(x) = |R x^(sans(T))|^2$ は整数係数の 2 次形式であり、誤差行列 $E = 2^(80) G' - R^(sans(T)) R$ は厳密に計算できる。さらに $|x E x^(sans(T))| <= norm(E)_F norm(G'^(-1))_infinity chevron.l x\,x chevron.r$ が成り立つ（$G'^(-1)$ は整数行列であり、厳密に計算できる）。よって、$chevron.l x\,x chevron.r <= 4$ ならば $Q(x) <= T := 4 dot 2^(80) + 4 norm(E)_F norm(G'^(-1))_infinity$ である（半径の相対的な拡大幅は $3.8 times 10^(-7)$）。$Q(x) <= T$ を満たす $x$ を、C 言語の 128 ビット整数を用いてすべて列挙する。各段の探索範囲は整数の平方根によって厳密に定めるので、丸めによって枝が失われることはない。$L_56$ では $14 thin 773 thin 398 thin 896$ 節点（± の両方）を調べ、0 でないベクトルは見つからなかった（96 分） #calc("C27")。陽性対照として、ランダムな基底で与えた $E_8^7$ を列挙すると、ノルム 2 のベクトルが $1 thin 680$ 本、ノルム 4 のベクトルが $1 thin 224 thin 720$ 本得られ、理論値と一致した。
 
-#strong[(b) Nebe の格子への帰着.] $L_56$ はカタログの格子 $L_(56\,2)\(M\)$ の部分格子 $L_(56\,2)\(M\)X + 2 L_(56\,2)\(M\)$（$X$ は $M\/2 M$ の作用の像の次元が 28 である元）を $1\/sqrt(2)$ 倍したものであり、この格子の Gram 行列は $L_56$ の Gram 行列と成分まで一致する。したがって $L_56$ のノルム 4 のベクトルは、$L_(56\,2)\(M\)$ のノルム 8 のベクトルのうち、類が $"SL"_2\(29\)$ 不変な 28 次元部分空間 $W subset L_(56\,2)\(M\)\/2 L_(56\,2)\(M\)$ に属するものと 1 対 1 に対応する。$L_56$ のノルム 2 のベクトルは、$L_(56\,2)\(M\)$ のノルム 4 のベクトルに対応する。$L_(56\,2)\(M\)$ のノルム 8 のベクトルの軌道代表（$127 thin 413$ 個、大きさの和はテータ係数に一致）と中心化群の元の組は $1 thin 528 thin 956$ 個ある。このうち類が $W$ に属するものは存在しなかった #calc("C6")。陽性対照として、$L_56$ の最小ベクトルの軌道代表 656 本を調べると、対応する $L_(56\,2)\(M\)$ のベクトルはすべてノルム 12 であり、その類は $W$ に属していた。以上により「$min L_(56\,2)\(M\)= 6$ ⟹ $min L_56 = 6$」が示され、F1 は文献の格子 \[Neb98, 表 II\] の性質に帰着される。
+#strong[(b) Nebe の格子への帰着.] $L_56$ は $L_(56\,2)\(M\)$ の部分格子 $L_(56\,2)\(M\)X + 2 L_(56\,2)\(M\)$（$X$ は $M\/2 M$ の作用の像の次元が 28 である元）を $1\/sqrt(2)$ 倍したものであり、この格子の Gram 行列は $L_56$ の Gram 行列と成分まで一致する。したがって $L_56$ のノルム 4 のベクトルは、$L_(56\,2)\(M\)$ のノルム 8 のベクトルのうち、類が $"SL"_2\(29\)$ 不変な 28 次元部分空間 $W subset L_(56\,2)\(M\)\/2 L_(56\,2)\(M\)$ に属するものと 1 対 1 に対応する。$L_56$ のノルム 2 のベクトルは、$L_(56\,2)\(M\)$ のノルム 4 のベクトルに対応する。$L_(56\,2)\(M\)$ のノルム 8 のベクトルの軌道代表（$127 thin 413$ 個、大きさの和はテータ係数に一致）と中心化群の元の組は $1 thin 528 thin 956$ 個ある。このうち類が $W$ に属するものは存在しなかった #calc("C6")。陽性対照として、$L_56$ の最小ベクトルの軌道代表 656 本を調べると、対応する $L_(56\,2)\(M\)$ のベクトルはすべてノルム 12 であり、その類は $W$ に属していた。以上により「$min L_(56\,2)\(M\)= 6$ ⟹ $min L_56 = 6$」が示され、F1 は $L_(56\,2)\(M\)$ の最小ノルム、すなわち \[Neb98, 表 II\] で最小ベクトルまで列挙されている方の格子の性質に帰着される（この最小ノルムは #calc("C6") でも確かめている）。
 
 #strong[(c) 浮動小数点演算による列挙.] fplll によるノルム $4.5$ 以下の全列挙（2 基底）と、別実装による PARI #raw("qfminim") でのノルム 4 以下の全列挙（BKZ-50 基底）においても、該当するベクトルは見つからなかった #calc("C7")。
 
@@ -463,20 +467,20 @@ $\(8\,8\)$ 型の検査では、各組について $x_i u tau$ の類とその�
 同定の手順は次のとおりである。
 
 #enum(
-  [$bb(Q)\(zeta_29\)$ 上のモデルから $L_56' = L_(56\,2)\(tilde(M)\)$ と、$"SL"_2\(29\)$ の生成元 $z'$（位数 29）、$w'$（位数 4）を構成する（実装は #raw("code/supplementary/nebe/cycloquat.py") にある。極大整環の共役類は二つあり、中心化群の位数が 12 となる方が $tilde(M)$ である）。],
+  [$bb(Q)\(zeta_29\)$ 上のモデルから $L_56' = L_(56\,2)\(tilde(M)\)$ と、$"SL"_2\(29\)$ の生成元 $z'$（位数 29）、$w'$（位数 4）を構成する（実装は #raw("code/supplementary/nebe/cycloquat.py") にある。極大整環の共役類は二つあり、$cal(Q)_(infinity,3)$ の極大整環を含む方が $tilde(M)$ である \[Neb98, p. 483\]。これは、被約ノルム 1 の単数のなす群、したがって中心化群の位数が 12 となる方と同じである。§2.4、#calc("C33")）。],
   [2 つの $"SL"_2\(29\)$ の間の群同型を GAP で求め（外部自己同型による 2 通りをいずれも試す）、$L_56'$ から $L_56$ への同変写像の空間を求める。この空間は 8 次元であった。],
   [同変写像の空間のうち整数行列からなる部分（階数 8）の上で正定値形式 $Q\(T\)= "tr"\(G' ""^(- 1) T G T^(sans(T))\)$ を考え、$Q lt.eq 56$ を満たす元を列挙する。等長写像は、$Q = 56$ を満たす元と一致する。],
 )
 
 その結果、整数のユニモジュラー行列 $T$ であって、$T G T^(sans(T)) = G'$ を満たし、二つの作用を互いに移し合うものが、符号を除いて 6 個見つかった。この個数は、中心化群の位数 12 から予想される個数と一致する。さらに $tau$ は、$L_56'$ の座標では $tilde(M)$ の被約ノルム 5 の元による右乗法として表される。すなわち#strong[貼り方 C は、Nebe の格子 $L_(56\,2)\(tilde(M)\)$ と、その極大整環 $tilde(M)$ の被約ノルム 5・被約トレース 0 の元から構成される。このような元は §3.3 の意味で 2 を法として二つの類に分かれ、$tau$ は最小ノルム 10 の格子を与える方の類に属する]。
 
-#strong[元の明示.] #raw("cycloquat.py") は多元環 $bb(Q)(zeta_29) plus.o bb(Q)(zeta_29) b$（$b^2 = -1$、$b x = macron(x) b$。$macron(x)$ は複素共役）の中で計算する。\[Neb98, §3\] の構成により、$"SL"_2(29)$ はこの多元環に左から作用する。$K_4 subset bb(Q)(zeta_29)$ を 4 次部分体とすると、その整数環は Gauss 周期 $eta_j = sum_(k=0)^6 zeta_29^(2^(4k+j))$（$j = 0, dots, 3$。2 は 29 を法とする原始根）を $bb(Z)$-基底にもつ。複素共役は $eta_0 arrow.l.r eta_2$、$eta_1 arrow.l.r eta_3$ を入れ替え、$K_4$ におけるその固定体は $bb(Q)(sqrt(29))$ である。$"SL"_2(29)$ の可換子は $cal(Q) = K_4 plus.o K_4 b$ の右乗法であり、この $cal(Q)$ は §2.4 の四元数環にほかならない。プログラムが構成した極大整環 $tilde(M)$ は、次を基底とする $bb(Z)$-加群である。
+#strong[元の明示.] #raw("cycloquat.py") は多元環 $bb(Q)(zeta_29) plus.o bb(Q)(zeta_29) b$（$b^2 = -1$、$b x = macron(x) b$。$macron(x)$ は複素共役）の中で計算する。$"SL"_2(29)$ の Borel 部分群 $B$（位数 $29 dot 28$）は、\[Neb98, 補題 3.1, 命題 3.2\] のとおりこの多元環に左から作用する。$B$ とあわせて $"SL"_2(29)$ を生成する位数 4 の元 $w$ は Weil 表現から取る。この明示的なモデルは \[Neb98, 注意 3.3\] を具体化したもので、本稿によるものである。$K_4 subset bb(Q)(zeta_29)$ を 4 次部分体とすると、その整数環は Gauss 周期 $eta_j = sum_(k=0)^6 zeta_29^(2^(4k+j))$（$j = 0, dots, 3$。2 は 29 を法とする原始根）を $bb(Z)$-基底にもつ。複素共役は $eta_0 arrow.l.r eta_2$、$eta_1 arrow.l.r eta_3$ を入れ替え、$K_4$ におけるその固定体は $bb(Q)(sqrt(29))$ である。$"SL"_2(29)$ の可換子は $cal(Q) = K_4 plus.o K_4 b$ の右乗法であり、この $cal(Q)$ は §2.4 の四元数環にほかならない。プログラムが構成した極大整環 $tilde(M)$ は、次を基底とする $bb(Z)$-加群である。
 $ m_0 = (eta_0 + 41 eta_1 + 144 eta_2 + 104 eta_3 + (133 eta_0 + 88 eta_1 + 12 eta_2 + 492 eta_3) b) / 145, $
 $ m_1 = eta_1 + 2 eta_3 b, quad m_2 = eta_2 + 3 eta_3 b, quad m_3 = eta_3 + 3 eta_3 b, $
 $ m_4 = (eta_0 + eta_3) b, quad m_5 = (eta_1 + eta_3) b, quad m_6 = (eta_2 + 4 eta_3) b, quad m_7 = 5 eta_3 b. $
 $L_56'$ の座標では、自己準同型 $tau$ は
 $ h = x + y b, quad x = (33 (eta_0 - eta_2) + 48 (eta_1 - eta_3)) / 145, quad y = (-106 eta_0 + 4 eta_1 - 39 eta_2 - 4 eta_3) / 145 $
-による右乗法である。すなわち $h = 33 m_0 - 9 m_1 - 33 m_2 - 24 m_3 - 31 m_4 - 20 m_5 - 3 m_6 + 28 m_7 in tilde(M)$ である。$macron(x) = -x$ であるから $h$ の被約トレースは $0$、被約ノルム $x macron(x) + y macron(y)$ は $5$ であり、したがって $h^2 = -5$ となる。$T$ を 6 個の等長写像のうち別のものに取り替えると、$h$ は $tilde(M)$ の単数 $u$ による共役 $u^(-1) h u$ に置き換わるが、貼り合わせの等長同型類は変わらない（命題 3.3(b)）。格子 $L_(56,2)(tilde(M))$ は、格子 $(1 - zeta_29)^i thin bb(Z)[zeta_29] tilde(M)$（$i gt.eq 0$。$bb(Z)[zeta_29]$ の元を左から、$tilde(M)$ の元を右から掛けた積で張られる）に、元 $x + y b$、$x' + y' b$ に対する形式 $"Tr"_(bb(Q)(zeta_29)\/bb(Q)) (c (x macron(x') + y macron(y')))$（$c in bb(Q)(sqrt(29))$ は総正）を入れたもののうち、$"SL"_2(29)$ で不変なユニモジュラー格子である \[Neb98, §3\]。これらのデータと (1.2) により、$L_112$ はデータファイルを用いずに等長同型を除いて定まる。
+による右乗法である。すなわち $h = 33 m_0 - 9 m_1 - 33 m_2 - 24 m_3 - 31 m_4 - 20 m_5 - 3 m_6 + 28 m_7 in tilde(M)$ である。$macron(x) = -x$ であるから $h$ の被約トレースは $0$、被約ノルム $x macron(x) + y macron(y)$ は $5$ であり、したがって $h^2 = -5$ となる。$T$ を 6 個の等長写像のうち別のものに取り替えると、$h$ は $tilde(M)$ の単数 $u$ による共役 $u^(-1) h u$ に置き換わるが、貼り合わせの等長同型類は変わらない（命題 3.3(b)）。元 $h$ は中心の元ではない。この点で、Nebe がモジュラー格子 $((7 + sqrt(29)) \/ 2) L_(56,2)(M)$ を作るのに用いたノルム 5 の中心の元 $(7 + sqrt(29)) \/ 2$ とは異なる。これらのモジュラー格子はいずれも極値ではない \[Neb98, 注意 5.2\]。格子 $L_(56,2)(tilde(M))$ は、格子 $(1 - zeta_29)^i thin bb(Z)[zeta_29] tilde(M)$（$i gt.eq 0$。$bb(Z)[zeta_29]$ の元を左から、$tilde(M)$ の元を右から掛けた積で張られる）に、元 $x + y b$、$x' + y' b$ に対する形式 $"Tr"_(bb(Q)(zeta_29)\/bb(Q)) (c (x macron(x') + y macron(y')))$（$c in bb(Q)(sqrt(29))$ は総正）を入れたもののうち、$"SL"_2(29)$ で不変なユニモジュラー格子である \[Neb98, 定理 2.4, 命題 3.2\]。これらのデータと (1.2) により、$L_112$ はデータファイルを用いずに等長同型を除いて定まる。
 
 = 8. 自己同型群 <s8>
 
@@ -512,31 +516,43 @@ $G_112$ を (3.1) の $L_112$ の Gram 行列とする。
 
 
 #refs-list(
-  [#strong[\[Soft\]] The FPLLL development team, #emph[fplll, a lattice reduction library], version 5.5.0, #link("https://github.com/fplll/fplll")[source]; The PARI Group, #emph[PARI/GP], #link("https://pari.math.u-bordeaux.fr/")[website]; The GAP Group, #emph[GAP], #link("https://www.gap-system.org/")[website]; Lean and mathlib, #link("https://github.com/leanprover/lean4")[Lean source], #link("https://github.com/leanprover-community/mathlib4")[mathlib source].],
-  [#strong[\[FP85\]] U. Fincke, M. Pohst, Improved methods for calculating vectors of short length in a lattice, including a complexity analysis, Math. Comp. 44 (1985) 463–471.],
-  [#strong[\[SE94\]] C. P. Schnorr, M. Euchner, Lattice basis reduction: improved practical algorithms and solving subset sum problems, Math. Program. 66 (1994) 181–199.],
-  [#strong[\[Ser73\]] J.-P. Serre, #emph[A Course in Arithmetic], Graduate Texts in Mathematics 7, Springer, 1973, Chapter VII.],
   [#strong[\[Asc00\]] M. Aschbacher, #emph[Finite Group Theory], 2nd ed., Cambridge Studies in Advanced Mathematics 10, Cambridge University Press, 2000.],
-  [#strong[\[BN98\]] C. Bachoc, G. Nebe, Extremal lattices of minimum 8 related to the Mathieu group $M_22$, J. reine angew. Math. 494 (1998) 155–171.],
-  [#strong[\[BV01\]] C. Bachoc, B. Venkov, Modular forms, lattices and spherical designs, in: Réseaux euclidiens, designs sphériques et formes modulaires, Monogr. Enseign. Math. 37 (2001).],
-  [#strong[\[CN13\]] R. Coulangeon, G. Nebe, Dense lattices as Hermitian tensor products, Contemp. Math. 587 (2013); arXiv:1201.1832.],
-  [#strong[\[Cou00\]] R. Coulangeon, Tensor products of Hermitian lattices, Acta Arith. 92 (2000) 115–130.],
+  [#strong[\[BN98\]] C. Bachoc, G. Nebe, Extremal lattices of minimum 8 related to the Mathieu group $M_22$, J. reine angew. Math. 494 (1998) 155–171, #link("https://doi.org/10.1515/crll.1998.004", "doi:10.1515/crll.1998.004").],
+  [#strong[\[BQS95\]] C. Batut, H.-G. Quebbemann, R. Scharlau, Computations of cyclotomic lattices, Experiment. Math. 4 (1995), no. 3, 175–179, #link("https://doi.org/10.1080/10586458.1995.10504319", "doi:10.1080/10586458.1995.10504319").],
+  [#strong[\[BV01\]] C. Bachoc, B. Venkov, Modular forms, lattices and spherical designs, in: J. Martinet (ed.), Réseaux euclidiens, designs sphériques et formes modulaires, Monogr. Enseign. Math. 37, Geneva, 2001, 87–111.],
+  [#strong[\[CN13\]] R. Coulangeon, G. Nebe, Dense lattices as Hermitian tensor products, in: Diophantine Methods, Lattices, and Arithmetic Theory of Quadratic Forms, Contemp. Math. 587, Amer. Math. Soc., 2013, 47–57, #link("https://doi.org/10.1090/conm/587/11675", "doi:10.1090/conm/587/11675")\; arXiv:1201.1832（arXiv 版の題は “The unreasonable effectiveness of the tensor product”）.],
+  [#strong[\[Cou00\]] R. Coulangeon, Tensor products of Hermitian lattices, Acta Arith. 92 (2000), no. 2, 115–130, #link("https://doi.org/10.4064/aa-92-2-115-130", "doi:10.4064/aa-92-2-115-130").],
+  [#strong[\[FP85\]] U. Fincke, M. Pohst, Improved methods for calculating vectors of short length in a lattice, including a complexity analysis, Math. Comp. 44 (1985) 463–471, #link("https://doi.org/10.1090/S0025-5718-1985-0777278-8", "doi:10.1090/S0025-5718-1985-0777278-8").],
+  [#strong[\[Gau26\]] I. Gauvin, Réseaux idéaux pairs unimodulaires de rang 88 sur $bb(Q)(zeta_115)$, preprint（2026 年 10 月 15 日）と補遺。本文・データ・プログラム: #link("https://github.com/Katabolanga/rang88-reseaux-ideaux")[リポジトリ], #link("https://doi.org/10.5281/zenodo.23638084", "doi:10.5281/zenodo.23638084").],
   [#strong[\[Gau26v\]] I. Gauvin, #emph[Independent verification of min(L112.02) = 10], version 1.0（2026 年 10 月 26 日）, #link("https://github.com/Katabolanga/l112-02-independent-verification/tree/a78893f59d532f9da1b6cb192b8336ceb8acfd45")[リポジトリ]（コミット #raw("a78893f")）。計算機援用の検証で、査読は経ていない。],
-  [#strong[\[GHY01\]] W. T. Gan, J. P. Hanke, J.-K. Yu, On an exact mass formula of Shimura, Duke Math. J. 107 (2001) 103–133.],
-  [#strong[\[HM01\]] G. Hiss, G. Malle, Low-dimensional representations of quasi-simple groups, LMS J. Comput. Math. 4 (2001) 22–63.],
-  [#strong[\[HM02\]] G. Hiss, G. Malle, Corrigenda: Low-dimensional representations of quasi-simple groups, LMS J. Comput. Math. 5 (2002) 95–126.],
-  [#strong[\[Kin03\]] O. King, A mass formula for unimodular lattices with no roots, Math. Comp. 72 (2003).],
-  [#strong[\[MOS75\]] C. L. Mallows, A. M. Odlyzko, N. J. A. Sloane, Upper bounds for modular forms, lattices, and codes, J. Algebra 36 (1975) 68–76.],
-  [#strong[\[Neb98\]] G. Nebe, Some cyclo-quaternionic lattices, J. Algebra 199 (1998) 472–498.],
-  [#strong[\[Neb12\]] G. Nebe, An even unimodular 72-dimensional lattice of minimum 8, J. reine angew. Math. 673 (2012) 237–247; arXiv:1008.2862.],
-  [#strong[\[Neb13\]] G. Nebe, On automorphisms of extremal even unimodular lattices, Int. J. Number Theory 9 (2013); arXiv:1212.0865.],
-  [#strong[\[NS\]] G. Nebe, N. J. A. Sloane, A Catalogue of Lattices, 項目 #raw("L_56b"), #raw("L_56c"). #link("https://www.math.rwth-aachen.de/~Gabriele.Nebe/LATTICES/")[Catalogue of Lattices].],
-  [#strong[\[Que84\]] H.-G. Quebbemann, A construction of integral lattices, Mathematika 31 (1984) 137–140.],
-  [#strong[\[Sak26\]] R. Sakamoto, Two extremal even unimodular lattices of rank 88, preprint (2026); arXiv:2609.15633.],
-  [#strong[\[SPLAG\]] J. H. Conway, N. J. A. Sloane, Sphere Packings, Lattices and Groups, 3rd ed., Springer 1999.],
-  [#strong[\[SSP99\]] R. Scharlau, R. Schulze-Pillot, Extremal lattices, in: B. H. Matzat, G.-M. Greuel, G. Hiss (eds.), Algorithmic Algebra and Number Theory (Heidelberg, 1997), Springer 1999, 139–170.],
-  [#strong[\[SW10\]] D. Stehlé, M. Watkins, On the extremality of an 80-dimensional lattice, ANTS-IX, LNCS 6197 (2010) 340–356.],
-  [#strong[\[Wat12\]] M. Watkins, Another 80-dimensional extremal lattice, J. Théor. Nombres Bordeaux 24 (2012).],
+  [#strong[\[GHY01\]] W. T. Gan, J. P. Hanke, J.-K. Yu, On an exact mass formula of Shimura, Duke Math. J. 107 (2001) 103–133, #link("https://doi.org/10.1215/S0012-7094-01-10716-3", "doi:10.1215/S0012-7094-01-10716-3").],
+  [#strong[\[Gri99\]] R. L. Griess Jr., Pieces of eight: semiselfdual lattices and a new foundation for the theory of Conway and Mathieu groups, Adv. Math. 148 (1999) 75–104, #link("https://doi.org/10.1006/aima.1999.1846", "doi:10.1006/aima.1999.1846").],
+  [#strong[\[Gri10\]] R. L. Griess Jr., Rank 72 high minimum norm lattices, J. Number Theory 130 (2010) 1512–1519, #link("https://doi.org/10.1016/j.jnt.2010.02.007", "doi:10.1016/j.jnt.2010.02.007").],
+  [#strong[\[HM01\]] G. Hiss, G. Malle, Low-dimensional representations of quasi-simple groups, LMS J. Comput. Math. 4 (2001) 22–63, #link("https://doi.org/10.1112/S1461157000000796", "doi:10.1112/S1461157000000796").],
+  [#strong[\[HM02\]] G. Hiss, G. Malle, Corrigenda: Low-dimensional representations of quasi-simple groups, LMS J. Comput. Math. 5 (2002) 95–126, #link("https://doi.org/10.1112/S1461157000000711", "doi:10.1112/S1461157000000711").],
+  [#strong[\[Kin03\]] O. King, A mass formula for unimodular lattices with no roots, Math. Comp. 72 (2003), no. 242, 839–863, #link("https://doi.org/10.1090/S0025-5718-02-01455-2", "doi:10.1090/S0025-5718-02-01455-2").],
+  [#strong[\[Kom09\]] S. D. Kominers, Configurations of extremal even unimodular lattices, Int. J. Number Theory 5 (2009), no. 3, 457–464, #link("https://doi.org/10.1142/S179304210900216X", "doi:10.1142/S179304210900216X").],
+  [#strong[\[LS71\]] J. Leech, N. J. A. Sloane, Sphere packings and error-correcting codes, Canad. J. Math. 23 (1971) 718–745, #link("https://doi.org/10.4153/CJM-1971-081-3", "doi:10.4153/CJM-1971-081-3").],
+  [#strong[\[MOS75\]] C. L. Mallows, A. M. Odlyzko, N. J. A. Sloane, Upper bounds for modular forms, lattices, and codes, J. Algebra 36 (1975) 68–76, #link("https://doi.org/10.1016/0021-8693(75)90155-6", "doi:10.1016/0021-8693(75)90155-6").],
+  [#strong[\[Neb98\]] G. Nebe, Some cyclo-quaternionic lattices, J. Algebra 199 (1998), no. 2, 472–498, #link("https://doi.org/10.1006/jabr.1997.7163", "doi:10.1006/jabr.1997.7163").],
+  [#strong[\[Neb12\]] G. Nebe, An even unimodular 72-dimensional lattice of minimum 8, J. reine angew. Math. 673 (2012) 237–247, #link("https://doi.org/10.1515/crelle.2011.175", "doi:10.1515/crelle.2011.175")\; arXiv:1008.2862.],
+  [#strong[\[Neb13\]] G. Nebe, On automorphisms of extremal even unimodular lattices, Int. J. Number Theory 9 (2013), no. 8, 1933–1959, #link("https://doi.org/10.1142/S179304211350067X", "doi:10.1142/S179304211350067X")\; arXiv:1212.0865（arXiv 版の題は “… of dimension 48”）。定理 3.6 の $"Aut"(P_(48 p))$ の位数には因子 2 が欠けており、著者の論文一覧で訂正されている.],
+  [#strong[\[Neb14\]] G. Nebe, A fourth extremal even unimodular lattice of dimension 48, Discrete Math. 331 (2014) 133–136, #link("https://doi.org/10.1016/j.disc.2014.05.011", "doi:10.1016/j.disc.2014.05.011").],
+  [#strong[\[NP14\]] G. Nebe, R. Parker, On extremal even unimodular 72-dimensional lattices, Math. Comp. 83 (2014), no. 287, 1489–1494, #link("https://doi.org/10.1090/S0025-5718-2013-02744-5", "doi:10.1090/S0025-5718-2013-02744-5").],
+  [#strong[\[NS\]] G. Nebe, N. J. A. Sloane, A Catalogue of Lattices, 項目 #raw("L_56b"), #raw("L_56c")（Nebe の 56 次元格子）と #raw("dim88a")〜#raw("dim88f")（88 次元）、2026 年 10 月 25 日閲覧. #link("https://www.math.rwth-aachen.de/~Gabriele.Nebe/LATTICES/")[Catalogue of Lattices].],
+  [#strong[\[Oze89\]] M. Ozeki, Ternary code construction of even unimodular lattices, in: Théorie des nombres (Québec, 1987), de Gruyter, 1989, 772–784, #link("https://doi.org/10.1515/9783110852790.772", "doi:10.1515/9783110852790.772").],
+  [#strong[\[Que84\]] H.-G. Quebbemann, A construction of integral lattices, Mathematika 31 (1984), no. 1, 137–140, #link("https://doi.org/10.1112/S0025579300010731", "doi:10.1112/S0025579300010731").],
+  [#strong[\[Sak26\]] R. Sakamoto, Two extremal even unimodular lattices of rank 88, preprint, arXiv:2609.15633v2（2026 年 9 月 27 日）.],
+  [#strong[\[SE94\]] C. P. Schnorr, M. Euchner, Lattice basis reduction: improved practical algorithms and solving subset sum problems, Math. Program. 66 (1994) 181–199, #link("https://doi.org/10.1007/BF01581144", "doi:10.1007/BF01581144").],
+  [#strong[\[Ser73\]] J.-P. Serre, #emph[A Course in Arithmetic], Graduate Texts in Mathematics 7, Springer, 1973, Chapter VII.],
+  [#strong[\[Shi18\]] I. Shimada, An even extremal lattice of rank 64, J. Number Theory 185 (2018) 1–15, #link("https://doi.org/10.1016/j.jnt.2017.10.028", "doi:10.1016/j.jnt.2017.10.028").],
+  [#strong[\[Shi22\]] I. Shimada, A note on Quebbemann’s extremal lattices of rank 64, J. Théor. Nombres Bordeaux 34 (2022), no. 3, 813–826, #link("https://doi.org/10.5802/jtnb.1229", "doi:10.5802/jtnb.1229").],
+  [#strong[\[SPLAG\]] J. H. Conway, N. J. A. Sloane, Sphere Packings, Lattices and Groups, 3rd ed., Springer 1999, #link("https://doi.org/10.1007/978-1-4757-6568-7", "doi:10.1007/978-1-4757-6568-7").],
+  [#strong[\[SSP99\]] R. Scharlau, R. Schulze-Pillot, Extremal lattices, in: B. H. Matzat, G.-M. Greuel, G. Hiss (eds.), Algorithmic Algebra and Number Theory (Heidelberg, 1997), Springer 1999, 139–170, #link("https://doi.org/10.1007/978-3-642-59932-3_8", "doi:10.1007/978-3-642-59932-3_8").],
+  [#strong[\[SW10\]] D. Stehlé, M. Watkins, On the extremality of an 80-dimensional lattice, ANTS-IX, LNCS 6197 (2010) 340–356, #link("https://doi.org/10.1007/978-3-642-14518-6_27", "doi:10.1007/978-3-642-14518-6_27").],
+  [#strong[\[Ven84\]] B. B. Venkov, Even unimodular extremal lattices, Trudy Mat. Inst. Steklov. 165 (1984) 43–48（ロシア語）。英訳: Proc. Steklov Inst. Math. 165 (1985) 47–52.],
+  [#strong[\[Wat12\]] M. Watkins, Another 80-dimensional extremal lattice, J. Théor. Nombres Bordeaux 24 (2012), no. 1, 237–255, #link("https://doi.org/10.5802/jtnb.795", "doi:10.5802/jtnb.795").],
+  [#strong[\[Soft\]] The FPLLL development team, #emph[fplll, a lattice reduction library], version 5.5.0, #link("https://github.com/fplll/fplll")[source]; The PARI Group, #emph[PARI/GP], #link("https://pari.math.u-bordeaux.fr/")[website]; The GAP Group, #emph[GAP], #link("https://www.gap-system.org/")[website]; Lean and mathlib, #link("https://github.com/leanprover/lean4")[Lean source], #link("https://github.com/leanprover-community/mathlib4")[mathlib source].],
   [#strong[\[Repo\]] roiban1344, #emph[112-dimensional extremal even unimodular lattice]（データ、検算と検証用データの生成のコード、検証用データ、Lean による形式化）, #link("https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice")[公開リポジトリ]（タグ #raw("v2026-10-25")）.],
 )
 
@@ -599,7 +615,7 @@ $632 dot.op 24 thin 360 + 24 dot.op 8 thin 120 = 15 thin 395 thin 520 + 194 thin
 
 #block(text(size: 0.85em, {set par(justify: false); [SHA-256 の全桁:]; linebreak(); raw("4d13bd51fcf3cb8c5706bde45828713d7eeb4d18a37e8e9d84fb2700f4bef2f0"); linebreak(); raw("97f88443de1fd1fdeb010ecb668dbbb03a8e0e989a18c0ad85a751687012ad90"); linebreak(); raw("30b6fa54f7abc2938a8f5ce29237bb92a4224f5418d3cae85183c0a89803a0f1"); linebreak(); raw("104764e3c8add14d124c9e4ffd011e35d4d4659f4b6216651d278d76003bbfce")}))
 
-#strong[規約.] ベクトルは行ベクトルで表す。行列 $g$ は $x mapsto x g$ で作用し、等長写像の条件は $g G g^(sans(T)) = G$、自己準同型の条件は $tau G tau^(sans(T)) = 5 G$ である。#raw("L112_gram_LLL.txt") は (3.1) を PARI の #raw("qflllgram") で簡約したものである。
+#strong[規約.] ベクトルは行ベクトルで表す。行列 $g$ は $x mapsto x g$ で作用し、等長写像の条件は $g G g^(sans(T)) = G$、自己準同型の条件は $tau G tau^(sans(T)) = 5 G$ である。#raw("L112_gram_LLL.txt") は (3.1) を PARI の #raw("qflllgram") で簡約したものである。$U dot (3.1) dot U^(sans(T))$ がこのファイルに等しくなるユニモジュラーな整数行列 $U$ を #raw("certificates/reduction_L112.txt") として配布し、整数演算で検査する #calc("C2")。したがって二つのファイルは同じ格子を表す。
 
 #strong[データファイルによらない指定.] 定義行列（56×56 と 112×112）は本稿に印刷せず、表 D1 のファイルとして配布する。§7.2 により、$L_56$ は \[Neb98\] の $L_(56,2)(tilde(M))$ と $"SL"_2(29)$ 同変に等長同型であり、その座標では $tau$ は $tilde(M)$ の被約ノルム 5・被約トレース 0 の元の右乗法である（その元は §7.2 に記す）。これと (1.2) により、$L_112$ はデータファイルによらず等長同型を除いて指定される。ただし、基準とするのはデータファイルである。すべての検算プログラムはファイルを読み、そのハッシュを照合する。
 
@@ -699,19 +715,19 @@ F.2・F.3 より $F\(A\)lt.eq C_A\(S\)$ が成り立つ。成分（互いに可�
 
 #ptable(
   columns: 4, align: (left, center, left, left,),
-  caption: [表 G1. 極値偶ユニモジュラー格子の構成例と個数についての結果。構成の経緯は \[Sak26, §1\] と \[NS\] による。],
+  caption: [表 G1. 極値偶ユニモジュラー格子の構成例と個数についての結果。\[Sak26, §1\]、原論文、Catalogue of Lattices \[NS\] による（2026 年 10 月時点）。],
   table.header([次元 $n$], [$mu\(n\)$], [構成例・個数についての結果], [出典]),
   [8], [2], [$E_8$（唯一）], [古典的],
   [16], [2], [$E_8 perp E_8$, $D_16^(+)$（全部）], [古典的],
   [24], [4], [Leech 格子（唯一）], [\[SPLAG\]],
   [32], [4], [$10^7$ 個以上], [ルート系ごとの質量公式による下界 \[Kin03, 系 5\]],
   [40], [4], [$10^51$ 個以上], [質量公式と Siegel の定理による下界; \[Sak26, §1\]\[SSP99\]],
-  [48], [6], [少なくとも 4 個], [\[Sak26, §1\]; \[NS\]],
-  [56], [6], [Nebe の構成 \[Neb98\]], [\[Sak26, §1\]; \[NS\]; \[Neb98\]],
-  [64], [6], [構成例あり], [\[Que84\]; \[Sak26, §1\]; \[NS\]],
-  [72], [8], [少なくとも 1 個（$Gamma_72$）], [Nebe 2010 \[Neb12\]],
+  [48], [6], [少なくとも 4 個: $P_(48 p)$, $P_(48 q)$, $P_(48 n)$, $P_(48 m)$], [Leech–Sloane 1971 \[LS71\]; Nebe \[Neb98, 定理 5.3\], \[Neb14\]],
+  [56], [6], [複数], [Ozeki 1989 \[Oze89\]; Batut–Quebbemann–Scharlau \[BQS95\]; Nebe \[Neb98\]],
+  [64], [6], [複数], [Quebbemann \[Que84\]; Nebe \[Neb98, §5\]; Shimada \[Shi18, Shi22\]],
+  [72], [8], [少なくとも 1 個（$Gamma_72$）], [Nebe 2010 \[Neb12\]。Griess の構成から得られるのはこれだけ \[NP14\]],
   [80], [8], [少なくとも 4 個], [Bachoc–Nebe 1998 \[BN98\]; \[SW10\]; \[Wat12\]],
-  [88], [8], [少なくとも 2 個], [坂本 2026 \[Sak26\]（プレプリント）],
+  [88], [8], [少なくとも 6 個], [坂本 2026 \[Sak26\]（2 個）、Gauvin 2026 \[Gau26\]（4 個）。いずれもプレプリント; \[NS\]],
   [96], [10], [知られていない], [未解決],
   [104], [10], [知られていない], [未解決],
   [#strong[112]], [#strong[10]], [#strong[$L_112$（本稿）]], [本稿],
