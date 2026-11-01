@@ -1,6 +1,6 @@
 // 計算の台帳: 本文の [C1], [C2], … と、付録の表「計算とコード」の正本（英日共通）。
 // 本文では #calc("C5") や #calc("C10", "C13") と書く。付録の表は #calc-table() で作る。
-// コードは公開リポジトリからの相対パス。未公開のものがあれば published: false を付けて明示する。
+// コードは公開リポジトリからの相対パス。報告する計算にはすべて配布するコードがある（paper/tools/check-paper.py が検査する）。
 // time: 各ファイルの docstring の「Run time」が正本で、ここはその写し（ファイルごとに「名前 時間」を改行で区切る）。
 //   code/tests/test_paper_ledger.py が、ここの「数 単位」がその行のファイルの docstring（lean/ は lean/README.md）にあることを確かめる。
 // 付録の表では、code/verify/proof.sh が走らせる検査（proof-checks。同じ試験が proof.sh と照合する）を太字にする。
@@ -137,7 +137,7 @@
         if lang == "ja" { c.ja } else { c.en }
         linebreak()
         text(size: 0.8em, c.files.map(f => {
-          let name = if c.at("published", default: true) { link(code-base + f, raw(f)) } else { raw(f) }
+          let name = link(code-base + f, raw(f))
           if f in proof-checks { strong(name) } else { name }
         }).join(linebreak()))
       },
