@@ -6,11 +6,22 @@ on:
     branches: [main]
     tags: ['v*']
 
+# Every `run:` step uses bash with -e and -o pipefail (GitHub's `shell: bash`), so that a failure inside a pipeline
+# such as `proof.sh | tee` fails the step. Without `shell:`, the default is `bash -e` without pipefail.
+# すべての run: を bash の -e と -o pipefail で実行する（GitHub の shell: bash）。`proof.sh | tee` のような
+# パイプラインの途中の失敗も段の失敗になる。shell: を書かない既定は pipefail の無い bash -e である。
+defaults:
+  run:
+    shell: bash
+
 permissions:
   contents: read
 
-# Third-party actions are pinned to commit SHAs (the version in the comment).
-# 第三者のアクションはコミット SHA で固定する（版はコメントに書く）。
+# Third-party actions are pinned to commit SHAs (the version in the comment), numpy by
+# requirements-verify-lock.txt, the lint tools by version. What CI does and does not check is listed in
+# code/README.md ("What CI checks").
+# 第三者のアクションはコミット SHA で固定する（版はコメントに書く）。numpy は requirements-verify-lock.txt、lint の道具は版で固定する。
+# CI が何を確かめ、何を確かめないかは code/README.ja.md の「CI が確かめること」にある。
 
 jobs:
   verify-inputs:
@@ -24,18 +35,30 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.12'
-      - run: pip install -r requirements-verify.txt
+      - run: pip install --require-hashes -r requirements-verify-lock.txt
       - name: V0, basic facts about the input data (about 20 s)
-        run: python3 code/verify/v0_inputs.py
+        run: python3 -I code/verify/v0_inputs.py
       - name: Genus certificates (numpy only)
         run: python3 -I code/supplementary/genus/genus.py check
 
   # Smoke tests on small examples (code/tests, about 40 s; no download). pytest is needed only here,
   # the verification itself uses numpy only.
   # 小さな例による試験（code/tests、約 40 秒。取得なし）。pytest はここでだけ使い、検算そのものは numpy だけを使う。
+  # Python 3.10 (the oldest supported, with the oldest numpy of requirements-verify.txt), 3.12 and 3.13 (numpy of
+  # requirements-verify-lock.txt) on Linux, and Python 3.12 on macOS (arm64: clang, the Accelerate BLAS).
+  # Linux で Python 3.10（対応する最も古い版。requirements-verify.txt の最も古い numpy）、3.12、3.13（requirements-verify-lock.txt の
+  # numpy）、macOS（arm64: clang、Accelerate の BLAS）で Python 3.12。
   tests:
     if: github.ref_type == 'branch'
-    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: ubuntu-24.04, python: '3.10', numpy: 'numpy==2.2.6'}
+          - {os: ubuntu-24.04, python: '3.12', numpy: lock}
+          - {os: ubuntu-24.04, python: '3.13', numpy: lock}
+          - {os: macos-15, python: '3.12', numpy: lock}
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -43,10 +66,46 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: '3.12'
-      - run: pip install -r requirements-verify.txt pytest
+          python-version: ${{ matrix.python }}
+      - name: Install numpy and pytest
+        env:
+          NUMPY: ${{ matrix.numpy }}
+        run: |
+          if [ "$NUMPY" = lock ]; then
+            pip install --require-hashes -r requirements-verify-lock.txt
+          else
+            pip install "$NUMPY"
+          fi
+          pip install pytest
       - name: pytest code/tests (without the tests on the large certificate files)
         run: python -m pytest code/tests -m "not data" -p no:cacheprovider --durations=5
+
+  # Static checks (under a minute): ruff with the rules of ruff.toml, shellcheck (warnings), actionlint, and the C
+  # programs with all warnings as errors. / 静的検査（1 分未満）: ruff.toml の規則の ruff、shellcheck（警告）、actionlint、
+  # すべての警告を誤りとする C のコンパイル。
+  lint:
+    if: github.ref_type == 'branch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - run: pip install ruff==0.17.2 shellcheck-py==0.11.0.1 actionlint-py==1.7.12.25
+      - name: ruff check
+        run: ruff check code paper/tools
+      - name: shellcheck
+        run: git ls-files -z '*.sh' | xargs -0 shellcheck --severity=warning
+      - name: actionlint
+        run: actionlint
+      - name: C programs (-Wall -Wextra -Werror)
+        run: |
+          for f in code/verify/enum_interval.c code/crosscheck/all_data/min_L_enum.c; do
+            cc -std=c11 -O2 -Wall -Wextra -Werror -fno-fast-math -ffp-contract=off -c "$f" -o /dev/null
+          done
 
   docker-verify:
     if: github.ref_type == 'branch'
@@ -126,6 +185,17 @@ jobs:
         with:
           persist-credentials: false
       - uses: ./.github/actions/build-pdfs
+      # The build is deterministic (build-pdfs); a difference from the committed PDFs comes from other fonts or
+      # another Typst, or from PDFs not regenerated before the tag. It is reported, not fatal: the attached
+      # PDFs are those built here from the tagged sources (paper/README.md).
+      # ビルドは決定的（build-pdfs）。コミットした PDF との違いは、別のフォントや Typst、またはタグの前に作り直していない PDF による。
+      # 報告するだけで失敗にはしない。添付するのは、ここでタグのソースから作った PDF である（paper/README.ja.md）。
+      - name: Compare with the committed PDFs
+        run: |
+          for f in paper.en paper.ja supplement.en supplement.ja; do
+            if cmp -s "build/$f.pdf" "paper/$f.pdf"; then echo "$f.pdf: identical to the committed file"
+            else echo "::warning::$f.pdf differs from the committed paper/$f.pdf"; fi
+          done
       - name: Attach the PDFs to the release of this tag (created if absent; notes untouched)
         uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:

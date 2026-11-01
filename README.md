@@ -37,9 +37,9 @@ Every file in this repository is described in one of the README files reachable 
 | [`code/supplementary/`](code/README.md#correspondence-with-table-d2-of-the-paper) | computations for the statements other than Theorem A (gluings, automorphism group, route T (a second proof of extremality), the genus of Supplement §S6, …) | no |
 | [`code/tests/`](code/README.md#tests) | smoke tests on small examples (pytest) | no |
 | [`lean/`](lean/README.md) | the deduction from F1–F5 to the absence of vectors of norm below 10, in Lean 4 | no (an independent check of the deduction) |
-| `Dockerfile`, `.devcontainer/devcontainer.json`, `requirements-verify.txt` | the light container image for levels (i)–(iii) below, the dev container that uses it, and the pinned NumPy | optional |
-| `Dockerfile.sage`, `environment.yml` | the SageMath environment for `produce/`, `crosscheck/all_data/` and `supplementary/` | no |
-| `.github/` | CI: `checks.yml` (inputs, tests, container, Typst, Lean on every pull request; PDFs attached to each Release, built by `actions/build-pdfs/action.yml`) and `data-tests.yml` (weekly tests on the large data files) | no |
+| `Dockerfile`, `.devcontainer/devcontainer.json`, `requirements-verify.txt`, `requirements-verify-lock.txt` | the light container image for levels (i)–(iii) below, the dev container that uses it, the supported NumPy versions and the exact one used by the image and CI (with hashes) | optional |
+| `Dockerfile.sage`, `environment.yml`, `environment-linux-64.lock` | the SageMath environment for `produce/`, `crosscheck/all_data/` and `supplementary/`, and the exact list of its packages | no |
+| `.github/`, `ruff.toml` | CI (see [What CI checks](code/README.md#what-ci-checks)): `checks.yml` (inputs, tests, lint with the rules of `ruff.toml`, container, Typst, Lean on every pull request; PDFs attached to each Release, built by `actions/build-pdfs/action.yml`), `data-tests.yml` (weekly checks on the large data files), `proof.yml` (`proof.sh` monthly and for each release), and `dependabot.yml` (update proposals) | no |
 | `CHANGELOG.md`, `CONTRIBUTING.md`, `.github/ISSUE_TEMPLATE/*.yml` | changes between releases, how to report an error, and the issue templates | no |
 | `CITATION.cff`, `LICENSE`, `LICENSE-CC-BY-4.0`, `.gitattributes`, `.gitignore`, `.dockerignore` | citation metadata, licenses, and git and Docker settings | no |
 

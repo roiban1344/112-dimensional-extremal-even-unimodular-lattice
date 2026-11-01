@@ -1,2 +1,5 @@
-# Main verifier / 主検算
-numpy
+# Main verifier / 主検算. Python 3.10 or later; tested with numpy 2.2 (Python 3.10) to 2.5 (Python 3.12).
+# The exact version used by the container image and CI, with hashes: requirements-verify-lock.txt.
+# Python 3.10 以上。numpy 2.2（Python 3.10）から 2.5（Python 3.12）で確認した。コンテナのイメージと CI が使う版（ハッシュつき）は
+# requirements-verify-lock.txt。
+numpy>=2.2,<3

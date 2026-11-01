@@ -1,15 +1,25 @@
 name: data-tests
 
-# The tests on the large certificate files (pytest marker `data`): download the 130 MB of certificates
-# from the Release (fetch.sh), then v5 on the published data and on a mutated copy, and v7 --limit 64
-# with and without a foreign checkpoint (about 10 min, 3 GB). Weekly and on demand only.
-# 大きな検証用データを使う試験（pytest のマーカー `data`）: Release から 130 MB の検証用データを取得し（fetch.sh）、
-# 公開したデータと改変した写しで v5、途中経過の有無を変えて v7 --limit 64 を走らせる（約 10 分、3 GB）。週に 1 回と手動でだけ実行する。
+# The checks on the large certificate files, weekly and on demand: download the 150 MB of certificates from the
+# Release (fetch.sh); the pytest tests marked `data` (v5 on the published data and on a mutated copy, v7 --limit 64
+# with and without a foreign checkpoint; about 10 min, 3 GB); then v3, v4 and v6 of proof.sh (F2, F3, F5b; v6 reads
+# the output of v4). A second job runs the three second implementations of crosscheck/second_impl/ (numpy only).
+# 大きな検証用データを使う検査（週に 1 回と手動）: Release から 150 MB の検証用データを取得し（fetch.sh）、pytest のマーカー `data` の試験
+# （公開したデータと改変した写しで v5、途中経過の有無を変えて v7 --limit 64。約 10 分、3 GB）、続いて proof.sh の v3・v4・v6（F2、F3、F5b。
+# v6 は v4 の出力を読む）を走らせる。別のジョブで crosscheck/second_impl/ の 3 本（numpy のみ）を走らせる。
 
 on:
   workflow_dispatch:
   schedule:
     - cron: '17 4 * * 1'
+
+# Every `run:` step uses bash with -e and -o pipefail (GitHub's `shell: bash`), so that a failure inside a pipeline
+# such as `proof.sh | tee` fails the step. Without `shell:`, the default is `bash -e` without pipefail.
+# すべての run: を bash の -e と -o pipefail で実行する（GitHub の shell: bash）。`proof.sh | tee` のような
+# パイプラインの途中の失敗も段の失敗になる。shell: を書かない既定は pipefail の無い bash -e である。
+defaults:
+  run:
+    shell: bash
 
 permissions:
   contents: read
@@ -17,7 +27,7 @@ permissions:
 jobs:
   data-tests:
     runs-on: ubuntu-24.04
-    timeout-minutes: 40
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -25,8 +35,50 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.12'
-      - run: pip install -r requirements-verify.txt pytest
-      - name: Download the certificate files (130 MB) and check them against certificates/SHA256SUMS
+      - run: |
+          pip install --require-hashes -r requirements-verify-lock.txt
+          pip install pytest
+      - name: Download the certificate files (150 MB) and check them against certificates/SHA256SUMS
         run: bash code/verify/fetch.sh
       - name: pytest code/tests -m data
         run: python -m pytest code/tests -m data -p no:cacheprovider --durations=0
+      - name: v3 (F2), v4 (F3), v6 (F5b by canonical forms)
+        run: |
+          python3 -I code/verify/v3_minimal_orbits.py
+          python3 -I code/verify/v4_norm8_orbits.py
+          python3 -I code/verify/v6_canonical_lookup.py
+      - name: Keep the JSON records
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: data-tests-out
+          path: out/*.json
+          if-no-files-found: ignore
+
+  # A job of its own: even_classes.py C B alone took 2.66 hours on a shared machine, and GitHub limits a job to 6 hours.
+  # 独立したジョブにする。even_classes.py C B だけで共用の計算機で 2.66 時間かかり、GitHub の 1 ジョブの上限は 6 時間である。
+  second-implementations:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - run: pip install --require-hashes -r requirements-verify-lock.txt
+      - name: Download the certificate files (150 MB) and check them against certificates/SHA256SUMS
+        run: bash code/verify/fetch.sh
+      - name: Second implementations (crosscheck/second_impl)
+        run: |
+          python3 -I code/crosscheck/second_impl/odd_classes.py
+          python3 -I code/crosscheck/second_impl/even_classes.py C B
+          python3 -I code/crosscheck/second_impl/design_identities.py 3
+      - name: Keep the JSON records
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: second-implementations-out
+          path: out/*.json
+          if-no-files-found: ignore
