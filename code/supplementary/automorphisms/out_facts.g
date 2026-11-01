@@ -9,6 +9,7 @@
 #   付録 F.4 (e) は、このファイルを二つの記録として引用する: 下の一覧 names（Hiss-Malle の表 3 の次数 112 以下の行に現れる単純群と、
 #   位数が 29 で割れるかの検査。論文の表 F1）と G-F12。
 # Run / 実行:  gap -q --quitonbreak code/supplementary/automorphisms/out_facts.g < /dev/null
+#   Run time: about 10 seconds. / 実行時間: 約 10 秒。
 #   Each value is compared with the one stated below (and, for the groups with 29 | |T|, with Appendix F.4 (e));
 #   the script ends with exit code 1 if any differs and with a nonzero code on a GAP error, otherwise 0.
 #   各値を下に書いた値（29 | |T| の群については付録 F.4 (e)）と比べる。一つでも違えば終了コード 1、GAP のエラーでは非 0、それ以外は 0 で終わる。

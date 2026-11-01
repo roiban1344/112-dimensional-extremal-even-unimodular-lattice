@@ -23,10 +23,11 @@ Modes / モード:
   search3                         the 3,936 classes of search (3), about 25 minutes
                                   探索 (3) の 3,936 類、約 25 分
   search2 --part P --nparts Q     classes P, P + Q, P + 2Q, ... of search (2); optionally only positions
-          [--lo A --hi B]         A..B-1 of that list (to split a slow part). About 1 to 2 s per class on
-                                  one core, about 13 CPU days for all 763,992 classes
+          [--lo A --hi B]         A..B-1 of that list (to split a slow part). 0.4 to 1.7 s per class on
+                                  one core of a shared machine (measured), about 6 CPU days for all 763,992
+                                  classes (the single-thread jobs took 5.0 x 10^5 s in total)
                                   探索 (2) の第 P, P+Q, P+2Q, … 類。--lo/--hi でその中の位置 A〜B-1 だけ（遅い分割を分けるため）。
-                                  1 コアで 1 類 1〜2 秒、763,992 類の全部で約 13 CPU 日
+                                  共用機の 1 コアで 1 類 0.4〜1.7 秒（実測）、763,992 類の全部で約 6 CPU 日（単一スレッドのジョブの合計 5.0 × 10^5 秒）
   search2 --missing [--part P --nparts Q]
                                   only the classes without a certificate in certificates/route_t_search2.npz
                                   (to complete the distributed file); split among parts as above

@@ -1,10 +1,10 @@
-r"""元の計算（公開版では produce/p3 と verify/v4）の「ノルム 8 の軌道代表の一覧は漏れなく重複なし」を、別の原理で点検する。
+r"""produce/p3 と verify/v4 の「ノルム 8 の軌道代表の一覧は漏れなく重複なし」を、別の原理で点検する。
 
-元の計算の完全性の根拠は「軌道の大きさの合計 = 36,957,286,800（テータ級数の係数）」。これは、同じ軌道を 2 回数えて別の軌道を 1 つ落としても、
+それらの完全性の根拠は「軌道の大きさの合計 = 36,957,286,800（テータ級数の係数）」。これは、同じ軌道を 2 回数えて別の軌道を 1 つ落としても、
 大きさが同じなら成り立ってしまう。そこで球面デザインの恒等式を使う: 56 次元の極値格子の各殻は 7-デザイン [既知: Venkov] なので、任意の $a$ について
 $$\sum_{N(x)=8}(x,a)^{2}=N_8\frac{8\,(a,a)}{56},\quad \sum(x,a)^4=N_8\frac{3\cdot8^2(a,a)^2}{56\cdot58},\quad \sum(x,a)^6=N_8\frac{15\cdot8^3(a,a)^3}{56\cdot58\cdot60}.$$
 左辺を「代表 × 群の元」で計算する: $\sum_{y\in\mathrm{orb}(x)}(y,a)^k=\frac{|\mathrm{orb}|}{|S^*|}\sum_{g\in S^*}(xg,a)^k$。
-重複や欠落があれば、整数の等式が（偶然を除いて）崩れる。群の元は生成元から自分で列挙し、元の計算のコードは読み込まない
+重複や欠落があれば、整数の等式が（偶然を除いて）崩れる。群の元は生成元から自分で列挙し、実装 1 のコードは読み込まない
 （共有するのはデータ: Gram 行列、生成元、中心化群の単数（certificates/centralizer.npz）、代表と軌道の大きさ）。
 これは整合性の検査であり、完全性の証明は大きさの和による（verify/v4、check_all.py v4）。
 すべての等式と大きさの和が成り立たなければ終了コード 1 で終わる。
@@ -14,13 +14,11 @@ with exit code 1 unless every identity and the size sum hold.
 実行（リポジトリの根から）: python3 -I code/crosscheck/second_impl/design_identities.py [a の本数（既定 3）]   （--help で説明）
 Every input file is checked against data/SHA256SUMS or certificates/SHA256SUMS, and the hashes are printed at the end.
 入力ファイルはすべて data/SHA256SUMS か certificates/SHA256SUMS と照合し、最後にハッシュを表示する。
+Run time: about 18 minutes. Memory: about 2 GB. / 実行時間: 約 18 分。メモリ: 約 2 GB。
 
-公開用の注記: 公開リポジトリ向けに変えたのは入力（data/ の 4 ファイルと
-certificates/ の検証用データを読む。中心化群の元は Sage で求め直さず certificates/centralizer.npz から読む）だけで、検査そのものは変えていない。
-Release note: for the public repository only the inputs were changed (the four files of data/ and the
-certificate files of certificates/ are read; the centralizer elements are read from
-certificates/centralizer.npz instead of being recomputed with Sage). The checks are unchanged.
-Shares no code with code/lib or code/verify. Needs only numpy.
+data/ の 4 ファイルと certificates/ の検証用データを読む（中心化群の元は certificates/centralizer.npz から読む）。code/lib・code/verify とはコードを共有しない。
+Reads the four files of data/ and the certificate files of certificates/ (the centralizer elements from
+certificates/centralizer.npz). Shares no code with code/lib or code/verify. Needs only numpy.
 """
 import argparse, hashlib, sys, time
 from pathlib import Path

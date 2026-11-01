@@ -1,4 +1,4 @@
-r"""元の計算の「(6,6)・(6,10)・(10,6) 型の衝突なし」を保証する代表元（公開版では certificates/odd_bounding.npz）を、別のコードで検算する。
+r"""「(6,6)・(6,10)・(10,6) 型の衝突なし」を保証する代表元（certificates/odd_bounding.npz）を、別のコードで検算する。
 
 データ: 最小ベクトルの軌道代表 $r$（656 個）と向き（$f$, $f^{-1}$）ごとに、ベクトル $w_0$。主張は
   (i) $w_0\equiv rM \pmod{2L}$（$M=X$ または $X^{-1}$ mod 2）、(ii) $N(w_0)\in\{14,18\}$、(iii) すべての最小ベクトル $u$ について $|(w_0,u)|\le6$。
@@ -17,13 +17,11 @@ the expected values are those of Table 7 of the paper, and the script ends with 
 実行（リポジトリの根から）: python3 -I code/crosscheck/second_impl/odd_classes.py   （引数なし。--help で説明 / no arguments）
 Every input file is checked against data/SHA256SUMS or certificates/SHA256SUMS, and the hashes are printed at the end.
 入力ファイルはすべて data/SHA256SUMS か certificates/SHA256SUMS と照合し、最後にハッシュを表示する。
+Run time: about 1.5 minutes. Memory: about 4 GB. / 実行時間: 約 1.5 分。メモリ: 約 4 GB。
 
-公開用の注記: 公開リポジトリ向けに変えたのは入力（data/ の 4 ファイルと
-certificates/ の検証用データを読む。中心化群の元は Sage で求め直さず certificates/centralizer.npz から読む）だけで、検査そのものは変えていない。
-Release note: for the public repository only the inputs were changed (the four files of data/ and the
-certificate files of certificates/ are read; the centralizer elements are read from
-certificates/centralizer.npz instead of being recomputed with Sage). The checks are unchanged.
-Shares no code with code/lib or code/verify. Needs only numpy.
+data/ の 4 ファイルと certificates/ の検証用データを読む（中心化群の元は certificates/centralizer.npz から読む）。code/lib・code/verify とはコードを共有しない。
+Reads the four files of data/ and the certificate files of certificates/ (the centralizer elements from
+certificates/centralizer.npz). Shares no code with code/lib or code/verify. Needs only numpy.
 """
 import argparse, hashlib, sys, time
 from pathlib import Path

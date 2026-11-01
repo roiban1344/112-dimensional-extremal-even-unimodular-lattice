@@ -2,7 +2,7 @@
 
 [English](README.md)
 
-このディレクトリには、論文で使った計算がすべて入っています。論文の表 D2 はそれを [C1]〜[C33] として並べており、
+このディレクトリには、論文で使った計算がすべて入っています。論文の表 D2 はそれを [C1]〜[C34] として並べており、
 このファイルの最後の節で、各行とここのスクリプトを対応させます。
 
 記号: コードと検証用データのファイルでは、L は論文の 56 次元の素材の格子 L₅₆ を指し、L_m（L_6、L_8）はノルム m のベクトルの殻 L₅₆(m) を指す。
@@ -24,6 +24,19 @@
 定理 A の証明が依拠するのは、検算のコードと手で証明した結果です。検算のコードは `verify/` の v0〜v7 と `lib/` の Python 約 2,000 行（英日 2 言語の冒頭コメントを含む）と C のプログラム 1 本で、Python が使う外部パッケージは numpy だけです。
 検証用データを作ったコード（`produce/`）の正しさには依拠**しません**。証明が使うデータの性質は、すべて `verify/` が確かめ直します。
 
+証明のために正しくなければならないものと、その備え（論文 §1.3、補遺の表 S8）:
+
+| 構成要素 | 誤っていたら崩れるもの | 備え |
+|---|---|---|
+| `data/` の 4 ファイル | 定理が別の格子についての主張になる | 付録 D と `lib/data.py` の SHA-256。ファイルによらない指定（§7.2） |
+| 本文中の数学的証明、上界 (1.1)、極値テータ級数 | 定理 A | F0（偶性）と F1〜F5 からの演繹は Lean で検査する（§7.1）。それ以外は §7.1 に列挙する |
+| `verify/` の v0〜v6、`lib/`、`enum_interval.c` | 誤った合格 | 試験、実装 2（`crosscheck/`）、陽性対照、F1 の整数演算の列挙（`crosscheck/all_data/min_L.py`） |
+| Python、NumPy とその BLAS | F0〜F5 | 浮動小数点の積はすべて、部分和の上界によって厳密である。上界は和の順序にも FMA の有無にもよらない。仮定は、BLAS が通常の積和を IEEE の演算で求めること（Strassen 型の算法や精度を落とした核を使わないこと） |
+| C コンパイラ、libm、IEEE 754 の倍精度 | F1（区間演算の列挙） | 各演算のあとの外向きの丸め、`-fno-fast-math -ffp-contract=off`。整数演算の列挙 (a′) |
+| `certificates/`、Release、SHA-256 | どのファイルを検査したかの記録。健全性には関わらない | 証明が使う検証用データの性質は `verify/` がすべて確かめ直す。`certificates/SHA256SUMS` は git にあり、そのハッシュを付録 D に印刷する |
+| Lean のカーネルと Mathlib | 演繹の機械検査の保証だけ | `lean/check.sh --fresh` |
+| `produce/`、SageMath、PARI、fplll、GAP | 定理 A については何も崩れない（データを作っただけ） | データは `verify/` が確かめる |
+
 ## 構成
 
 | ディレクトリ | 中身 |
@@ -31,9 +44,14 @@
 | `lib/` | 共有の小さなライブラリ（numpy のみ）: データの読み込み、厳密さの確認、群、2 を法とした標準形、最小ベクトル |
 | `verify/` | F0〜F5 の検算（v0〜v7）と整合性の検査（v8） |
 | `produce/` | 検証用データの生成（p1〜p6）。証明の検算には不要 |
-| `crosscheck/` | 検算の第 2 の実装。`verify/`・`produce/`・`lib/` のコードを読まずに、Claude を用いて別に書いた。同じデータを別のコードで確かめるので、主な実装に誤りがあれば結果の食い違いとして現れる: `all_data/`（すべての検証用データと F1 を別の方法で）、`second_impl/`（標準形、デザインの恒等式、奇の類） |
+| `crosscheck/` | 実装 2: 検算の第 2 の実装。`verify/`・`produce/`・`lib/` のコードを読まずに、Claude を用いて別に書いた（後から加えた部分は下を参照）。同じデータを別のコードで確かめるので、主な実装に誤りがあれば結果の食い違いとして現れる: `all_data/`（すべての検証用データと F1 を別の方法で）、`second_impl/`（最小ベクトルの軌道、標準形、デザインの恒等式、奇の類、⟨2L, t⟩ の列挙による抜き取り） |
 | `supplementary/` | 論文の主張のうち、定理 A の証明には使わないものの計算（貼り方の分類、自己同型群など） |
 | `tests/` | 小さな例による試験（pytest。[試験](#試験)を参照）。`proof.sh` の代わりにはならない |
+
+論文（§6、補遺 §S3.3）は二つの実装を挙げる。**実装 1** は `verify/`・`produce/`・`lib/`（補足の計算は
+`supplementary/`）である。**実装 2** は `crosscheck/` である。`second_impl/` と `all_data/` は、さらに二つのセッションが
+Claude を用いて実装 1 のコードを読まずに書いたもので、データファイルと検証用データを実装 1 と共有する。一部（終了コード、入力のハッシュ、
+いくつかの防御、一部の検査の公開データへの対応）は、実装 1 を読んだうえで後から加えた。実装どうしが共有するものは補遺 §S3.3 にある。
 
 ディレクトリの間の依存: `verify/` は `lib/` だけを import する。`lib/` は `code/` のほかのものを使わない。`crosscheck/` は自分のディレクトリの外の
 `code/` を import せず、`data/` と `certificates/` を読むだけである。`produce/` は `lib/` と自分の補助を使う。`supplementary/` は `lib/`、
@@ -60,10 +78,10 @@ v4 が v6・v8・`supplementary/gluing_b.py` のために `out/K8.npy` と `out/
 | `verify/controls/leech.txt` | Leech 格子の Gram 行列。検算スクリプト v1 の陽性対照 |
 | `produce/p1_centralizer.py` 〜 `p6_reduction.py`、`descent.py` | 検証用データの生成（[検証用データの生成](#検証用データの生成)の節）。`descent.py` は p4 と p5 が共有する代表元の探索（類の元 w から始め、内積 ⟨w, u⟩ ≥ 7 となる最小ベクトル u がある限り w を w − 2u に置き換える。ノルムが必ず下がるので止まり、§5 の条件を満たせば w が代表元になる） |
 | `produce/exact_qfminim.py` | PARI の `qfminim` の結果を区間演算の列挙で網羅性まで確かめる関数（`p1` と `supplementary/` が使う） |
-| `crosscheck/second_impl/odd_classes.py`・`even_classes.py`・`design_identities.py` | F5a、F5b、デザインの恒等式の第 2 の実装（numpy のみ） |
+| `crosscheck/second_impl/odd_classes.py`・`even_classes.py`・`design_identities.py`・`minimal_orbits.py`・`coset_enumeration.py` | F5a、F5b、デザインの恒等式、最小ベクトルの軌道の展開の第 2 の実装（numpy のみ）と、⟨2L, t⟩ の列挙による 180 組の抜き取り（SageMath） |
 | `crosscheck/all_data/`・`supplementary/` | [第 2 の実装](#第-2-の実装と補足の計算)・[証明経路 T](#証明経路-t補遺-s4表-d2-の-c20c21c32)・[表 D2 との対応](#論文の表-d2-との対応)の節を参照。`supplementary/nebe/isometry.py` は `identify_nebe.py` と `reduction_to_nebe.py` のために SL₂(29) 同変な等長写像を求める |
 | `run_supplementary.sh` | `supplementary/` の計算をまとめて実行する |
-| `tests/conftest.py`・`tests/test_*.py` | [試験](#試験)の節の試験。`test_exact`（厳密さの検査）、`test_enumerate`（列挙）、`test_group_mod2`（群と標準形）、`test_report_checkpoint`（報告と途中経過）、`test_certs`（検証用データのハッシュ）、`test_scripts`（v0、v1 の対照、v2、シェルの構文）、`test_data`（マーカー `data`）、`test_route_t_exclusion`（[C32] の数行）、`test_check_paper`（`paper/tools/check-paper.py`）、`test_docs`（追跡しているファイルがすべて README で説明されていること）、`test_shells`（小さな格子でのすべての最小ベクトルとの内積）、`test_layout`（依存の規則） |
+| `tests/conftest.py`・`tests/test_*.py` | [試験](#試験)の節の試験。`test_exact`（厳密さの検査）、`test_enumerate`（列挙）、`test_group_mod2`（群と標準形）、`test_report_checkpoint`（報告と途中経過）、`test_certs`（検証用データのハッシュ）、`test_scripts`（v0、v1 の対照、v2、シェルの構文）、`test_data`（マーカー `data`）、`test_route_t_exclusion`（[C32] の数行）、`test_check_paper`（`paper/tools/check-paper.py`）、`test_docs`（追跡しているファイルがすべて README で説明されていること）、`test_shells`（小さな格子でのすべての最小ベクトルとの内積）、`test_layout`（依存の規則）、`test_paper_ledger`（表 D2 と `proof.sh`・docstring、論文に印刷したハッシュと Lean の主張）、`test_sampled_checks`（[C8]、[C11]、[C34] の抜き取りの検査を小さな例で） |
 
 ## 検算の実行
 
@@ -75,7 +93,7 @@ v4 が v6・v8・`supplementary/gluing_b.py` のために `out/K8.npy` と `out/
 python3 code/verify/v0_inputs.py
 ```
 
-**(ii) 証明に使う計算。** 大きな検証用データを取得して、`proof.sh` を実行します。約 1.2 CPU 時間（v1 が 34 分、v6 が 24 分、残りは数分）で、v0〜v6 を走らせます。F1 は区間演算の列挙、F2・F3 は軌道代表の網羅性、F5a は奇の剰余類の下界を保証する代表元、F5b は標準形で検査します。これは、定理 A の証明に使う計算事実 F0〜F5 をすべて確かめる最短の経路です（補遺 表 S7 の経路 A）。
+**(ii) 証明に使う計算。** 大きな検証用データを取得して、`proof.sh` を実行します。約 1.2 CPU 時間（v1 が 34 分、v6 が 24 分、残りは数分）で、v0〜v6 を走らせます。F0・F4 は v0、F1 は区間演算の列挙、F2・F3 は軌道代表の網羅性（v2 がテータ級数から導く殻の大きさ \|L₆\|・\|L₈\| と照合する）、F5a は奇の剰余類の下界を保証する代表元、F5b は標準形で検査します。これは、定理 A の証明に使う計算事実 F0〜F5 をすべて確かめる最短の経路です（補遺 表 S7 の経路 A）。
 
 ```bash
 bash code/verify/fetch.sh
@@ -127,7 +145,7 @@ bash code/verify/full.sh 3
 | `v2_theta.py` | §2.3、付録 B、補遺 §S1・§S2 | 極値テータ級数（\|L₆\|, \|L₈\|）、Siegel 平均、表 B1, S1, S2, S4, S5 | 1 秒 | — |
 | `v3_minimal_orbits.py` | F2、§6.2 | 656 軌道が 15,590,400 本の最小ベクトルを覆う（展開と標準形の 2 通り） | 3 分 | 2 GB |
 | `v4_norm8_orbits.py` | F3、§6.4 | 1,527,984 本の x_i u_k が、\|L₈\| を覆う相異なる 1,517,130 個の正則な軌道を与える | 9 分 | 2 GB |
-| `v5_odd_bounding.py` | F5a、系 5.2、表 7 | 656 個の奇の類の下界を保証する代表元 | 2.5 分 | 2 GB |
+| `v5_odd_bounding.py` | F5a、系 5.2、表 7 | 656 個の奇の類の下界を保証する代表元 | 2 分 | 2 GB |
 | `v6_canonical_lookup.py` | F5b、命題 6.3、表 6 | 類 x_i u_k τ + 2L はどれもノルム 8 のベクトルを含まない（標準形）。型 (6,6) も | 24 分 | 2 GB |
 | `v7_even_bounding.py` | F5b、系 5.3、表 8 | 1,527,984 個の偶の類の下界を保証する代表元（再開可能。途中経過は SHA-256 で入力に結び付ける。`--threads`） | 24 CPU 時間（3 スレッドで 7.9 時間） | 3 GB |
 | `v8_design_identities.py` | §6.3 | 球面デザインの恒等式 18 個（整合性の検査。証明には不要） | 14 分 | 2 GB |
@@ -150,9 +168,9 @@ F1 の列挙は外向きに丸める区間演算を使います（`verify/enum_i
 
 ## 動作環境
 
-* `verify/`、`crosscheck/second_impl/`: Python 3.10 以上と numpy 2.2 以上（`requirements-verify.txt`。証明の検算は Python 3.12、numpy 2.5.4 で
+* `verify/`、`crosscheck/second_impl/`（`coset_enumeration.py` を除く）: Python 3.10 以上と numpy 2.2 以上（`requirements-verify.txt`。証明の検算は Python 3.12、numpy 2.5.4 で
   走らせ、CI は Python 3.10 と numpy 2.2.6、Python 3.12・3.13 と numpy 2.5.4 で試験する）。v1 には 128 ビット整数をもつ C コンパイラ（gcc か clang。`$CC` があればそれ、無ければ `cc`・`gcc`・`clang` の順に探す）。`fetch.sh` には `curl` が必要です。ほかのパッケージは要りません。
-* `produce/`、`supplementary/`、`crosscheck/all_data/`: SageMath 10（PARI/GP、GAP、fpylll を含む）。SageMath 10.9 で確認。リポジトリのルートの
+* `produce/`、`supplementary/`、`crosscheck/all_data/`、`crosscheck/second_impl/coset_enumeration.py`: SageMath 10（PARI/GP、GAP、fpylll を含む）。SageMath 10.9 で確認。リポジトリのルートの
   `environment.yml` で conda/micromamba から入れられます。`environment-linux-64.lock` は、これらの計算を走らせた環境の conda のパッケージを
   正確に並べたものである。これらのスクリプトは、その環境の `python3` で実行します（`python3 -I code/...`）。
   conda-forge 版の SageMath では `sage -python` は使えません。
@@ -243,16 +261,18 @@ p5 は `certificates/norm8_reps.npz`、どれも `certificates/centralizer.npz` 
 最小ベクトルの表を作る）、`v2`、`v3cheap`、`v4`、`v3full`、`neg`、`summary` をこの順に走らせます。各段は判定が FAIL なら
 終了コード 1 で終わります。`summary` は、必須の段がすべて今の入力で合格していなければ終了コード 1 で終わります（入力は
 `SHA256SUMS` と照合し、キャッシュは入力のダイジェストごとに分けて置きます）。`min_L.py 4` と `min_L.py 4 --test e8x7` は F1 と
-その陽性対照を確かめます。`crosscheck/second_impl/` の 3 本（numpy のみ。引数は `--help` で表示する）は、結果を論文の数と比べ、
-`RESULT: PASS`（終了コード 0）か `RESULT: FAIL`（終了コード 1）で終わります。
+その陽性対照を確かめます。`crosscheck/second_impl/` のスクリプト（引数は `--help` で表示する）は、結果を論文の数と比べ、
+`RESULT: PASS`（終了コード 0）か `RESULT: FAIL`（終了コード 1）で終わります。`coset_enumeration.py` 以外は numpy だけを使う。
 
 ```bash
-python3 -I code/crosscheck/second_impl/odd_classes.py           # F5a、表 7（数分、2 GB）
+python3 -I code/crosscheck/second_impl/minimal_orbits.py        # F2: 展開、非交性、m = 6 のデザインの恒等式
+python3 -I code/crosscheck/second_impl/design_identities.py 3   # F3: norm8_reps.npz に対する m = 8 のデザインの恒等式（試すベクトル 3 本）
+python3 -I code/crosscheck/second_impl/odd_classes.py           # F5a、表 7: 656 個の奇の類の代表元
 python3 -I code/crosscheck/second_impl/even_classes.py C B      # 標準形による F5b。B は陰性対照
-python3 -I code/crosscheck/second_impl/design_identities.py 3   # norm8_reps.npz に対するデザインの恒等式（試験ベクトル 3 本）
+python3 -I code/crosscheck/second_impl/coset_enumeration.py     # <2L, t> の列挙による 180 組の抜き取り（SageMath）
 ```
 
-第 2 の実装はどれも、入力ファイルを自前のコードで `data/SHA256SUMS` と `certificates/SHA256SUMS` に照合し、ハッシュを表示または記録する。
+`odd_classes.py`、`even_classes.py`、`design_identities.py` と `all_data/` は、入力ファイルを自前のコードで `data/SHA256SUMS` と `certificates/SHA256SUMS` に照合し、ハッシュを表示または記録する。
 
 `bash code/run_supplementary.sh [段名…]` は `supplementary/` の計算を走らせます（既定では 30 段すべてで、1 コアで約 6 時間かかる。
 そのうち `float_cvp610` が約 2.5 時間。一覧、各段の時間、収録していないものはスクリプトの冒頭にある）。SageMath を含む Python を `PYTHON` で
@@ -287,16 +307,16 @@ P = 0, …, Q−1 について `certify.py search2 --missing --part P --nparts Q
 | 表 D2 | スクリプト |
 |---|---|
 | [C1] | verify/v2_theta.py |
-| [C2] | verify/v0_inputs.py, supplementary/gluings.py (d), produce/p1_centralizer.py |
+| [C2] | verify/v0_inputs.py, supplementary/gluings.py (d), (e), produce/p1_centralizer.py |
 | [C3] | supplementary/gluings.py, supplementary/nebe/gluings_m.py (a), (b) (with supplementary/_shared.py) |
 | [C4] | supplementary/gluing_b.py, supplementary/nebe/gluings_m.py (c), (d) (with supplementary/_shared.py) |
 | [C5] | verify/v1_min_L.py + verify/enum_interval.c, produce/p6_reduction.py |
 | [C6] | supplementary/nebe/reduction_to_nebe.py (with nebe/lattices.py, nebe/tables.py) |
 | [C7] | supplementary/float_enumerations.py svp, qfminim |
-| [C8] | produce/p2_minimal_orbits.py, verify/v3_minimal_orbits.py, verify/v8_design_identities.py |
-| [C9] | produce/p3_norm8_orbits.py, verify/v4_norm8_orbits.py, verify/v8_design_identities.py |
+| [C8] | produce/p2_minimal_orbits.py, verify/v3_minimal_orbits.py, verify/v8_design_identities.py, crosscheck/second_impl/minimal_orbits.py |
+| [C9] | produce/p3_norm8_orbits.py, verify/v4_norm8_orbits.py, verify/v8_design_identities.py, crosscheck/second_impl/design_identities.py |
 | [C10] | produce/p4_odd_descent.py, verify/v5_odd_bounding.py, crosscheck/second_impl/odd_classes.py |
-| [C11] | verify/v6_canonical_lookup.py, crosscheck/second_impl/even_classes.py |
+| [C11] | verify/v6_canonical_lookup.py, crosscheck/second_impl/even_classes.py, crosscheck/second_impl/coset_enumeration.py |
 | [C12] | supplementary/float_enumerations.py cvp610, cvp88 |
 | [C13] | produce/p5_even_descent.py, verify/v7_even_bounding.py |
 | [C14] | supplementary/frame_stabilizer.py |
@@ -319,3 +339,4 @@ P = 0, …, Q−1 について `certify.py search2 --missing --part P --nparts Q
 | [C30] | supplementary/genus/genus.py build, frames, witness (with genus/genus_steps.py, genus_lattice.py, genus_data.py) |
 | [C31] | supplementary/genus/genus.py identify, check (with genus/genus_steps.py, genus_lattice.py, genus_check.py, genus_data.py, supplementary/_shared.py) |
 | [C33] | supplementary/nebe/tensor_neb98.py (with nebe/cycloquat.py) |
+| [C34] | supplementary/k8_checks.py, supplementary/nebe/gluings_m.py (e) |

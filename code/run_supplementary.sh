@@ -20,12 +20,12 @@
 #     SageMath を含む Python（既定は python3。例えば environment.yml の conda 環境のもの。SageMath の配布物なら PYTHON="sage -python"）。
 #     CTblLib を含む GAP を GAP で（既定は gap）。
 #   * the .npz files of certificates/ (bash code/verify/fetch.sh). / certificates/ の .npz（bash code/verify/fetch.sh）。
-#   * Outputs of earlier steps (all earlier in the default order, except v4): gluing_b needs out/K8.npy from
+#   * Outputs of earlier steps (all earlier in the default order, except v4): gluing_b and k8_checks need out/K8.npy from
 #     code/verify/v4_norm8_orbits.py (about 10 min); anatomy_b needs the output of gluing_b; identify_nebe and
 #     nebe_tables that of nebe_lattices (out/nebe/); nebe_gluings and reduction_to_nebe that of nebe_tables
 #     (out/nebe/M_tables.npz); route_t_recount that of route_t_classify. A step whose input is missing is reported
 #     as failed, with the step to run first, and is not started.
-#     先の段の出力（v4 以外は既定の順で先に走る）: gluing_b には code/verify/v4_norm8_orbits.py の out/K8.npy（約 10 分）が要る。
+#     先の段の出力（v4 以外は既定の順で先に走る）: gluing_b と k8_checks には code/verify/v4_norm8_orbits.py の out/K8.npy（約 10 分）が要る。
 #     anatomy_b は gluing_b の、identify_nebe と nebe_tables は nebe_lattices の（out/nebe/）、nebe_gluings と reduction_to_nebe は
 #     nebe_tables の（out/nebe/M_tables.npz）、route_t_recount は route_t_classify の出力を使う。入力が無い段は、先に走らせる段を
 #     示して失敗とし、始めない。
@@ -48,7 +48,7 @@ OUT="$C/../out"
 LOG="$OUT/logs"
 mkdir -p "$LOG"
 
-ORDER=(gluings frame_stabilizer node_estimate sample_check frames gluing_b anatomy_b fixed_sublattices fixed_sublattices_B
+ORDER=(gluings frame_stabilizer node_estimate sample_check frames gluing_b anatomy_b k8_checks fixed_sublattices fixed_sublattices_B
        float_svp float_qfminim float_cvp610 aut_normalizer aut_diagonal aut_structure aut_character endomorphisms
        group_facts out_facts nebe_lattices identify_nebe nebe_tables nebe_gluings reduction_to_nebe nebe_tensor route_t_classify
        route_t_recount route_t_check3 route_t_exclusion isometry_ab genus_check)
@@ -62,6 +62,7 @@ step() {   # run step $1 / 段 $1 を実行する
     frames)              $PY "$S/frames.py" ;;
     gluing_b)            $PY "$S/gluing_b.py" ;;
     anatomy_b)           $PY "$S/anatomy_b.py" ;;
+    k8_checks)           $PY "$S/k8_checks.py" ;;
     fixed_sublattices)   $PY "$S/fixed_sublattices.py" ;;
     fixed_sublattices_B) $PY "$S/fixed_sublattices.py" --tau B ;;
     float_svp)           $PY "$S/float_enumerations.py" svp ;;

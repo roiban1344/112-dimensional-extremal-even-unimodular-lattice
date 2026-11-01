@@ -1,4 +1,4 @@
-r"""(8,8) 型の衝突の全数検査を、別実装でやり直す（考え方は元の計算（公開版では verify/v6）と同じ、コードは共有しない）。
+r"""(8,8) 型の衝突の全数検査を、別実装でやり直す（考え方は verify/v6 と同じ、コードは共有しない）。
 
 主張: $x$ をノルム 8 の全ベクトルにわたらせたとき、類 $xX+2L$ がノルム 8 のベクトルを含むことは無い。
 考え方: $L/2L$ の類を 56 ビットの整数で表す。SL$_2$(29) は $L/2L$ に作用し、$X$ と mod 2 で可換（ここで直接確かめる）。
@@ -16,18 +16,16 @@ r"""(8,8) 型の衝突の全数検査を、別実装でやり直す（考え方�
 実行（リポジトリの根から）: python3 -I code/crosscheck/second_impl/even_classes.py [C] [B]   （--help で説明）
 Every input file is checked against data/SHA256SUMS or certificates/SHA256SUMS, and the hashes are printed at the end.
 入力ファイルはすべて data/SHA256SUMS か certificates/SHA256SUMS と照合し、最後にハッシュを表示する。
+Run time: about 1.7 hours per gluing (both directions). Memory: about 4 GB. / 実行時間: 貼り方 1 つにつき約 1.7 時間（両方向）。メモリ: 約 4 GB。
   C = 本論文の tau（data/tau.txt）、B = 陰性対照の貼り方 B（certificates/negative_control_B.npz）
 期待値: K8 は 1,517,130 種、K6 は 656 種、陽性対照は 656 / 656。C ではどちらの向きでも (6,6)・(6,8)・(8,8) 型の衝突が 0。
 B では (8,8) 型の衝突がある（陰性対照）。一つでも外れれば終了コード 1 で終わる。
 Expected: |K8| = 1,517,130, |K6| = 656, positive control 656 / 656; for C no collision of type (6,6), (6,8) or (8,8)
 in either direction; for B some collision of type (8,8) (negative control). Exit code 1 if any of these fails.
 
-公開用の注記: 公開リポジトリ向けに変えたのは入力（data/ の 4 ファイルと
-certificates/ の検証用データを読む。中心化群の元は Sage で求め直さず certificates/centralizer.npz から読む）だけで、検査そのものは変えていない。
-Release note: for the public repository only the inputs were changed (the four files of data/ and the
-certificate files of certificates/ are read; the centralizer elements are read from
-certificates/centralizer.npz instead of being recomputed with Sage). The checks are unchanged.
-Shares no code with code/lib or code/verify. Needs only numpy.
+data/ の 4 ファイルと certificates/ の検証用データを読む（中心化群の元は certificates/centralizer.npz から読む）。code/lib・code/verify とはコードを共有しない。
+Reads the four files of data/ and the certificate files of certificates/ (the centralizer elements from
+certificates/centralizer.npz). Shares no code with code/lib or code/verify. Needs only numpy.
 """
 import argparse, hashlib, sys, time
 from pathlib import Path
