@@ -5,10 +5,10 @@
   lang: "en",
   title: [An extremal even unimodular lattice in dimension 112: supplement],
   authors: [roiban1344 #linebreak() #small[#link("https://github.com/roiban1344")[github.com/roiban1344]]],
-  date: [Draft, 18 October 2026],
+  date: [Draft, version v2026-10-25],
 )
 
-This supplement records search motivation, additional checks, running times and the support-module argument, and classifies the even unimodular lattices of dimension 112 on which $"SL"_2(29)$ acts as on $L_112$ (§S6). Section, proposition, appendix and bibliography identifiers without an S prefix, and computation labels [C1]–[C32], refer to the main paper. Theorem A is proved in §§2–6 of that paper. Route T (§S4.1, Theorem S4.1) proves $min L_112 >= 10$ again with a different reduction (Coulangeon's inequality and an enumeration of support modules in place of Lemma 4.2 and Corollary 4.3). Its last step uses the same computations F5a and F5b as the main proof, together with a further finite check [C32] that the main proof does not use; so it checks the reduction independently, but not the computations F0–F5.
+This supplement records search motivation, additional checks, running times and the support-module argument, and classifies the even unimodular lattices of dimension 112 on which $"SL"_2(29)$ acts as on $L_112$ (§S6). Section, proposition, appendix and bibliography identifiers without an S prefix, and computation labels such as [C1], refer to the main paper. Theorem A is proved in §§2–6 of that paper. Route T (§S4.1, Theorem S4.1) proves $min L_112 >= 10$ again with a different reduction (Coulangeon's inequality and an enumeration of support modules in place of Lemma 4.2 and Corollary 4.3). Its last step uses the same computations F5a and F5b as the main proof, together with a further finite check [C32] that the main proof does not use; so it checks the reduction independently, but not the computations F0–F5.
 
 = S1. Siegel means and search motivation <supp-S1>
 
@@ -52,7 +52,7 @@ By the formula above, with $n = 2 k$ the average number of vectors of norm $2 m$
   [$mu = 12$], [120: $9.73 times 10^8$], [128: $6.63 times 10^7$], [136: $3.51 times 10^6$],
 )
 
-Within a row, $Sigma\(n\)$ drops by a factor of 15–20 for every 8 dimensions. This is consistent with an extremal lattice in dimension 80 (1998) having been found before one in dimension 72 (2010); since dimension 88 followed only in 2026, this is only a rough guide.
+Within a row, $Sigma\(n\)$ drops by a factor of 15–20 for every 8 dimensions.
 
 #ptable(
   columns: 5, align: (left, center, left, right, right,),
@@ -87,12 +87,12 @@ As a further modeling assumption, a Poisson number of orbits with mean $lambda$ 
   [($L_112$, counting $"SL"_2\(29\)$ only)], [$51 thin 014$], [$24 thin 360$], [$2.1$], [],
 )
 
-Group orders are taken from \[NS\], with $Gamma_72$ from \[Neb12\]. The last two rows illustrate that the numerical ratio changes substantially depending on whether one counts only the imposed group or the full automorphism group determined later. The proof uses the imposed group and does not require a small value of this ratio.
+Group orders are from \[NS\] and \[Neb13, Thms. 3.6, 6.2\]; for $P_(48 p)$ the order in \[Neb13, Thm. 3.6\] lacks a factor 2, as corrected on Nebe's list of publications. The last two rows illustrate that the numerical ratio changes substantially depending on whether one counts only the imposed group or the full automorphism group determined later. The proof uses the imposed group and does not require a small value of this ratio.
 
 
 = S2. Expected collisions in a random gluing <supp-S2>
 
-If $f$ were a random parity-preserving map, the class $x f$ of $x in L_56(a)$ would be uniformly distributed among classes of the same parity. Since each class contains at most one pair $plus.minus v$ of norm $b$ (a consequence of §5), the expected number of inner-shell vectors of $L_112$ coming from type $\(a\,b\)$ is $ bb(E)  [ \#\(a\,b\) ]  approx frac(\|L_56(a)\|thin\|L_56(b)\|, N_plus.minus)\,#h(2em) N_(-) = 2^55 - 2^27 med\(upright("odd classes")\)\,quad N_(+) = 2^55 + 2^27 med\(upright("even classes")\) $ (computation in §S2.1). This estimate is a heuristic and is not used in the proof.
+If $f$ were a random parity-preserving map, the class $x f$ of $x in L_56(a)$ would be uniformly distributed among classes of the same parity. By linearity of expectation, the expected number of inner-shell vectors of $L_112$ coming from type $\(a\,b\)$ is $ bb(E)  [ \#\(a\,b\) ]  approx frac(\|L_56(a)\|thin\|L_56(b)\|, N_plus.minus)\,#h(2em) N_(-) = 2^55 - 2^27 med\(upright("odd classes")\)\,quad N_(+) = 2^55 + 2^27 med\(upright("even classes")\) $ (computation in §S2.1). This estimate is a heuristic and is not used in the proof.
 
 #ptable(
   columns: 5, align: (left, right, right, right, right,),
@@ -164,7 +164,7 @@ Write $L_112 = L_56 times.o_(M') Lambda$ with $Lambda = {\(a\,b\)in M' ""^2 : b 
 
 == S3.5. Fixed sublattices and BKZ
 
-Elements of order 3, 5, 7 of $"SL"_2\(29\)$ have fixed sublattices of $L_112$ of dimension 32, 16, 16 with exact minima 12, 10, 14 (determinants $3^32\,5^16\,7^16$) #calc("C18"). The fixed sublattice of an element of order 5 contains explicit vectors of norm 10, so $min L_112 lt.eq 10$. These types are among those not excluded for extremal lattices of dimension 112 by \[Neb13\]. These fixed sublattices do not establish a lower bound for the minimum of the whole lattice: gluing B has the same fixed-sublattice minima while its own minimum is 8. Nor does BKZ reduction separate the two: applying BKZ with block sizes 20, 30, 40, 50, 60 in turn, the shortest vectors found have norms 16, 16, 16, 14, 10 for $L_112$ and 16, 16, 16, 18, 10 for B. BKZ-60 thus reaches norm 10 in both lattices and misses the norm-8 vectors of B (the values depend on the starting basis; those of #calc("C18")).
+Elements of order 3, 5, 7 of $"SL"_2\(29\)$ have fixed sublattices of $L_112$ of dimension 32, 16, 16 with exact minima 12, 10, 14 (determinants $3^32\,5^16\,7^16$) #calc("C18"). The fixed sublattice of an element of order 5 contains explicit vectors of norm 10, so $min L_112 lt.eq 10$. In Nebe's notation \[Neb13, Def. 4.1\] these elements have types 3–(40, 32)–32, 5–(24, 16)–16 and 7–(16, 16)–16, which satisfy the general restrictions $s <= min(z, d)$ and $z equiv s med (mod 2)$ of \[Neb13, Lemma 4.3(a), (d)\]. These fixed sublattices do not establish a lower bound for the minimum of the whole lattice: gluing B has the same fixed-sublattice minima while its own minimum is 8. Nor does BKZ reduction separate the two: applying BKZ with block sizes 20, 30, 40, 50, 60 in turn, the shortest vectors found have norms 16, 16, 16, 14, 10 for $L_112$ and 16, 16, 16, 18, 10 for B. BKZ-60 thus reaches norm 10 in both lattices and misses the norm-8 vectors of B (the values depend on the starting basis; those of #calc("C18")).
 
 == S3.6. Controls and closest-vector searches
 
@@ -206,7 +206,7 @@ Gluings B and C use the same base lattice and differ only in the choice of $tau$
 These matrices describe the form in a $K$-basis of the support, rather than an integral $cal(O)$-basis. In particular the rational entries for type II do not specify the integral module structure, which is retained separately.
 
 
-Type I is exactly twice the inverse of $H$, the configuration in which Coulangeon's bound is attained. This parallels the “Barnes-free” criterion for $Gamma_72$ in \[CN13\].
+Type I is exactly twice the inverse of $H$, the configuration in which Coulangeon's bound is attained. This parallels \[CN13, Thm. 5.3\]: there the vectors of norm 3 of the Hermitian lattices $R_i$ correspond to sublattices of $P_i$ isometric to the Barnes lattice $P_b$, so that $min R_i = 4$ if and only if $P_i$ contains no such sublattice.
 
 #strong[Route T.] The following argument proves $min L_112 >= 10$ again. It replaces the reduction of §4 (Lemma 4.2 and Corollary 4.3) by Coulangeon's inequality and an enumeration of support modules (Proposition S4.2). Its last step uses the same finite computations F5a and F5b as the main proof, together with the finite check of Proposition S4.3 #calc("C32"), which is new. Route T is therefore an independent check of the reduction, not of the computations F0–F5.
 
@@ -265,7 +265,7 @@ Since $chevron.l x\, x tau chevron.r = 0$ and $chevron.l x tau\, x tau chevron.r
 
 #strong[Gluings A and B.] Both have exactly 6 colliding $S$-orbits of type $\(8\,8\)$, giving $292 thin 320$ vectors of norm 8, which equals the order of the explicitly constructed automorphism subgroup. They are in fact isometric: enumerating the $"SL"_2(29)$-equivariant maps between them as in §8 yields 12 equivariant isometries up to sign, one of which is distributed with the verification data and checked in integer arithmetic #calc("C28").
 
-#strong[Base lattices.] $L_(56\,2)\(M\)$ is taken from the catalog entry #raw("L_56b"). The second base lattice was obtained inside it: for each singular $X in M\/2 M$ of rank 28, $L_X = L_(56\,2)\(M\)X + 2 L_(56\,2)\(M\)$ with the form halved is $"SL"_2\(29\)$-invariant; five are even unimodular, one with centralizer of order 24 and four with order 12. Our $L_56$ is one of the latter. The catalog entry #raw("L_56c") ($= L_(56\,2)\(tilde(M)\)$) lists generators of a subgroup of order $2^3 dot.op 3 dot.op 7 dot.op 29$ only and states that the automorphism group contains $"SL"_2\(29\)compose tilde(S)_3$, which is consistent with a centralizer of order 12.
+#strong[Base lattices.] $L_(56\,2)\(M\)$ is taken from the entry #raw("L_56b") of the Catalogue of Lattices \[NS\]. The second base lattice was obtained inside it: for each singular $X in M\/2 M$ of rank 28, $L_X = L_(56\,2)\(M\)X + 2 L_(56\,2)\(M\)$ with the form halved is $"SL"_2\(29\)$-invariant; five are even unimodular, one with centralizer of order 24 and four with order 12. Our $L_56$ is one of the latter. The catalog entry #raw("L_56c") ($= L_(56\,2)\(tilde(M)\)$) lists generators of a subgroup of order $2^3 dot.op 3 dot.op 7 dot.op 29$ only and states that the automorphism group contains $"SL"_2\(29\)compose tilde(S)_3$, which is consistent with a centralizer of order 12.
 
 = S6. Even unimodular lattices of dimension 112 on which $"SL"_2(29)$ acts as on $L_112$ <supp-S6>
 
