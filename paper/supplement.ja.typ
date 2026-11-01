@@ -287,12 +287,14 @@ $cal(Q)^2$ 上にエルミート形式 $h(lambda, mu) = lambda_1 macron(mu)_1 + 
 (d) $j eq.not 7$ に対して、$X_j$ は $L_112$ と等長同型でない。ここで等長写像が $S$ の作用と両立することは仮定しない。
 ]
 
+#strong[$X_1$ の独立な検証.] I. Gauvin は、計算機援用により $X_1$ の最小ノルムが 10 であることを検証した結果を公開している \[Gau26v\]（査読は経ていない）。これは本論文の §§4–6 の方法を $L$ と $tilde(L)$ の 2 を法とする貼り合わせに拡張したものであり、\[Repo\] のライブラリを使わずに書かれた第二の実装、2 台の計算機での実行、計算結果から結論を導く最後の推論の Lean による検査を含む。そこでは $X_1$ を L112.02 と呼んでいる。$X_1$ の Gram 行列（\[Repo\] の #raw("certificates/genus_class_1.txt")）と、#link("https://github.com/roiban1344/sl-2-29-rank-112-extremal-lattice/tree/d868927ada7bfbbcc0d6fad88cb8a25c75de9155")[#raw("roiban1344/sl-2-29-rank-112-extremal-lattice")]（コミット #raw("d868927")）の L112.02 の Gram 行列は、全成分が一致する。本稿は $X_1$ の最小ノルムを決定せず、本稿のどの部分もこの結果に依存しない。
+
 #ptable(
   columns: 6, align: (center, right, center, center, left, center,),
   caption: [表 S10. 8 個の類。$n_1$ は $h(lambda, lambda) = 1$ を満たす $lambda in Lambda_j$ の $plus.minus$ 対の個数。$Lambda_j$ の#emph[2 を法とする分解]とは、指数 $2^8$ の部分格子 $J perp J'$ であって、$J\/sqrt(2)$ と $J'\/sqrt(2)$ が階数 1 のユニモジュラー格子であり、$J$ と $J'$ が原始的（$J = Lambda_j inter cal(Q) J$、$J' = Lambda_j inter cal(Q) J'$）であるものをいう。成分が $M$ と等長同型のとき型 b、他方の類 $I$ と等長同型のとき型 c と呼ぶ。この列にはすべての分解の型を記す #calc("C30")。探索は完全である。型 b の成分は $h = 2$ のベクトルを、型 c の成分は $h in {2 pi, 2 macron(pi)}$（$pi = (7 + sqrt(29))\/2$）のベクトルを含むからである（(c) の証明を参照）。分解を通して、$X_j$ は定義 3.1 を異なる二つの 56 次元格子に拡張した意味で $L$（b）と $tilde(L) = L times.o_M I$（c）の 2 を法とする貼り合わせとなる。§S3.4 の枠は $X_7$ の型 cc の分解である。],
   table.header([$j$], [$|U(Lambda_j)|$], [$n_1$], [分解], [$X_j$], [$min X_j$]),
   [0], [1152], [24], [bb], [$L perp L$（表 2 の 1 行目）], [6],
-  [1], [12], [0], [bc], [$L$ と $tilde(L)$ の 2 を法とする貼り合わせ], [未決],
+  [1], [12], [0], [bc], [$L$ と $tilde(L)$ の 2 を法とする貼り合わせ], [10 \[Gau26v\]],
   [2], [288], [0], [cc], [$tilde(L) perp tilde(L)$（表 2 の 3 行目）], [6],
   [3], [24], [0], [bb, cc], [貼り方 A $=$ 貼り方 B], [8],
   [4], [24], [0], [bc], [$L$ と $tilde(L)$ の 2 を法とする貼り合わせ], [$lt.eq 8$],
