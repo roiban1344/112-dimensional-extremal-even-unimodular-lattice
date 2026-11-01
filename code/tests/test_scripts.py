@@ -2,13 +2,15 @@
 a negative control, and the syntax of the shell scripts.
 取得を要しない検算スクリプト（v0、v2、v1 --controls-only）、data/ のハッシュの連鎖、陰性対照、シェルスクリプトの構文。"""
 import glob
+import hashlib
 import os
 import shutil
 import subprocess
+import sys
 
 import pytest
 
-from conftest import CERTIFICATES, DATA, REPO, run_step
+from conftest import CERTIFICATES, DATA, REPO, VERIFY, run_step
 from lib import certs, data
 
 
@@ -94,3 +96,32 @@ SHELL_SCRIPTS = sorted(
 def test_shell_syntax(script):
     proc = subprocess.run(["bash", "-n", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     assert proc.returncode == 0, proc.stdout
+
+
+@pytest.mark.skipif(shutil.which("bash") is None, reason="no bash")
+def test_preflight_stops_before_the_computation(tmp_path):
+    # proof.sh, full.sh and quick.sh source preflight.sh: a missing or modified certificate file, or a Python without
+    # numpy, stops them at once with a hint. Run on a copy with its own certificates/ directory.
+    # proof.sh・full.sh・quick.sh は preflight.sh を読み込む。検証用データが無いか改変されているか、Python に numpy が無ければ、
+    # すぐに案内を出して止める。自分の certificates/ をもつ写しで試す。
+    (tmp_path / "code" / "verify").mkdir(parents=True)
+    shutil.copy(os.path.join(VERIFY, "preflight.sh"), tmp_path / "code" / "verify")
+    cert = tmp_path / "certificates"
+    cert.mkdir()
+    (cert / "a.txt").write_text("1\n")
+    (cert / "b.txt").write_text("2\n")
+    sums = "".join(f"{hashlib.sha256(t.encode()).hexdigest()}  {n}\n" for n, t in (("a.txt", "1\n"), ("b.txt", "3\n")))
+    (cert / "SHA256SUMS").write_text(sums + "0" * 64 + "  c.npz\n")
+    script = tmp_path / "code" / "verify" / "run.sh"
+
+    def run(py, *files):
+        script.write_text('set -eu\n. "$(dirname "$0")/preflight.sh"\npreflight "$1" ' + " ".join(files) + "\necho reached\n")
+        return subprocess.run(["bash", str(script), py], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+
+    ok = run(sys.executable, "a.txt")
+    assert ok.returncode == 0 and "reached" in ok.stdout, ok.stdout
+    bad = run(sys.executable, "a.txt", "b.txt", "c.npz")
+    assert bad.returncode == 1 and "reached" not in bad.stdout
+    assert "b.txt c.npz: missing or not the published file; run bash code/verify/fetch.sh first" in bad.stdout
+    nonumpy = run("false", "a.txt")
+    assert nonumpy.returncode == 1 and "cannot import numpy" in nonumpy.stdout

@@ -1,6 +1,6 @@
-"""S13. The negative control B: min L_B = 8 and exactly 292,320 vectors of norm 8 (paper Theorem A,
+"""The negative control B: min L_B = 8 and exactly 292,320 vectors of norm 8 (paper Theorem A,
 Table 2, Table 6, §6.5; Table D2 [C4]). Not used in the proof of Theorem A for L_112.
-S13. 陰性対照 B: min L_B = 8 で、ノルム 8 のベクトルはちょうど 292,320 本（論文の定理 A、表 2、表 6、§6.5。表 D2 の [C4]）。
+陰性対照 B: min L_B = 8 で、ノルム 8 のベクトルはちょうど 292,320 本（論文の定理 A、表 2、表 6、§6.5。表 D2 の [C4]）。
 L_112 についての定理 A の証明には使わない。
 
 tau_B (certificates/negative_control_B.npz, key tau_class_B) is an element of M' with tau_B^2 = -5 in the other class.
@@ -47,12 +47,12 @@ N8 = 36957286800
 
 
 def main():
-    ap = argparse.ArgumentParser(description="S13: the negative control B")
+    ap = argparse.ArgumentParser(description="the negative control B")
     ap.add_argument("--data", default=None)
     certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report("s13_gluing_b", a.out)
+    rep = Report("gluing_b", a.out)
     mm = exact.i64_matmul
     G = data.gram(a.data)
     Ginv = exact.inverse_unimodular(G)

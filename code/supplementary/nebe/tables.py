@@ -1,7 +1,7 @@
-"""S18. Orbit tables of Nebe's lattice L_{56,2}(M): minimal vectors and norm-8 vectors under SL_2(29) and its
+"""Orbit tables of Nebe's lattice L_{56,2}(M): minimal vectors and norm-8 vectors under SL_2(29) and its
 centralizer, with completeness checks (needed for gluing A, Table 2, and the reduction of §6.1 (b);
 Table D2 [C4], [C6]). Not used in the proof of Theorem A.
-S18. Nebe の格子 L_{56,2}(M) の軌道表: SL_2(29) とその中心化群による最小ベクトルとノルム 8 のベクトル。完全性の検査つき（貼り方 A、表 2、
+Nebe の格子 L_{56,2}(M) の軌道表: SL_2(29) とその中心化群による最小ベクトルとノルム 8 のベクトル。完全性の検査つき（貼り方 A、表 2、
 §6.1 (b) の帰着に使う。表 D2 の [C4], [C6]）。定理 A の証明には使わない。
 
 Steps (the same methods as for L; see produce/p1, p2, p3 and verify/v3, v4):
@@ -46,10 +46,10 @@ def main():
     from p2_minimal_orbits import minimal_orbits
     from p3_norm8_orbits import norm8_orbits
     from p6_reduction import bkz_transform
-    ap = argparse.ArgumentParser(description="S18: orbit tables of L_{56,2}(M)")
+    ap = argparse.ArgumentParser(description="orbit tables of L_{56,2}(M)")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report("s18_nebe_tables", a.out)
+    rep = Report("nebe_tables", a.out)
     out = os.path.join(rep.out_dir, "nebe")
     Gs, gens_s = load("M", rep.out_dir, reduce=True)          # coordinates below: in the reduced basis / 以下の座標は簡約基底で
     G = np.array(Gs.rows(), dtype=np.int64)

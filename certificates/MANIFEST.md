@@ -21,34 +21,43 @@ fail but not pass.
 
 All `.npz` files are plain NumPy archives without Python objects; they are read with
 `numpy.load(..., allow_pickle=False)`. Vectors are integer row vectors in the basis of
-`data/L56_gram.txt`.
+`data/L56_gram.txt`. As in the code, L is the base lattice L₅₆ of the paper and L_m its shell L₅₆(m).
+
+In the column "checked by", the first step listed checks the property of the file that the proof uses; the
+steps in parentheses only read the file. "produced by" names the program that made the distributed file; see
+code/README.md ("Producing the verification data") for what the producers reproduce.
 
 | file | array | content | checked by | produced by |
 |---|---|---|---|---|
 | `reduction_L112.txt` | 112 × 112 integers | basis change U with U (3.1) Uᵀ = `data/L112_gram_LLL.txt` | v0 | p6 |
 | `reduction_L.txt` | 56 × 56 integers | BKZ-40 basis change of L used by the enumeration | v1 | p6 |
-| `min_reps.npz` | `reps` int16 (656, 56) | representatives r_j of the S-orbits on L₆ (F2) | v3 | p2 |
-| `centralizer.npz` | `units` int64 (6, 56, 56) | representatives u_k of C/{±1} (§4.2), in the order used for `even_bounding.npz` | v4 | p1 |
-| `norm8_reps.npz` | `reps` int16 (254664, 56) | representatives x_i of the S*-orbits on L₈ (F3) | v4 | p3 |
+| `min_reps.npz` | `reps` int16 (656, 56) | representatives r_j of the S-orbits on L₆ (F2) | v3 (v5–v8) | the original computation; p2 finds the same orbits with other representatives |
+| `centralizer.npz` | `units` int64 (6, 56, 56) | representatives u_k of C/{±1} (§4.2), in the order used for `even_bounding.npz` | not needed for the proof: v4 and v6–v8 use the u_k only as integer matrices; that they represent C/{±1} is checked by p1 | p1 |
+| `norm8_reps.npz` | `reps` int16 (254664, 56) | representatives x_i of the S*-orbits on L₈ (F3) | v4 (v6–v8) | p3 |
+| | `sizes` int64 (254664) | \|S*-orbit of x_i\| | not read by `verify/` (used by p3 and `crosscheck/`) | p3 |
 | `odd_bounding.npz` | `w0` int16 (656, 56) | row j: odd-class certificate of r_j τ + 2L (F5a) | v5 | p4 |
 | `even_bounding.npz` | `w0` int16 (1527984, 56) | row 6i + k: even-class certificate of x_i u_k τ + 2L (F5b) | v7 | p5 |
 
 Data for cross-checks and supplementary computations:
 
-| file | arrays | content | used by |
-|---|---|---|---|
-| `commutant.npz` | `basis` int64 (8, 56, 56) | a Z-basis of M' = End_{SL2(29)}(L) | crosscheck/all_data, supplementary |
-| `negative_control_B.npz` | `tau_class_B` int64 (56, 56) | an element of M' with τ² = −5 in the other class (gluing B) | supplementary |
-| | `tau_B`, `x`, `v`, `hit_pairs` | the gluing map of gluing B as found in the search (a lift modulo 2, not of square −5), a collision (x, v), and the colliding pairs | crosscheck/all_data (negative controls) |
-| `outer_automorphism_L112.txt` | 112 × 112 integers | an automorphism of L₁₁₂ inducing the outer automorphism of SL₂(29) | supplementary/automorphisms |
-| `gram_A.txt` | 112 × 112 integers | Gram matrix G_A of gluing A (Nebe's L_{56,2}(M) glued by a lift of a map in the class of 48), in the basis (3.1) | supplementary/isometry_ab.py ([C28]) |
-| `isometry_AB.txt` | 112 × 112 integers | basis change T with T G_B Tᵀ = G_A, det T = ±1 (G_B = (3.1) for tau_class_B), an isometry from gluing A onto gluing B | supplementary/isometry_ab.py ([C28]) |
-| `genus_classes.txt` | 8 lines of 9 integers | the 8 classes Λ_j of the genus of rank-2 unimodular Hermitian lattices over the maximal order of L_{56,2}(M): j, \|U(Λ_j)\| (PARI `qfauto`) and the numbers of short vectors of Λ_j | supplementary/genus/genus.py ([C29], [C31]) |
-| `genus_class_<j>.txt` (j = 0, …, 7) | 112 × 112 integers | Gram matrix G_X of X_j = L_{56,2}(M) ⊗ Λ_j, LLL-reduced | supplementary/genus/genus.py ([C30], [C31]) |
-| `genus_basis_<j>.txt` (j = 0, …, 7) | d, then 112 × 112 integers D | the basis D/d of X_j in the coordinates of (3.1) (L ⊕ L, form diag(G, G)/2): D diag(G, G) Dᵀ = 2d² G_X; g₁, g₂ act on X_j | supplementary/genus/genus.py ([C30], [C31]) |
-| `genus_witnesses.txt` | 3 lines of 113 integers | class j and a vector v of X_j with v G_X vᵀ = 8 (j = 3, 4, 5) | supplementary/genus/genus.py ([C30], [C31]) |
-| `genus_isometry_7_L112.txt` | 112 × 112 integers | T with T G_112 Tᵀ = G_X (class 7), det T = ±1, G_112 = (3.1): class 7 is L₁₁₂ | supplementary/genus/genus.py ([C31]) |
-| `genus_isometry_3_A.txt` | 112 × 112 integers | T with T G_A Tᵀ = G_X (class 3), det T = ±1: class 3 is gluing A | supplementary/genus/genus.py ([C31]) |
+| file | arrays | content | used by | produced by |
+|---|---|---|---|---|
+| `commutant.npz` | `basis` int64 (8, 56, 56) | a Z-basis of M' = End_{SL2(29)}(L) | crosscheck/all_data, supplementary | p1 |
+| `negative_control_B.npz` | `tau_class_B` int64 (56, 56) | an element of M' with τ² = −5 in the other class (gluing B) | supplementary (`gluing_b.py` (a) checks τ² = −5, τGτᵀ = 5G and that τ commutes with SL₂(29)) | the original computation (its code is not distributed) |
+| | `tau_B`, `x`, `v`, `hit_pairs` | the gluing map of gluing B as found in the search (a lift modulo 2, not of square −5), a collision (x, v), and the colliding pairs | crosscheck/all_data (negative controls) | the original computation (`gluing_b.py` writes similar data to `out/gluing_b_collisions.npz`) |
+| `outer_automorphism_L112.txt` | 112 × 112 integers | an automorphism of L₁₁₂ inducing the outer automorphism of SL₂(29) | supplementary/automorphisms | `aut_normalizer.py` (finds one and compares it with this file) |
+| `gram_A.txt` | 112 × 112 integers | Gram matrix G_A of gluing A (Nebe's L_{56,2}(M) glued by a lift of a map in the class of 48), in the basis (3.1) | supplementary/isometry_ab.py ([C28]) | `isometry_ab.py find` |
+| `isometry_AB.txt` | 112 × 112 integers | basis change T with T G_B Tᵀ = G_A, det T = ±1 (G_B = (3.1) for tau_class_B), an isometry from gluing A onto gluing B | supplementary/isometry_ab.py ([C28]) | `isometry_ab.py find` |
+| `genus_classes.txt` | 8 lines of 9 integers | the 8 classes Λ_j of the genus of rank-2 unimodular Hermitian lattices over the maximal order of L_{56,2}(M): j, \|U(Λ_j)\| (PARI `qfauto`) and the numbers of short vectors of Λ_j | supplementary/genus/genus.py ([C29], [C31]) | `genus.py enum` |
+| `genus_class_<j>.txt` (j = 0, …, 7) | 112 × 112 integers | Gram matrix G_X of X_j = L_{56,2}(M) ⊗ Λ_j, LLL-reduced | supplementary/genus/genus.py ([C30], [C31]) | `genus.py build` |
+| `genus_basis_<j>.txt` (j = 0, …, 7) | d, then 112 × 112 integers D | the basis D/d of X_j in the coordinates of (3.1) (L ⊕ L, form diag(G, G)/2): D diag(G, G) Dᵀ = 2d² G_X; g₁, g₂ act on X_j | supplementary/genus/genus.py ([C30], [C31]) | `genus.py build` |
+| `genus_witnesses.txt` | 3 lines of 113 integers | class j and a vector v of X_j with v G_X vᵀ = 8 (j = 3, 4, 5) | supplementary/genus/genus.py ([C30], [C31]) | `genus.py witness` |
+| `genus_isometry_7_L112.txt` | 112 × 112 integers | T with T G_112 Tᵀ = G_X (class 7), det T = ±1, G_112 = (3.1): class 7 is L₁₁₂ | supplementary/genus/genus.py ([C31]) | `genus.py identify` |
+| `genus_isometry_3_A.txt` | 112 × 112 integers | T with T G_A Tᵀ = G_X (class 3), det T = ±1: class 3 is gluing A | supplementary/genus/genus.py ([C31]) | `genus.py identify` |
+
+In the header of `genus_basis_<j>.txt`, "L + L, L = data/L56_gram.txt" means L₅₆ ⊕ L₅₆, as everywhere in the code
+(L̃ ⊕ L̃ in the notation of Supplement §S6); it is not the lattice L = L_{56,2}(M) of Supplement §S6. The header is
+left as it is, since changing it would change the hashes of the distributed files.
 
 Route T (a second proof of extremality that uses the Hermitian structure of L₁₁₂; supplement §S4.1, [C21], [C32]; not used in the proof of Theorem A):
 

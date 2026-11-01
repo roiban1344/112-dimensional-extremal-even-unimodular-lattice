@@ -14,7 +14,7 @@ import shutil
 import pytest
 
 from conftest import CERTIFICATES, CODE, run_python
-from lib import certs
+from lib import CheckError, certs
 
 NAME = "reduction_L.txt"
 
@@ -37,8 +37,13 @@ def test_copy_in_another_directory_passes(tmp_path):
 
 
 def test_modified_file_fails_despite_its_own_sha256sums(modified):
-    with pytest.raises(ValueError, match="differs from .*certificates/SHA256SUMS"):
+    with pytest.raises(CheckError, match="differs from .*certificates/SHA256SUMS"):
         certs.path_checked(NAME, str(modified))
+
+
+def test_missing_file_says_to_run_fetch(tmp_path):
+    with pytest.raises(CheckError, match="missing: run bash code/verify/fetch.sh"):
+        certs.path_checked(NAME, str(tmp_path))
 
 
 @pytest.mark.parametrize("with_hashes", [False, True])

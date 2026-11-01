@@ -1,6 +1,6 @@
-"""S11. Identification of L with Nebe's lattice L_{56,2}(M~) built from the definition, without any
+"""Identification of L with Nebe's lattice L_{56,2}(M~) built from the definition, without any
 external data (paper §7.2; Table D2 [C23]). Not used in the proof of Theorem A.
-S11. L と、外部データを使わず定義から作った Nebe の格子 L_{56,2}(M~) の同定（論文 §7.2。表 D2 の [C23]）。定理 A の証明には使わない。
+L と、外部データを使わず定義から作った Nebe の格子 L_{56,2}(M~) の同定（論文 §7.2。表 D2 の [C23]）。定理 A の証明には使わない。
 
   1. L' = L_{56,2}(M~) and generators z', w' of SL_2(29) on it, built from the definition by
      lattices.py (run first; it writes out/nebe/Mtilde_*).
@@ -65,12 +65,12 @@ def check(rep, out, a):
 
 def main():
     from sage.all import QQ, ZZ, block_matrix, matrix, vector
-    ap = argparse.ArgumentParser(description="S11: identification with L_{56,2}(M~)")
+    ap = argparse.ArgumentParser(description="identification with L_{56,2}(M~)")
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--data", default=None)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report("s11_identify_nebe" + ("_check" if a.check else ""), a.out)
+    rep = Report("identify_nebe" + ("_check" if a.check else ""), a.out)
     out = os.path.join(rep.out_dir, "nebe")
     os.makedirs(out, exist_ok=True)
     if a.check:

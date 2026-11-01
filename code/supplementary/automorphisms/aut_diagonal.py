@@ -1,6 +1,6 @@
-"""S6. The finite check excluding the "diagonal case" in the proof that SL_2(29) is normal in Aut(L_112)
+"""The finite check excluding the "diagonal case" in the proof that SL_2(29) is normal in Aut(L_112)
 (paper Appendix F.4 (c); Table D2 [C25]). Not used in the proof of Theorem A.
-S6. SL_2(29) が Aut(L_112) の正規部分群であることの証明で「対角の場合」を除く有限の検査（論文 付録 F.4 (c)。表 D2 の [C25]）。定理 A の証明には使わない。
+SL_2(29) が Aut(L_112) の正規部分群であることの証明で「対角の場合」を除く有限の検査（論文 付録 F.4 (c)。表 D2 の [C25]）。定理 A の証明には使わない。
 
 Situation (Appendix F.4 (c)): if S = SL_2(29) sat diagonally in two components of E(A), then
 V = V_1 + V_2 (S-invariant, 56-dimensional each) and s -> (s on V_1, identity on V_2) would be a
@@ -33,12 +33,12 @@ from lib.report import Report  # noqa: E402
 
 def main():
     from sage.all import QQ, ZZ, identity_matrix
-    ap = argparse.ArgumentParser(description="S6: the diagonal case of Appendix F.4 (c)")
+    ap = argparse.ArgumentParser(description="the diagonal case of Appendix F.4 (c)")
     ap.add_argument("--data", default=None)
     certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report("s6_aut_diagonal", a.out)
+    rep = Report("aut_diagonal", a.out)
     st = Setup(a.data, a.certificates)
     cent = st.centralizer()
     rep.check("C_A(S) has 48 elements, all commuting with the generators of S",

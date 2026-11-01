@@ -1,6 +1,6 @@
-"""S22. Route T, checking the certificates of searches (2) and (3) in integer arithmetic (supplement §S4.1;
+"""Route T, checking the certificates of searches (2) and (3) in integer arithmetic (supplement §S4.1;
 Table D2 [C21]). numpy only. Not used in the proof of Theorem A.
-S22. 経路 T、探索 (2)・(3) の certificate を整数演算で検算する（補遺 §S4.1、表 D2 の [C21]）。numpy だけで動く。定理 A の証明には使わない。
+経路 T、探索 (2)・(3) の certificate を整数演算で検算する（補遺 §S4.1、表 D2 の [C21]）。numpy だけで動く。定理 A の証明には使わない。
 
 For every certificate w0 of certificates/route_t_search3.npz (3,936 rows) and of
 certificates/route_t_search2.npz (763,992 rows; only the rows with done = True), in the order of
@@ -56,7 +56,7 @@ from lib.report import Report  # noqa: E402
 
 
 def main():
-    ap = argparse.ArgumentParser(description="S22: check the route T certificates")
+    ap = argparse.ArgumentParser(description="check the route T certificates")
     ap.add_argument("which", nargs="?", choices=("search3", "search2", "both"), default="both")
     ap.add_argument("--threads", type=int, default=1)
     ap.add_argument("--chunk", type=int, default=8192)
@@ -65,7 +65,7 @@ def main():
     certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report("s22_route_t_check_" + a.which + (f"_first{a.limit}" if a.limit else ""), a.out)
+    rep = Report("route_t_check_" + a.which + (f"_first{a.limit}" if a.limit else ""), a.out)
     G = data.gram(a.data)
     t = data.tau(a.data)
     S = group.sl2_29_mod_sign(data.generators(a.data))

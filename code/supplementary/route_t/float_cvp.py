@@ -1,7 +1,7 @@
-"""S23. Route T, search (2) by floating-point closest-vector enumeration (supplement §S4.1; Table D2 [C21]).
+"""Route T, search (2) by floating-point closest-vector enumeration (supplement §S4.1; Table D2 [C21]).
 Supplementary: fplll uses floating-point Gram-Schmidt data and does not guarantee completeness; the
 integer certificates (certify.py, check.py) replace it class by class. Not used in the proof of Theorem A.
-S23. 経路 T、探索 (2) を浮動小数点の最近ベクトル列挙で（補遺 §S4.1、表 D2 の [C21]）。補助: fplll は浮動小数点の Gram-Schmidt を使い完全性を
+経路 T、探索 (2) を浮動小数点の最近ベクトル列挙で（補遺 §S4.1、表 D2 の [C21]）。補助: fplll は浮動小数点の Gram-Schmidt を使い完全性を
 保証しない。整数の certificate（certify.py, check.py）が類ごとにこれを置き換える。定理 A の証明には使わない。
 
 For each of the 763,992 classes x_i u_k (1 + tau) + 2L of search (2) (order and kept units as in
@@ -39,14 +39,14 @@ from lib.report import Report  # noqa: E402
 
 def main():
     from sage.all import ZZ, matrix
-    ap = argparse.ArgumentParser(description="S23: route T search (2) by floating-point CVP")
+    ap = argparse.ArgumentParser(description="route T search (2) by floating-point CVP")
     ap.add_argument("--part", type=int, default=0)
     ap.add_argument("--nparts", type=int, default=1)
     ap.add_argument("--data", default=None)
     certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    tag = f"s23_route_t_float_cvp_part{a.part}of{a.nparts}"
+    tag = f"route_t_float_cvp_part{a.part}of{a.nparts}"
     rep = Report(tag, a.out)
     Gn = data.gram(a.data)
     t = data.tau(a.data)

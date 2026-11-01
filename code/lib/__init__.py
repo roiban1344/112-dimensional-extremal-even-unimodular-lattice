@@ -54,6 +54,15 @@ Guards / 保証の検査:
   （例えば試験の assert の周り）が、失敗した検査を握りつぶすことがないようにするためである。
 """
 
+# |L_6| and |L_8|: the coefficients of q^3 and q^4 of the extremal theta series in dimension 56, which
+# verify/v2_theta.py derives and compares with these constants; v3-v8 use them (through lib.shells) as the
+# numbers that the orbit sizes of F2 and F3 must add up to. They are here, not in shells.py, so that v2
+# can read them without numpy.
+# |L_6| と |L_8|: 56 次元の極値テータ級数の q^3 と q^4 の係数。verify/v2_theta.py がこれを導いてこの定数と比べ、v3〜v8 は
+# （lib.shells を通して）F2・F3 の軌道の大きさの和が届くべき数として使う。v2 が numpy なしで読めるように shells.py ではなくここに置く。
+N6 = 15590400
+N8 = 36957286800
+
 # The message with which report.Report refuses a run under -O. / report.Report が -O の下での実行を拒否するときの文言。
 OPTIMIZED_MESSAGE = ("refusing to run under python -O / PYTHONOPTIMIZE: the checks must not be optimized away; "
                      "run without -O (the shell scripts use python -I, which also ignores PYTHONOPTIMIZE)\n"

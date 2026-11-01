@@ -19,6 +19,8 @@ import os
 
 import numpy as np
 
+from . import CheckError
+
 # Default location: <repository root>/data, two levels above this file.
 # 既定の置き場所: このファイルの 2 つ上（リポジトリの根）の data/。
 DEFAULT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "data")
@@ -39,6 +41,12 @@ SHA256 = {
 
 N = 56
 
+# The input files whose SHA-256 has been checked in this run, {"data/<name>" or "certificates/<name>": SHA-256};
+# report.Report records them in out/<step>.json as "inputs".
+# この実行で SHA-256 を照合した入力ファイル {"data/<名前>" または "certificates/<名前>": SHA-256}。report.Report が
+# out/<段>.json に "inputs" として記録する。
+CHECKED_INPUTS = {}
+
 
 def sha256_file(path):
     """SHA-256 of a file, as a hex string. / ファイルの SHA-256（16 進文字列）。"""
@@ -55,7 +63,8 @@ def read_integers(path, expected_sha256=None):
     if expected_sha256 is not None:
         got = sha256_file(path)
         if got != expected_sha256:
-            raise ValueError(f"{path}: SHA-256 {got} differs from the published {expected_sha256}")
+            raise CheckError(f"{path}: SHA-256 {got} differs from the published {expected_sha256}")
+        CHECKED_INPUTS["data/" + os.path.basename(path)] = got
     values = []
     with open(path) as f:
         for line in f:

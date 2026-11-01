@@ -1,5 +1,5 @@
-"""S12. Frame-change consistency test (supplement §S3.4; Table D2 [C17]). Not used in the proof of Theorem A.
-S12. 枠の取り替えによる整合性の検査（補遺 §S3.4。表 D2 の [C17]）。定理 A の証明には使わない。
+"""Frame-change consistency test (supplement §S3.4; Table D2 [C17]). Not used in the proof of Theorem A.
+枠の取り替えによる整合性の検査（補遺 §S3.4。表 D2 の [C17]）。定理 A の証明には使わない。
 
 L_112 = L tensor_{M'} Lambda with Lambda = {(a, b) in M'^2 : b = a tau (mod 2M')} / sqrt2 and the M'-valued
 Hermitian form h(lambda, lambda') = (1/2)(a a'* + b b'*). A frame of Lambda is a pair (w1, w2) with
@@ -35,12 +35,12 @@ from lib.report import Report  # noqa: E402
 
 def main():
     from sage.all import GF, QQ, ZZ, identity_matrix, matrix
-    ap = argparse.ArgumentParser(description="S12: frame-change consistency")
+    ap = argparse.ArgumentParser(description="frame-change consistency")
     ap.add_argument("--data", default=None)
     certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report("s12_frames", a.out)
+    rep = Report("frames", a.out)
     n = 56
     I = identity_matrix(ZZ, n)
     G = matrix(ZZ, data.gram(a.data).tolist())

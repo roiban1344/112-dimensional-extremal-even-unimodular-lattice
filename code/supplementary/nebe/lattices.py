@@ -1,6 +1,6 @@
-"""S17. Nebe's two lattices L_{56,2}(M) and L_{56,2}(M~) with SL_2(29), built from the definition
+"""Nebe's two lattices L_{56,2}(M) and L_{56,2}(M~) with SL_2(29), built from the definition
 (cycloquat.py), saved for the other scripts of supplementary/nebe. Requires SageMath.
-S17. Nebe の 2 つの格子 L_{56,2}(M) と L_{56,2}(M~)（SL_2(29) つき）を定義から作り（cycloquat.py）、supplementary/nebe のほかのスクリプトのために保存する。
+Nebe の 2 つの格子 L_{56,2}(M) と L_{56,2}(M~)（SL_2(29) つき）を定義から作り（cycloquat.py）、supplementary/nebe のほかのスクリプトのために保存する。
 SageMath が要る。
 
 H has two conjugacy classes of maximal orders (checked with the mass formula). For each, the lattice
@@ -75,10 +75,10 @@ def main():
     from sage.all import QQ, ZZ, block_matrix, identity_matrix, matrix, zero_matrix
     from cycloquat import CycloQuat, maximal_order_classes, weyl_element
     from p1_centralizer import commutant_basis, elements_of_norm
-    ap = argparse.ArgumentParser(description="S17: Nebe's lattices from the definition")
+    ap = argparse.ArgumentParser(description="Nebe's lattices from the definition")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report("s17_nebe_lattices", a.out)
+    rep = Report("nebe_lattices", a.out)
     out = os.path.join(rep.out_dir, "nebe")
     os.makedirs(out, exist_ok=True)
     X = CycloQuat(29)

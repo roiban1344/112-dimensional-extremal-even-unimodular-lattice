@@ -1,4 +1,4 @@
-# S10a. Finite group facts G-F1–G-F5 used in Appendix F (normality of SL_2(29) in Aut(L_112)); Table D2 [C25].
+# Finite group facts G-F1–G-F5 used in Appendix F (normality of SL_2(29) in Aut(L_112)); Table D2 [C25].
 #   Not used in the proof of Theorem A. Requires GAP 4 with the character table library CTblLib.
 #   付録 F（Aut(L_112) における SL_2(29) の正規性）で使う有限群の事実 G-F1〜G-F5。表 D2 の [C25]。定理 A の証明には使わない。
 #   GAP 4 と指標表ライブラリ CTblLib が要る。

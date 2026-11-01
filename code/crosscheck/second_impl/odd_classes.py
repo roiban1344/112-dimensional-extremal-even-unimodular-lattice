@@ -14,16 +14,20 @@ $N(w_0)=18$: $N(w)=6$ なら $(w_0,w)=0$, $(w_0,y_\pm)=9$。$N(w)=10$ なら $(w
 期待値（論文の表 7）: ノルム 14 で内積の最大 5 が 43 件・6 が 200 件、ノルム 18 で最大 6 が 413 件。一つでも検査に落ちれば終了コード 1 で終わる。
 The expansion is preceded by checks that the representatives have norm 6 and the generators preserve the Gram matrix;
 the expected values are those of Table 7 of the paper, and the script ends with exit code 1 if any check fails.
-実行（リポジトリの根から）: python3 -I code/crosscheck/second_impl/odd_classes.py
+実行（リポジトリの根から）: python3 -I code/crosscheck/second_impl/odd_classes.py   （引数なし。--help で説明 / no arguments）
+Every input file is checked against data/SHA256SUMS or certificates/SHA256SUMS, and the hashes are printed at the end.
+入力ファイルはすべて data/SHA256SUMS か certificates/SHA256SUMS と照合し、最後にハッシュを表示する。
 Run time: about 1.5 minutes. Memory: about 4 GB. / 実行時間: 約 1.5 分。メモリ: 約 4 GB。
 
 data/ の 4 ファイルと certificates/ の検証用データを読む（中心化群の元は certificates/centralizer.npz から読む）。code/lib・code/verify とはコードを共有しない。
 Reads the four files of data/ and the certificate files of certificates/ (the centralizer elements from
 certificates/centralizer.npz). Shares no code with code/lib or code/verify. Needs only numpy.
 """
-import sys, time
+import argparse, hashlib, sys, time
 from pathlib import Path
 import numpy as np
+argparse.ArgumentParser(description="Second implementation of the check of the odd-class certificates "
+                        "(certificates/odd_bounding.npz, F5a, Table 7). No arguments; about 2 GB of memory, minutes.").parse_args()
 ROOT = Path(__file__).resolve().parents[3]
 DATA, CERT = ROOT / "data", ROOT / "certificates"
 if not __debug__:
@@ -42,16 +46,40 @@ def check(name, ok):
 
 
 def finish():
+    for k, v in sorted(INPUTS.items()):
+        print(f"  input {k}: SHA-256 {v}", flush=True)
     print("RESULT: PASS" if not FAILS else f"RESULT: FAIL ({len(FAILS)} failed: {FAILS})", flush=True)
     sys.exit(1 if FAILS else 0)
 
+INPUTS = {}
+
+
+def _checked(path):
+    """`path`, after checking its SHA-256 against the SHA256SUMS of its directory (data/ or certificates/), with
+    hashlib only (no code shared with code/lib). A missing or different file ends the run (exit code 1).
+    `path` を、そのディレクトリ（data/ か certificates/）の SHA256SUMS と SHA-256 を照合してから返す（hashlib だけを使い、
+    code/lib とコードを共有しない）。無いか違うファイルなら、そこで終わる（終了コード 1）。"""
+    sums = {}
+    with open(path.parent / "SHA256SUMS") as f:
+        for line in f:
+            if line.strip():
+                h, name = line.split()
+                sums[name.lstrip("*")] = h
+    h = hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
+    label = f"{path.parent.name}/{path.name}"
+    INPUTS[label] = h
+    if not check(f"{label} has the SHA-256 listed in {path.parent.name}/SHA256SUMS", h is not None and h == sums.get(path.name)):
+        print("  (bash code/verify/fetch.sh downloads the published certificate files)", flush=True)
+        finish()
+    return path
+
 
 def _ints(path):
-    return np.array([int(t) for l in open(path) if not l.startswith("#") for t in l.split()], dtype=np.int64)
+    return np.array([int(t) for l in open(_checked(path)) if not l.startswith("#") for t in l.split()], dtype=np.int64)
 
 
 def _npz(name, key):
-    with np.load(CERT / name, allow_pickle=False) as z:
+    with np.load(_checked(CERT / name), allow_pickle=False) as z:
         return z[key]
 
 
@@ -81,6 +109,7 @@ if FAILS:
 # 全最小ベクトルを展開（± の片方）
 def key(g):
     i = np.flatnonzero(g.ravel())[0]
+    assert np.abs(g).max() < 2 ** 15                                     # int16 below must not wrap / 下の int16 で折り返さない
     return (g if g.ravel()[i] > 0 else -g).astype(np.int16).tobytes()
 E0 = np.eye(n, dtype=np.int64); seen = {key(E0): E0}; frontier = [E0]
 while frontier:

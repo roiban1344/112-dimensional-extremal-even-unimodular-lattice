@@ -1,6 +1,6 @@
-"""S1. The SL_2(29)-equivariant gluings of two copies of L (paper §3.3, Proposition 3.3, Table 2
+"""The SL_2(29)-equivariant gluings of two copies of L (paper §3.3, Proposition 3.3, Table 2
 rows for L; §3.3 last paragraph). Not used in the proof of Theorem A.
-S1. L の 2 枚の SL_2(29)-同変な貼り方（論文 §3.3、命題 3.3、表 2 の L の行、§3.3 の最後の段落）。定理 A の証明には使わない。
+L の 2 枚の SL_2(29)-同変な貼り方（論文 §3.3、命題 3.3、表 2 の L の行、§3.3 の最後の段落）。定理 A の証明には使わない。
 
 Checks / 確かめること:
   (a) The F_2-linear maps of L/2L commuting with g1, g2 form an 8-dimensional space, equal to the
@@ -47,12 +47,12 @@ from supplementary._shared import parity_preserving_classes  # noqa: E402
 
 def main():
     from sage.all import GF, ZZ, identity_matrix, matrix
-    ap = argparse.ArgumentParser(description="S1: equivariant gluings of two copies of L")
+    ap = argparse.ArgumentParser(description="equivariant gluings of two copies of L")
     ap.add_argument("--data", default=None)
     certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report("s1_gluings", a.out)
+    rep = Report("gluings", a.out)
     n = 56
     F2 = GF(2)
     G = matrix(ZZ, data.gram(a.data).tolist())

@@ -8,28 +8,44 @@
 # Run from the repository root / リポジトリの根から:  bash code/run_supplementary.sh [names...]
 #   (no names: all steps in the order below / 段名を省くと下の順にすべて)
 #
+# Time: all 30 steps take about 6 hours on one core (measured 3.7 hours for the 29 steps other than
+# float_cvp610, which takes about 2.5 hours; the longest others are nebe_tables about 50 min, float_svp about
+# 40 min, gluing_b about 25 min, float_qfminim about 17 min). Name steps to run only some of them.
+# 時間: 30 段すべてで 1 コアで約 6 時間（float_cvp610 以外の 29 段の実測が 3.7 時間。float_cvp610 は約 2.5 時間。ほかに長いのは
+# nebe_tables 約 50 分、float_svp 約 40 分、gluing_b 約 25 分、float_qfminim 約 17 分）。段名を並べれば一部だけを走らせる。
+#
 # Prerequisites / 前提:
 #   * PYTHON: a Python with SageMath (default python3, e.g. that of the conda environment of environment.yml;
 #     PYTHON="sage -python" for a SageMath distribution). GAP with CTblLib as GAP (default gap).
 #     SageMath を含む Python（既定は python3。例えば environment.yml の conda 環境のもの。SageMath の配布物なら PYTHON="sage -python"）。
 #     CTblLib を含む GAP を GAP で（既定は gap）。
 #   * the .npz files of certificates/ (bash code/verify/fetch.sh). / certificates/ の .npz（bash code/verify/fetch.sh）。
-#   * gluing_b and k8_checks need out/K8.npy from code/verify/v4_norm8_orbits.py (about 9 min); anatomy_b needs the output of
-#     gluing_b, route_t_recount that of route_t_classify (both are earlier in the default order).
-#     gluing_b と k8_checks には code/verify/v4_norm8_orbits.py の out/K8.npy（約 9 分）が要る。anatomy_b は gluing_b の、route_t_recount は
-#     route_t_classify の出力を使う（どちらも既定の順では先に走る）。
+#   * Outputs of earlier steps (all earlier in the default order, except v4): gluing_b and k8_checks need out/K8.npy from
+#     code/verify/v4_norm8_orbits.py (about 10 min); anatomy_b needs the output of gluing_b; identify_nebe and
+#     nebe_tables that of nebe_lattices (out/nebe/); nebe_gluings and reduction_to_nebe that of nebe_tables
+#     (out/nebe/M_tables.npz); route_t_recount that of route_t_classify. A step whose input is missing is reported
+#     as failed, with the step to run first, and is not started.
+#     先の段の出力（v4 以外は既定の順で先に走る）: gluing_b と k8_checks には code/verify/v4_norm8_orbits.py の out/K8.npy（約 10 分）が要る。
+#     anatomy_b は gluing_b の、identify_nebe と nebe_tables は nebe_lattices の（out/nebe/）、nebe_gluings と reduction_to_nebe は
+#     nebe_tables の（out/nebe/M_tables.npz）、route_t_recount は route_t_classify の出力を使う。入力が無い段は、先に走らせる段を
+#     示して失敗とし、始めない。
 # Not included (long or producing data; see the docstrings and code/README.md): float_enumerations.py cvp88,
-#   route_t/certify.py, route_t/check.py search2, route_t/float_cvp.py, isometry_ab.py find, identify_nebe.py --check,
-#   the genus.py steps other than check, and the --tau B variants other than fixed_sublattices_B.
+#   route_t/certify.py, route_t/check.py search2, route_t/float_cvp.py, route_t/exclusion.py make, isometry_ab.py find,
+#   identify_nebe.py --check, the genus.py steps other than check, and the --tau B variants other than fixed_sublattices_B.
 # 収録していないもの（長時間か、データを作るもの。docstring と code/README.md を参照）: float_enumerations.py cvp88、
-#   route_t/certify.py、route_t/check.py search2、route_t/float_cvp.py、isometry_ab.py find、identify_nebe.py --check、
-#   genus.py の check 以外の段、fixed_sublattices_B 以外の --tau B の変種。
+#   route_t/certify.py、route_t/check.py search2、route_t/float_cvp.py、route_t/exclusion.py make、isometry_ab.py find、
+#   identify_nebe.py --check、genus.py の check 以外の段、fixed_sublattices_B 以外の --tau B の変種。
+#
+# Python is run with -I (isolated mode: PYTHON* environment variables such as PYTHONPATH are ignored), as in code/verify/.
+# Python は code/verify/ と同じく -I（隔離モード。PYTHONPATH などの PYTHON* 環境変数を無視する）で走らせる。
 set -u
-PY=${PYTHON:-python3}          # word-split on purpose, so that PYTHON="sage -python" works / PYTHON="sage -python" のため意図して分割する
+PYTHON=${PYTHON:-python3}
+PY="$PYTHON -I"                # word-split on purpose, so that PYTHON="sage -python" works / PYTHON="sage -python" のため意図して分割する
 GAP=${GAP:-gap}
 C="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 S="$C/supplementary"
-LOG="$C/../out/logs"
+OUT="$C/../out"
+LOG="$OUT/logs"
 mkdir -p "$LOG"
 
 ORDER=(gluings frame_stabilizer node_estimate sample_check frames gluing_b anatomy_b k8_checks fixed_sublattices fixed_sublattices_B
@@ -75,6 +91,19 @@ step() {   # run step $1 / 段 $1 を実行する
   esac
 }
 
+# needs STEP: the outputs of earlier steps that STEP reads, as "file:step that writes it".
+# needs STEP: STEP が読む先の段の出力（「ファイル:それを書く段」）。
+needs() {
+  case "$1" in
+    gluing_b)                    echo "K8.npy:verify/v4_norm8_orbits.py v4_norm8_orbits.json:verify/v4_norm8_orbits.py" ;;
+    anatomy_b)                   echo "gluing_b_collisions.npz:gluing_b" ;;
+    identify_nebe)               echo "nebe/Mtilde_gram.txt:nebe_lattices" ;;
+    nebe_tables)                 echo "nebe/M_gram.txt:nebe_lattices" ;;
+    nebe_gluings|reduction_to_nebe) echo "nebe/M_gram.txt:nebe_lattices nebe/M_tables.npz:nebe_tables" ;;
+    route_t_recount)             echo "route_t/classify.json:route_t_classify" ;;
+  esac
+}
+
 if [ $# -gt 0 ]; then
   for s in "$@"; do
     case " ${ORDER[*]} " in
@@ -88,6 +117,15 @@ fi
 FAILED=()
 for s in "${ORDER[@]}"; do
   echo "=== $s ($(date '+%F %T'))"
+  missing=()
+  for need in $(needs "$s"); do
+    [ -e "$OUT/${need%%:*}" ] || missing+=("out/${need%%:*} (run ${need#*:} first)")
+  done
+  if [ ${#missing[@]} -gt 0 ]; then
+    echo "    FAILED: missing ${missing[*]} / 先の段の出力が無い"
+    FAILED+=("$s")
+    continue
+  fi
   if step "$s" > "$LOG/$s.log" 2>&1; then
     echo "    ok"
   else

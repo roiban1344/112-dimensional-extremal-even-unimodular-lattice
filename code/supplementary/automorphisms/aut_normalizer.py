@@ -1,6 +1,6 @@
-"""S5. The normalizer of S = SL_2(29) in Aut(L_112) (paper §3.4, §8; Table D2 [C24]). Not used in the
+"""The normalizer of S = SL_2(29) in Aut(L_112) (paper §3.4, §8; Table D2 [C24]). Not used in the
 proof of Theorem A.
-S5. Aut(L_112) における S = SL_2(29) の正規化群（論文 §3.4、§8。表 D2 の [C24]）。定理 A の証明には使わない。
+Aut(L_112) における S = SL_2(29) の正規化群（論文 §3.4、§8。表 D2 の [C24]）。定理 A の証明には使わない。
 
 (1) Centralizer: the automorphisms of L_112 commuting with S are found among the block matrices
     [[a, b], [c, d]] (a, b, c, d in M' tensor Q) as in aut_common.Setup.isometries_from. Expected: 48.
@@ -36,12 +36,12 @@ from lib.report import Report  # noqa: E402
 
 def main():
     from sage.all import GF, QQ, ZZ, lcm, libgap, matrix
-    ap = argparse.ArgumentParser(description="S5: normalizer of SL_2(29) in Aut(L_112)")
+    ap = argparse.ArgumentParser(description="normalizer of SL_2(29) in Aut(L_112)")
     ap.add_argument("--data", default=None)
     certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report("s5_aut_normalizer", a.out)
+    rep = Report("aut_normalizer", a.out)
     st = Setup(a.data, a.certificates)
     n = 56
 

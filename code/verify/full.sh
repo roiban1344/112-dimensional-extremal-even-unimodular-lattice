@@ -16,6 +16,9 @@ set -euo pipefail
 PY=${PYTHON:-python3}
 T=${1:-1}
 D="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Stop at once if numpy or a certificate file is missing (see preflight.sh). / numpy や検証用データが無ければすぐ止める。
+. "$D/preflight.sh"
+preflight "$PY" reduction_L112.txt reduction_L.txt min_reps.npz norm8_reps.npz centralizer.npz odd_bounding.npz even_bounding.npz
 $PY -I "$D/v0_inputs.py"
 $PY -I "$D/v1_min_L.py"
 $PY -I "$D/v2_theta.py"

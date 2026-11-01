@@ -5,6 +5,8 @@
 このディレクトリには、論文で使った計算がすべて入っています。論文の表 D2 はそれを [C1]〜[C34] として並べており、
 このファイルの最後の節で、各行とここのスクリプトを対応させます。
 
+記号: コードと検証用データのファイルでは、L は論文の 56 次元の素材の格子 L₅₆ を指し、L_m（L_6、L_8）はノルム m のベクトルの殻 L₅₆(m) を指す。
+
 ## 何が示され、何に依拠するか
 
 定理 A（L₁₁₂ の最小は 10）は、§3〜§6 で手で証明した結果（補題 3.2・4.2・5.1、系 4.3・5.2・5.3、命題 6.3）、既知の上界 (1.1)、§4.3 の計算事実 F0〜F5 から従います。
@@ -51,11 +53,18 @@
 Claude を用いて実装 1 のコードを読まずに書いたもので、データファイルと検証用データを実装 1 と共有する。一部（終了コード、入力のハッシュ、
 いくつかの防御、一部の検査の公開データへの対応）は、実装 1 を読んだうえで後から加えた。実装どうしが共有するものは補遺 §S3.3 にある。
 
+ディレクトリの間の依存: `verify/` は `lib/` だけを import する。`lib/` は `code/` のほかのものを使わない。`crosscheck/` は自分のディレクトリの外の
+`code/` を import せず、`data/` と `certificates/` を読むだけである。`produce/` は `lib/` と自分の補助を使う。`supplementary/` は `lib/`、
+`produce/` のいくつかの関数（`p1_centralizer`、`exact_qfminim`、`descent`。`nebe/tables.py` では p2・p3・p6 も）と自分のモジュールを使うので、
+生成スクリプトを変えると補足の計算が壊れうる。`tests/test_layout.py` がこの規則を確かめる。段の間のファイルの受け渡しは `out/` だけを通る:
+v4 が v6・v8・`supplementary/gluing_b.py` のために `out/K8.npy` と `out/K8_first.npy` を書き、v6・v8 はそれを v4 の JSON の記録（合格したこと、
+ファイル・入力・コードの SHA-256）と照合する。
+
 ### ファイル
 
 | ファイル | 中身 |
 |---|---|
-| `lib/__init__.py` | `require`（`assert` の代わりに例外を投げる検査）、`CheckError`、整数の厳密な線形代数 |
+| `lib/__init__.py` | `require`（`assert` の代わりに例外を投げる検査）、`CheckError`、定数 \|L₆\| と \|L₈\|（`N6`、`N8`。v2 が確かめる）、整数の厳密な線形代数 |
 | `lib/data.py` | `data/` の 4 つのファイルの読み込みと SHA-256 の照合 |
 | `lib/certs.py` | `certificates/` の検証用データの読み込みと `certificates/SHA256SUMS` との照合 |
 | `lib/exact.py` | 整数行列の浮動小数点による積が厳密であることを保証する検査 |
@@ -65,14 +74,14 @@ Claude を用いて実装 1 のコードを読まずに書いたもので、デ�
 | `lib/shells.py` | L の最小ベクトルと、それとの内積（§5）。途中経過の保存を含む |
 | `lib/report.py` | `[ok]`/`[FAIL]` の表示と `out/<step>.json` |
 | `verify/v0_inputs.py` 〜 `v8_design_identities.py`、`enum_interval.c` | 検算スクリプト v0〜v8 と、v1 が使う列挙のプログラム（各スクリプトの内容は次の節） |
-| `verify/fetch.sh`・`proof.sh`・`full.sh`・`quick.sh` | 検証用データの取得と 3 つの水準の検算 |
+| `verify/fetch.sh`・`proof.sh`・`full.sh`・`quick.sh`・`preflight.sh` | 検証用データの取得、3 つの水準の検算、最初の段の前の numpy とデータの確認 |
 | `verify/controls/leech.txt` | Leech 格子の Gram 行列。検算スクリプト v1 の陽性対照 |
 | `produce/p1_centralizer.py` 〜 `p6_reduction.py`、`descent.py` | 検証用データの生成（[検証用データの生成](#検証用データの生成)の節）。`descent.py` は p4 と p5 が共有する代表元の探索（類の元 w から始め、内積 ⟨w, u⟩ ≥ 7 となる最小ベクトル u がある限り w を w − 2u に置き換える。ノルムが必ず下がるので止まり、§5 の条件を満たせば w が代表元になる） |
 | `produce/exact_qfminim.py` | PARI の `qfminim` の結果を区間演算の列挙で網羅性まで確かめる関数（`p1` と `supplementary/` が使う） |
 | `crosscheck/second_impl/odd_classes.py`・`even_classes.py`・`design_identities.py`・`minimal_orbits.py`・`coset_enumeration.py` | F5a、F5b、デザインの恒等式、最小ベクトルの軌道の展開の第 2 の実装（numpy のみ）と、⟨2L, t⟩ の列挙による 180 組の抜き取り（SageMath） |
 | `crosscheck/all_data/`・`supplementary/` | [第 2 の実装](#第-2-の実装と補足の計算)・[証明経路 T](#証明経路-t補遺-s4表-d2-の-c20c21c32)・[表 D2 との対応](#論文の表-d2-との対応)の節を参照。`supplementary/nebe/isometry.py` は `identify_nebe.py` と `reduction_to_nebe.py` のために SL₂(29) 同変な等長写像を求める |
 | `run_supplementary.sh` | `supplementary/` の計算をまとめて実行する |
-| `tests/conftest.py`・`tests/test_*.py` | [試験](#試験)の節の試験。`test_exact`（厳密さの検査）、`test_enumerate`（列挙）、`test_group_mod2`（群と標準形）、`test_report_checkpoint`（報告と途中経過）、`test_certs`（検証用データのハッシュ）、`test_scripts`（v0、v1 の対照、v2、シェルの構文）、`test_data`（マーカー `data`）、`test_route_t_exclusion`（[C32] の数行）、`test_check_paper`（`paper/tools/check-paper.py`）、`test_docs`（追跡しているファイルがすべて README で説明されていること）、`test_paper_ledger`（表 D2 と `proof.sh`・docstring、論文に印刷したハッシュと Lean の主張）、`test_sampled_checks`（[C8]、[C11]、[C34] の抜き取りの検査を小さな例で） |
+| `tests/conftest.py`・`tests/test_*.py` | [試験](#試験)の節の試験。`test_exact`（厳密さの検査）、`test_enumerate`（列挙）、`test_group_mod2`（群と標準形）、`test_report_checkpoint`（報告と途中経過）、`test_certs`（検証用データのハッシュ）、`test_scripts`（v0、v1 の対照、v2、シェルの構文）、`test_data`（マーカー `data`）、`test_route_t_exclusion`（[C32] の数行）、`test_check_paper`（`paper/tools/check-paper.py`）、`test_docs`（追跡しているファイルがすべて README で説明されていること）、`test_shells`（小さな格子でのすべての最小ベクトルとの内積）、`test_layout`（依存の規則）、`test_paper_ledger`（表 D2 と `proof.sh`・docstring、論文に印刷したハッシュと Lean の主張）、`test_sampled_checks`（[C8]、[C11]、[C34] の抜き取りの検査を小さな例で） |
 
 ## 検算の実行
 
@@ -101,7 +110,29 @@ bash code/verify/full.sh 3
 
 `bash code/verify/quick.sh`（約 40〜50 分）は短縮した検査です。F1 は陽性対照だけに対して実行し、v7 と v8 を省くので、通過しても定理の全検算にはなりません。
 
-各段は検査ごとに `[ok]`/`[FAIL]` を表示し、結果・ソフトウェアの版・実行時間を `out/<段>.json` に書きます。各段は開始時に古い `out/<段>.json` を消し、エラー（ハッシュの不一致など）で止まったときは `"passed": false` とエラーを書くので、このファイルが古い合格を示すことはありません。合否の正本は終了コード（失敗があれば 0 以外）です。シェルスクリプトは Python を `-I`（隔離モード）で呼び、ライブラリは `python -O` の下での実行を拒否します。
+各段は検査ごとに `[ok]`/`[FAIL]` を表示し、結果・ソフトウェアの版・実行時間を `out/<段>.json` に書きます。各段は開始時に古い `out/<段>.json` を消し、エラー（ハッシュの不一致など）で止まったときは `"passed": false` とエラーを書くので、このファイルが古い合格を示すことはありません。合否の正本は終了コード（失敗があれば 0 以外）です。シェルスクリプトは Python を `-I`（隔離モード）で呼び、ライブラリは `python -O` の下での実行を拒否します。`proof.sh`・`full.sh`・`quick.sh` は、最初の段の前に、Python が numpy を読み込めることと、使う検証用データが `certificates/SHA256SUMS` のハッシュのとおりにそろっていることを確かめる（`verify/preflight.sh`）。`fetch.sh` を忘れても、v1 の 34 分のあとではなく、すぐに分かる。通過したときの表示と `out/` のファイルは[ルートの README](../README.ja.md#最初に実行すること)で説明する。
+
+### JSON の記録
+
+`lib/report.py` を使うスクリプト（`verify/`・`produce/`・`supplementary/` のすべて）は、次の鍵をもつ `out/<段>.json` を書く（形式 2）。
+
+| 鍵 | 内容 |
+|---|---|
+| `format` | 2（v2026-10-25 までの形式 1 には `format`、`arguments`、`code`、`inputs`、`blas`、`compiler` が無い） |
+| `step`、`passed`、`error` | 段の名前。すべての検査が通り、スクリプトが最後まで進んだときだけ `true`。捕まえられなかったエラー（あれば） |
+| `checks` | 表示した順の検査の一覧 `{"check": 見出し, "ok": true/false}` |
+| `values` | 計算した値 `{見出し: 値}`。論文に載せた数や、後の段のために書いたファイルの SHA-256 を含む |
+| `seconds`、`finished` | 実行時間と終了の時刻 |
+| `arguments` | コマンドラインの引数 |
+| `code` | `git`: 作業ツリーの `git describe --always --dirty`（コンテナのイメージのように git が無ければ `null`）。`files`: スクリプトと、それが読み込んだ `code/` のモジュールの、それぞれを読み込んだ時点の SHA-256、およびコンパイルした C のソースの SHA-256。実行中にファイルが書き換えられると実行は失敗になる（終了コード 1、`passed: false`） |
+| `inputs` | 読んだ `data/` と `certificates/` の入力ファイルの SHA-256（それぞれ `lib/data.py` か `certificates/SHA256SUMS` と照合済み） |
+| `python`、`numpy`、`blas`、`platform` | Python と numpy のバージョン、numpy をビルドしたときの BLAS（`numpy.show_config`）、OS |
+| `compiler` | 列挙器 `verify/enum_interval.c` をコンパイルしたときだけ: コマンド、そのパス、`--version` の 1 行目、オプション、コンパイルしたソースの SHA-256（`source_sha256`。ハッシュを取ったバイト列そのものをコンパイルする）と実行ファイルの SHA-256（`executable_sha256`） |
+| `certificate_hashes` | `--hashes FILE` を指定したときだけ: `certificates/SHA256SUMS` の代わりに使ったハッシュの一覧 |
+
+終了コードはどのスクリプトでも、すべての検査が通れば 0、検査の失敗かエラーなら 1、使い方の誤り（未知のオプションや段名）なら 2 である。
+`crosscheck/` の第 2 の実装は、`lib/` とコードを共有しないよう、意図して別の形の記録を書く（`out/crosscheck_all_data/<段>.json`、
+または表示する `RESULT:` の行と入力のハッシュ）。
 
 ## 検算の各段
 
@@ -128,6 +159,12 @@ F5b は無関係な 2 つの議論（v6 と v7）で確かめます。証明に�
 どの積をこの方法で計算するかを書いてあります。この保証と、結果が依存するほかの条件（int64 があふれないこと、展開や列挙が完全なこと）は、
 `python -O` で取り除かれる `assert` ではなく、例外を送出する `require(...)` で書きます。さらに `-O` の下では各段が開始を拒否します（古い `out/<段>.json` を消し、拒否したことをそこに記録します）。
 F1 の列挙は外向きに丸める区間演算を使います（`verify/enum_interval.c` の冒頭）。
+
+これらの論拠は、計算機についての前提に依る。前提は、明記したもののほかはコードで確かめない。部分和の上界による議論は、足し算の順序や
+積和演算（FMA）の有無によらず浮動小数点の積を厳密にする。ただし、BLAS が行列の積を個々の積の IEEE 浮動小数点の和として計算することを
+仮定する。OpenBLAS、MKL、BLIS、Accelerate はこれを満たし、Strassen 型の算法や精度を落とした計算核はこれを満たさない。`enum_interval.c` の
+区間演算は、IEEE の binary64、最近接丸め、余分な精度なしを仮定する。`FLT_EVAL_METHOD` が 0 でなければコンパイルを止め、丸めのモードは
+実行時に確かめ、区間の端点は C が厳密に読める 16 進表記で Python から渡す。使った BLAS と C コンパイラは JSON の記録に残る。
 
 ## 動作環境
 
@@ -175,12 +212,14 @@ python -m pytest code/tests -m data          # certificates/*.npz（fetch.sh）�
 マーカーは `slow`（検算スクリプト全体を子プロセスで走らせるもの。数秒より長い）と `data`（大きな検証用データが必要。無ければ飛ばす）です。
 CI は pull request ごとに `-m "not data"` を実行し、`data` の試験は週に 1 回と手動で実行します（`.github/workflows/data-tests.yml`）。
 
-対象: 厳密さの保証と線形代数、総当たり・既知の格子との比較による列挙器の検査、群の閉包と 2 を法とする標準形、
-結果の記録と途中経過の扱い、v0・v2・`v1 --controls-only`、公開ハッシュとの一致と改変した入力の拒否、`code/` と `lean/` の
-シェル構文。`data` の試験では、公開したデータと改変した certificate で v5、別の入力のための途中経過の有無を変えて
+対象: 厳密さの保証と線形代数、総当たり・既知の格子との比較による列挙器の検査、L に対する列挙器の入力（列挙の手前までの v1 の経路）、
+群の閉包と 2 を法とする標準形、すべての最小ベクトルとの内積の最大（v5・v7 が使う `MinimalVectors.max_abs_inner`）の、群をもつ小さな格子での
+総当たりとの比較、結果の記録・JSON の形式・途中経過の扱い、v4 から v6・v8 への受け渡し（`load_output_of`。変わったファイル、別の入力、
+別のコードを拒否しなければならない）、v0・v2・`v1 --controls-only`、公開ハッシュとの一致と改変した入力の拒否、データが無いときに `proof.sh` が
+計算の前に止まること（`preflight.sh`）、ディレクトリの間の依存の規則、`code/` と `lean/` のシェル構文。`data` の試験では、公開したデータと改変した certificate で v5、別の入力のための途中経過の有無を変えて
 `v7 --limit 64` を走らせます。個々の例は `tests/test_*.py` を参照してください。
 
-対象外: これらの試験は定理の検算ではなく、`proof.sh` や `full.sh` の代わりにはなりません。L についての v1、v3、v4、v6、v8、64 組を超える v7、
+対象外: これらの試験は定理の検算ではなく、`proof.sh` や `full.sh` の代わりにはなりません。L についての v1 の列挙、v3、v4、v6、v8、64 組を超える v7、
 `produce/`、`crosscheck/`、`supplementary/`、`lean/` は走らせません。
 
 ## 検証用データの生成
@@ -188,18 +227,29 @@ CI は pull request ごとに `-m "not data"` を実行し、`data` の試験は
 | スクリプト | 作るもの | 時間 |
 |---|---|---|
 | `produce/p1_centralizer.py` | M′ と中心化群 C（`centralizer.npz`、`commutant.npz`） | 10 分 |
-| `produce/p2_minimal_orbits.py` | `min_reps.npz`（閉包、§6.2） | 9 分 |
-| `produce/p3_norm8_orbits.py` | `norm8_reps.npz`（印の付く元（2 本の最小ベクトルの和）、§6.4） | 1.2 時間 |
+| `produce/p2_minimal_orbits.py` | `min_reps.npz`（閉包、§6.2） | 10 分 |
+| `produce/p3_norm8_orbits.py` | `norm8_reps.npz`（印の付く元（2 本の最小ベクトルの和）、§6.4） | 1.2 時間（メモリ: 最初からなら最大 7.3 GB、再開なら約 4.5 GB） |
 | `produce/p4_odd_descent.py` | `odd_bounding.npz`（降下、§6.6） | 6 分 |
 | `produce/p5_even_descent.py` | `even_bounding.npz`（降下、§6.7。6 分割、再開可能） | 約 190 CPU 時間 |
 | `produce/p6_reduction.py` | `reduction_L.txt`、`reduction_L112.txt` | 1 分 |
 
+`produce/descent.py`（p4・p5 の降下）と `produce/exact_qfminim.py`（PARI の `qfminim` に、`verify/` の列挙器による完全性の検査を加えたもの）は、
+これらのスクリプトと `supplementary/` が使う補助である。
+
 生成スクリプトは `certificates/` には書きません（そこのファイルは `certificates/SHA256SUMS` で固定されています）。各スクリプトは、配布ファイルと
 同じ名前で `out/p<k>/` の下に書き（たとえば `out/p4/odd_bounding.npz`）、そのあと配布した検証用データと比べます。違いがあれば `[FAIL]` と
-終了コード 1 で報告します。p4・p5・p6 は配布ファイルをビット単位で再現しなければなりません（p6 はテキストのファイルをバイト単位で比べます）。
-p1 は C/{±1} の 6 元を符号を除いた集合として、M′ の基底を張る Z-格子（Hermite 標準形の一致）で比べます。p2 と p3 は別の代表を選びうるので、
-p2 は類 r + 2L の標準形の集合（最小ベクトルではこれが同じ軌道を意味します）と代表の個数で、p3 は類 x u_k + 2L の標準形の集合、軌道の個数、
-軌道の大きさの多重集合で比べます。試しの実行（`p3 --trial`、`p5 --limit`）は別の名前のファイルを使い、本番の実行のファイルや途中経過を上書きしません。
+終了コード 1 で報告します。p3・p4・p5・p6 は配布ファイルをビット単位で再現しなければなりません（p6 はテキストのファイルをバイト単位で比べ、
+p3 はまず類 x u_k + 2L の標準形の集合、軌道の個数、軌道の大きさの多重集合を比べ、そのあとファイルを比べます）。p1 は C/{±1} の 6 元を符号を除いた
+集合として、M′ の基底を張る Z-格子（Hermite 標準形の一致）で比べる。実際には p1 のファイルも配布ファイルと同一である。p2 は類 r + 2L の標準形の
+集合（最小ベクトルではこれが同じ軌道を意味します）と代表の個数で比べます。試しの実行（`p3 --trial`、`p5 --limit`）は別の名前のファイルを使い、
+本番の実行のファイルや途中経過を上書きしません。
+
+ここでの「再現」の意味: 各生成スクリプトは、前の生成スクリプトの出力ではなく、配布した上流のファイルを読む（p3 と p4 は `certificates/min_reps.npz`、
+p5 は `certificates/norm8_reps.npz`、どれも `certificates/centralizer.npz` を読む）。したがって、比べているのは段ごとの再現である。配布した
+`min_reps.npz` は、p2 を今の形に書く前に、元の計算で見つけたものである。閉包は同じだが、SageMath の標本抽出で無作為に選んだ最小ベクトルから
+始めた。p2 は同じ 656 軌道を別の代表で見つけ（符号を除いても配布した代表と一致するものは無い）、配布したファイルそのものは作り直せない。証明は
+代表の見つけ方に依らない（v3 が代表を確かめる）。p3 は、元の計算と同じく、SL₂(29) の各組 {g, −g} から先に見つかった元を取るので、
+`norm8_reps.npz` を同じ並びで再現する（符号の取り方によらず軌道は同じだが、別の取り方では別の代表が別の並びで出る）。
 
 `supplementary/genus/genus.py` のデータを作る段（`enum`、`build`、`witness`、`identify`）は、既定では `certificates/` ではなく `out/genus/` に書き、
 書いたファイルを配布したファイルと比べます（同じ、整数が同じ、違う、のいずれかを報告します。`genus_classes.txt` は一致しなければならず、
@@ -211,22 +261,28 @@ p2 は類 r + 2L の標準形の集合（最小ベクトルではこれが同じ
 最小ベクトルの表を作る）、`v2`、`v3cheap`、`v4`、`v3full`、`neg`、`summary` をこの順に走らせます。各段は判定が FAIL なら
 終了コード 1 で終わります。`summary` は、必須の段がすべて今の入力で合格していなければ終了コード 1 で終わります（入力は
 `SHA256SUMS` と照合し、キャッシュは入力のダイジェストごとに分けて置きます）。`min_L.py 4` と `min_L.py 4 --test e8x7` は F1 と
-その陽性対照を確かめます。`crosscheck/second_impl/` のスクリプトは、結果を論文の数と比べ、`RESULT: PASS`（終了コード 0）
-か `RESULT: FAIL`（終了コード 1）で終わります。`coset_enumeration.py` 以外は numpy だけを使う。
+その陽性対照を確かめます。`crosscheck/second_impl/` のスクリプト（引数は `--help` で表示する）は、結果を論文の数と比べ、
+`RESULT: PASS`（終了コード 0）か `RESULT: FAIL`（終了コード 1）で終わります。`coset_enumeration.py` 以外は numpy だけを使う。
 
 ```bash
 python3 -I code/crosscheck/second_impl/minimal_orbits.py        # F2: 展開、非交性、m = 6 のデザインの恒等式
-python3 -I code/crosscheck/second_impl/design_identities.py     # F3: m = 8 のデザインの恒等式
-python3 -I code/crosscheck/second_impl/odd_classes.py           # F5a: 656 個の奇の類の代表元
-python3 -I code/crosscheck/second_impl/even_classes.py C B      # F5b: 標準形（tau と貼り方 B）
+python3 -I code/crosscheck/second_impl/design_identities.py 3   # F3: norm8_reps.npz に対する m = 8 のデザインの恒等式（試すベクトル 3 本）
+python3 -I code/crosscheck/second_impl/odd_classes.py           # F5a、表 7: 656 個の奇の類の代表元
+python3 -I code/crosscheck/second_impl/even_classes.py C B      # 標準形による F5b。B は陰性対照
 python3 -I code/crosscheck/second_impl/coset_enumeration.py     # <2L, t> の列挙による 180 組の抜き取り（SageMath）
 ```
 
-`bash code/run_supplementary.sh [段名…]` は `supplementary/` の計算を走らせます（既定ではすべて。一覧と収録していないものは
-スクリプトの冒頭にあります）。SageMath を含む Python を `PYTHON` で（既定は `python3`。例えば `environment.yml` の conda 環境の
-もの。SageMath の配布物なら `PYTHON="sage -python"`）、CTblLib を含む GAP を `GAP` で（既定は `gap`）与え、`fetch.sh` で
-データを取得しておきます。段 `gluing_b` には `verify/v4_norm8_orbits.py` が書く `out/K8.npy` が要ります。失敗した段があっても
-残りは続け、最後に失敗した段を一覧にして終了コード 1 で終わります。いくつかのスクリプトが共有する関数（偶奇を保つ写像の類、
+`odd_classes.py`、`even_classes.py`、`design_identities.py` と `all_data/` は、入力ファイルを自前のコードで `data/SHA256SUMS` と `certificates/SHA256SUMS` に照合し、ハッシュを表示または記録する。
+
+`bash code/run_supplementary.sh [段名…]` は `supplementary/` の計算を走らせます（既定では 30 段すべてで、1 コアで約 6 時間かかる。
+そのうち `float_cvp610` が約 2.5 時間。一覧、各段の時間、収録していないものはスクリプトの冒頭にある）。SageMath を含む Python を `PYTHON` で
+（既定は `python3`。例えば `environment.yml` の conda 環境のもの。SageMath の配布物なら `PYTHON="sage -python"`。`-I` を付けて呼ぶ）、
+CTblLib を含む GAP を `GAP` で（既定は `gap`）与え、`fetch.sh` でデータを取得しておきます。段 `gluing_b` には `verify/v4_norm8_orbits.py` が
+書く `out/K8.npy` が要ります。先の段の出力を読む段がある（`identify_nebe` と `nebe_tables` は `nebe_lattices` の、`nebe_gluings` と
+`reduction_to_nebe` は `nebe_tables` の、`anatomy_b` は `gluing_b` の、`route_t_recount` は `route_t_classify` の出力）。入力が無い段は、先に
+走らせる段を示して失敗とする。失敗した段があっても残りは続け、最後に失敗した段を一覧にして終了コード 1 で終わります。各段は `out/logs/<段>.log` を
+書き、Python の段は段の名前の JSON の記録も書く（`out/gluings.json` など。`route_t_check_search3.json`、`route_t_exclusion_check.json`、
+`isometry_ab_check.json` はモードを付けた名前）。いくつかのスクリプトが共有する関数（偶奇を保つ写像の類、
 同変な等長写像の探索など）は `supplementary/_shared.py` にあります。
 
 ## 証明経路 T（補遺 §S4、表 D2 の [C20]・[C21]・[C32]）

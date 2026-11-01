@@ -1,6 +1,6 @@
-"""S19. Gluings of two copies of Nebe's L_{56,2}(M) (paper §3.2, §3.3, Proposition 3.3, Table 2 rows for
+"""Gluings of two copies of Nebe's L_{56,2}(M) (paper §3.2, §3.3, Proposition 3.3, Table 2 rows for
 L_{56,2}(M), Table 6 row "gluing A"; Table D2 [C3], [C4]). Not used in the proof of Theorem A.
-S19. Nebe の L_{56,2}(M) 2 枚の貼り方（論文 §3.2、§3.3、命題 3.3、表 2 の L_{56,2}(M) の行、表 6 の「貼り方 A」の行。表 D2 の [C3], [C4]）。
+Nebe の L_{56,2}(M) 2 枚の貼り方（論文 §3.2、§3.3、命題 3.3、表 2 の L_{56,2}(M) の行、表 6 の「貼り方 A」の行。表 D2 の [C3], [C4]）。
 定理 A の証明には使わない。
 
 Uses out/nebe/M_* (lattices.py) and out/nebe/M_tables.npz (tables.py).
@@ -57,10 +57,10 @@ def main():
     from descent import Descent
     from lattices import load
     from p1_centralizer import commutant_basis, elements_of_norm
-    ap = argparse.ArgumentParser(description="S19: gluings of two copies of L_{56,2}(M)")
+    ap = argparse.ArgumentParser(description="gluings of two copies of L_{56,2}(M)")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report("s19_nebe_gluings", a.out)
+    rep = Report("nebe_gluings", a.out)
     out = os.path.join(rep.out_dir, "nebe")
     n = 56
     F2 = GF(2)

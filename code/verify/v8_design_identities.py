@@ -19,6 +19,14 @@ A duplicated or missing orbit would break the identities (barring coincidence).
 （k は偶数）。m = 6 では min_reps.npz の軌道とその大きさ（V3）、m = 8 では out/K8_first.npy（V4。SHA-256 を out/v4_norm8_orbits.json と照合する）から軌道ごとに 1 本を取る
 （どの軌道も正則）。軌道の重複や欠落があれば、（偶然を除いて）等式が崩れる。
 
+What this tests for m = 8: K8_first.npy is written by V4 after V4 has removed duplicates by canonical forms and
+checked the size sum, so here the identities only confirm that V4's result is consistent with them; they do not
+check the norm-8 orbit list independently of V4. The independent check of the orbit list of
+certificates/norm8_reps.npz by these identities is crosscheck/second_impl/design_identities.py.
+m = 8 について何を確かめるか: K8_first.npy は、V4 が標準形で重複を除き大きさの和を確かめたあとに書くので、ここでの恒等式は V4 の結果が
+恒等式と矛盾しないことを確かめるだけであり、ノルム 8 の軌道の一覧を V4 と独立には点検しない。certificates/norm8_reps.npz の軌道の一覧を
+この恒等式で独立に点検するのは crosscheck/second_impl/design_identities.py である。
+
 Exactness: inner products in float64 with the exactness bound checked; powers and sums in int64
 per block (bounded), accumulated in Python integers; comparison with exact fractions.
 厳密さ: 内積は float64 で厳密さの上界を確かめる。冪と和はブロックごとに int64（上界を確かめる）で、Python の整数に足し込む。

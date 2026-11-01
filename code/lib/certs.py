@@ -11,6 +11,8 @@
                                                  crosscheck/all_data が使う。verify/ は読まない）
   norm8_reps.npz     reps  int16 (254664, 56)    representatives x_i of the S*-orbits on L_8 (F3)
                                                  L_8 の S*-軌道の代表 x_i（F3）
+                     sizes int64 (254664,)       |S*-orbit of x_i| (produce/p3, crosscheck/; not read by verify/)
+                                                 x_i の S*-軌道の大きさ（produce/p3、crosscheck/ が使う。verify/ は読まない）
   odd_bounding.npz   w0    int16 (656, 56)       odd-class certificate of r_j tau + 2L, row j (F5a)
                                                  r_j tau + 2L の奇の類の certificate（第 j 行）（F5a）
   even_bounding.npz  w0    int16 (1527984, 56)   even-class certificate of x_i u_k tau + 2L
@@ -34,8 +36,8 @@ import sys
 
 import numpy as np
 
-from . import require
-from .data import read_integers, sha256_file
+from . import CheckError, require
+from .data import CHECKED_INPUTS, read_integers, sha256_file
 
 DEFAULT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "certificates")
 
@@ -90,11 +92,15 @@ def path_checked(name, directory=None, require_hash=True):
     path = os.path.join(directory, name)
     hashes = expected_hashes()
     if name in hashes:
+        if not os.path.isfile(path):
+            raise CheckError(f"{path} is missing: run bash code/verify/fetch.sh first / ファイルが無い。先に fetch.sh を実行する")
         got = sha256_file(path)
         if got != hashes[name]:
-            raise ValueError(f"{path}: SHA-256 {got} differs from {hashes[name]} in {HASHES_FILE}")
+            raise CheckError(f"{path}: SHA-256 {got} differs from {hashes[name]} in {HASHES_FILE} "
+                             "(run bash code/verify/fetch.sh to download the published file)")
+        CHECKED_INPUTS["certificates/" + name] = got
     elif require_hash:
-        raise ValueError(f"{name} is not listed in {HASHES_FILE}")
+        raise CheckError(f"{name} is not listed in {HASHES_FILE}")
     return path
 
 

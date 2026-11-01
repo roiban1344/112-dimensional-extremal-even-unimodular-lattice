@@ -33,7 +33,7 @@ conda environment of environment.yml):
   r = 4（主張）、または r = 4 と --test e8x7（陽性対照）。r = 6 は `check_all.py v1` が作る表 M/{+-1} と比べる。
   判定が PASS でなければ終了コード 1 で終わる。
 """
-import sys, os, json, time, subprocess, platform, argparse, shutil
+import sys, os, json, time, subprocess, platform, argparse, shutil, hashlib
 
 if not __debug__:
     # Remove the result this run would write (out/crosscheck_all_data/F1-r<r>[-<test>].json), so that an earlier
@@ -62,8 +62,22 @@ def log(*a):
     print(f"[{time.time() - T0:9.1f}s]", *a, flush=True)
 
 
+INPUTS = {}
+
+
 def read_gram():
-    rows = [list(map(int, l.split())) for l in open(os.path.join(D, "L56_gram.txt")) if l.strip() and not l.startswith("#")]
+    """data/L56_gram.txt, after checking its SHA-256 against data/SHA256SUMS (hashlib only; exit code 1 if it differs).
+    data/L56_gram.txt を、SHA-256 を data/SHA256SUMS と照合してから読む（hashlib だけ。違えば終了コード 1）。"""
+    path = os.path.join(D, "L56_gram.txt")
+    with open(os.path.join(D, "SHA256SUMS")) as f:
+        sums = {name.lstrip("*"): h for h, name in (line.split() for line in f if line.strip())}
+    with open(path, "rb") as f:
+        h = hashlib.sha256(f.read()).hexdigest()
+    INPUTS["data/L56_gram.txt"] = h
+    if h != sums.get("L56_gram.txt"):
+        log(f"[FAIL] data/L56_gram.txt has SHA-256 {h}, not the one in data/SHA256SUMS")
+        sys.exit(1)
+    rows = [list(map(int, l.split())) for l in open(path) if l.strip() and not l.startswith("#")]
     assert len(rows) == N and all(len(r) == N for r in rows)
     return rows
 
@@ -255,6 +269,7 @@ def main():
         ok = (res["enum_count"] == 2 * len(Mh) == 15590400 and h2 == res["enum_hash2"] and h4 == res["enum_hash4"])
         res["verdict(positive control: all minimal vectors found)"] = "PASS" if ok else "FAIL"
     ok = ok and unimodular
+    res["inputs_sha256"] = INPUTS
     res["_machine"] = {"host": platform.node(), "platform": platform.platform()}
     res["_finished"] = time.strftime("%Y-%m-%d %H:%M:%S %Z")
     log(json.dumps({k_: v for k_, v in res.items() if k_ != "reduced_diag"}, indent=1))

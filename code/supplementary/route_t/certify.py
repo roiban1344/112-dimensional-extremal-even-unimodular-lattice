@@ -1,6 +1,6 @@
-"""S21. Route T, producing the certificates of searches (2) and (3) (supplement §S4.1; Table D2 [C21]).
+"""Route T, producing the certificates of searches (2) and (3) (supplement §S4.1; Table D2 [C21]).
 Not used in the proof of Theorem A. The certificates are checked independently by check.py.
-S21. 経路 T、探索 (2)・(3) の certificate を作る（補遺 §S4.1、表 D2 の [C21]）。定理 A の証明には使わない。certificate は check.py が別に検算する。
+経路 T、探索 (2)・(3) の certificate を作る（補遺 §S4.1、表 D2 の [C21]）。定理 A の証明には使わない。certificate は check.py が別に検算する。
 
 For each class (see common.py) a vector w0 of the class is reduced until |<w0, y>| <= 6 for all
 minimal vectors y: while some y has <w0, y> >= 7 (up to sign), replace w0 by w0 - 2 sign y, which
@@ -173,7 +173,7 @@ def collect(src, out, rep, base=None):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="S21: route T certificates")
+    ap = argparse.ArgumentParser(description="route T certificates")
     ap.add_argument("mode", choices=("search3", "search2", "collect"))
     ap.add_argument("--part", type=int, default=0)
     ap.add_argument("--nparts", type=int, default=1)
@@ -186,7 +186,7 @@ def main():
     certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    tag = "s21_route_t_" + a.mode + (f"_part{a.part}of{a.nparts}" if a.mode == "search2" else "")
+    tag = "route_t_certify_" + a.mode + (f"_part{a.part}of{a.nparts}" if a.mode == "search2" else "")
     rep = Report(tag, a.out)
     out = os.path.join(rep.out_dir, "route_t")
     os.makedirs(out, exist_ok=True)

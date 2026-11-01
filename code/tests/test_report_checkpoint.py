@@ -81,6 +81,133 @@ def test_pythonoptimize_is_ignored_with_isolated_mode(tmp_path):
     assert proc.returncode == 0, proc.stdout
 
 
+# --- the format of out/<step>.json / out/<段>.json の形式 ---------------------------------------------------
+
+def test_json_records_format_code_and_inputs(tmp_path):
+    proc, res = run_snippet("import os\nfrom lib import data, enumerate as en\ndata.gram()\n"
+                            "en.compile_enumerator(os.path.join(rep.out_dir, 'build'))\nrep.finish()", tmp_path)
+    assert proc.returncode == 0, proc.stdout
+    assert res["format"] == 2 and res["passed"] is True
+    assert {"step", "error", "checks", "values", "seconds", "finished", "arguments", "python", "numpy", "blas",
+            "platform"} <= set(res)
+    from lib import data
+    assert res["inputs"] == {"data/L56_gram.txt": data.SHA256["L56_gram.txt"]}
+    files = res["code"]["files"]
+    assert "code/lib/report.py" in files and "code/lib/data.py" in files and all(len(h) == 64 for h in files.values())
+    assert "git" in res["code"]
+    assert res["compiler"]["flags"] == ["-O2", "-std=c11", "-fno-fast-math", "-ffp-contract=off"]
+    # The compiled C source and the executable are identified by their hashes (F1 runs the C enumerator).
+    # コンパイルした C のソースと実行ファイルをハッシュで特定する（F1 は C の列挙器で走る）。
+    import hashlib
+    with open(os.path.join(CODE, "verify", "enum_interval.c"), "rb") as f:
+        src_sha = hashlib.sha256(f.read()).hexdigest()
+    assert res["compiler"]["source"] == "code/verify/enum_interval.c"
+    assert res["compiler"]["source_sha256"] == src_sha == files["code/verify/enum_interval.c"]
+    assert len(res["compiler"]["executable_sha256"]) == 64
+
+
+def test_source_edited_during_the_run_fails(tmp_path):
+    # A module of code/ loaded with VALUE = 1 and then edited to VALUE = 2 before finish(): the record keeps the
+    # hash of the loaded version and the run fails, since the JSON would otherwise not describe the code that ran.
+    # VALUE = 1 で読み込んだ code/ のモジュールを finish() の前に VALUE = 2 に書き換える: 記録は読み込んだ版のハッシュを保ち、
+    # 実行は失敗になる（さもないと JSON が実行したコードを指さない）。
+    mod_dir = tmp_path / "code"
+    mod_dir.mkdir()
+    (mod_dir / "edited_module.py").write_text("VALUE = 1\n")
+    body = ("import hashlib, lib.report as R\n"
+            f"R.CODE_DIR = {str(mod_dir)!r}\n"
+            f"sys.path.insert(0, {str(mod_dir)!r})\n"
+            "import edited_module\n"
+            f"open({str(mod_dir / 'edited_module.py')!r}, 'w').write('VALUE = 2\\n')\n"
+            "print('value', edited_module.VALUE, flush=True)\n"
+            "rep.check('one', True); rep.finish()\n")
+    proc, res = run_snippet(body, tmp_path / "out")
+    assert "value 1" in proc.stdout and proc.returncode == 1
+    assert res["passed"] is False and "changed during the run" in res["error"]
+    import hashlib
+    (h,) = [h for f, h in res["code"]["files"].items() if f.endswith("edited_module.py")]
+    assert h == hashlib.sha256(b"VALUE = 1\n").hexdigest()
+
+
+def test_cached_enumerator_is_not_reused_after_a_compiler_update(tmp_path):
+    # A compiler updated at the same path: the executable of the old compiler is not reused, so the recorded version
+    # is that of the compiler that built the recorded executable. Separate processes, as in two runs.
+    # 同じパスのコンパイラを更新した場合: 古いコンパイラの実行ファイルを再利用しない。記録する版は、記録する実行ファイルを作ったコンパイラのものになる。
+    # 2 回の実行と同じく、別のプロセスで試す。
+    version, cc = tmp_path / "version", tmp_path / "cc"
+    cc.write_text('#!/bin/sh\nif [ "$1" = "--version" ]; then cat "%s"; exit 0; fi\necho x >> "%s"\nexec gcc "$@"\n'
+                  % (version, tmp_path / "calls"))
+    cc.chmod(0o755)
+    src = (f"import sys, json; sys.path.insert(0, {CODE!r})\n"
+           "from lib import enumerate as en\n"
+           f"exe = en.compile_enumerator({str(tmp_path / 'build')!r})\n"
+           "print(json.dumps([exe, en.COMPILED['version']]))\n")
+    env = dict(os.environ, CC=str(cc))
+
+    def run():
+        out = subprocess.run([sys.executable, "-c", src], env=env, capture_output=True, text=True, check=True)
+        return json.loads(out.stdout)
+    version.write_text("cc 1.0\n")
+    exe1, v1 = run()
+    assert run() == [exe1, v1] and (tmp_path / "calls").read_text().count("x") == 1    # same compiler: reused
+    version.write_text("cc 2.0\n")
+    exe2, v2 = run()
+    assert (v1, v2) == ("cc 1.0", "cc 2.0") and exe2 != exe1
+    assert (tmp_path / "calls").read_text().count("x") == 2
+
+
+def test_p3_checkpoint_is_tied_to_the_order_of_s(tmp_path):
+    # The order of S decides the representatives, so a checkpoint made with another order is refused before computing.
+    # S の順序が代表を決めるので、別の順序で作った途中経過は計算の前に拒否する。
+    from produce.p3_norm8_orbits import State, fingerprint
+    G = np.eye(2, dtype=np.int64)
+    S = np.arange(24, dtype=np.int64).reshape(6, 2, 2)
+    old, new = fingerprint(G, S[::-1]), fingerprint(G, S)
+    assert old != new
+    path = str(tmp_path / "state.npz")
+    State(1, old).save(path)
+    assert State.load(path, 1, old).inputs == old
+    with pytest.raises(SystemExit, match="other inputs"):
+        State.load(path, 1, new)
+
+
+# --- lib.report.load_output_of (v4 -> v6, v8) ------------------------------------------------------------
+
+LOAD = """
+import json, os
+import numpy as np
+from lib import data
+from lib.report import load_output_of
+s = Report('s', rep.out_dir)
+p = os.path.join(rep.out_dir, 'K.npy')
+np.save(p, np.arange(5))
+s.value('SHA-256 of out/K.npy', data.sha256_file(p))
+s.value('SHA-256 of the inputs', {'a': '1'})
+s.finish()
+js = os.path.join(rep.out_dir, 's.json')
+rec = json.load(open(js))
+"""
+
+
+@pytest.mark.parametrize("change, failed", [
+    ("", None),
+    ("rec['passed'] = False", "records a passed run"),
+    ("expected = {'a': '2'}", "same certificate files"),
+    ("np.save(p, np.arange(6))", "has the SHA-256 recorded by s"),
+    ("f = sorted(rec['code']['files'])[0]; rec['code']['files'][f] = '0' * 64", "made by the same code"),
+    ("del rec['code']", "made by the same code"),
+])
+def test_load_output_of(tmp_path, change, failed):
+    body = (LOAD + "expected = {'a': '1'}\n" + change + "\njson.dump(rec, open(js, 'w'))\n"
+            "K = load_output_of(rep, 's', 'K.npy', expected)\nrep.check('loaded', list(K) == list(range(5)))\nrep.finish()\n")
+    proc, res = run_snippet(body, tmp_path)
+    if failed is None:
+        assert proc.returncode == 0 and res["passed"] is True, proc.stdout
+    else:
+        assert proc.returncode == 1 and res["passed"] is False, proc.stdout
+        assert failed in res["checks"][-1]["check"] and res["checks"][-1]["ok"] is False
+
+
 # --- checkpoints of lib.shells.max_abs_inner_checkpointed / 途中経過 ------------------------------------
 
 class FakeMinimalVectors:

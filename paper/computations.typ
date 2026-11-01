@@ -4,7 +4,7 @@
 // time: 各ファイルの docstring の「Run time」が正本で、ここはその写し（ファイルごとに「名前 時間」を改行で区切る）。
 //   code/tests/test_paper_ledger.py が、ここの「数 単位」がその行のファイルの docstring（lean/ は lean/README.md）にあることを確かめる。
 // 付録の表では、code/verify/proof.sh が走らせる検査（proof-checks。同じ試験が proof.sh と照合する）を太字にする。
-#let code-base = "https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/tree/main/"
+#let code-base = "https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/tree/v2026-10-25/"
 
 // code/verify/proof.sh が走らせる検査（経路 A）。表 D2 で太字にする。
 #let proof-checks = ("code/verify/v0_inputs.py", "code/verify/v1_min_L.py", "code/verify/enum_interval.c", "code/verify/v2_theta.py",

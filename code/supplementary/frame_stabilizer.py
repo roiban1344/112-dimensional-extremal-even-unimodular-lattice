@@ -1,6 +1,6 @@
-"""S2. Automorphisms of L_112 preserving the standard frame, and the halving of the (8,8) pairs in
+"""Automorphisms of L_112 preserving the standard frame, and the halving of the (8,8) pairs in
 route B (supplement §S3.2, Table S7). Not used in the proof of Theorem A.
-S2. 標準の枠を保つ L_112 の自己同型と、経路 B での (8,8) 型の組の半減（補遺 §S3.2、表 S7）。定理 A の証明には使わない。
+標準の枠を保つ L_112 の自己同型と、経路 B での (8,8) 型の組の半減（補遺 §S3.2、表 S7）。定理 A の証明には使わない。
 
 For a, d in the centralizer C, the map (x, v) -> (x a, v d) preserves L_112 = {(x, v) : v = x tau mod 2L}
 iff a tau = tau d (mod 2). Then the test of the pair (x_i, u) (does x_i u tau + 2L contain a norm-8
@@ -24,12 +24,12 @@ from lib.report import Report  # noqa: E402
 
 
 def main():
-    ap = argparse.ArgumentParser(description="S2: frame stabilizer")
+    ap = argparse.ArgumentParser(description="frame stabilizer")
     ap.add_argument("--data", default=None)
     certs.add_arguments(ap)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rep = Report("s2_frame_stabilizer", a.out)
+    rep = Report("frame_stabilizer", a.out)
     mm = exact.i64_matmul
     G = data.gram(a.data)
     t = data.tau(a.data)

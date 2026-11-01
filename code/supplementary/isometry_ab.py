@@ -1,6 +1,6 @@
-"""S24. Gluings A and B are isometric (paper §3.3, Supplement §S5; Table D2 [C28]). Not used in the proof
+"""Gluings A and B are isometric (paper §3.3, Supplement §S5; Table D2 [C28]). Not used in the proof
 of Theorem A.
-S24. 貼り方 A と B は等長同型（論文 §3.3、補遺 §S5。表 D2 の [C28]）。定理 A の証明には使わない。
+貼り方 A と B は等長同型（論文 §3.3、補遺 §S5。表 D2 の [C28]）。定理 A の証明には使わない。
 
 Gluing A is L_f for Nebe's L_{56,2}(M) (centralizer order 24) and f in the class of 48 maps that contains no
 element of C, with the same integral lift X_A of f as in supplementary/nebe/gluings_m.py; gluing B is L_B for
@@ -24,7 +24,7 @@ supplementary/nebe/gluings_m.py と同じ）。貼り方 B は、L = data/L56_gr
          (32-dimensional); in the bases of the two gluings they are T = B_A Phi B_B^{-1}. On the Z-lattice H of
          those T that are integral, Q(T) = tr(G_A^{-1} T G_B T^T) is positive definite and equals 112 on
          isometries; all T with Q(T) <= 112 are enumerated (qfminim, checked complete by produce/exact_qfminim.py)
-         and T G_B T^T = G_A is tested exactly. Writes out/s24/isometry_AB.txt (T) and out/s24/gram_A.txt
+         and T G_B T^T = G_A is tested exactly. Writes out/isometry_ab/isometry_AB.txt (T) and out/isometry_ab/gram_A.txt
          (G_A) (never certificates/, whose files are fixed by certificates/SHA256SUMS) and compares them byte
          for byte with the distributed certificates/isometry_AB.txt and certificates/gram_A.txt; a difference
          is a failure (exit code 1).
@@ -32,7 +32,7 @@ supplementary/nebe/gluings_m.py と同じ）。貼り方 B は、L = data/L56_gr
          同じ有理空間 V ⊕ V の中にあり、対角に作用する同じ群 S で不変。S 同変な線形写像は M'(L_{56,2}(M))⊗Q を成分とするブロック行列（32 次元）で、
          二つの貼り方の基底では T = B_A Phi B_B^{-1}。そのうち整数の T の Z-格子 H の上で Q(T) = tr(G_A^{-1} T G_B T^T) は正定値で、
          等長写像では 112。Q(T) ≤ 112 の T をすべて列挙し（qfminim。exact_qfminim.py で完全性を確かめる）、T G_B T^T = G_A を厳密に確かめる。
-         out/s24/isometry_AB.txt（T）と out/s24/gram_A.txt（G_A）を書き（certificates/ には書かない。そこのファイルは certificates/SHA256SUMS
+         out/isometry_ab/isometry_AB.txt（T）と out/isometry_ab/gram_A.txt（G_A）を書き（certificates/ には書かない。そこのファイルは certificates/SHA256SUMS
          で固定されている）、配布した certificates/isometry_AB.txt・certificates/gram_A.txt とバイト単位で比べる。違えば失敗（終了コード 1）とする。
   check  (numpy only, integer arithmetic). Rebuilds G_B from data/L56_gram.txt and tau_class_B (checking
          tau_B^2 = -5, tau_B commutes with SL_2(29), G_B even of determinant 1), reads G_A from
@@ -89,7 +89,7 @@ def lift_class_A(Gs, gens_s, rep):
 def find(a):
     from sage.all import QQ, ZZ, block_matrix, identity_matrix, matrix, zero_matrix
     from lattices import load, read_mats
-    rep = Report("s24_isometry_ab_find", a.out)
+    rep = Report("isometry_ab_find", a.out)
     n = N
     Gs, gens_s = load("M", rep.out_dir, reduce=True)               # same basis as gluings_m.py / gluings_m.py と同じ基底
     G = matrix(ZZ, data.gram(a.data).tolist())
@@ -137,7 +137,7 @@ def find(a):
     rep.check("T intertwines the actions of S: s_A T = T s_B for the generators", all(x * T == T * y for x, y in zip(sA, sB)))
     rep.value("max |entry| of T", max(abs(x) for x in T.list()))
 
-    cdir = os.path.join(rep.out_dir, "s24")
+    cdir = os.path.join(rep.out_dir, "isometry_ab")
     os.makedirs(cdir, exist_ok=True)
     Tn = np.array(T.rows(), dtype=np.int64)
     GAn = np.array(GA.rows(), dtype=np.int64)
@@ -162,7 +162,7 @@ def find(a):
 
 
 def check(a):
-    rep = Report("s24_isometry_ab_check", a.out)
+    rep = Report("isometry_ab_check", a.out)
     mm = exact.i64_matmul
     n2 = 2 * N
     G = data.gram(a.data)
@@ -188,7 +188,7 @@ def check(a):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="S24: an explicit isometry between gluings A and B")
+    ap = argparse.ArgumentParser(description="an explicit isometry between gluings A and B")
     ap.add_argument("mode", choices=["find", "check"])
     ap.add_argument("--data", default=None)
     certs.add_arguments(ap)
