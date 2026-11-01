@@ -23,29 +23,24 @@ supplementary/gluing_b.py [C4], which constructs its 292,320 vectors of norm 8; 
 
 BKZ on the whole lattice (L_112, or L_B with --tau B), progressively with the block sizes of --bkz (default
 20, 30, 40, 50, 60; each stage starts from the basis of the previous one; LLL in mpfr first, then LLL and BKZ
-with 6 tours in long double, as in the research computation): the shortest norm in the reduced basis at each
+with 6 tours in long double): the shortest norm in the reduced basis at each
 stage, computed in integers from the transformation matrix. These are recorded values, not checks: BKZ only
 gives upper bounds, and it does not find the norm-8 vectors of B.
 格子全体（L_112、--tau B では L_B）への BKZ。--bkz のブロック幅（既定 20, 30, 40, 50, 60）で順に、前の段の基底から続けて簡約する
-（研究時の計算と同じく、最初に mpfr で LLL、そのあと long double で LLL と 6 巡の BKZ）。各段の簡約基底の最短のノルムを、変換行列から整数で計算する。
+（最初に mpfr で LLL、そのあと long double で LLL と 6 巡の BKZ）。各段の簡約基底の最短のノルムを、変換行列から整数で計算する。
 これは記録する値であって検査ではない: BKZ は上界を与えるだけで、B のノルム 8 のベクトルも見つけない。
-
-Recorded in the research (2026-10-13, experiments/2026-10-13-112-init-bkz.py, same procedure): on L_112 BKZ-20
-to BKZ-50 give 16, 16, 16, 14 and BKZ-60 gives 10 (3 vectors; 177 s for the stage); on gluing B, built there
-from another lift of its gluing map (an isometric lattice in another basis), every stage gives 12 (BKZ-60: 169 s).
-研究時の記録（2026-10-13、experiments/2026-10-13-112-init-bkz.py、同じ手順）: L_112 では BKZ-20〜50 が 16, 16, 16, 14、BKZ-60 が 10
-（3 本、この段 177 秒）。貼り方 B（研究時は貼り合わせの写像の別の持ち上げから作った。等長で基底が違う格子）では、どの段も 12（BKZ-60 は 169 秒）。
 
 Requires SageMath (PARI, fpylll) and a C compiler. Run time: fixed sublattices about 10 seconds; BKZ under a
 minute with --bkz 30,40. With the default block sizes almost all of the time is BKZ-60, and it depends on the
 basis: measured 2026-10-18 on a loaded machine, L_112 took 538 s for BKZ-60 (BKZ-20 to BKZ-50: 2, 4, 7, 36 s,
-giving 16, 16, 16, 14; BKZ-60 gave 10 with 3 vectors, as in the research), and L_B took 1,008 s for BKZ-60
-(BKZ-20 to BKZ-50: 3, 3, 5, 33 s, giving 16, 16, 16, 18; BKZ-60 gave 10 with 3 vectors, not the norm-8 vectors);
-the whole run with --tau B took 18 minutes. Memory: about 1 GB.
+giving 16, 16, 16, 14; BKZ-60 gave 10 with 3 vectors), and L_B took
+1,008 s for BKZ-60 (BKZ-20 to BKZ-50: 3, 3, 5, 33 s, giving 16, 16, 16, 18; BKZ-60 gave 10 with 3 vectors,
+not the norm-8 vectors); the whole run took about 10 minutes for L_112 and 18 minutes with --tau B.
+Memory: about 1 GB.
 SageMath（PARI, fpylll）と C コンパイラが要る。実行時間: 固定部分格子は約 10 秒。--bkz 30,40 なら BKZ は 1 分未満。既定のブロック幅では
 時間のほとんどが BKZ-60 で、基底によって変わる: 2026-10-18 に負荷のかかった計算機で計測すると、L_112 の BKZ-60 は 538 秒（BKZ-20〜50 は
-2, 4, 7, 36 秒で 16, 16, 16, 14、BKZ-60 は 10（3 本）で研究時と同じ）。L_B の BKZ-60 は 1,008 秒（BKZ-20〜50 は
-3, 3, 5, 33 秒で 16, 16, 16, 18。BKZ-60 は 10（3 本）で、ノルム 8 のベクトルは見つけない）。--tau B の実行全体は 18 分。メモリ: 約 1 GB。
+2, 4, 7, 36 秒で 16, 16, 16, 14、BKZ-60 は 10（3 本））。L_B の BKZ-60 は 1,008 秒（BKZ-20〜50 は
+3, 3, 5, 33 秒で 16, 16, 16, 18。BKZ-60 は 10（3 本）で、ノルム 8 のベクトルは見つけない）。実行全体は L_112 で約 10 分、--tau B で 18 分。メモリ: 約 1 GB。
 Run / 実行:  python3 code/supplementary/fixed_sublattices.py [--tau B] [--bkz 30,40]
 """
 import argparse
@@ -67,9 +62,9 @@ BKZ_TOURS = 6
 
 
 def bkz_stages(G112, block_sizes, rep, label):
-    """Progressive BKZ on the Gram matrix G112 (as in the research computation): LLL in mpfr, then for each block
+    """Progressive BKZ on the Gram matrix G112: LLL in mpfr, then for each block
     size LLL and BKZ in long double from the previous basis. Records the shortest norm of each reduced basis,
-    computed exactly as the diagonal of T G112 T^T. / Gram 行列 G112 への段階的な BKZ（研究時の計算と同じ）。"""
+    computed exactly as the diagonal of T G112 T^T. / Gram 行列 G112 への段階的な BKZ。"""
     from fpylll import BKZ, GSO, LLL, IntegerMatrix
     from fpylll.algorithms.bkz2 import BKZReduction
     from sage.all import ZZ, matrix

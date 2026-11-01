@@ -24,8 +24,8 @@ Z-basis (alpha_1 x, alpha_2 x, beta_1 y, beta_2 y):
          s1 と s3tau だけで、その数も数える。期待: パラメータ 63,996、有効な N 1,171、危険 631、検算 631（s1 541、s3tau 90）、
          失敗 0、余分な行・重複 0。約 8 分。
   make   (SageMath, for LLL only) produces the witnesses with the exact rational Fincke-Pohst enumeration of
-         recount.py, writes out/route_t/exclusion.json and compares it with the distributed file.
-         （SageMath。LLL だけ）recount.py の有理数の Fincke–Pohst 列挙で証拠を作り、out/route_t/exclusion.json に書き、配布ファイルと比べる。
+         recount.py, writes out/route_t/exclusion.json and compares it with the distributed file. About 1 minute.
+         （SageMath。LLL だけ）recount.py の有理数の Fincke–Pohst 列挙で証拠を作り、out/route_t/exclusion.json に書き、配布ファイルと比べる。約 1 分。
 
 The two enumerations are different code; check does not use anything computed by make except the witnesses.
 検算（check）は作成（make）の結果を証拠の座標にしか使わない。列挙も別のコード。

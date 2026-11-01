@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 """Independent verifier for the certificates of the 112-dimensional lattice L_112.
 
-Release note: for the public repository only the input functions (section "inputs" below: the
-four files of data/ and the certificate files of certificates/) and the output directory
-(out/crosscheck_all_data/) were changed. The checks themselves are unchanged. It shares no code with
-code/lib or code/verify.
-公開用の注記: 公開リポジトリ向けに変えたのは入力の関数（下の「inputs」の節。data/ の 4 ファイルと
-certificates/ の検証用データを読む）と出力先（out/crosscheck_all_data/）だけ。検査そのものは変えていない。
+Reads the four files of data/ and the certificate files of certificates/ (section "inputs" below) and writes to
+out/crosscheck_all_data/. It shares no code with code/lib or code/verify.
+data/ の 4 ファイルと certificates/ の検証用データを読み（下の「inputs」の節）、out/crosscheck_all_data/ に書く。
 code/lib・code/verify とはコードを共有しない。
 
 Written from a specification of the certificates, WITHOUT reading or importing the code that
@@ -21,7 +18,8 @@ commands:
   v2        odd-class certificates (656), all conditions
   v3cheap   even-class certificates (1,527,984): conditions 11, 12, 14 and the unit matching
   v3sample  condition 13 on 10,000 random even-class certificates (+ int64 cross-check)
-  v3full    condition 13 on all even-class certificates (resumable, --part p or all)
+  v3full    condition 13 on all even-class certificates (resumable, --part p or all; about 10 hours
+            in total with 2 threads)
   v4        norm-8 table: canonical forms of the 1,527,984 vectors x*u, orbit sizes (resumable)
   neg       negative controls (run with --n 60 as in the reported run, about 3 minutes; the shared
             default --n 10000 tests each certificate separately and takes more than 8 hours)

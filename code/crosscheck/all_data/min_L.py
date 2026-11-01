@@ -2,11 +2,8 @@
 """F1: min L = 6 for the 56-dimensional lattice L, by an enumeration whose every
 decision is made in exact integer arithmetic.
 
-Release note: for the public repository only the input path (data/L56_gram.txt), the path of the
-C program and the output directory (out/crosscheck_all_data/) were changed. Requires SageMath
-(PARI, fpylll) for the reduction step.
-公開用の注記: 公開用に変えたのは入力のパス（data/L56_gram.txt）、C のプログラムのパス、
-出力先（out/crosscheck_all_data/）だけ。簡約の段に SageMath（PARI, fpylll）が要る。
+Reads data/L56_gram.txt and writes to out/crosscheck_all_data/. Requires SageMath (PARI, fpylll) for the reduction step.
+data/L56_gram.txt を読み、out/crosscheck_all_data/ に書く。簡約の段に SageMath（PARI, fpylll）が要る。
 
 Method (independent of the earlier fplll / qfminim runs):
  1. Reduce: PARI qflllgram, then fpylll BKZ (block sizes 10..40) on a rounded Cholesky basis.  The
@@ -25,6 +22,7 @@ Method (independent of the earlier fplll / qfminim runs):
  Positive control (--test e8x7): the same pipeline on E8^7 in a random basis, where the number of
     vectors of norm 2 and 4 is known (7*240 = 1680 and 7*2160 + 21*240^2 = 1,224,720).
     (r = 6 on L, which would recount the 15,590,400 minimal vectors, needs ~5e12 nodes: not done.)
+ Run time: r = 4 on L about 96 minutes (1.5 x 10^10 nodes); the positive control takes seconds.
 
 usage (from the repository root, with the Python of a SageMath installation, e.g. `python3` of the
 conda environment of environment.yml):

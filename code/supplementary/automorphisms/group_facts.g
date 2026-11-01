@@ -3,6 +3,7 @@
 #   付録 F（Aut(L_112) における SL_2(29) の正規性）で使う有限群の事実 G-F1〜G-F5。表 D2 の [C25]。定理 A の証明には使わない。
 #   GAP 4 と指標表ライブラリ CTblLib が要る。
 # Run / 実行:  gap -q --quitonbreak code/supplementary/automorphisms/group_facts.g < /dev/null
+#   Run time: about 10 seconds. / 実行時間: 約 10 秒。
 #   Each value is compared with the one stated in the paper (Appendix F); the script ends with exit code 1 if any
 #   differs and with a nonzero code on a GAP error, otherwise 0.
 #   各値を論文（付録 F）に書かれた値と比べる。一つでも違えば終了コード 1、GAP のエラーでは非 0、それ以外は 0 で終わる。

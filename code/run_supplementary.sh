@@ -14,9 +14,9 @@
 #     SageMath を含む Python（既定は python3。例えば environment.yml の conda 環境のもの。SageMath の配布物なら PYTHON="sage -python"）。
 #     CTblLib を含む GAP を GAP で（既定は gap）。
 #   * the .npz files of certificates/ (bash code/verify/fetch.sh). / certificates/ の .npz（bash code/verify/fetch.sh）。
-#   * gluing_b needs out/K8.npy from code/verify/v4_norm8_orbits.py (about 9 min); anatomy_b needs the output of
+#   * gluing_b and k8_checks need out/K8.npy from code/verify/v4_norm8_orbits.py (about 9 min); anatomy_b needs the output of
 #     gluing_b, route_t_recount that of route_t_classify (both are earlier in the default order).
-#     gluing_b には code/verify/v4_norm8_orbits.py の out/K8.npy（約 9 分）が要る。anatomy_b は gluing_b の、route_t_recount は
+#     gluing_b と k8_checks には code/verify/v4_norm8_orbits.py の out/K8.npy（約 9 分）が要る。anatomy_b は gluing_b の、route_t_recount は
 #     route_t_classify の出力を使う（どちらも既定の順では先に走る）。
 # Not included (long or producing data; see the docstrings and code/README.md): float_enumerations.py cvp88,
 #   route_t/certify.py, route_t/check.py search2, route_t/float_cvp.py, isometry_ab.py find, identify_nebe.py --check,
@@ -32,7 +32,7 @@ S="$C/supplementary"
 LOG="$C/../out/logs"
 mkdir -p "$LOG"
 
-ORDER=(gluings frame_stabilizer node_estimate sample_check frames gluing_b anatomy_b fixed_sublattices fixed_sublattices_B
+ORDER=(gluings frame_stabilizer node_estimate sample_check frames gluing_b anatomy_b k8_checks fixed_sublattices fixed_sublattices_B
        float_svp float_qfminim float_cvp610 aut_normalizer aut_diagonal aut_structure aut_character endomorphisms
        group_facts out_facts nebe_lattices identify_nebe nebe_tables nebe_gluings reduction_to_nebe nebe_tensor route_t_classify
        route_t_recount route_t_check3 route_t_exclusion isometry_ab genus_check)
@@ -46,6 +46,7 @@ step() {   # run step $1 / 段 $1 を実行する
     frames)              $PY "$S/frames.py" ;;
     gluing_b)            $PY "$S/gluing_b.py" ;;
     anatomy_b)           $PY "$S/anatomy_b.py" ;;
+    k8_checks)           $PY "$S/k8_checks.py" ;;
     fixed_sublattices)   $PY "$S/fixed_sublattices.py" ;;
     fixed_sublattices_B) $PY "$S/fixed_sublattices.py" --tau B ;;
     float_svp)           $PY "$S/float_enumerations.py" svp ;;

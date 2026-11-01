@@ -5,6 +5,7 @@
 #   付録 F.4 の層の議論を Schreier 予想なしで通すための追加の検査、有限群の事実 G-F6〜G-F12（Hiss-Malle の表の単純群 T について 29 は |Out(T)| を割らない）。
 #   論文の証明は Schreier 予想を使い、必要なのは G-F1〜G-F5（group_facts.g）だけ。表 D2 の [C25]。定理 A の証明には使わない。GAP 4 と CTblLib が要る。
 # Run / 実行:  gap -q --quitonbreak code/supplementary/automorphisms/out_facts.g < /dev/null
+#   Run time: about 10 seconds. / 実行時間: 約 10 秒。
 #   Each value is compared with the one stated below (and, for the groups with 29 | |T|, with Appendix F.4 (e));
 #   the script ends with exit code 1 if any differs and with a nonzero code on a GAP error, otherwise 0.
 #   各値を下に書いた値（29 | |T| の群については付録 F.4 (e)）と比べる。一つでも違えば終了コード 1、GAP のエラーでは非 0、それ以外は 0 で終わる。

@@ -4,7 +4,7 @@
 
 ## What is proved
 
-`EEUL/L112/Chain.lean` proves, in Lean 4 with Mathlib, the deduction from the computational facts F1–F5 of the paper to the conclusion that L₁₁₂ has no vector of norm less than 10. The facts are hypotheses: they are the fields of the structures `Setting`, `Data`, `DataCert` and `DataCanonical`, and the file neither reads the matrices nor runs the certificate checkers. §7.1 of the paper (Table 9) lists the formalized statements and what stays outside Lean.
+`EEUL/L112/Chain.lean` proves, in Lean 4 with Mathlib, the deduction from the evenness part of F0 and the computational facts F1–F5 of the paper to the conclusion that L₁₁₂ has no vector of norm less than 10. The facts are hypotheses: they are the fields of the structures `Setting`, `Data`, `DataCert` and `DataCanonical`, and the file neither reads the matrices nor runs the certificate checkers. §7.1 of the paper lists the formalized statements (Table 9), prints the hypotheses as written in Lean, gives for each hypothesis the check of `code/verify/` that establishes it (Table 9, continued), and lists what stays outside Lean.
 
 ## Files
 
@@ -42,4 +42,4 @@ lake exe cache get   # Mathlib cache, once (several hundred MB)
 
 The computational hypotheses remain hypotheses. `./check.sh --fresh` also replays the imported Mathlib modules (about 3 minutes). CI runs it on every pull request.
 
-Once the Mathlib cache is present, the build takes about a minute and 2 GB of memory (measured with Lean 4.34.1: 52 s, 1.7 GB). To cap memory, use a cgroup (for example `systemd-run --user -p MemoryMax=5G`) rather than `ulimit -v`, under which Lean fails to create threads.
+Once the Mathlib cache is present, the build takes about 1 minute and 2 GB of memory (measured with Lean 4.34.1: 52 s, 1.7 GB). To cap memory, use a cgroup (for example `systemd-run --user -p MemoryMax=5G`) rather than `ulimit -v`, under which Lean fails to create threads.

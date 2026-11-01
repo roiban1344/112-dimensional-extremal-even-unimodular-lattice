@@ -3,7 +3,7 @@
 [日本語版](README.ja.md)
 
 This directory contains every computation used in the paper. Table D2 of the paper lists them
-as [C1]–[C33]; the last section of this file maps each row to the scripts here.
+as [C1]–[C34]; the last section of this file maps each row to the scripts here.
 
 ## What is proved, and what it relies on
 
@@ -31,6 +31,19 @@ bilingual header comments) and one C program; the Python code uses no package ot
 The proof does **not** rely on the correctness of the code that produced the verification data
 (`produce/`): any property of the data that the proof uses is re-checked by `verify/`.
 
+What must be right for the proof, and what guards it (paper §1.3, supplement Table S8):
+
+| component | if it were wrong | safeguard |
+|---|---|---|
+| the four files of `data/` | the theorem would be about another lattice | SHA-256 in Appendix D and `lib/data.py`; the specification without the files (§7.2) |
+| the hand proofs, the bound (1.1), the extremal theta series | Theorem A | the deduction from F0 (evenness) and F1–F5 is checked in Lean (§7.1); the rest is listed there |
+| `verify/` v0–v6, `lib/`, `enum_interval.c` | a false pass | tests; implementation 2 (`crosscheck/`); positive controls; the integer enumeration of F1 (`crosscheck/all_data/min_L.py`) |
+| Python, NumPy and its BLAS | F0–F5 | every floating-point product is exact by bounds on all partial sums, valid for any order of summation and with or without FMA; this assumes that the BLAS forms ordinary sums of products in IEEE arithmetic (not Strassen-type or reduced-precision kernels) |
+| the C compiler, libm, IEEE 754 doubles | F1 (interval enumeration) | outward rounding after every operation, `-fno-fast-math -ffp-contract=off`; the integer enumeration (a′) |
+| `certificates/`, the Release, SHA-256 | which files were checked, not soundness | every property of the verification data that the proof uses is checked again by `verify/`; `certificates/SHA256SUMS` is in git and its hash is printed in Appendix D |
+| the Lean kernel and Mathlib | only the machine check of the deduction | `lean/check.sh --fresh` |
+| `produce/`, SageMath, PARI, fplll, GAP | nothing in Theorem A (they produced the data) | the data are checked by `verify/` |
+
 ## Layout
 
 | directory | content |
@@ -38,9 +51,17 @@ The proof does **not** rely on the correctness of the code that produced the ver
 | `lib/` | small shared library (numpy only): reading the data, exactness guards, the group, canonical forms modulo 2, minimal vectors |
 | `verify/` | the checks of F0–F5 (v0–v7) and a consistency test (v8) |
 | `produce/` | how the verification data were produced (p1–p6); not needed to check the proof |
-| `crosscheck/` | second implementations of the checks, written separately with Claude without reading `verify/`, `produce/` or `lib/`. They check the same data by different code, so an error in the main implementation would show up as a disagreement: `all_data/` (all verification data and F1, by a different method) and `second_impl/` (canonical forms, design identities, the odd classes) |
+| `crosscheck/` | implementation 2: second implementations of the checks, written separately with Claude without reading `verify/`, `produce/` or `lib/` (later additions: see below). They check the same data by different code, so an error in the main implementation would show up as a disagreement: `all_data/` (all verification data and F1, by a different method) and `second_impl/` (the minimal-vector orbits, canonical forms, design identities, the odd classes, a sample by enumeration in ⟨2L, t⟩) |
 | `supplementary/` | computations behind statements of the paper that are not used in the proof of Theorem A (the classification of gluings, the automorphism group, …) |
 | `tests/` | smoke tests on small examples (pytest; see [Tests](#tests)); not a substitute for `proof.sh` |
+
+The paper (§6, supplement §S3.3) refers to two implementations. **Implementation 1** is `verify/`,
+`produce/` and `lib/` (with `supplementary/` for the supplementary computations). **Implementation 2** is
+`crosscheck/`: `second_impl/` and `all_data/` were written by two further sessions with Claude without
+reading the code of implementation 1, and share with it the data files and the verification data;
+some parts (exit codes, input hashes, a few guards, and the adaptation of some checks to the published
+data files) were added later, with knowledge of implementation 1.
+What the implementations share is listed in supplement §S3.3.
 
 ### Files
 
@@ -60,10 +81,10 @@ The proof does **not** rely on the correctness of the code that produced the ver
 | `verify/controls/leech.txt` | Gram matrix of the Leech lattice, a positive control for the verification script v1 |
 | `produce/p1_centralizer.py` … `p6_reduction.py`, `descent.py` | the producers of the verification data (section [Producing the verification data](#producing-the-verification-data)); `descent.py` is the search for certificates shared by p4 and p5 (starting from an element w of the class, replace w by w − 2u while some minimal vector u has ⟨w, u⟩ ≥ 7; the norm decreases, so the search stops, and w is a certificate if it meets the conditions of §5) |
 | `produce/exact_qfminim.py` | PARI's `qfminim` followed by a completeness check with the interval enumeration (used by `p1` and `supplementary/`) |
-| `crosscheck/second_impl/odd_classes.py`, `even_classes.py`, `design_identities.py` | second implementations of F5a, F5b and the design identities (numpy only) |
+| `crosscheck/second_impl/odd_classes.py`, `even_classes.py`, `design_identities.py`, `minimal_orbits.py`, `coset_enumeration.py` | second implementations of F5a, F5b, the design identities and the expansion of the minimal-vector orbits (numpy only), and the sample of 180 pairs by enumeration in ⟨2L, t⟩ (SageMath) |
 | `crosscheck/all_data/`, `supplementary/` | see the sections [Second implementations](#second-implementations-and-supplementary-computations), [Route T](#route-t-supplement-s4-table-d2-c20-c21-c32) and [Correspondence with Table D2](#correspondence-with-table-d2-of-the-paper); `supplementary/nebe/isometry.py` finds SL₂(29)-equivariant isometries for `identify_nebe.py` and `reduction_to_nebe.py` |
 | `run_supplementary.sh` | runs the computations of `supplementary/` |
-| `tests/conftest.py`, `tests/test_*.py` | the tests of the section [Tests](#tests): `test_exact` (exactness guards), `test_enumerate` (enumeration), `test_group_mod2` (group, canonical forms), `test_report_checkpoint` (reports, checkpoints), `test_certs` (hashes of the verification data), `test_scripts` (v0, v1 controls, v2, shell syntax), `test_data` (marker `data`), `test_route_t_exclusion` ([C32] on a few rows), `test_check_paper` (`paper/tools/check-paper.py`), `test_docs` (every tracked file is described in a README) |
+| `tests/conftest.py`, `tests/test_*.py` | the tests of the section [Tests](#tests): `test_exact` (exactness guards), `test_enumerate` (enumeration), `test_group_mod2` (group, canonical forms), `test_report_checkpoint` (reports, checkpoints), `test_certs` (hashes of the verification data), `test_scripts` (v0, v1 controls, v2, shell syntax), `test_data` (marker `data`), `test_route_t_exclusion` ([C32] on a few rows), `test_check_paper` (`paper/tools/check-paper.py`), `test_docs` (every tracked file is described in a README), `test_paper_ledger` (Table D2 against `proof.sh` and the docstrings, the hashes and Lean statements printed in the paper), `test_sampled_checks` (the sampled checks of [C8], [C11], [C34] on small examples) |
 
 ## Running verification
 
@@ -75,7 +96,7 @@ Prepare the [requirements](#requirements), then run these commands from the repo
 python3 code/verify/v0_inputs.py
 ```
 
-**(ii) The computational part of the proof.** Download the large verification data files, then run `proof.sh`. It takes about 1.2 CPU hours (v1 is 34 minutes, v6 is 24 minutes, the others are minutes) and runs v0–v6: F1 by interval enumeration, F2 and F3 (orbit completeness), F5a by the odd-coset certificates, and F5b by canonical forms. This is the shortest complete check of the computational facts F0–F5 used in the proof of Theorem A (route A of supplement Table S7).
+**(ii) The computational part of the proof.** Download the large verification data files, then run `proof.sh`. It takes about 1.2 CPU hours (v1 is 34 minutes, v6 is 24 minutes, the others are minutes) and runs v0–v6: F0 and F4, F1 by interval enumeration, F2 and F3 (orbit completeness, against the shell sizes \|L₆\| and \|L₈\| that v2 derives from the theta series), F5a by the odd-coset certificates, and F5b by canonical forms. This is the shortest complete check of the computational facts F0–F5 used in the proof of Theorem A (route A of supplement Table S7).
 
 ```bash
 bash code/verify/fetch.sh
@@ -105,7 +126,7 @@ Times were measured on the machine used for the paper (8 cores, 15 GB, shared wi
 | `v2_theta.py` | §2.3, App. B; supplement §S1, §S2 | extremal theta series (\|L₆\|, \|L₈\|), Siegel means, Tables B1, S1, S2, S4, S5 | 1 s | — |
 | `v3_minimal_orbits.py` | F2, §6.2 | the 656 orbits cover the 15,590,400 minimal vectors (by expansion and by canonical forms) | 3 min | 2 GB |
 | `v4_norm8_orbits.py` | F3, §6.4 | the 1,527,984 vectors x_i u_k give 1,517,130 distinct regular orbits covering \|L₈\| | 9 min | 2 GB |
-| `v5_odd_bounding.py` | F5a, Cor. 5.2, Table 7 | 656 odd-class certificates | 2.5 min | 2 GB |
+| `v5_odd_bounding.py` | F5a, Cor. 5.2, Table 7 | 656 odd-class certificates | 2 min | 2 GB |
 | `v6_canonical_lookup.py` | F5b, Prop. 6.3, Table 6 | no class x_i u_k τ + 2L contains a norm-8 vector (canonical forms); also type (6,6) | 24 min | 2 GB |
 | `v7_even_bounding.py` | F5b, Cor. 5.3, Table 8 | 1,527,984 even-class certificates (resumable, with the checkpoint bound to the inputs by SHA-256; `--threads`) | 24 CPU h (7.9 h with 3 threads) | 3 GB |
 | `v8_design_identities.py` | §6.3 | 18 spherical-design identities (consistency test, not needed for the proof) | 14 min | 2 GB |
@@ -125,9 +146,9 @@ The enumeration of F1 uses outward-rounded interval arithmetic (`verify/enum_int
 
 ## Requirements
 
-* `verify/`, `crosscheck/second_impl/`: Python ≥ 3.10 with numpy (tested with Python 3.12, numpy 2.5),
+* `verify/`, `crosscheck/second_impl/` (except `coset_enumeration.py`): Python ≥ 3.10 with numpy (tested with Python 3.12, numpy 2.5),
   a C compiler with 128-bit integers (gcc or clang; `$CC` if set, otherwise the first of `cc`, `gcc`, `clang`) for v1, and `curl` for `fetch.sh`. No other package.
-* `produce/`, `supplementary/`, `crosscheck/all_data/`: SageMath 10 (which includes PARI/GP, GAP and
+* `produce/`, `supplementary/`, `crosscheck/all_data/`, `crosscheck/second_impl/coset_enumeration.py`: SageMath 10 (which includes PARI/GP, GAP and
   fpylll); tested with SageMath 10.9. `environment.yml` at the repository root installs it with
   conda/micromamba. Run these scripts with the `python3` of that environment (`python3 -I code/...`);
   `sage -python` is not available in the conda-forge build of SageMath.
@@ -165,7 +186,7 @@ Not covered: these tests are not a verification of the theorem and do not replac
 | script | produces | time |
 |---|---|---|
 | `produce/p1_centralizer.py` | M′ and the centralizer C (`centralizer.npz`, `commutant.npz`) | 10 min |
-| `produce/p2_minimal_orbits.py` | `min_reps.npz` (closure, §6.2) | 10 min |
+| `produce/p2_minimal_orbits.py` | `min_reps.npz` (closure, §6.2) | 9 min |
 | `produce/p3_norm8_orbits.py` | `norm8_reps.npz` (marked elements (sums of two minimal vectors), §6.4) | 1.2 h |
 | `produce/p4_odd_descent.py` | `odd_bounding.npz` (descent, §6.6) | 6 min |
 | `produce/p5_even_descent.py` | `even_bounding.npz` (descent, §6.7; 6 parts, resumable) | ≈ 190 CPU h |
@@ -194,9 +215,17 @@ PARI's enumeration order). `--dest certificates/` replaces the distributed files
 `v4`, `v3full`, `neg` and `summary` in this order. Each step ends with exit code 1 if its verdict is
 FAIL; `summary` ends with exit code 1 unless every required step has passed on the current inputs
 (the inputs are checked against `SHA256SUMS`, and the caches are kept per input digest).
-`min_L.py 4` and `min_L.py 4 --test e8x7` check F1 and its positive control. The three scripts of
-`crosscheck/second_impl/` (numpy only) compare their results with the numbers of the paper and end
-with `RESULT: PASS` (exit code 0) or `RESULT: FAIL` (exit code 1).
+`min_L.py 4` and `min_L.py 4 --test e8x7` check F1 and its positive control. The scripts of
+`crosscheck/second_impl/` compare their results with the numbers of the paper and end with
+`RESULT: PASS` (exit code 0) or `RESULT: FAIL` (exit code 1); all but `coset_enumeration.py` need only numpy:
+
+```bash
+python3 -I code/crosscheck/second_impl/minimal_orbits.py        # F2: expansion, disjointness, design identities m = 6
+python3 -I code/crosscheck/second_impl/design_identities.py     # F3: design identities m = 8
+python3 -I code/crosscheck/second_impl/odd_classes.py           # F5a: the 656 odd-class certificates
+python3 -I code/crosscheck/second_impl/even_classes.py C B      # F5b: canonical forms, for tau and for gluing B
+python3 -I code/crosscheck/second_impl/coset_enumeration.py     # 180 sampled pairs by enumeration in <2L, t> (SageMath)
+```
 
 `bash code/run_supplementary.sh [names…]` runs the computations of `supplementary/` (all of them
 by default; the list and what is left out are in its header). It needs a Python with SageMath as
@@ -235,16 +264,16 @@ file, run `certify.py search2 --missing --part P --nparts Q` for P = 0, …, Q�
 | Table D2 | scripts |
 |---|---|
 | [C1] | verify/v2_theta.py |
-| [C2] | verify/v0_inputs.py, supplementary/gluings.py (d), produce/p1_centralizer.py |
+| [C2] | verify/v0_inputs.py, supplementary/gluings.py (d), (e), produce/p1_centralizer.py |
 | [C3] | supplementary/gluings.py, supplementary/nebe/gluings_m.py (a), (b) (with supplementary/_shared.py) |
 | [C4] | supplementary/gluing_b.py, supplementary/nebe/gluings_m.py (c), (d) (with supplementary/_shared.py) |
 | [C5] | verify/v1_min_L.py + verify/enum_interval.c, produce/p6_reduction.py |
 | [C6] | supplementary/nebe/reduction_to_nebe.py (with nebe/lattices.py, nebe/tables.py) |
 | [C7] | supplementary/float_enumerations.py svp, qfminim |
-| [C8] | produce/p2_minimal_orbits.py, verify/v3_minimal_orbits.py, verify/v8_design_identities.py |
-| [C9] | produce/p3_norm8_orbits.py, verify/v4_norm8_orbits.py, verify/v8_design_identities.py |
+| [C8] | produce/p2_minimal_orbits.py, verify/v3_minimal_orbits.py, verify/v8_design_identities.py, crosscheck/second_impl/minimal_orbits.py |
+| [C9] | produce/p3_norm8_orbits.py, verify/v4_norm8_orbits.py, verify/v8_design_identities.py, crosscheck/second_impl/design_identities.py |
 | [C10] | produce/p4_odd_descent.py, verify/v5_odd_bounding.py, crosscheck/second_impl/odd_classes.py |
-| [C11] | verify/v6_canonical_lookup.py, crosscheck/second_impl/even_classes.py |
+| [C11] | verify/v6_canonical_lookup.py, crosscheck/second_impl/even_classes.py, crosscheck/second_impl/coset_enumeration.py |
 | [C12] | supplementary/float_enumerations.py cvp610, cvp88 |
 | [C13] | produce/p5_even_descent.py, verify/v7_even_bounding.py |
 | [C14] | supplementary/frame_stabilizer.py |
@@ -267,3 +296,4 @@ file, run `certify.py search2 --missing --part P --nparts Q` for P = 0, …, Q�
 | [C30] | supplementary/genus/genus.py build, frames, witness (with genus/genus_steps.py, genus_lattice.py, genus_data.py) |
 | [C31] | supplementary/genus/genus.py identify, check (with genus/genus_steps.py, genus_lattice.py, genus_check.py, genus_data.py, supplementary/_shared.py) |
 | [C33] | supplementary/nebe/tensor_neb98.py (with nebe/cycloquat.py) |
+| [C34] | supplementary/k8_checks.py, supplementary/nebe/gluings_m.py (e) |

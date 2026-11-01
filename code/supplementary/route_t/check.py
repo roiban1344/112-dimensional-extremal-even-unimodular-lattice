@@ -28,8 +28,11 @@ the check covers exactly those.
 探索 (2) の配布ファイルは Release certificates-v2 から完全（763,992 行すべて。certificates-v1 では 610,664 行）。途中のファイルでは
 certificate のある類の数を報告し、検算はちょうどそれらを対象にする。
 
-Run time: search (3) about 2 minutes; search (2) about 7 CPU hours (estimate from a single-thread trial; batch A: 4.7 h elapsed with 2 threads on a shared machine) (resumable, --threads).
-実行時間: 探索 (3) 約 2 分。探索 (2) 約 7 CPU 時間（単一スレッド試験からの見積もり。分割 A の実測: 共用機で 2 スレッド、経過 4.7 時間）（再開可能、--threads）。
+Run time: search (3) about 2 minutes; search (2) about 6 CPU hours on an unloaded core (0.028 s per class in a
+single-thread trial); measured on a shared machine with 2 threads: 5.0 h elapsed in two batches (16,778 s + 1,368 s)
+(resumable, --threads).
+実行時間: 探索 (3) 約 2 分。探索 (2) は負荷の無い 1 コアで約 6 CPU 時間（単一スレッドの試験で 1 類 0.028 秒）。共用機で 2 スレッドの
+実測は、2 分割で経過 5.0 時間（16,778 秒 + 1,368 秒）（再開可能、--threads）。
 Run / 実行:  python3 code/supplementary/route_t/check.py [search3|search2|both] [--threads T] [--limit N]
 """
 import os

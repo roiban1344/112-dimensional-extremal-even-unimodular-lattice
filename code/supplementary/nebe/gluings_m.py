@@ -26,6 +26,11 @@ out/nebe/M_*（lattices.py）と out/nebe/M_tables.npz（tables.py）を使う�
   (d) the inner-product distributions of the 292,320 norm-8 vectors, to be compared with those of gluing B
       (supplementary/gluing_b.py): identical distributions do not prove that A and B are isometric.
       292,320 本のノルム 8 のベクトルの内積の分布。貼り方 B（supplementary/gluing_b.py）と比べるため。分布が同じでも A と B が等長とは言えない。
+  (e) closest-vector enumeration (fplll, squared radius 2.05, a BKZ-40 basis; CosetMinimum of
+      supplementary/float_enumerations.py) finds a norm-8 element in the class x u_k X + 2L of every colliding pair of
+      (c), in agreement with the canonical-form test (supplement §S3.6; gluing B: supplementary/k8_checks.py).
+      最近ベクトル列挙（fplll、半径² 2.05、BKZ-40 基底。supplementary/float_enumerations.py の CosetMinimum）が、(c) の衝突する組の
+      類 x u_k X + 2L のどれにもノルム 8 の元を見つけ、標準形による検査と一致する（補遺 §S3.6。貼り方 B は supplementary/k8_checks.py）。
 
 Requires SageMath. Run time: about 30 minutes. Memory: about 3 GB.
 SageMath が要る。実行時間: 約 30 分。メモリ: 約 3 GB。
@@ -41,6 +46,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "produce"))
+sys.path.insert(0, os.path.join(HERE, ".."))
 from lib import exact, group, mod2, shells  # noqa: E402
 from lib.report import Report  # noqa: E402
 from supplementary._shared import norm8_distributions, parity_preserving_classes, short_lift  # noqa: E402
@@ -151,6 +157,16 @@ def main():
     ndistinct, dists = norm8_distributions(reps_xv.values(), S, G)            # supplementary/_shared.py
     rep.check("(d) 292320 distinct norm-8 vectors", ndistinct == 292320)
     rep.value("(d) inner-product distributions of the norm-8 vectors of gluing A: {distribution: blocks}", dists)
+
+    # (e) the colliding pairs by closest-vector enumeration / 衝突する組を最近ベクトル列挙で
+    from float_enumerations import CosetMinimum, bkz_basis
+    cm = CosetMinimum(Gs, bkz_basis(Gs, 40))
+    found = 0
+    for h in hits:
+        v = cm.shortest_in_class(exact.i64_matmul(XU[h], Xn), 2.05)
+        found += v is not None and int(v @ G @ v) == 8
+    rep.value("(e) colliding pairs, and those whose class contains a norm-8 element found by CVP", [len(hits), found])
+    rep.check("(e) CVP finds a norm-8 element in the class of every colliding pair", found == len(hits) > 0)
     rep.finish()
 
 
