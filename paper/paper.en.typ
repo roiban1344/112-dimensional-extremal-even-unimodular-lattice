@@ -514,6 +514,7 @@ This work was carried out with substantial use of AI systems, under the directio
   [#strong[\[CN13\]] R. Coulangeon, G. Nebe, Dense lattices as Hermitian tensor products, Contemp. Math. 587 (2013); arXiv:1201.1832.],
   [#strong[\[Cou00\]] R. Coulangeon, Tensor products of Hermitian lattices, Acta Arith. 92 (2000) 115–130.],
   [#strong[\[FP85\]] U. Fincke, M. Pohst, Improved methods for calculating vectors of short length in a lattice, including a complexity analysis, Math. Comp. 44 (1985) 463–471.],
+  [#strong[\[Gau26v\]] I. Gauvin, #emph[Independent verification of min(L112.02) = 10], version 1.0 (26 October 2026), #link("https://github.com/Katabolanga/l112-02-independent-verification/tree/a78893f59d532f9da1b6cb192b8336ceb8acfd45")[repository] (commit #raw("a78893f")); computer-assisted, not peer-reviewed.],
   [#strong[\[GHY01\]] W. T. Gan, J. P. Hanke, J.-K. Yu, On an exact mass formula of Shimura, Duke Math. J. 107 (2001) 103–133.],
   [#strong[\[HM01\]] G. Hiss, G. Malle, Low-dimensional representations of quasi-simple groups, LMS J. Comput. Math. 4 (2001) 22–63.],
   [#strong[\[HM02\]] G. Hiss, G. Malle, Corrigenda: Low-dimensional representations of quasi-simple groups, LMS J. Comput. Math. 5 (2002) 95–126.],

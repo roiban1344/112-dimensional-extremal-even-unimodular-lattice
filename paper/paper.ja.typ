@@ -521,6 +521,7 @@ $G_112$ を (3.1) の $L_112$ の Gram 行列とする。
   [#strong[\[BV01\]] C. Bachoc, B. Venkov, Modular forms, lattices and spherical designs, in: Réseaux euclidiens, designs sphériques et formes modulaires, Monogr. Enseign. Math. 37 (2001).],
   [#strong[\[CN13\]] R. Coulangeon, G. Nebe, Dense lattices as Hermitian tensor products, Contemp. Math. 587 (2013); arXiv:1201.1832.],
   [#strong[\[Cou00\]] R. Coulangeon, Tensor products of Hermitian lattices, Acta Arith. 92 (2000) 115–130.],
+  [#strong[\[Gau26v\]] I. Gauvin, #emph[Independent verification of min(L112.02) = 10], version 1.0（2026 年 10 月 26 日）, #link("https://github.com/Katabolanga/l112-02-independent-verification/tree/a78893f59d532f9da1b6cb192b8336ceb8acfd45")[リポジトリ]（コミット #raw("a78893f")）。計算機援用の検証で、査読は経ていない。],
   [#strong[\[GHY01\]] W. T. Gan, J. P. Hanke, J.-K. Yu, On an exact mass formula of Shimura, Duke Math. J. 107 (2001) 103–133.],
   [#strong[\[HM01\]] G. Hiss, G. Malle, Low-dimensional representations of quasi-simple groups, LMS J. Comput. Math. 4 (2001) 22–63.],
   [#strong[\[HM02\]] G. Hiss, G. Malle, Corrigenda: Low-dimensional representations of quasi-simple groups, LMS J. Comput. Math. 5 (2002) 95–126.],

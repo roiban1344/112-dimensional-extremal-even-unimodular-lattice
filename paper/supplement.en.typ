@@ -282,17 +282,19 @@ On $cal(Q)^2$ we use the Hermitian form $h(lambda, mu) = lambda_1 macron(mu)_1 +
 
 (b) There are exactly 8 isometry classes of unimodular lattices $Lambda subset cal(Q)^2$, with $|U(Lambda)| = 1152, 12, 288, 24, 24, 20, 288, 48$ #calc("C29"). For all of them $L times.o_M Lambda$ is even #calc("C31"). Hence there are exactly 8 lattices $X$ up to $S$-equivariant isometry, $X_0, dots, X_7$ (Table S10), and at most 8 up to isometry. Their Gram matrices, their bases in the coordinates of (3.1), and $S$-equivariant isometries of $X_7$ onto $L_112$ and of $X_3$ onto gluing A are distributed with the verification data #calc("C30", "C31").
 
-(c) $X_0 = L perp L$, $X_2 = tilde(L) perp tilde(L)$ and $X_6 = L perp tilde(L)$ have minimum 6; $X_3$ is gluing A $=$ gluing B, of minimum 8; $X_4$ and $X_5$ contain vectors of norm 8 (distributed and checked #calc("C31")), so they are not extremal; $X_7 tilde.equiv L_112$ has minimum 10 (Theorem A). The minimum of $X_1$ has not been determined at the time of writing.
+(c) $X_0 = L perp L$, $X_2 = tilde(L) perp tilde(L)$ and $X_6 = L perp tilde(L)$ have minimum 6; $X_3$ is gluing A $=$ gluing B, of minimum 8; $X_4$ and $X_5$ contain vectors of norm 8 (distributed and checked #calc("C31")), so they are not extremal; $X_7 tilde.equiv L_112$ has minimum 10 (Theorem A). The minimum of $X_1$ is not determined in this paper.
 
 (d) For $j eq.not 7$, $X_j$ is not isometric to $L_112$, even by an isometry that does not respect $S$.
 ]
+
+#strong[Independent verification for $X_1$.] I. Gauvin has published a computer-assisted verification, not peer-reviewed, that $X_1$ has minimum 10 \[Gau26v\]. It extends the method of §§4–6 of the main paper to the gluing of $L$ and $tilde(L)$ modulo 2, and includes a second implementation written without the library of \[Repo\], runs on two machines, and a Lean check of the final deduction from the computed facts. That work calls $X_1$ L112.02: the Gram matrix of $X_1$ in \[Repo\] (#raw("certificates/genus_class_1.txt")) is identical, entry by entry, to that of L112.02 in #link("https://github.com/roiban1344/sl-2-29-rank-112-extremal-lattice/tree/d868927ada7bfbbcc0d6fad88cb8a25c75de9155")[#raw("roiban1344/sl-2-29-rank-112-extremal-lattice")] (commit #raw("d868927")). This paper does not determine the minimum of $X_1$, and nothing in it depends on this result.
 
 #ptable(
   columns: 6, align: (center, right, center, center, left, center,),
   caption: [Table S10. The 8 classes. $n_1$ is the number of $plus.minus$-pairs of $lambda in Lambda_j$ with $h(lambda, lambda) = 1$. A #emph[splitting modulo 2] of $Lambda_j$ is a sublattice $J perp J'$ of index $2^8$ such that $J\/sqrt(2)$ and $J'\/sqrt(2)$ are rank-1 unimodular lattices; a summand has type b if it is isometric to $M$ and type c if it is isometric to the other class $I$. The column lists the types of all splittings #calc("C30"); the search is complete, because a summand of type b contains a vector with $h = 2$ and one of type c a vector with $h in {2 pi, 2 macron(pi)}$, $pi = (7 + sqrt(29))\/2$ (see the proof of (c)). Through a splitting, $X_j$ is a gluing modulo 2 of $L$ (b) and $tilde(L) = L times.o_M I$ (c) in the sense of Definition 3.1, extended to two different base lattices; the frames of §S3.4 are the splittings of type cc of $X_7$.],
   table.header([$j$], [$|U(Lambda_j)|$], [$n_1$], [splittings], [$X_j$], [$min X_j$]),
   [0], [1152], [24], [bb], [$L perp L$ (Table 2, row 1)], [6],
-  [1], [12], [0], [bc], [gluing of $L$ and $tilde(L)$ modulo 2], [open],
+  [1], [12], [0], [bc], [gluing of $L$ and $tilde(L)$ modulo 2], [10 \[Gau26v\]],
   [2], [288], [0], [cc], [$tilde(L) perp tilde(L)$ (Table 2, row 3)], [6],
   [3], [24], [0], [bb, cc], [gluing A $=$ gluing B], [8],
   [4], [24], [0], [bc], [gluing of $L$ and $tilde(L)$ modulo 2], [$lt.eq 8$],
