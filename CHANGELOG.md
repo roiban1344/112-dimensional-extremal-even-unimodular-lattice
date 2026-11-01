@@ -9,6 +9,7 @@ Releases are tagged by date (`vYYYY-MM-DD`, with a suffix `.1`, `.2`, … for a 
 Statements: unchanged.
 
 - Lean: Mathlib's standard linters, a kernel replay with `leanchecker` in `lean/check.sh`, and a CI job for Lean (#34).
+- Supplement §S6: I. Gauvin's independent verification that X₁ has minimum 10 is cited [Gau26v]; this paper does not determine the minimum of X₁ and does not depend on that result.
 
 ## v2026-10-25 (2026-10-25)
 

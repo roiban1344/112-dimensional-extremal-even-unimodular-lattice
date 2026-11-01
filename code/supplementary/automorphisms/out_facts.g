@@ -2,8 +2,12 @@
 #   the Schreier conjecture (29 does not divide |Out(T)| for the simple groups T of the Hiss-Malle tables); Table D2 [C25].
 #   The proof in the paper uses the Schreier conjecture and needs only G-F1–G-F5 (group_facts.g). Not used in the
 #   proof of Theorem A. Requires GAP 4 with CTblLib.
+#   Appendix F.4 (e) also cites this file for two records: the list `names` below of the simple groups in the rows of
+#   degree <= 112 of Hiss-Malle Table 3 (with the check of which orders 29 divides; Table F1 of the paper), and G-F12.
 #   付録 F.4 の層の議論を Schreier 予想なしで通すための追加の検査、有限群の事実 G-F6〜G-F12（Hiss-Malle の表の単純群 T について 29 は |Out(T)| を割らない）。
 #   論文の証明は Schreier 予想を使い、必要なのは G-F1〜G-F5（group_facts.g）だけ。表 D2 の [C25]。定理 A の証明には使わない。GAP 4 と CTblLib が要る。
+#   付録 F.4 (e) は、このファイルを二つの記録として引用する: 下の一覧 names（Hiss-Malle の表 3 の次数 112 以下の行に現れる単純群と、
+#   位数が 29 で割れるかの検査。論文の表 F1）と G-F12。
 # Run / 実行:  gap -q --quitonbreak code/supplementary/automorphisms/out_facts.g < /dev/null
 #   Each value is compared with the one stated below (and, for the groups with 29 | |T|, with Appendix F.4 (e));
 #   the script ends with exit code 1 if any differs and with a nonzero code on a GAP error, otherwise 0.

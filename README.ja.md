@@ -20,7 +20,7 @@
 
 ## 背景
 
-偶ユニモジュラー格子とは、ℝⁿ の格子で、すべてのベクトルの長さの二乗（ノルム）が偶数であり、Gram 行列の行列式が 1 のものをいう。このような格子は n が 8 の倍数のときにしか存在しない。モジュラー形式の理論から最小ノルムには上界 2⌊n/24⌋+2 があり、この上界に達する格子を極値格子と呼ぶ。極値格子では、0 でない最短のベクトルが理論の許す限り長い。すなわち、その次元の偶ユニモジュラー格子として可能な限り密な球充填を与える。極値格子は稀である。古典的な例は E₈（n = 8）と Leech 格子（n = 24）で、80 次元までの 8 の倍数の各次元には例が知られている（80 次元は 1998 年に Bachoc と Nebe が、72 次元は 2010 年に Nebe が構成した）。88 次元は 2026 年の坂本のプレプリントで構成された。96 次元と 104 次元は未解決である。L₁₁₂ は 88 次元より先で知られている最初の例であり、上界が 10 となる次元での最初の例でもある。96・104 ではなく 112 次元を選んだのは、Siegel の質量公式に基づく目安から、極値格子が最も見つけやすい次元だと見込まれたためである（補遺 §S1）。
+偶ユニモジュラー格子とは、ℝⁿ の格子で、すべてのベクトルの長さの二乗（ノルム）が偶数であり、Gram 行列の行列式が 1 のものをいう。このような格子は n が 8 の倍数のときにしか存在しない。モジュラー形式の理論から最小ノルムには上界 2⌊n/24⌋+2 があり、この上界に達する格子を極値格子と呼ぶ。極値格子では、0 でない最短のベクトルが理論の許す限り長い。すなわち、その次元の偶ユニモジュラー格子として可能な限り密な球充填を与える。低い次元では極値格子が多数ありうる（40 次元では質量公式による数え上げで 10⁵¹ 個を超える）が、次元が上がると明示的な例は稀になる。古典的な例は E₈（n = 8）と Leech 格子（n = 24）で、80 次元までの 8 の倍数の各次元には例が知られている（80 次元は 1998 年に Bachoc と Nebe が、72 次元は 2010 年に Nebe が構成した）。88 次元では 2026 年に、坂本のプレプリントで 2 個、Gauvin のプレプリントで ℚ(ζ₁₁₅) 上のイデアル格子 4 個が得られ、6 個とも Nebe–Sloane の [Catalogue of Lattices](https://www.math.rwth-aachen.de/~Gabriele.Nebe/LATTICES/) に載っている。96 次元と 104 次元は未解決である。知る限り（2026 年 10 月時点）、L₁₁₂ は 88 次元より先で知られている最初の例であり、上界が 10 となる次元での最初の例でもある。96・104 ではなく 112 次元を選んだのは、Siegel の質量公式に基づく目安から、極値格子が最も見つけやすい次元だと見込まれたためである（補遺 §S1）。
 
 ## リポジトリの中身
 
@@ -37,9 +37,9 @@
 | [`code/supplementary/`](code/README.ja.md#論文の表-d2-との対応) | 定理 A 以外の主張の計算（貼り方、自己同型群、極値性の別証明である証明経路 T、補遺 §S6 の種など） | 要らない |
 | [`code/tests/`](code/README.ja.md#試験) | 小さな例による試験（pytest） | 要らない |
 | [`lean/`](lean/README.ja.md) | F1〜F5 からノルム 10 未満のベクトルが無いことを導く論証の Lean 4 による形式化 | 要らない（論証の独立な検査） |
-| `Dockerfile`・`.devcontainer/devcontainer.json`・`requirements-verify.txt` | 下の水準 (i)〜(iii) のための軽量なコンテナイメージ、それを使う開発コンテナ、NumPy の版の固定 | 任意 |
-| `Dockerfile.sage`・`environment.yml` | `produce/`・`crosscheck/all_data/`・`supplementary/` のための SageMath の環境 | 要らない |
-| `.github/` | CI。`checks.yml`（プルリクエストごとに入力・試験・コンテナ・Typst・Lean を検査し、Release ごとに PDF を添付する。PDF は `actions/build-pdfs/action.yml` が作る）と `data-tests.yml`（大きなデータを使う試験を毎週実行する） | 要らない |
+| `Dockerfile`・`.devcontainer/devcontainer.json`・`requirements-verify.txt`・`requirements-verify-lock.txt` | 下の水準 (i)〜(iii) のための軽量なコンテナイメージ、それを使う開発コンテナ、対応する NumPy の版と、イメージと CI が使う版（ハッシュつき） | 任意 |
+| `Dockerfile.sage`・`environment.yml`・`environment-linux-64.lock` | `produce/`・`crosscheck/all_data/`・`supplementary/` のための SageMath の環境と、そのパッケージの正確な一覧 | 要らない |
+| `.github/`・`ruff.toml` | CI（[CI が確かめること](code/README.ja.md#ci-が確かめること)を参照）。`checks.yml`（プルリクエストごとに入力・試験・`ruff.toml` の規則による lint・コンテナ・Typst・Lean を検査し、Release ごとに PDF を添付する。PDF は `actions/build-pdfs/action.yml` が作る）、`data-tests.yml`（大きなデータを使う検査を毎週実行する）、`proof.yml`（`proof.sh` を月に 1 回と版ごとに実行する）、`dependabot.yml`（更新の提案） | 要らない |
 | `CHANGELOG.ja.md`・`CONTRIBUTING.ja.md`・`.github/ISSUE_TEMPLATE/*.yml` | バージョンごとの変更、誤りの報告の仕方、issue のテンプレート | 要らない |
 | `CITATION.cff`・`LICENSE`・`LICENSE-CC-BY-4.0`・`.gitattributes`・`.gitignore`・`.dockerignore` | 引用のためのメタデータ、ライセンス、git と Docker の設定 | 要らない |
 

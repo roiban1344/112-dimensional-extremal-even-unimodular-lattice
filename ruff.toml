@@ -1,0 +1,13 @@
+# Lint rules for the Python code (ruff 0.17; run by the job `lint` of .github/workflows/checks.yml):
+#   ruff check code paper/tools
+# Only rules that find errors are selected (syntax errors, pyflakes, a few bugbear rules, pylint errors).
+# The layout of the code is not enforced: `ruff format` is not used, since several statements on one line
+# are deliberate in places and reformatting would rewrite most files.
+# Python のコードの lint 規則（ruff 0.17。.github/workflows/checks.yml の job `lint` が走らせる）。誤りを見つける規則だけを選ぶ
+# （構文の誤り、pyflakes、bugbear のいくつか、pylint の誤り）。書式は強制しない。`ruff format` は使わない（1 行に複数の文を
+# 書くのは意図した箇所があり、整形するとほとんどのファイルが書き換わるため）。
+target-version = "py310"
+line-length = 120
+
+[lint]
+select = ["E9", "F", "B006", "B008", "B017", "B018", "PLE"]

@@ -13,12 +13,19 @@ runs:
     - name: Install the fonts
       shell: bash
       run: sudo apt-get update && sudo apt-get install -y fonts-ipaexfont fonts-dejavu
+    # The creation date of the PDFs is the release date in CITATION.cff (00:00 UTC), so that the same sources,
+    # fonts and Typst give the same bytes (paper/README.md shows the same command for the committed PDFs).
+    # PDF の作成日時は CITATION.cff の公開日（UTC の 0 時）とし、同じソース・フォント・Typst から同じバイト列が出るようにする
+    # （コミットする PDF のための同じコマンドは paper/README.ja.md にある）。
     - name: Compile the four documents (PDFs go to build/; the committed PDFs are not touched)
       shell: bash
       run: |
         mkdir -p build
+        released=$(awk '/^date-released:/ {gsub(/["\047]/, "", $2); print $2}' CITATION.cff)
+        stamp=$(date -u -d "$released" +%s)
+        echo "creation timestamp $stamp ($released, from CITATION.cff)"
         for f in paper.en paper.ja supplement.en supplement.ja; do
-          typst compile --root . "paper/$f.typ" "build/$f.pdf" 2> "build/$f.log" || { cat "build/$f.log"; exit 1; }
+          typst compile --root . --creation-timestamp "$stamp" "paper/$f.typ" "build/$f.pdf" 2> "build/$f.log" || { cat "build/$f.log"; exit 1; }
           cat "build/$f.log"
         done
         if grep -l "unknown font family" build/*.log; then

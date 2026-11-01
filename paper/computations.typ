@@ -17,8 +17,8 @@
    en: [Gluings A and B: minimum 8 and exactly 292 320 vectors of norm 8; invariants of A and B compared],
    ja: [貼り方 A, B: 最小ノルム 8、ノルム 8 のベクトルはちょうど 292 320 本。A と B の不変量の比較], time: [1.2 h]),
   (id: "C5", files: ("code/verify/v1_min_L.py", "code/verify/enum_interval.c", "code/produce/p6_reduction.py"),
-   en: [F1: $min L = 6$ by Fincke–Pohst enumeration with exact rational $L D L^sans(T)$ and outward-rounded interval arithmetic (BKZ-40 basis, 8 454 837 756 nodes); controls $E_8$, Leech, Leech $perp$ Leech $perp E_8$],
-   ja: [F1: 有理数の厳密な $L D L^sans(T)$ 分解と外向きに丸めた区間演算による Fincke–Pohst 列挙で $min L = 6$（BKZ-40 基底、8 454 837 756 節点）。対照 $E_8$、Leech、Leech $perp$ Leech $perp E_8$], time: [34 min]),
+   en: [F1: $min L = 6$ by Fincke–Pohst enumeration with exact rational $L D L^sans(T)$ and outward-rounded interval arithmetic (BKZ-40 basis, 8 454 837 756 nodes); controls $E_8$, Leech, Leech $perp$ Leech $perp E_8$, $E_8$ in 5 skewed bases, and 60 random positive definite forms compared with exhaustive search],
+   ja: [F1: 有理数の厳密な $L D L^sans(T)$ 分解と外向きに丸めた区間演算による Fincke–Pohst 列挙で $min L = 6$（BKZ-40 基底、8 454 837 756 節点）。対照 $E_8$、Leech、Leech $perp$ Leech $perp E_8$、歪めた 5 個の基底での $E_8$、総当たりと比較する無作為に生成した正定値二次形式 60 個], time: [34 min]),
   (id: "C6", files: ("code/supplementary/nebe/reduction_to_nebe.py", "code/supplementary/nebe/lattices.py", "code/supplementary/nebe/tables.py"),
    en: [F1 by reduction to $L_(56,2)(M)$: no class of a norm-8 vector of $L_(56,2)(M)$ lies in the invariant subspace $W$ (linear algebra over $FF_2$); positive control],
    ja: [F1 の $L_(56,2)(M)$ への帰着: $L_(56,2)(M)$ のノルム 8 のベクトルの類は不変部分空間 $W$ に入らない（$FF_2$ 上の線形代数）。陽性対照], time: [31 min]),
@@ -77,8 +77,8 @@
    en: [The centralizer of $"SL"_2(29)$ in $"Aut"(L_112)$ (order 48) and an automorphism of $L_112$ inducing the outer automorphism],
    ja: [$"Aut"(L_112)$ における $"SL"_2(29)$ の中心化群（位数 48）と、外部自己同型を与える $L_112$ の自己同型], time: [15 min]),
   (id: "C25", files: ("code/supplementary/automorphisms/group_facts.g", "code/supplementary/automorphisms/out_facts.g", "code/supplementary/automorphisms/aut_diagonal.py", "code/supplementary/automorphisms/aut_common.py", "code/supplementary/_shared.py"),
-   en: [Finite group facts G-F1–G-F5 used in Appendix F (GAP), and the diagonal case; further checks G-F6–G-F12 are retained in the code],
-   ja: [付録 F で使う有限群の事実 G-F1〜G-F5（GAP）と、対角の場合。追加検査 G-F6〜G-F12 はコードに保存], time: [min]),
+   en: [Finite group facts G-F1–G-F5 used in Appendix F (GAP), and the diagonal case; the simple groups in the rows of degree $<= 112$ of the Hiss–Malle Table 3 with their orders (Table F1), and further checks G-F6–G-F12],
+   ja: [付録 F で使う有限群の事実 G-F1〜G-F5（GAP）と、対角の場合。Hiss–Malle の表 3 の次数 112 以下の行に現れる単純群とその位数（表 F1）、追加検査 G-F6〜G-F12], time: [min]),
   (id: "C26", files: ("code/supplementary/automorphisms/aut_structure.py", "code/supplementary/automorphisms/aut_character.py", "code/supplementary/automorphisms/endomorphisms.py", "code/supplementary/automorphisms/aut_common.py", "code/supplementary/_shared.py"),
    en: [Structure of $"Aut"(L_112)$: order of the generated group, non-split extension, quotients, Molien series; the $ZZ[sqrt(-29)]$- and $cal(O)_K$-structures],
    ja: [$"Aut"(L_112)$ の構造: 生成した群の位数、分裂しない拡大、商、Molien 級数。$ZZ[sqrt(-29)]$-構造と $cal(O)_K$-構造], time: [≈ 45 min]),
@@ -100,6 +100,9 @@
   (id: "C32", files: ("code/supplementary/route_t/exclusion.py", "certificates/route_t_exclusion.json"),
    en: [Supplement §S4.1, Proposition S4.3 (route T, final step): the range of Proposition S4.2 enumerated by the checker itself (63 996 parameter tuples, 1 171 valid modules, 631 dangerous); for each dangerous module a witness contradicting F5b (541) or F5a (90), checked in integers by an enumeration independent of the producer (`check`, Python standard library only); `make` reproduces the witnesses],
    ja: [補遺 §S4.1 の命題 S4.3（経路 T の最後の段）: 命題 S4.2 の範囲を検算器が自分で回す（パラメータ 63,996 組、有効な加群 1,171、危険 631）。危険な加群それぞれに F5b に反する証拠（541）か F5a に反する証拠（90）を付け、作成側と独立な列挙で整数により検算する（`check`、Python の標準ライブラリだけ）。`make` は証拠を作り直す], time: [check 8 min#linebreak() make 1 min]),
+  (id: "C33", files: ("code/supplementary/nebe/tensor_neb98.py", "code/supplementary/nebe/cycloquat.py"),
+   en: [Nebe's tensor products [Neb98, §5] for $(p, q) = (5, 29)$, not used for Theorem A: $M$ contains the Hurwitz order and $tilde(M)$ a maximal order of $cal(Q)_(infinity,3)$ (24 and 12 units of reduced norm 1); for every pair of classes of embeddings $Lambda = L_(8,2) times.o_cal(O) L_(56,2)$ has rank 112 and $Lambda^\# = Lambda frak(a)$ with $frak(a)$ not principal, while $bb(Q)(sqrt(5), sqrt(29))$ has class group $ZZ\/2$ (narrow as well), so no invariant form, even on $Lambda frak(b)$, is unimodular; control $(5, 13)$: even unimodular, no vector of norm $<= 4$ ($L_48$). Class numbers 1 for $bb(Q)(sqrt(5), sqrt(13))$, $bb(Q)(sqrt(5), sqrt(17))$],
+   ja: [Nebe のテンソル積 [Neb98, §5] の $(p, q) = (5, 29)$ への適用（定理 A には使わない）: $M$ は Hurwitz 整環を、$tilde(M)$ は $cal(Q)_(infinity,3)$ の極大整環を含む（被約ノルム 1 の単数は 24 個と 12 個）。埋め込みの類のすべての組で $Lambda = L_(8,2) times.o_cal(O) L_(56,2)$ は階数 112、$Lambda^\# = Lambda frak(a)$ の $frak(a)$ は単項でなく、$bb(Q)(sqrt(5), sqrt(29))$ の類群は $ZZ\/2$（狭義でも同じ）なので、$Lambda frak(b)$ に取り替えてもユニモジュラーな不変形式は無い。対照 $(5, 13)$: 偶ユニモジュラーでノルム 4 以下のベクトルが無い（$L_48$）。$bb(Q)(sqrt(5), sqrt(13))$、$bb(Q)(sqrt(5), sqrt(17))$ の類数は 1], time: [20–36 min]),
 )
 
 #let _calc-ids = calcs.map(c => c.id)

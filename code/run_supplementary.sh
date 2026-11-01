@@ -50,7 +50,7 @@ mkdir -p "$LOG"
 
 ORDER=(gluings frame_stabilizer node_estimate sample_check frames gluing_b anatomy_b fixed_sublattices fixed_sublattices_B
        float_svp float_qfminim float_cvp610 aut_normalizer aut_diagonal aut_structure aut_character endomorphisms
-       group_facts out_facts nebe_lattices identify_nebe nebe_tables nebe_gluings reduction_to_nebe route_t_classify
+       group_facts out_facts nebe_lattices identify_nebe nebe_tables nebe_gluings reduction_to_nebe nebe_tensor route_t_classify
        route_t_recount route_t_check3 route_t_exclusion isometry_ab genus_check)
 
 step() {   # run step $1 / 段 $1 を実行する
@@ -79,6 +79,7 @@ step() {   # run step $1 / 段 $1 を実行する
     nebe_tables)         $PY "$S/nebe/tables.py" ;;
     nebe_gluings)        $PY "$S/nebe/gluings_m.py" ;;
     reduction_to_nebe)   $PY "$S/nebe/reduction_to_nebe.py" ;;
+    nebe_tensor)         $PY "$S/nebe/tensor_neb98.py" ;;
     route_t_classify)    $PY "$S/route_t/classify.py" ;;
     route_t_recount)     $PY "$S/route_t/recount.py" ;;
     route_t_check3)      $PY "$S/route_t/check.py" search3 ;;
