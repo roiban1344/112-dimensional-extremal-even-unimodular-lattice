@@ -101,7 +101,7 @@ Times were measured on the machine used for the paper (8 cores, 15 GB, shared wi
 | step | paper | what is checked | time | memory |
 |---|---|---|---|---|
 | `v0_inputs.py` | F0, F4, Lemma 3.2 | L even unimodular; g₁, g₂ preserve G, generate a group of order 24,360 containing −I, commute with τ; τ² = −5, τGτᵀ = 5G; (3.1) even unimodular; the distributed Gram matrix of L₁₁₂ is the same lattice | 20 s | < 1 GB |
-| `v1_min_L.py` + `enum_interval.c` | F1, §6.1 (a), Table 5 | min L = 6 by an interval-arithmetic enumeration that cannot miss vectors; positive controls E₈, Leech, Leech ⊥ Leech ⊥ E₈ | 34 min | < 1 GB |
+| `v1_min_L.py` + `enum_interval.c` | F1, §6.1 (a), Table 5 | min L = 6 by an interval-arithmetic enumeration that cannot miss vectors; positive controls E₈, Leech, Leech ⊥ Leech ⊥ E₈, E₈ in 5 skewed bases (detects an enumerator without outward rounding) and 60 random positive definite forms against exhaustive search (checks vectors of norm equal to the radius and the sign rule) | 34 min | < 1 GB |
 | `v2_theta.py` | §2.3, App. B; supplement §S1, §S2 | extremal theta series (\|L₆\|, \|L₈\|), Siegel means, Tables B1, S1, S2, S4, S5 | 1 s | — |
 | `v3_minimal_orbits.py` | F2, §6.2 | the 656 orbits cover the 15,590,400 minimal vectors (by expansion and by canonical forms) | 3 min | 2 GB |
 | `v4_norm8_orbits.py` | F3, §6.4 | the 1,527,984 vectors x_i u_k give 1,517,130 distinct regular orbits covering \|L₈\| | 9 min | 2 GB |

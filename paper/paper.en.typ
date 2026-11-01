@@ -324,12 +324,14 @@ The true partial norm always lies in its interval, so no vector of true norm $lt
 
 #ptable(
   columns: 6, align: (left, center, center, right, left, left,),
-  caption: [Table 5. Results of the interval enumeration (only one of $plus.minus x$ is enumerated; counts include both signs).],
+  caption: [Table 5. Results of the interval enumeration (only one of $plus.minus x$ is enumerated; counts include both signs). The last two controls have different roles. In skewed bases the entries are large, and an enumerator without the outward rounding loses vectors of $E_8$ there, while it passes the controls in reduced bases. The random positive definite forms ($G = B B^(sans(T)) + I$, entries of $B$ in ${-3, dots, 3}$) are compared with exhaustive search; they test vectors of norm equal to the radius and the sign rule, and did not detect the removal of the outward rounding.],
   table.header([lattice], [dim], [radius], [nodes], [nonzero vectors found], [expected]),
   [$E_8$ (control)], [8], [2], [248], [240 of norm 2], [240],
   [Leech lattice (control)], [24], [4], [$2 thin 019 thin 561$], [$196 thin 560$ of norm 4, none of norm 2], [same],
   [$Lambda_24 perp Lambda_24 perp E_8$ (control)], [56], [4], [$11 thin 081 thin 124$], [240 of norm 2, $395 thin 280$ of norm 4], [same],
   [#strong[$L_56$]], [56], [4], [$8 thin 454 thin 837 thin 756$], [#strong[none]], [—],
+  [$E_8$ in 5 skewed bases (control)], [8], [4], [—], [240 of norm 2, $2 thin 160$ of norm 4 in each basis], [same],
+  [60 random positive definite forms (control)], [2–5], [1–14], [—], [230 vectors ($115$ $plus.minus$-pairs), 44 of them of norm equal to the radius], [exhaustive search],
 )
 
 #strong[(a′) A second exact enumeration, by a different method.] A separately written program (developed without reference to the code of (a)) makes every decision in integer arithmetic instead of interval arithmetic. The approximate Cholesky factor of $G'$ (BKZ-40 basis, $U$ checked exactly as in (a)) is scaled by $2^(40)$ and rounded to an integer upper triangular matrix $R$; then $Q(x) = |R x^(sans(T))|^2$ is an integer quadratic form, the error matrix $E = 2^(80) G' - R^(sans(T)) R$ is computed exactly, and $|x E x^(sans(T))| <= norm(E)_F norm(G'^(-1))_infinity chevron.l x\,x chevron.r$ with $G'^(-1)$ an exact integer matrix. Hence $chevron.l x\,x chevron.r <= 4$ implies $Q(x) <= T := 4 dot 2^(80) + 4 norm(E)_F norm(G'^(-1))_infinity$ (a relative enlargement of $3.8 times 10^(-7)$). All $x$ with $Q(x) <= T$ are enumerated in C with 128-bit integers, the range at each level being given by exact integer square roots, so no vector is pruned because of rounding. For $L_56$: $14 thin 773 thin 398 thin 896$ nodes (both signs), no nonzero vector found (96 minutes) #calc("C27"). Positive control: $E_8^7$ in a random basis gives $1 thin 680$ vectors of norm 2 and $1 thin 224 thin 720$ of norm 4, as expected.

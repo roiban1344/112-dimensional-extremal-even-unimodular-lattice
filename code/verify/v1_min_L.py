@@ -20,9 +20,16 @@ Steps / 手順:
   L は偶で det 1、56 次元なので min L ≤ 6（2⌊56/24⌋ + 2）。よって「ノルム 4 以下の 0 でないベクトルが無い」は min L = 6 を意味する。
 
 Positive controls (same code path): E_8 at radius 2 (240 vectors), the Leech lattice at radius 4
-(196,560 of norm 4, none of norm 2), and Leech + Leech + E_8 at radius 4 (240 and 395,280).
+(196,560 of norm 4, none of norm 2), and Leech + Leech + E_8 at radius 4 (240 and 395,280). These detect gross
+errors but not the removal of the outward rounding (code/tests/test_enumerate.py compiles such an enumerator). Two further controls:
+E_8 in 5 skewed bases at radius 4 (large entries, so that the rounding matters; removing the outward rounding
+loses vectors here), and 60 random positive definite forms of dimension 2-5 compared with exhaustive search, including vectors of
+norm exactly equal to the radius (lib/enumerate.py: skewed_basis_mismatches, random_forms_mismatches).
 陽性対照（同じ経路）: E_8（半径 2、240 本）、Leech 格子（半径 4、ノルム 4 が 196,560 本、ノルム 2 は無し）、
-Leech + Leech + E_8（半径 4、240 本と 395,280 本）。
+Leech + Leech + E_8（半径 4、240 本と 395,280 本）。これらは粗い誤りは検出するが、外向きの丸めを外しても通る（code/tests/test_enumerate.py でそのような列挙器をコンパイルして確かめる）。
+そこで対照を二つ加える。歪めた 5 個の基底での E_8（半径 4。成分が大きく丸めが効くので、外向きの丸めを外すとベクトルを取りこぼす）と、
+2〜5 次元の無作為に生成した正定値二次形式 60 個での総当たりとの比較（ノルムがちょうど半径に等しいベクトルを含む）である
+（lib/enumerate.py の skewed_basis_mismatches、random_forms_mismatches）。
 
 The input of the enumerator (steps 2, 3), its compilation and the parsing of its output are in
 lib/enumerate.py, shared with the other users of the enumerator. The enumerator is recompiled on every run.
@@ -83,6 +90,11 @@ def main():
     c, _ = enumerate_short(exe, big, 4, rep, "Leech + Leech + E8, radius 4")
     rep.check("Leech + Leech + E8: 240 of norm 2 and 395280 = 2 x 196560 + 2160 of norm 4",
               c == {2: 240, 4: 395280})
+    bad = exact_enum.skewed_basis_mismatches(exe, E8, 4, {2: 240, 4: 2160})
+    rep.check("E8 in 5 skewed bases (large entries), radius 4: 240 of norm 2 and 2160 of norm 4 in each", bad == 0)
+    bad, found, edge = exact_enum.random_forms_mismatches(exe)
+    rep.value("60 random forms: +- pairs found by exhaustive search, of which of norm equal to the radius", [found, edge])
+    rep.check("60 random forms of dimension 2-5: the enumerator finds exactly the vectors of exhaustive search", bad == 0)
     if a.controls_only:
         rep.finish()
         return
