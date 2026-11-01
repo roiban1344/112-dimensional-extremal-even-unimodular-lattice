@@ -31,11 +31,14 @@ FRAME_TYPES = {0: ["bb"], 1: ["bc"], 2: ["cc"], 3: ["bb", "cc"], 4: ["bc"], 5: [
 # Minimum norm, as in Table S10 and Theorem S6.1 (c) of the supplement, with where it is proved. 6 for the orthogonal
 # sums (min L = min L~ = 6); 8 for class 3 (gluing A = gluing B: isometry_ab.py [C28], min L_B = 8 by gluing_b.py
 # [C4]); only <= 8 for classes 4 and 5, where the norm-8 witness gives an upper bound (no lower bound is computed);
-# 10 for L_112 (Theorem A). check verifies the witnesses and the isometries, not these minima.
+# 10 for L_112 (Theorem A). Class 1 is not determined in the paper.
+# check verifies the witnesses and the isometries, not these minima.
 # 最小ノルム（補遺の表 S10・定理 S6.1 (c) のとおり）とその根拠。直交和は 6（min L = min L~ = 6）。類 3 は 8（貼り方 A = 貼り方 B:
 # isometry_ab.py [C28]、min L_B = 8 は gluing_b.py [C4]）。類 4、5 はノルム 8 の証拠による上界 ≤ 8 だけ（下界は計算しない）。
-# L_112 は 10（定理 A）。check が確かめるのは証拠と等長写像であって、これらの最小ではない。
-STATUS = {0: "orthogonal sum L + L, min 6", 1: "open (decided by a separate computation)",
+# L_112 は 10（定理 A）。類 1 は論文では決定しない。
+# check が確かめるのは証拠と等長写像であって、これらの最小ではない。
+STATUS = {0: "orthogonal sum L + L, min 6",
+          1: "not determined in the paper",
           2: "orthogonal sum L~ + L~, min 6",
           3: "gluing A = gluing B, min 8 (A = B: isometry_ab.py [C28]; min L_B = 8: gluing_b.py [C4])",
           4: "min <= 8 (norm-8 witness; not extremal)", 5: "min <= 8 (norm-8 witness; not extremal)",
