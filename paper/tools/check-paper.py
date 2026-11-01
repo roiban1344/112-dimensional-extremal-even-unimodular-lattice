@@ -52,6 +52,21 @@ def check_d2_correspondence(calc_ids):
                         f'code/{name}: {calc_id}: absent path {token}')
 
 
+def check_ledger_row(block):
+    """A row of Table D2 names distributed code: at least one file under code/ or lean/, and every file it names
+    exists. There is no way to mark a computation as having no distributed code.
+    表 D2 の行は配布するコードを指す: code/ か lean/ のファイルが 1 つ以上あり、挙げたファイルはすべて存在する。
+    配布するコードの無い計算を載せる書き方は無い。"""
+    calc_id = re.search(r'id: "(C\d+)"', block)[1]
+    require(not re.search(r'\bpublished\s*:', block), f'{calc_id}: every computation in Table D2 must have distributed code')
+    files = re.search(r'\bfiles\s*:\s*\((.*?)\)\s*,', block, re.S)
+    require(files is not None, f'{calc_id}: no list of files')
+    paths = re.findall(r'"([^"\n]+)"', files[1])
+    require(any(re.match(r'(code|lean)/', f) for f in paths), f'{calc_id}: every computation in Table D2 must have distributed code')
+    for file in paths:
+        require((ROOT / file).is_file(), f'{calc_id}: absent distribution path {file}')
+
+
 def main():
     sources = {(kind, lang): (PAPER / f'{kind}.{lang}.typ').read_text()
                for kind in ('paper', 'supplement') for lang in ('ja', 'en')}
@@ -65,16 +80,8 @@ def main():
     blocks = re.findall(r'\(id: "C\d+".*?(?=\n  \(id:|\n\))', ledger, re.S)
     calc_ids = {re.search(r'id: "(C\d+)"', b)[1] for b in blocks}
     require(calc_ids == {f'C{i}' for i in range(1, 1 + len(blocks))}, f'computations.typ: ids are not C1-C{len(blocks)}')
-    unpublished = []
     for block in blocks:
-        calc_id = re.search(r'id: "(C\d+)"', block)[1]
-        if 'published: false' in block:
-            unpublished.append(calc_id)
-            require('未公開' in block and 'not distributed' in block, f'{calc_id}: unpublished entry not marked as such')
-            continue
-        for file in re.findall(r'"((?:code|lean)/[^"\n]+)"', block):
-            path = ROOT / file
-            require(path.is_file(), f'{calc_id}: absent distribution path {file}')
+        check_ledger_row(block)
 
     check_d2_correspondence(calc_ids)
 
@@ -95,8 +102,6 @@ def main():
         cited = {c for call in re.findall(r'#calc\((.*?)\)', all_text)
                  for c in re.findall(r'"(C\d+)"', call)}
         require(cited == calc_ids, f'{lang}: uncited or undefined computations: {cited ^ calc_ids}')
-    if unpublished:
-        print('Unpublished supplementary code:', ', '.join(unpublished))
     print(f'PASS: bilingual headings, statements, tables, references, C1-C{len(calc_ids)} and distributed paths')
 
 
