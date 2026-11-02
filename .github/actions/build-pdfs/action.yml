@@ -1,5 +1,5 @@
 # Compile the four documents of paper/ into build/*.pdf (the committed PDFs are not touched), and fail if
-# typst reports a missing font. Used by the jobs typst-build and release-pdfs of workflows/checks.yml.
+# typst reports a missing font. Used by the jobs typst-build and release-pdfs of workflows/checks.yml (with read-only permissions).
 # paper/ の 4 文書を build/*.pdf にコンパイルする（コミットした PDF には触れない）。typst がフォントの欠落を報告したら失敗する。
 # workflows/checks.yml の job typst-build と release-pdfs が使う。
 name: build-pdfs

@@ -17,10 +17,14 @@ defaults:
 permissions:
   contents: read
 
-# Third-party actions are pinned to commit SHAs (the version in the comment), numpy by
-# requirements-verify-lock.txt, the lint tools by version. What CI does and does not check is listed in
+# Third-party actions are pinned to commit SHAs (the version in the comment); numpy, pytest and the lint tools
+# by version and SHA-256 (requirements-*-lock.txt, installed from wheels only, so that no build step fetches
+# unpinned packages); actionlint by the SHA-256 of its release archive. Only release-attach may write
+# (contents: write); it runs no third-party action. What CI does and does not check is listed in
 # code/README.md ("What CI checks").
-# 第三者のアクションはコミット SHA で固定する（版はコメントに書く）。numpy は requirements-verify-lock.txt、lint の道具は版で固定する。
+# 第三者のアクションはコミット SHA で固定する（版はコメントに書く）。numpy・pytest・lint の道具は版と SHA-256 で固定し
+# （requirements-*-lock.txt。wheel だけから入れ、ビルドの段で固定していないパッケージを取りにいかないようにする）、actionlint は
+# リリースのアーカイブの SHA-256 で固定する。書き込めるのは release-attach だけ（contents: write）で、第三者のアクションを使わない。
 # CI が何を確かめ、何を確かめないかは code/README.ja.md の「CI が確かめること」にある。
 
 jobs:
@@ -35,7 +39,9 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.12'
-      - run: pip install --require-hashes -r requirements-verify-lock.txt
+      - name: Install numpy (requirements-verify-lock.txt, wheels only)
+        run: |
+          pip install --require-hashes --only-binary :all: -r requirements-verify-lock.txt
       - name: V0, basic facts about the input data (about 20 s)
         run: python3 -I code/verify/v0_inputs.py
       - name: Genus certificates (numpy only)
@@ -72,11 +78,11 @@ jobs:
           NUMPY: ${{ matrix.numpy }}
         run: |
           if [ "$NUMPY" = lock ]; then
-            pip install --require-hashes -r requirements-verify-lock.txt
+            pip install --require-hashes --only-binary :all: -r requirements-verify-lock.txt
           else
-            pip install "$NUMPY"
+            pip install --only-binary :all: "$NUMPY"
           fi
-          pip install pytest
+          pip install --require-hashes --only-binary :all: -r requirements-test-lock.txt
       - name: pytest code/tests (without the tests on the large certificate files)
         run: python -m pytest code/tests -m "not data" -p no:cacheprovider --durations=5
 
@@ -94,7 +100,21 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.12'
-      - run: pip install ruff==0.17.2 shellcheck-py==0.11.0.1 actionlint-py==1.7.12.25
+      - name: Install ruff and shellcheck (requirements-lint-lock.txt)
+        run: |
+          pip install --require-hashes --only-binary :all: -r requirements-lint-lock.txt
+      # The SHA-256 is the one in actionlint_1.7.12_checksums.txt of the release. Not updated by Dependabot.
+      # SHA-256 はリリースの actionlint_1.7.12_checksums.txt の値。Dependabot は更新しない。
+      - name: Install actionlint 1.7.12 (release archive, checked by SHA-256)
+        env:
+          URL: https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz
+          SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+        run: |
+          curl -sSfL -o "$RUNNER_TEMP/actionlint.tar.gz" "$URL"
+          echo "$SHA256  $RUNNER_TEMP/actionlint.tar.gz" | sha256sum -c -
+          mkdir -p "$RUNNER_TEMP/bin"
+          tar -xzf "$RUNNER_TEMP/actionlint.tar.gz" -C "$RUNNER_TEMP/bin" actionlint
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
       - name: ruff check
         run: ruff check code paper/tools
       - name: shellcheck
@@ -173,13 +193,14 @@ jobs:
           name: pdfs
           path: build/*.pdf
 
-  # release-pdfs: delete this job (and the `tags` trigger above) to stop attaching PDFs to releases.
+  # release-pdfs builds the PDFs with read-only permissions; release-attach, the only job that may write, attaches
+  # them with the GitHub CLI of the runner. Delete both jobs (and the `tags` trigger above) to stop attaching PDFs.
+  # release-pdfs は読み取りの権限だけで PDF を作り、書き込める唯一のジョブ release-attach がランナーの GitHub CLI で添付する。
+  # PDF の添付をやめるには、両方のジョブ（と上の `tags` の契機）を消す。
   release-pdfs:
     if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
     runs-on: ubuntu-24.04
     timeout-minutes: 20
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -196,7 +217,29 @@ jobs:
             if cmp -s "build/$f.pdf" "paper/$f.pdf"; then echo "$f.pdf: identical to the committed file"
             else echo "::warning::$f.pdf differs from the committed paper/$f.pdf"; fi
           done
-      - name: Attach the PDFs to the release of this tag (created if absent; notes untouched)
-        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          files: build/*.pdf
+          name: release-pdfs
+          path: build/*.pdf
+          if-no-files-found: error
+
+  release-attach:
+    needs: release-pdfs
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-pdfs
+          path: build
+      - name: Attach the PDFs to the release of this tag (created if absent; notes untouched)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release view "$TAG" > /dev/null 2>&1 || gh release create "$TAG" --verify-tag --title "$TAG" --notes "" ||
+            gh release view "$TAG" > /dev/null
+          gh release upload "$TAG" build/*.pdf --clobber

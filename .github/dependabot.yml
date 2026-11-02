@@ -1,19 +1,29 @@
-# Proposals to update the pinned versions (GitHub Actions by commit SHA, numpy in requirements-verify*.txt, the
-# base images of the Dockerfiles), monthly. They are merged only between releases, after proof.sh has passed with
-# them (code/README.md, "Requirements").
-# 固定した版（コミット SHA の GitHub Actions、requirements-verify*.txt の numpy、Dockerfile の基底イメージ）の更新の提案（月に 1 回）。
-# 版と版の間に、proof.sh がそれで通ったあとでだけ取り込む（code/README.ja.md の「動作環境」）。
+# Monthly version updates of the pinned versions (GitHub Actions by commit SHA, numpy, pytest and the lint tools in
+# requirements-*.txt, the base images of the Dockerfiles). A version update is proposed only for a version published
+# at least 14 days earlier (cooldown), so that a compromised release has time to be noticed and withdrawn; the
+# cooldown does not apply to security updates. Updates are merged only between releases, after the checks of
+# code/README.md ("Requirements").
+# 固定した版（コミット SHA の GitHub Actions、requirements-*.txt の numpy・pytest・lint の道具、Dockerfile の基底イメージ）の
+# 月に 1 回の通常の版の更新。公開から 14 日以上たった版だけを提案させる（cooldown）。乗っ取られた版が見つかって取り下げられる
+# までの時間を取るためである。セキュリティ更新には cooldown は適用されない。版と版の間に、code/README.ja.md の「動作環境」の
+# 確認を経てから取り込む。
 version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: monthly
+    cooldown:
+      default-days: 14
   - package-ecosystem: pip
     directory: /
     schedule:
       interval: monthly
+    cooldown:
+      default-days: 14
   - package-ecosystem: docker
     directory: /
     schedule:
       interval: monthly
+    cooldown:
+      default-days: 14

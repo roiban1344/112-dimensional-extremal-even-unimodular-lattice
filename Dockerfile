@@ -25,9 +25,11 @@
 # The genus certificates (numpy only, about 90 s):
 #   docker run --rm l112 python3 -I code/supplementary/genus/genus.py check
 # The base image is pinned by digest (debian:trixie-slim as of 2026-10-25), numpy by version and hashes
-# (requirements-verify-lock.txt); both are updated only between releases.
+# (requirements-verify-lock.txt), installed from wheels only so that no source build fetches unpinned build
+# dependencies; both are updated only between releases.
 # 基底イメージはダイジェストで（2026-10-25 の debian:trixie-slim）、numpy は版とハッシュで固定する
-# （requirements-verify-lock.txt）。どちらも更新は版と版の間だけ。
+# （requirements-verify-lock.txt）。numpy は wheel だけから入れ、ソースからのビルドで固定していないビルド依存を取りにいかない。
+# どちらも更新は版と版の間だけ。
 FROM debian:trixie-slim@sha256:62bd423aeee912639ca8ee681c2b762cb3e25137e0a92b20be455898a9f034ad
 
 RUN apt-get update \
@@ -47,7 +49,7 @@ ENV VIRTUAL_ENV=/opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 COPY --chown=lattice:lattice requirements-verify-lock.txt /work/
 RUN python3 -m venv "$VIRTUAL_ENV" \
- && python3 -m pip install --no-cache-dir --require-hashes -r requirements-verify-lock.txt
+ && python3 -m pip install --no-cache-dir --require-hashes --only-binary :all: -r requirements-verify-lock.txt
 
 COPY --chown=lattice:lattice . /work
 

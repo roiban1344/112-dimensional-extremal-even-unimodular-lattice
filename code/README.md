@@ -202,10 +202,26 @@ hexadecimal notation, which C reads exactly. The JSON records name the BLAS and 
 * Container: the `Dockerfile` at the repository root builds an image with these requirements for `verify/` (and `Dockerfile.sage` one with SageMath); see the root README.
 * `lean/`: Lean 4 and Mathlib (versions pinned in `lean/lean-toolchain` and `lean/lake-manifest.json`).
 
-Versions are pinned (numpy in `requirements-verify-lock.txt` with the SHA-256 of its files, the base images of
-the Dockerfiles by digest, the GitHub Actions by commit, `lean/lean-toolchain` and `lean/lake-manifest.json`) and
-updated only between releases; an update is accepted when `proof.sh` passes with it. Dependabot proposes the
-updates monthly (`.github/dependabot.yml`).
+Versions are pinned: numpy, pytest, ruff and shellcheck with the SHA-256 of their files
+(`requirements-verify-lock.txt`, `requirements-test-lock.txt`, `requirements-lint-lock.txt`; CI and the `Dockerfile` install
+them from wheels only), actionlint by the SHA-256 of its release archive, the base images of the Dockerfiles by digest, the
+GitHub Actions by commit, and Lean by `lean/lean-toolchain` and `lean/lake-manifest.json`. In CI only the job that
+attaches files to a Release may write to the repository, and it runs no third-party action.
+
+Dependabot proposes version updates monthly, only for versions published at least 14 days earlier; this
+cooldown does not apply to security updates (`.github/dependabot.yml`).
+An update is merged only between releases, one at a time, after these checks:
+
+1. The pull request was opened by Dependabot, and its commit is signed by GitHub.
+2. The new pin is the upstream one: for an action, the commit is the one the tag in the comment names in the
+   action's repository; for a Python package, the version and hashes are those on PyPI; for an image, the digest
+   is the one the registry gives for the tag.
+3. The upstream changes between the two versions have been read (release notes; for an action, the diff),
+   with attention to new network access, new inputs that take a token, and changed permissions.
+4. CI passes. For an update that the verification uses (numpy, Python, `actions/checkout`,
+   `actions/setup-python`, the base image of `Dockerfile`), the `proof` workflow has also passed on the branch
+   (run on demand). An update of `Dockerfile.sage`, which CI does not build, needs the image built and a step of
+   `run_supplementary.sh` run in it.
 
 ## What CI checks
 
@@ -215,13 +231,13 @@ updates monthly (`.github/dependabot.yml`).
 | `checks`: `tests` | same | `pytest -m "not data"` (see [Tests](#tests)) with Python 3.10, 3.12 and 3.13 on Linux and Python 3.12 on macOS (arm64, clang, Accelerate) |
 | `checks`: `lint` | same | ruff (rules in `ruff.toml`), shellcheck, actionlint, the two C programs with `-Wall -Wextra -Werror` |
 | `checks`: `paper-consistency`, `typst-build`, `lean` | same | `paper/tools/check-paper.py`; the four PDFs; `lean/check.sh --fresh` |
-| `checks`: `release-pdfs` | a tag `v*` | builds the PDFs and attaches them to the Release |
+| `checks`: `release-pdfs`, `release-attach` | a tag `v*` | builds the PDFs (read-only); attaches them to the Release (the only job that may write) |
 | `data-tests` | weekly, on demand | downloads the verification data; `pytest -m data`; v3, v4, v6; the three scripts of `crosscheck/second_impl/` |
 | `proof` | monthly, on demand, a tag `v*` | `fetch.sh` and `proof.sh`; the JSON records are kept, and attached to the Release of a tag |
 
 CI does not run `full.sh` (v7 in full, v8), `crosscheck/all_data/`, `supplementary/` (except `genus.py check`),
 `produce/`, `Dockerfile.sage` or the GAP scripts, and the checks above do not run when only a tag is pushed
-(except `release-pdfs` and `proof`). The verification of Theorem A is a run of `proof.sh` as described above,
+(except `release-pdfs`, `release-attach` and `proof`). The verification of Theorem A is a run of `proof.sh` as described above,
 on the reader's machine or in the `proof` workflow; the other jobs only guard against regressions.
 
 ## Tests
@@ -230,7 +246,7 @@ on the reader's machine or in the `proof` workflow; the other jobs only guard ag
 needed only for these tests; the verification itself uses numpy only. From the repository root:
 
 ```bash
-pip install pytest
+pip install pytest                           # CI: pip install --require-hashes --only-binary :all: -r requirements-test-lock.txt
 python -m pytest code/tests                  # everything available, about 40 s without the certificate files
 python -m pytest code/tests -m "not slow"    # a few seconds
 python -m pytest code/tests -m data          # needs certificates/*.npz (fetch.sh); about 10 min, 3 GB
