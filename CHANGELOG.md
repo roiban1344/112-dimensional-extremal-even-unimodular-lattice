@@ -4,6 +4,12 @@
 
 Releases are tagged by date (`vYYYY-MM-DD`, with a suffix `.1`, `.2`, … for a second release on the same day). The large verification data are released separately under `certificates-vN` tags. Each entry says first whether a mathematical statement changed; "statements" are the theorems, propositions and facts F0–F5 of the paper and the supplement.
 
+## Unreleased
+
+Statements: unchanged.
+
+- CI: only the job that attaches files to a Release may write, and it uses the GitHub CLI instead of a third-party action; pytest, ruff and shellcheck pinned with hashes, and these and numpy installed from wheels only (also in the `Dockerfile`), actionlint by the hash of its release archive; Dependabot's monthly version updates propose only versions published at least 14 days earlier (security updates are not delayed); the checks before an update is merged are listed in `code/README.md` ("Requirements").
+
 ## v2026-11-02 (2026-11-02)
 
 Statements: Theorems A and B and the facts F0–F5 are unchanged, and so are the input data and the verification data. Proposition 3.3 says more (the parity-preserving maps are the elements of reduced norm 1, and the sizes of the classes are given), and parts (a) and (c) now have a proof without a computer. Theorem S6.1(c) now says that the minimum of X₁ is not determined in this paper.

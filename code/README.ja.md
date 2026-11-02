@@ -177,9 +177,22 @@ F1 の列挙は外向きに丸める区間演算を使います（`verify/enum_i
 * コンテナ: リポジトリのルートの `Dockerfile` は、`verify/` のためにこれらを備えたイメージを作ります（SageMath 入りのイメージは `Dockerfile.sage`）。ルートの README を参照してください。
 * `lean/`: Lean 4 と Mathlib（版は `lean/lean-toolchain` と `lean/lake-manifest.json` に固定）。
 
-バージョンは固定する（numpy は `requirements-verify-lock.txt` でファイルの SHA-256 とともに、Dockerfile の基底イメージはダイジェストで、
-GitHub Actions はコミットで、Lean は `lean/lean-toolchain` と `lean/lake-manifest.json` で）。更新は版と版の間だけに行い、`proof.sh` が
-それで通ることを確かめてから取り込む。更新の提案は Dependabot が月に 1 回出す（`.github/dependabot.yml`）。
+バージョンは固定する。numpy・pytest・ruff・shellcheck はファイルの SHA-256 とともに（`requirements-verify-lock.txt`、
+`requirements-test-lock.txt`、`requirements-lint-lock.txt`。CI と `Dockerfile` は wheel だけから入れる）、actionlint はリリースのアーカイブの SHA-256 で、
+Dockerfile の基底イメージはダイジェストで、GitHub Actions はコミットで、Lean は `lean/lean-toolchain` と `lean/lake-manifest.json` で固定する。
+CI でリポジトリに書き込めるのは Release にファイルを添付するジョブだけで、そのジョブは第三者のアクションを使わない。
+
+通常の版の更新は、Dependabot が月に 1 回、公開から 14 日以上たった版についてだけ提案する。この待機はセキュリティ更新には適用されない（`.github/dependabot.yml`）。更新は版と版の間だけに、
+一つずつ、次を確かめてから取り込む。
+
+1. プルリクエストを開いたのが Dependabot で、そのコミットに GitHub の署名がある。
+2. 新しい固定値が上流のものと一致する。アクションなら、コメントにあるタグがアクションのリポジトリで指すコミットである。Python のパッケージなら、
+   版とハッシュが PyPI のものである。イメージなら、ダイジェストがそのタグについてレジストリが返すものである。
+3. 二つの版の間の上流の変更（リリースノート。アクションなら差分）を読んだ。特に、新しいネットワークへの接続、トークンを受け取る新しい入力、
+   権限の変更に注意する。
+4. CI が通る。検算が使うもの（numpy、Python、`actions/checkout`、`actions/setup-python`、`Dockerfile` の基底イメージ）の更新では、
+   そのブランチでワークフロー `proof` も（手動で実行して）通っている。CI がビルドしない `Dockerfile.sage` の更新では、イメージを作り、
+   その中で `run_supplementary.sh` のステップを一つ走らせる。
 
 ## CI が確かめること
 
@@ -189,12 +202,12 @@ GitHub Actions はコミットで、Lean は `lean/lean-toolchain` と `lean/lak
 | `checks`: `tests` | 同上 | `pytest -m "not data"`（[試験](#試験)を参照）を、Linux の Python 3.10・3.12・3.13 と macOS（arm64、clang、Accelerate）の Python 3.12 で |
 | `checks`: `lint` | 同上 | ruff（規則は `ruff.toml`）、shellcheck、actionlint、2 本の C のプログラムを `-Wall -Wextra -Werror` で |
 | `checks`: `paper-consistency`、`typst-build`、`lean` | 同上 | `paper/tools/check-paper.py`、4 つの PDF、`lean/check.sh --fresh` |
-| `checks`: `release-pdfs` | タグ `v*` | PDF を作り、Release に添付する |
+| `checks`: `release-pdfs`、`release-attach` | タグ `v*` | PDF を作り（読み取りだけ）、Release に添付する（書き込める唯一の job） |
 | `data-tests` | 週に 1 回、手動 | 検証用データを取得し、`pytest -m data`、v3・v4・v6、`crosscheck/second_impl/` の 3 本 |
 | `proof` | 月に 1 回、手動、タグ `v*` | `fetch.sh` と `proof.sh`。JSON の記録を残し、タグでは Release に添付する |
 
 CI は `full.sh`（v7 の全体、v8）、`crosscheck/all_data/`、`supplementary/`（`genus.py check` を除く）、`produce/`、`Dockerfile.sage`、GAP の
-スクリプトを走らせない。タグだけを push したときは、`release-pdfs` と `proof` のほかは走らない。定理 A の検算とは、上で述べた `proof.sh` の
+スクリプトを走らせない。タグだけを push したときは、`release-pdfs`・`release-attach`・`proof` のほかは走らない。定理 A の検算とは、上で述べた `proof.sh` の
 実行（読者の計算機か、ワークフロー `proof`）であり、ほかの job は後退を防ぐためのものである。
 
 ## 試験
@@ -203,7 +216,7 @@ CI は `full.sh`（v7 の全体、v8）、`crosscheck/all_data/`、`supplementar
 検算そのものは numpy だけを使います。リポジトリのルートから次のように実行します。
 
 ```bash
-pip install pytest
+pip install pytest                           # CI: pip install --require-hashes --only-binary :all: -r requirements-test-lock.txt
 python -m pytest code/tests                  # 実行できるものすべて。検証用データが無ければ約 40 秒
 python -m pytest code/tests -m "not slow"    # 数秒
 python -m pytest code/tests -m data          # certificates/*.npz（fetch.sh）が必要。約 10 分、3 GB
