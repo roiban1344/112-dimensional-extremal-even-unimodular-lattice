@@ -6,7 +6,7 @@
   title: [112 次元の極値偶ユニモジュラー格子],
   subtitle: [$"SL"_2(29)$ の対称性を保つ貼り合わせと計算機援用証明],
   authors: [roiban1344 #linebreak() #small[#link("https://github.com/roiban1344")[github.com/roiban1344]]],
-  date: [草稿、バージョン v2026-10-25],
+  date: [草稿、バージョン v2026-11-02],
 )
 
 #abstract-box[
@@ -624,7 +624,7 @@ $ cal(H) = { X in "End"_S\(V\): L_112 X subset.eq L_112 } = "End"_S\(V\) inter M
   [#strong[\[Voi21\]] J. Voight, #emph[Quaternion Algebras], Graduate Texts in Mathematics 288, Springer, 2021.],
   [#strong[\[Wat12\]] M. Watkins, Another 80-dimensional extremal lattice, J. Théor. Nombres Bordeaux 24 (2012), no. 1, 237–255, #link("https://doi.org/10.5802/jtnb.795", "doi:10.5802/jtnb.795").],
   [#strong[\[Soft\]] The FPLLL development team, #emph[fplll, a lattice reduction library], version 5.5.0, #link("https://github.com/fplll/fplll")[source]; The PARI Group, #emph[PARI/GP], #link("https://pari.math.u-bordeaux.fr/")[website]; The GAP Group, #emph[GAP], #link("https://www.gap-system.org/")[website]; Lean and mathlib, #link("https://github.com/leanprover/lean4")[Lean source], #link("https://github.com/leanprover-community/mathlib4")[mathlib source].],
-  [#strong[\[Repo\]] roiban1344, #emph[112-dimensional extremal even unimodular lattice]（データ、検算と検証用データの生成のコード、検証用データ、Lean による形式化）, #link("https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice")[公開リポジトリ]（タグ #raw("v2026-10-25")）.],
+  [#strong[\[Repo\]] roiban1344, #emph[112-dimensional extremal even unimodular lattice]（データ、検算と検証用データの生成のコード、検証用データ、Lean による形式化）, #link("https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice")[公開リポジトリ]（タグ #raw("v2026-11-02")）.],
 )
 
 = 付録 A. 用語集 <appA>

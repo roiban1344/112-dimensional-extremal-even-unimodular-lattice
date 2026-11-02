@@ -9,7 +9,7 @@ The large `.npz` files are attached to the GitHub Release, not stored in git. `S
 Download them with `bash code/verify/fetch.sh`; its optional argument is the Release tag (default `certificates-v2`). The Release is at <https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v2>.
 
 **Integrity.** The release tags `v…` of the repository are signed (SSH key
-`SHA256:TtiUlHWv6wPSzpK0D7y/iJqSqfJtFF1v3uUPKCrWGEg`; check with `git tag -v v2026-10-25`, or see the
+`SHA256:TtiUlHWv6wPSzpK0D7y/iJqSqfJtFF1v3uUPKCrWGEg`; check with `git tag -v v2026-11-02`, or see the
 "Verified" mark on GitHub). The tagged tree fixes everything else: the four data files (whose SHA-256
 hashes are also printed in Appendix D of the paper and in `code/lib/data.py`), the code, and
 `SHA256SUMS`, whose own SHA-256 hash is printed in Appendix D together with the hashes of the files read
