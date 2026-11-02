@@ -18,7 +18,7 @@
 #       l112-sage bash -c 'bash code/verify/fetch.sh && python3 -I code/verify/v4_norm8_orbits.py && bash code/run_supplementary.sh'
 # The base image is pinned by digest (mambaorg/micromamba:2.3.2); environment.yml fixes the versions of SageMath,
 # Python and numpy. / 基底イメージはダイジェストで固定する。environment.yml は SageMath・Python・numpy の版を固定する。
-FROM mambaorg/micromamba:2.3.2@sha256:ce2026639d612fbe837a35ca9d513292a8d776a24a5e6c82cccf9dddf45ad3d2
+FROM mambaorg/micromamba:2.8.1@sha256:fb18405d6004af757a38ec498a078240b4fd5549146990a484c28bb7e78aace4
 
 USER root
 RUN apt-get update \
