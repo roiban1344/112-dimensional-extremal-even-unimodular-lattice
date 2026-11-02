@@ -8,7 +8,7 @@
 `code/lib/certs.py` の読み込みは使う前にハッシュを照合します。取得は `bash code/verify/fetch.sh` で行います。引数は Release のタグで、省略すると `certificates-v2` です。Release は <https://github.com/roiban1344/112-dimensional-extremal-even-unimodular-lattice/releases/tag/certificates-v2> にあります。
 
 **真正性.** リポジトリの版のタグ `v…` には署名がある（SSH 鍵 `SHA256:TtiUlHWv6wPSzpK0D7y/iJqSqfJtFF1v3uUPKCrWGEg`。
-`git tag -v v2026-10-25` で確かめられ、GitHub では「Verified」と表示される）。タグの指すツリーが残りのすべてを固定する。すなわち、
+`git tag -v v2026-11-02` で確かめられ、GitHub では「Verified」と表示される）。タグの指すツリーが残りのすべてを固定する。すなわち、
 4 つのデータファイル（その SHA-256 は論文の付録 D と `code/lib/data.py` にもある）、コード、`SHA256SUMS` である。`SHA256SUMS`
 自身の SHA-256 は、`code/verify/proof.sh` が読むファイルの SHA-256 とともに付録 D に印刷してある。Release のタグ `certificates-v2`
 には署名が無いが、`fetch.sh` とすべてのスクリプトが各ファイルを取り出したツリーの `SHA256SUMS` と照合するので、問題にならない。

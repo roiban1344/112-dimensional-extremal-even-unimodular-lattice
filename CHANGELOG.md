@@ -4,12 +4,20 @@
 
 Releases are tagged by date (`vYYYY-MM-DD`, with a suffix `.1`, `.2`, … for a second release on the same day). The large verification data are released separately under `certificates-vN` tags. Each entry says first whether a mathematical statement changed; "statements" are the theorems, propositions and facts F0–F5 of the paper and the supplement.
 
-## Unreleased
+## v2026-11-02 (2026-11-02)
 
-Statements: unchanged.
+Statements: Theorems A and B and the facts F0–F5 are unchanged, and so are the input data and the verification data. Proposition 3.3 says more (the parity-preserving maps are the elements of reduced norm 1, and the sizes of the classes are given), and parts (a) and (c) now have a proof without a computer. Theorem S6.1(c) now says that the minimum of X₁ is not determined in this paper.
 
-- Lean: Mathlib's standard linters, a kernel replay with `leanchecker` in `lean/check.sh`, and a CI job for Lean (#34).
-- Supplement §S6: I. Gauvin's independent verification that X₁ has minimum 10 is cited [Gau26v]; this paper does not determine the minimum of X₁ and does not depend on that result.
+- Corrections to the paper: the account of [Neb98] in §2.4 (Table II of [Neb98] gives the 15,590,400 minimal vectors only for `L_{56,2}(M)`); the node count for Λ₂₄ ⊥ Λ₂₄ ⊥ E₈ in Table 5, from 11,081,124 to 14,101,914; dimension 88 brought up to date: the Catalogue lists six extremal lattices (#40).
+- Paper, prior work: §1.4 rewritten with the prior constructions and a paragraph on [Neb98, §5] whose case (5, 29) is checked by the new computation [C33]; original sources in Table G1 and more bibliographic data (#40).
+- Supplement §S6 and §3.3: the scope of the classification stated, the hypotheses of the mass formula of [GHY01] matched item by item, with two normalization checks (#41). I. Gauvin's independent verification that X₁ has minimum 10 is cited [Gau26v]; this paper does not determine the minimum of X₁ and does not depend on that result (#42).
+- Theorem B and Appendix F: the use of the tables of Hiss–Malle can now be checked from the text (Table F1, with a second route to the list); the inputs of the proof are listed, and the classification of finite simple groups is named in the abstract; the strategy is credited to Nebe (#43).
+- What the proof rests on: §1.3 on the scale of the computation, the rounding model of F1 in §6.1, which computed facts prove F2 and F3 (§6.4), the hypotheses of the Lean statements mapped to the checks (Table 9, continued), and the SHA-256 of `certificates/SHA256SUMS` in Appendix D (#47).
+- The sampled checks reported in the paper are now distributed code (`crosscheck/second_impl/minimal_orbits.py` in [C8], `crosscheck/second_impl/coset_enumeration.py` in [C11], and in the new row [C34] `supplementary/k8_checks.py` and step (e) of `supplementary/nebe/gluings_m.py`). The check called "implementation 3" is removed from the paper and the READMEs because its code is not available; no statement rested on it alone (#47). `paper/tools/check-paper.py` now refuses a row of Table D2 without distributed code (#52).
+- Verification code: two new controls in v1: E₈ in skewed bases, which detects an enumerator without outward rounding, and 60 random positive definite forms compared with exhaustive search, which test vectors of norm equal to the radius and the sign rule (#44); p3 reproduces `certificates/norm8_reps.npz` bit for bit; `out/<step>.json` has a new format 2, with the code, inputs, BLAS and compiler; a preflight check in `proof.sh`, `full.sh` and `quick.sh`; the JSON records of the supplementary scripts are named after the steps of `run_supplementary.sh` (#46).
+- CI and pinning: lint job, tests on more Python versions and on macOS, the `proof` workflow (its record is attached to the Release of each tag), second implementations in `data-tests`, numpy pinned with hashes and images by digest, PDFs reproducible with `--creation-timestamp` (#45).
+- Documentation: Figure 1 redrawn (#35); a map of the repository and file tables in the READMEs (#36); this changelog, how to report an error, and separate license files (#37); the use of AI tools (#39). Lean: Mathlib's standard linters, a kernel replay with `leanchecker` in `lean/check.sh`, and a CI job (#34).
+- Paper PDFs regenerated.
 
 ## v2026-10-25 (2026-10-25)
 

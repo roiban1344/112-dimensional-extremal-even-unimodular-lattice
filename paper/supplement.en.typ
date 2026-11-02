@@ -5,7 +5,7 @@
   lang: "en",
   title: [An extremal even unimodular lattice in dimension 112: supplement],
   authors: [roiban1344 #linebreak() #small[#link("https://github.com/roiban1344")[github.com/roiban1344]]],
-  date: [Draft, version v2026-10-25],
+  date: [Draft, version v2026-11-02],
 )
 
 This supplement records search motivation, additional checks, running times and the support-module argument, and classifies the even unimodular lattices of dimension 112 on which $"SL"_2(29)$ acts as on $L_112$ (§S6). Section, proposition, appendix and bibliography identifiers without an S prefix, and computation labels such as [C1], refer to the main paper. Theorem A is proved in §§2–6 of that paper. Route T (§S4.1, Theorem S4.1) proves $min L_112 >= 10$ again with a different reduction (Coulangeon's inequality and an enumeration of support modules in place of Lemma 4.2 and Corollary 4.3). Its last step uses the same computations F5a and F5b as the main proof, together with a further finite check [C32] that the main proof does not use; so it checks the reduction independently, but not the computations F0–F5.
